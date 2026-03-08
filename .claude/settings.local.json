@@ -19,7 +19,26 @@
       "Bash(pnpm build 2>&1 | tail -40)",
       "Bash(pnpm build 2>&1 | tail -30)",
       "Bash(pnpm build 2>&1 | tail -10)",
-      "Bash(pnpm build 2>&1 | tail -8)"
+      "Bash(pnpm build 2>&1 | tail -8)",
+      "Bash(pnpm build 2>&1 | tail -60)",
+      "Bash(pnpm build 2>&1 | grep -E \"\\(error|Error|warning|Warning|Failed\\)\" | head -20)",
+      "mcp__plugin_playwright_playwright__browser_navigate",
+      "mcp__plugin_playwright_playwright__browser_take_screenshot",
+      "Bash(pnpm build 2>&1 | tail -15)",
+      "mcp__plugin_playwright_playwright__browser_evaluate",
+      "mcp__plugin_playwright_playwright__browser_console_messages",
+      "mcp__plugin_github_github__search_repositories",
+      "mcp__plugin_github_github__get_me",
+      "mcp__plugin_github_github__get_file_contents",
+      "Bash(pnpm build 2>&1 | tail -80)",
+      "mcp__plugin_playwright_playwright__browser_click",
+      "Bash(rtk proxy npx prisma db push 2>&1)",
+      "Bash(DATABASE_URL=\"libsql://significanthobbies-sarthak927.aws-ap-south-1.turso.io\" TURSO_AUTH_TOKEN=\"eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3NzIzODY3NjAsImlkIjoiMDE5Y2FhNzgtN2EwMS03NGU0LTg4ZDUtOTJiMjJjYWI4M2Y0IiwicmlkIjoiZTVjZTlhZDYtOWEyNy00MzU4LWJmNGEtM2Y1ZDc4N2MxNDEwIn0.puUvY4uYzIeETQo97qIl4ybN5WX1OzFCdHTnn0_7KtfID-Wv0Tl1A_cylybFiR7oW-1wPR1aZFFsOuiUaJp3BA\" rtk proxy npx prisma db push 2>&1)",
+      "Bash(which turso 2>/dev/null && turso --version || echo \"turso not installed\")",
+      "Bash(pkill -f \"next dev\" 2>/dev/null || true)",
+      "Bash(rtk gain 2>&1)",
+      "Bash(rtk gain --history 2>&1)",
+      "Bash(which rtk && rtk --version 2>&1)"
     ]
   }
 }

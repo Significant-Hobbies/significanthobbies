@@ -1,8 +1,8 @@
 import "~/app/globals.css";
 
 import { type Metadata, type Viewport } from "next";
-import Script from "next/script";
 import { SaaSMakerFeedback } from "~/components/saasmaker-feedback";
+import { SaasMakerAnalytics } from "~/components/SaasMakerAnalytics";
 import { Geist } from "next/font/google";
 import { Providers } from "~/components/providers";
 import { Nav } from "~/components/nav";
@@ -54,13 +54,8 @@ export default function RootLayout({
           <Nav />
           <main>{children}</main>
           <SaaSMakerFeedback />
+          <SaasMakerAnalytics />
         </Providers>
-        <Script
-          src="https://unpkg.com/@saas-maker/analytics-sdk@0.2.0/dist/index.global.js"
-          data-project={process.env.NEXT_PUBLIC_SAASMAKER_API_KEY}
-          data-api="https://api.sassmaker.com"
-          strategy="afterInteractive"
-        />
       </body>
     </html>
   );

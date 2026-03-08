@@ -1,0 +1,2 @@
+[    1010ms] [ERROR] Access to fetch at 'https://api.sassmaker.com/v1/analytics/events' from origin 'https://www.significanthobbies.com' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: No 'Access-Control-Allow-Origin' header is present on the requested resource. @ https://www.significanthobbies.com/blog/side-quests:0
+[    1011ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://api.sassmaker.com/v1/analytics/events:0
