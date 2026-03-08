@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import { Button } from "~/components/ui/button";
 import type { Phase } from "~/lib/types";
 import { blogPosts } from "~/lib/blog-posts";
+import { SaaSMakerTestimonials, SaaSMakerChangelog } from "~/components/saasmaker-feedback";
 
 /* ─── Types ──────────────────────────────────────────────────────────────────── */
 
@@ -1005,6 +1006,22 @@ export function LandingClient({ demos }: LandingClientProps) {
 
       {/* ── Blog Teaser ───────────────────────────────────────────────────────── */}
       <BlogTeaser />
+
+      {/* ── Testimonials ──────────────────────────────────────────────────────── */}
+      <section className="border-t border-stone-100 px-4 py-16" style={{ background: "#FEFDF8" }}>
+        <div className="mx-auto max-w-4xl">
+          <h2 className="mb-8 text-center text-3xl font-bold text-stone-900">What people are saying</h2>
+          <SaaSMakerTestimonials />
+        </div>
+      </section>
+
+      {/* ── Changelog ─────────────────────────────────────────────────────────── */}
+      <section className="border-t border-stone-100 px-4 py-16 bg-amber-50/40">
+        <div className="mx-auto max-w-2xl">
+          <h2 className="mb-8 text-center text-3xl font-bold text-stone-900">Changelog</h2>
+          <SaaSMakerChangelog />
+        </div>
+      </section>
 
       {/* ── Footer ────────────────────────────────────────────────────────────── */}
       <FooterStrip />
