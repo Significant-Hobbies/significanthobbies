@@ -10,8 +10,8 @@ export const HOBBY_CATEGORIES: HobbyCategory[] = [
     emoji: "🎨",
     hobbies: [
       "Drawing", "Painting", "Photography", "Writing", "Sculpting",
-      "Ceramics", "Knitting", "Sewing", "Origami", "Calligraphy",
-      "Graphic design", "Music production", "Songwriting", "Poetry", "Filmmaking",
+      "Ceramics", "Knitting", "Crochet", "Embroidery", "Sewing", "Origami", "Calligraphy",
+      "Graphic design", "Music production", "Songwriting", "Poetry", "Filmmaking", "Cosplay",
     ],
   },
   {
@@ -28,7 +28,8 @@ export const HOBBY_CATEGORIES: HobbyCategory[] = [
     hobbies: [
       "Running", "Cycling", "Swimming", "Hiking", "Climbing", "Yoga",
       "Gym", "Martial arts", "Dance", "Basketball", "Football", "Tennis",
-      "Skiing", "Skateboarding", "Surfing", "Rowing",
+      "Skiing", "Skateboarding", "Surfing", "Rowing", "Badminton",
+      "Scuba diving", "Fencing", "Pickleball",
     ],
   },
   {
@@ -52,7 +53,7 @@ export const HOBBY_CATEGORIES: HobbyCategory[] = [
     emoji: "🌿",
     hobbies: [
       "Gardening", "Bird watching", "Camping", "Fishing", "Foraging",
-      "Stargazing", "Rock collecting", "Beekeeping",
+      "Stargazing", "Rock collecting", "Beekeeping", "Geocaching", "Mushroom hunting",
     ],
   },
   {
@@ -76,7 +77,7 @@ export const HOBBY_CATEGORIES: HobbyCategory[] = [
     emoji: "🔧",
     hobbies: [
       "Woodworking", "3D printing", "Electronics", "Leatherworking",
-      "Blacksmithing", "Candle making", "Soap making", "Jewelry making",
+      "Blacksmithing", "Candle making", "Soap making", "Jewelry making", "LEGO building",
     ],
   },
   {
