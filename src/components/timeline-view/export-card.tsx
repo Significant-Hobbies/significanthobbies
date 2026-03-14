@@ -1,6 +1,6 @@
-import { Badge } from "~/components/ui/badge";
 import { getCategoryForHobby } from "~/lib/hobbies";
 import { computeInsights } from "~/lib/insights";
+import { computePersonality } from "~/lib/personality";
 import type { TimelineData } from "~/lib/types";
 
 interface Props {
@@ -11,6 +11,7 @@ interface Props {
 export function ExportCard({ timeline, exportRef }: Props) {
   const { phases } = timeline;
   const insights = phases.length >= 2 ? computeInsights(phases) : null;
+  const personality = phases.length > 0 ? computePersonality(phases) : null;
   const totalHobbies = new Set(
     phases.flatMap((p) => p.hobbies.map((h) => h.name.toLowerCase())),
   ).size;
@@ -108,6 +109,17 @@ export function ExportCard({ timeline, exportRef }: Props) {
           </span>
         )}
       </div>
+
+      {/* Personality */}
+      {personality && (
+        <div className="mb-6 rounded-lg bg-slate-800/40 border border-slate-700/50 px-4 py-3">
+          <div className="flex items-center gap-2 mb-1">
+            <span className="text-xl leading-none">{personality.archetype.emoji}</span>
+            <span className="font-bold text-emerald-400">{personality.archetype.name}</span>
+          </div>
+          <p className="text-xs text-slate-400 leading-relaxed">{personality.narrative}</p>
+        </div>
+      )}
 
       {/* Insights row */}
       {insights && (
