@@ -12,6 +12,8 @@ import { VisibilityToggle } from "~/components/timeline-view/visibility-toggle";
 import { LikeButton } from "~/components/timeline-view/like-button";
 import { CommentsSectionWithOwn } from "~/components/timeline-view/comments-section";
 import { PersonalityCard } from "~/components/timeline-view/personality-card";
+import { RediscoveryNudges } from "~/components/timeline-view/rediscovery-nudges";
+import { RecommendationsPanel } from "~/components/timeline-view/recommendations-panel";
 import { ArrowLeft, Pencil, User } from "lucide-react";
 import type { Phase, TimelineData, TimelinePin, TimelineVisibility } from "~/lib/types";
 
@@ -183,6 +185,8 @@ export default async function TimelinePage({ params }: Props) {
           <PhaseSwimlane phases={phases} pins={pins} />
           <PersonalityCard phases={phases} />
           <InsightsPanel phases={phases} />
+          <RediscoveryNudges phases={phases} />
+          <RecommendationsPanel phases={phases} />
           <CommentsSectionWithOwn
             timelineId={timeline.id}
             initialComments={comments}
