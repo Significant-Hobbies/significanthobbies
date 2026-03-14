@@ -3,6 +3,23 @@ import { NextResponse } from "next/server";
 
 export default withAuth(
   function middleware(req) {
+    const token = req.nextauth.token;
+    const { pathname } = req.nextUrl;
+
+    // Skip API routes, setup, and login pages
+    if (
+      pathname.startsWith("/api") ||
+      pathname === "/setup" ||
+      pathname === "/login"
+    ) {
+      return NextResponse.next();
+    }
+
+    // If authenticated but no username, redirect to /setup to complete onboarding
+    if (token && !token.username) {
+      return NextResponse.redirect(new URL("/setup", req.url));
+    }
+
     return NextResponse.next();
   },
   {
@@ -25,7 +42,13 @@ export default withAuth(
 
 export const config = {
   matcher: [
-    "/timeline/:id*/edit",
+    "/timeline/:path*",
+    "/explore",
+    "/search",
+    "/settings",
     "/setup",
+    "/dashboard",
+    "/side-quests",
+    "/u/:path*",
   ],
 };

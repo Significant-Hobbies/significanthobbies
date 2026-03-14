@@ -1,5 +1,6 @@
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { type NextAuthOptions } from "next-auth";
+import { type JWT } from "next-auth/jwt";
 import GoogleProvider from "next-auth/providers/google";
 import { db } from "~/server/db";
 
@@ -12,6 +13,13 @@ declare module "next-auth" {
       email?: string | null;
       image?: string | null;
     };
+  }
+}
+
+declare module "next-auth/jwt" {
+  interface JWT {
+    username?: string | null;
+    userId?: string;
   }
 }
 
@@ -32,6 +40,22 @@ export const authOptions: NextAuthOptions = {
         username: (user as { username?: string | null }).username ?? null,
       },
     }),
+    jwt: async ({ token, user, trigger }) => {
+      // On sign-in, user object is available
+      if (user) {
+        token.userId = user.id;
+        token.username = (user as { username?: string | null }).username ?? null;
+      }
+      // On update trigger or if username not yet set, fetch from DB
+      if (trigger === "update" || (token.userId && token.username === undefined)) {
+        const dbUser = await db.user.findUnique({
+          where: { id: token.userId as string },
+          select: { username: true },
+        });
+        token.username = dbUser?.username ?? null;
+      }
+      return token;
+    },
   },
   pages: {
     signIn: "/login",
