@@ -65,6 +65,17 @@ const CARD_BORDER_COLORS = [
   "#8B5CF6",
 ];
 
+const ARCHETYPES = [
+  { emoji: "🌍", name: "Renaissance Explorer", description: "Your interests span every corner of life" },
+  { emoji: "🎯", name: "Deep Specialist", description: "You go deep, not wide" },
+  { emoji: "🎨", name: "Creative Soul", description: "Art and expression run through everything you do" },
+  { emoji: "💪", name: "Action Hero", description: "You're wired for movement and challenge" },
+  { emoji: "🧠", name: "Mind Builder", description: "You feed your curiosity with knowledge" },
+  { emoji: "🤝", name: "Social Butterfly", description: "Your hobbies connect you to others" },
+  { emoji: "🔧", name: "Maker", description: "You build, craft, and create with your hands" },
+  { emoji: "⚖️", name: "Balanced Explorer", description: "A little of everything, mastered through breadth" },
+];
+
 const BLOG_CATEGORY_COLORS: Record<string, { bg: string; text: string; border: string }> = {
   Wellbeing: { bg: "bg-emerald-50", text: "text-emerald-700", border: "border-emerald-200" },
   "Getting Started": { bg: "bg-amber-50", text: "text-amber-700", border: "border-amber-200" },
@@ -285,13 +296,13 @@ function FeatureCards() {
       illustration: <PhaseMapIllustration />,
     },
     {
-      title: "Discover insights",
-      desc: "See rekindled hobbies, what stuck across decades, and patterns you never noticed before.",
+      title: "Discover your hobby personality",
+      desc: "See rekindled hobbies, what stuck across decades, and uncover the archetype your interests reveal.",
       illustration: <BarChartIllustration inView={inView} />,
     },
     {
-      title: "Find what's next",
-      desc: "Get personalized suggestions and browse what others with similar tastes explore.",
+      title: "Share your identity artifact",
+      desc: "Generate a stunning card of your hobby journey — a window into who you are, ready to share anywhere.",
       illustration: <HobbyTagsIllustration />,
     },
   ];
@@ -917,13 +928,13 @@ export function LandingClient({ demos }: LandingClientProps) {
               className="block"
               style={{ animation: "fadeInUp 0.6s 0.1s ease-out both", opacity: 0 }}
             >
-              Your hobbies tell a
+              Map your hobby journey,
             </span>
             <span
               className="relative mt-1 block italic text-emerald-600"
               style={{ animation: "fadeInUp 0.6s 0.25s ease-out both", opacity: 0 }}
             >
-              significant story
+              rediscover what shaped you
               {/* Wavy underline decoration */}
               <svg
                 className="absolute -bottom-2 left-0 w-full"
@@ -941,6 +952,12 @@ export function LandingClient({ demos }: LandingClientProps) {
                 />
               </svg>
             </span>
+            <span
+              className="block"
+              style={{ animation: "fadeInUp 0.6s 0.35s ease-out both", opacity: 0 }}
+            >
+              and find what to try next.
+            </span>
           </h1>
 
           {/* Subtext */}
@@ -948,7 +965,7 @@ export function LandingClient({ demos }: LandingClientProps) {
             className="mx-auto mb-10 max-w-xl text-lg text-stone-500 sm:text-xl"
             style={{ animation: "fadeInUp 0.6s 0.4s ease-out both", opacity: 0 }}
           >
-            Track your hobbies across life phases. Discover what rekindled, what persisted, and what to explore next.
+            Build a shareable timeline of your hobbies across life — and discover the story your interests tell about you.
           </p>
 
           {/* CTA buttons */}
@@ -961,7 +978,7 @@ export function LandingClient({ demos }: LandingClientProps) {
                 size="lg"
                 className="bg-emerald-600 px-8 text-white shadow-[0_0_24px_rgba(16,185,129,0.3)] ring-1 ring-emerald-500/30 transition-all duration-200 hover:-translate-y-0.5 hover:bg-emerald-700 hover:shadow-[0_0_36px_rgba(16,185,129,0.45)]"
               >
-                Build your timeline →
+                Discover your hobby story →
               </Button>
             </Link>
             <Link href="/hobbies">
@@ -970,7 +987,7 @@ export function LandingClient({ demos }: LandingClientProps) {
                 variant="outline"
                 className="border-stone-300 px-8 text-stone-600 transition-all duration-200 hover:-translate-y-0.5 hover:text-stone-900"
               >
-                Discover hobbies
+                See examples
               </Button>
             </Link>
           </div>
@@ -985,6 +1002,28 @@ export function LandingClient({ demos }: LandingClientProps) {
           {/* Phase strip preview */}
           <div style={{ animation: "fadeInUp 0.7s 0.85s ease-out both", opacity: 0 }}>
             <HeroPhaseStrip />
+          </div>
+        </div>
+      </section>
+
+      {/* ── Archetype Preview ─────────────────────────────────────────────────── */}
+      {/* Archetype Preview */}
+      <section className="py-16 bg-stone-50 -mx-4 px-4">
+        <div className="max-w-4xl mx-auto text-center">
+          <h2 className="text-2xl font-bold text-stone-900 mb-2">
+            What will your hobby story reveal?
+          </h2>
+          <p className="text-stone-500 mb-8">
+            Your hobbies tell a story about who you are. Discover your archetype.
+          </p>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {ARCHETYPES.map((a) => (
+              <div key={a.name} className="rounded-xl border border-stone-200 bg-white p-4 text-center">
+                <div className="text-3xl mb-2">{a.emoji}</div>
+                <div className="font-semibold text-stone-800 text-sm">{a.name}</div>
+                <div className="text-xs text-stone-500 mt-1">{a.description}</div>
+              </div>
+            ))}
           </div>
         </div>
       </section>
