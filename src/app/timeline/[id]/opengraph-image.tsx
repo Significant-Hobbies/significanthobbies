@@ -1,6 +1,7 @@
 import { ImageResponse } from "next/og";
 import { db } from "~/server/db";
 import type { Phase } from "~/lib/types";
+import { computePersonality } from "~/lib/personality";
 
 export const runtime = "nodejs";
 export const size = { width: 1200, height: 630 };
@@ -52,6 +53,9 @@ export default async function OgImage({
     phases.flatMap((p) => p.hobbies.map((h) => h.name)),
   ).size;
 
+  const personality = computePersonality(phases);
+  const archetype = personality.archetype;
+
   return new ImageResponse(
     (
       <div
@@ -97,6 +101,38 @@ export default async function OgImage({
           }}
         >
           {timeline.title ?? "Hobby Timeline"}
+        </div>
+
+        {/* Personality archetype badge */}
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 12,
+            marginBottom: 32,
+          }}
+        >
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 10,
+              padding: "14px 28px",
+              borderRadius: 16,
+              background: "linear-gradient(135deg, #D1FAE5 0%, #FEF3C7 100%)",
+              border: "2px solid #A7F3D0",
+            }}
+          >
+            <span style={{ fontSize: 32 }}>{archetype.emoji}</span>
+            <div style={{ display: "flex", flexDirection: "column" }}>
+              <span style={{ fontSize: 13, color: "#6B7280", fontWeight: 600, textTransform: "uppercase", letterSpacing: 1 }}>
+                Personality
+              </span>
+              <span style={{ fontSize: 24, color: "#1C1917", fontWeight: 800 }}>
+                {archetype.name}
+              </span>
+            </div>
+          </div>
         </div>
 
         {/* Stats */}

@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { Download, Loader2 } from "lucide-react";
+import { Download, Loader2, Link2 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "~/components/ui/button";
 import { ExportCard } from "./export-card";
@@ -36,21 +36,77 @@ export function ExportButton({ timeline }: Props) {
     }
   }
 
+  function handleCopyLink() {
+    void navigator.clipboard.writeText(window.location.href).then(() => {
+      toast.success("Link copied!");
+    });
+  }
+
+  function handleTwitterShare() {
+    const url = window.location.href;
+    const text = "Check out my hobby timeline on Significant Hobbies";
+    window.open(
+      `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`,
+      "_blank",
+    );
+  }
+
+  function handleWhatsAppShare() {
+    const url = window.location.href;
+    const text = "Check out my hobby timeline on Significant Hobbies";
+    window.open(
+      `https://wa.me/?text=${encodeURIComponent(text + " " + url)}`,
+      "_blank",
+    );
+  }
+
   return (
     <>
-      <Button
-        onClick={handleExport}
-        disabled={isExporting}
-        variant="outline"
-        className="border-stone-300 text-stone-600 hover:text-stone-900"
-      >
-        {isExporting ? (
-          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-        ) : (
-          <Download className="mr-2 h-4 w-4" />
-        )}
-        Export PNG
-      </Button>
+      <div className="flex items-center gap-2">
+        <Button
+          onClick={handleExport}
+          disabled={isExporting}
+          variant="outline"
+          className="border-stone-300 text-stone-600 hover:text-stone-900"
+        >
+          {isExporting ? (
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+          ) : (
+            <Download className="mr-2 h-4 w-4" />
+          )}
+          Export PNG
+        </Button>
+
+        <Button
+          onClick={handleCopyLink}
+          variant="outline"
+          size="sm"
+          className="border-stone-300 text-stone-600 hover:text-stone-900"
+        >
+          <Link2 className="mr-1.5 h-4 w-4" />
+          Copy link
+        </Button>
+
+        <Button
+          onClick={handleTwitterShare}
+          variant="outline"
+          size="sm"
+          className="border-stone-300 text-stone-600 hover:text-stone-900 px-2.5"
+          title="Share on X / Twitter"
+        >
+          <span className="text-base font-bold leading-none">𝕏</span>
+        </Button>
+
+        <Button
+          onClick={handleWhatsAppShare}
+          variant="outline"
+          size="sm"
+          className="border-stone-300 text-stone-600 hover:text-stone-900 px-2.5"
+          title="Share on WhatsApp"
+        >
+          <span className="text-xs font-bold leading-none">WA</span>
+        </Button>
+      </div>
 
       {/* Hidden export card — rendered off-screen */}
       <div className="fixed -left-[9999px] -top-[9999px] pointer-events-none">
