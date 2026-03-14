@@ -1,5 +1,6 @@
 import { db } from "~/server/db";
 import { ExploreClient } from "./explore-client";
+import { getCategoryForHobby } from "~/lib/hobbies";
 import type { Phase, TimelineData, TimelineVisibility } from "~/lib/types";
 
 export const metadata = { title: "Explore — SignificantHobbies" };
@@ -9,12 +10,13 @@ export default async function ExplorePage() {
     where: { visibility: "PUBLIC" },
     include: {
       user: { select: { id: true, name: true, username: true, image: true } },
+      _count: { select: { likes: true } },
     },
     orderBy: { updatedAt: "desc" },
     take: 100,
   });
 
-  const timelines: TimelineData[] = rawTimelines.map((raw) => {
+  const timelines: (TimelineData & { likeCount: number })[] = rawTimelines.map((raw) => {
     let phases: Phase[] = [];
     try {
       phases = JSON.parse(raw.phases as string) as Phase[];
@@ -27,6 +29,7 @@ export default async function ExplorePage() {
       phases,
       createdAt: raw.createdAt,
       updatedAt: raw.updatedAt,
+      likeCount: raw._count.likes,
       user: raw.user
         ? {
             id: raw.user.id,
@@ -38,6 +41,20 @@ export default async function ExplorePage() {
     };
   });
 
+  // Aggregate trending hobbies
+  const hobbyCount: Record<string, number> = {};
+  for (const t of timelines) {
+    for (const p of t.phases) {
+      for (const h of p.hobbies) {
+        hobbyCount[h.name] = (hobbyCount[h.name] ?? 0) + 1;
+      }
+    }
+  }
+  const trendingHobbies = Object.entries(hobbyCount)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 8)
+    .map(([name, count]) => ({ name, count, emoji: getCategoryForHobby(name)?.emoji ?? "✨" }));
+
   return (
     <div className="mx-auto max-w-5xl px-4 py-12">
       {/* Page header */}
@@ -47,6 +64,27 @@ export default async function ExplorePage() {
           Discover how people spend their time — across life phases, hobbies, and chapters.
         </p>
       </div>
+
+      {/* Trending hobbies */}
+      {trendingHobbies.length > 0 && (
+        <div className="mb-8">
+          <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-stone-400">
+            Trending
+          </p>
+          <div className="flex flex-wrap gap-2">
+            {trendingHobbies.map(({ name, count, emoji }) => (
+              <span
+                key={name}
+                className="inline-flex items-center gap-1 rounded-full border border-stone-200 bg-stone-50 px-3 py-1 text-xs text-stone-600"
+              >
+                <span>{emoji}</span>
+                <span>{name}</span>
+                <span className="text-stone-400">({count})</span>
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
 
       <ExploreClient timelines={timelines} />
     </div>

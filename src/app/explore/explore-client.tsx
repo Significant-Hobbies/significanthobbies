@@ -6,6 +6,7 @@ import { Search, LayoutList } from "lucide-react";
 import { Input } from "~/components/ui/input";
 import { ScrollReveal } from "~/components/scroll-reveal";
 import type { TimelineData } from "~/lib/types";
+import { HOBBY_CATEGORIES } from "~/lib/hobbies";
 
 // Phase strip colors cycling through warm/cool hues
 const PHASE_COLORS = [
@@ -19,13 +20,13 @@ const PHASE_COLORS = [
   "bg-violet-400",
 ];
 
-type SortOption = "all" | "most-phases" | "most-hobbies" | "recent";
+type SortOption = "all" | "most-phases" | "most-hobbies" | "recent" | "most-liked";
 
 interface ExploreClientProps {
-  timelines: TimelineData[];
+  timelines: (TimelineData & { likeCount?: number })[];
 }
 
-function ExploreTimelineCard({ timeline }: { timeline: TimelineData }) {
+function ExploreTimelineCard({ timeline }: { timeline: TimelineData & { likeCount?: number } }) {
   const { phases } = timeline;
   const totalHobbies = new Set(
     phases.flatMap((p) => p.hobbies.map((h) => h.name.toLowerCase())),
@@ -88,6 +89,9 @@ function ExploreTimelineCard({ timeline }: { timeline: TimelineData }) {
         <p className="mt-auto pt-2 text-xs text-stone-400">
           {phases.length} phase{phases.length !== 1 ? "s" : ""} &middot;{" "}
           {totalHobbies} hobb{totalHobbies !== 1 ? "ies" : "y"}
+          {timeline.likeCount !== undefined && timeline.likeCount > 0 && (
+            <> &middot; {timeline.likeCount} like{timeline.likeCount !== 1 ? "s" : ""}</>
+          )}
         </p>
       </div>
     </Link>
@@ -97,6 +101,7 @@ function ExploreTimelineCard({ timeline }: { timeline: TimelineData }) {
 export function ExploreClient({ timelines }: ExploreClientProps) {
   const [query, setQuery] = useState("");
   const [sort, setSort] = useState<SortOption>("all");
+  const [categoryFilter, setCategoryFilter] = useState<string | null>(null);
 
   const filtered = useMemo(() => {
     let result = timelines;
@@ -116,6 +121,19 @@ export function ExploreClient({ timelines }: ExploreClientProps) {
       });
     }
 
+    // Filter by category
+    if (categoryFilter) {
+      const category = HOBBY_CATEGORIES.find((c) => c.name === categoryFilter);
+      if (category) {
+        const categoryHobbies = new Set(category.hobbies.map((h) => h.toLowerCase()));
+        result = result.filter((t) =>
+          t.phases.some((p) =>
+            p.hobbies.some((h) => categoryHobbies.has(h.name.toLowerCase())),
+          ),
+        );
+      }
+    }
+
     // Sort
     if (sort === "most-phases") {
       result = [...result].sort((a, b) => b.phases.length - a.phases.length);
@@ -127,16 +145,19 @@ export function ExploreClient({ timelines }: ExploreClientProps) {
       result = [...result].sort(
         (a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime(),
       );
+    } else if (sort === "most-liked") {
+      result = [...result].sort((a, b) => (b.likeCount ?? 0) - (a.likeCount ?? 0));
     }
 
     return result;
-  }, [timelines, query, sort]);
+  }, [timelines, query, sort, categoryFilter]);
 
   const SORT_OPTIONS: { label: string; value: SortOption }[] = [
     { label: "All", value: "all" },
     { label: "Most phases", value: "most-phases" },
     { label: "Most hobbies", value: "most-hobbies" },
     { label: "Recent", value: "recent" },
+    { label: "Most liked", value: "most-liked" },
   ];
 
   return (
@@ -152,8 +173,8 @@ export function ExploreClient({ timelines }: ExploreClientProps) {
         />
       </div>
 
-      {/* Filter chips */}
-      <div className="mb-6 flex flex-wrap gap-2">
+      {/* Sort chips */}
+      <div className="mb-3 flex flex-wrap gap-2">
         {SORT_OPTIONS.map((opt) => (
           <button
             key={opt.value}
@@ -170,6 +191,35 @@ export function ExploreClient({ timelines }: ExploreClientProps) {
         ))}
       </div>
 
+      {/* Category filter chips */}
+      <div className="mb-6 flex flex-wrap gap-2">
+        <button
+          type="button"
+          onClick={() => setCategoryFilter(null)}
+          className={`rounded-full px-3.5 py-1.5 text-sm font-medium transition-colors ${
+            categoryFilter === null
+              ? "bg-stone-800 text-white"
+              : "border border-stone-200 bg-white text-stone-600 hover:border-stone-400 hover:text-stone-800"
+          }`}
+        >
+          All categories
+        </button>
+        {HOBBY_CATEGORIES.map((cat) => (
+          <button
+            key={cat.name}
+            type="button"
+            onClick={() => setCategoryFilter(categoryFilter === cat.name ? null : cat.name)}
+            className={`rounded-full px-3.5 py-1.5 text-sm font-medium transition-colors ${
+              categoryFilter === cat.name
+                ? "bg-stone-800 text-white"
+                : "border border-stone-200 bg-white text-stone-600 hover:border-stone-400 hover:text-stone-800"
+            }`}
+          >
+            {cat.emoji} {cat.name}
+          </button>
+        ))}
+      </div>
+
       {/* Results */}
       {filtered.length === 0 ? (
         <div className="flex flex-col items-center justify-center rounded-2xl border border-stone-200 bg-stone-50 px-6 py-20 text-center">
@@ -177,12 +227,12 @@ export function ExploreClient({ timelines }: ExploreClientProps) {
             <LayoutList className="h-5 w-5 text-stone-400" />
           </div>
           <p className="text-stone-600 font-medium">
-            {query ? `No timelines match "${query}"` : "No public timelines yet"}
+            {query ? `No timelines match "${query}"` : categoryFilter ? `No timelines in ${categoryFilter}` : "No public timelines yet"}
           </p>
           <p className="mt-1 text-sm text-stone-400">
-            {query ? "Try a different search term" : "Be the first to share yours"}
+            {query ? "Try a different search term" : categoryFilter ? "Try a different category" : "Be the first to share yours"}
           </p>
-          {!query && (
+          {!query && !categoryFilter && (
             <Link
               href="/timeline/new"
               className="mt-5 rounded-lg bg-emerald-600 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-700 transition-colors"
@@ -196,6 +246,7 @@ export function ExploreClient({ timelines }: ExploreClientProps) {
           <p className="mb-4 text-sm text-stone-400">
             {filtered.length} timeline{filtered.length !== 1 ? "s" : ""}
             {query && ` for "${query}"`}
+            {categoryFilter && ` in ${categoryFilter}`}
           </p>
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             {filtered.map((timeline, i) => (
