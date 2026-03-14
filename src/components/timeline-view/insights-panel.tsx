@@ -6,11 +6,24 @@ interface Props {
   phases: Phase[];
 }
 
+function phaseTransitionColor(majorChange: string): string {
+  if (majorChange.toLowerCase().includes("gained")) return "text-emerald-600";
+  if (majorChange.toLowerCase().includes("lost")) return "text-red-500";
+  if (majorChange.toLowerCase().includes("shifted focus")) return "text-amber-600";
+  return "text-stone-500";
+}
+
 export function InsightsPanel({ phases }: Props) {
   if (phases.length < 2) return null;
 
   const insights = computeInsights(phases);
-  const { rekindled, mostPersistent, addedPerPhase, droppedPerPhase } = insights;
+  const {
+    rekindled,
+    mostPersistent,
+    categoryDiversity,
+    longestStreaks,
+    phaseTransitions,
+  } = insights;
 
   const topPersistent = mostPersistent.filter((h) => h.count >= 2).slice(0, 6);
   const totalHobbies = new Set(
@@ -21,8 +34,8 @@ export function InsightsPanel({ phases }: Props) {
     <div className="rounded-xl border border-stone-200 bg-white p-5 space-y-5">
       <h2 className="text-lg font-semibold text-stone-800">Insights</h2>
 
-      {/* Stats row */}
-      <div className="grid grid-cols-3 gap-3">
+      {/* Stats row — 4 columns */}
+      <div className="grid grid-cols-4 gap-3">
         <div
           className="rounded-lg p-3 text-center"
           style={{
@@ -58,6 +71,18 @@ export function InsightsPanel({ phases }: Props) {
             {topPersistent.length}
           </div>
           <div className="text-xs text-stone-500 mt-0.5">persistent</div>
+        </div>
+        <div
+          className="rounded-lg p-3 text-center"
+          style={{
+            background: "linear-gradient(135deg, rgba(245,158,11,0.08) 0%, rgba(245,158,11,0.03) 100%)",
+            border: "1px solid rgba(245,158,11,0.2)",
+          }}
+        >
+          <div className="text-2xl font-bold text-amber-600">
+            {categoryDiversity}
+          </div>
+          <div className="text-xs text-stone-500 mt-0.5">categories</div>
         </div>
       </div>
 
@@ -119,34 +144,48 @@ export function InsightsPanel({ phases }: Props) {
         </div>
       )}
 
-      {/* Flow: added/dropped per phase */}
-      <div>
-        <h3 className="text-xs font-medium text-stone-500 uppercase tracking-wide mb-2">
-          Phase transitions
-        </h3>
-        <div className="space-y-1.5">
-          {phases.slice(1).map((phase, i) => {
-            const added = addedPerPhase[i + 1] ?? [];
-            const dropped = droppedPerPhase[i + 1] ?? [];
-            return (
-              <div
-                key={phase.id}
-                className="flex items-center gap-2 text-xs text-stone-500"
-              >
-                <span className="text-stone-600 min-w-0 flex-1 truncate">
-                  {phase.label}
+      {/* Longest streaks */}
+      {longestStreaks.length > 0 && (
+        <div>
+          <h3 className="text-xs font-medium text-stone-500 uppercase tracking-wide mb-2">
+            Longest streaks
+          </h3>
+          <div className="space-y-1.5">
+            {longestStreaks.map(({ hobby, streak, startPhase, endPhase }) => (
+              <div key={hobby} className="flex items-center justify-between">
+                <span className="text-sm text-stone-700 capitalize">{hobby}</span>
+                <span className="text-xs text-stone-500">
+                  {streak} phases ({startPhase} → {endPhase})
                 </span>
-                {added.length > 0 && (
-                  <span className="text-emerald-600">+{added.length}</span>
-                )}
-                {dropped.length > 0 && (
-                  <span className="text-red-500">−{dropped.length}</span>
-                )}
               </div>
-            );
-          })}
+            ))}
+          </div>
         </div>
-      </div>
+      )}
+
+      {/* Phase transitions */}
+      {phaseTransitions.length > 0 && (
+        <div>
+          <h3 className="text-xs font-medium text-stone-500 uppercase tracking-wide mb-2">
+            Phase transitions
+          </h3>
+          <div className="space-y-1.5">
+            {phaseTransitions.map(({ fromPhase, toPhase, majorChange }) => (
+              <div
+                key={`${fromPhase}-${toPhase}`}
+                className="flex items-start gap-2 text-xs"
+              >
+                <span className="text-stone-500 shrink-0">
+                  {fromPhase} → {toPhase}:
+                </span>
+                <span className={phaseTransitionColor(majorChange)}>
+                  {majorChange}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
