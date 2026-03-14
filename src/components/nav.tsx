@@ -60,6 +60,15 @@ export async function Nav() {
 
           {session?.user ? (
             <>
+              <Link href="/dashboard">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="text-stone-500 hover:text-stone-700"
+                >
+                  Dashboard
+                </Button>
+              </Link>
               <Link href="/timeline/new">
                 <Button
                   size="sm"
@@ -96,6 +105,9 @@ export async function Nav() {
                       </Link>
                     </DropdownMenuItem>
                   )}
+                  <DropdownMenuItem asChild>
+                    <Link href="/dashboard">Dashboard</Link>
+                  </DropdownMenuItem>
                   <DropdownMenuSeparator className="bg-stone-200" />
                   <NavSignOut />
                 </DropdownMenuContent>
@@ -145,6 +157,9 @@ export async function Nav() {
                     </Link>
                   </DropdownMenuItem>
                 )}
+                <DropdownMenuItem asChild>
+                  <Link href="/dashboard">Dashboard</Link>
+                </DropdownMenuItem>
                 <DropdownMenuSeparator className="bg-stone-200" />
                 <NavSignOut />
               </DropdownMenuContent>
