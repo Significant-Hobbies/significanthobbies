@@ -999,6 +999,12 @@ export function LandingClient({ demos }: LandingClientProps) {
             No sign-up required to start
           </p>
 
+          <p className="mt-2 text-sm text-emerald-600" style={{ animation: "fadeInUp 0.6s 0.75s ease-out both", opacity: 0 }}>
+            <Link href="/get-started" className="hover:underline">
+              Or get your username first →
+            </Link>
+          </p>
+
           {/* Phase strip preview */}
           <div style={{ animation: "fadeInUp 0.7s 0.85s ease-out both", opacity: 0 }}>
             <HeroPhaseStrip />
