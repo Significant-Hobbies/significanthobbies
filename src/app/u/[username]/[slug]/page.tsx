@@ -215,8 +215,8 @@ export default async function TimelineBySlugPage({ params }: Props) {
           <PhaseSwimlane phases={phases} pins={pins} />
           <PersonalityCard phases={phases} />
           <InsightsPanel phases={phases} />
-          <RediscoveryNudges phases={phases} />
-          <RecommendationsPanel phases={phases} />
+          {isOwner && <RediscoveryNudges phases={phases} />}
+          {isOwner && <RecommendationsPanel phases={phases} />}
           <CommentsSectionWithOwn
             timelineId={timeline.id}
             initialComments={comments}
