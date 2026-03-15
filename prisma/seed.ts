@@ -9,201 +9,237 @@ async function createDb() {
   return new PrismaClient({ adapter } as ConstructorParameters<typeof PrismaClient>[0]);
 }
 
-const demoTimelines = [
+const famousTimelines = [
   {
-    email: "demo1@significanthobbies.demo",
-    name: "Alex Rivera",
-    username: "alexrivera",
-    avatarSeed: "alex",
+    email: "stevejobs@significanthobbies.demo",
+    name: "Steve Jobs",
+    username: "stevejobs",
+    avatarSeed: "steve",
     timeline: {
-      title: "A life through music and movement",
-      slug: "demo-alex",
+      title: "Steve Jobs — From calligraphy to Apple",
+      slug: "steve-jobs-journey",
       phases: [
         {
-          id: "p1",
-          label: "Childhood",
-          ageStart: 6,
-          ageEnd: 12,
+          id: "sj1",
+          label: "Childhood / Teens",
           order: 0,
           hobbies: [
-            { name: "Piano", intensity: 3 },
-            { name: "Swimming", intensity: 4 },
-            { name: "Drawing", intensity: 2 },
+            { name: "Electronics tinkering" },
+            { name: "Swimming" },
+            { name: "Reading" },
           ],
         },
         {
-          id: "p2",
-          label: "Teenager",
-          ageStart: 13,
-          ageEnd: 17,
+          id: "sj2",
+          label: "College / Early Career",
           order: 1,
           hobbies: [
-            { name: "Guitar", intensity: 5 },
-            { name: "Swimming", intensity: 3 },
-            { name: "Video games", intensity: 4 },
-            { name: "Skateboarding", intensity: 3 },
+            { name: "Calligraphy" },
+            { name: "Yoga" },
+            { name: "Meditation" },
           ],
         },
         {
-          id: "p3",
-          label: "College",
-          ageStart: 18,
-          ageEnd: 22,
+          id: "sj3",
+          label: "Peak Career (Apple era)",
           order: 2,
           hobbies: [
-            { name: "Guitar", intensity: 4 },
-            { name: "Running", intensity: 3 },
-            { name: "Video games", intensity: 3 },
-            { name: "Cooking", intensity: 2 },
-          ],
-        },
-        {
-          id: "p4",
-          label: "Early career",
-          ageStart: 23,
-          ageEnd: 28,
-          order: 3,
-          hobbies: [
-            { name: "Running", intensity: 5 },
-            { name: "Cooking", intensity: 4 },
-            { name: "Reading", intensity: 3 },
-            { name: "Piano", intensity: 2 },
-          ],
-        },
-        {
-          id: "p5",
-          label: "Now",
-          ageStart: 29,
-          ageEnd: 32,
-          order: 4,
-          hobbies: [
-            { name: "Running", intensity: 4 },
-            { name: "Cooking", intensity: 5 },
-            { name: "Reading", intensity: 4 },
-            { name: "Guitar", intensity: 3 },
-            { name: "Yoga", intensity: 3 },
+            { name: "Walking" },
+            { name: "Meditation" },
+            { name: "Reading" },
           ],
         },
       ],
     },
   },
   {
-    email: "demo2@significanthobbies.demo",
-    name: "Sam Chen",
-    username: "samchen",
-    avatarSeed: "sam",
+    email: "einstein@significanthobbies.demo",
+    name: "Albert Einstein",
+    username: "alberteinstein",
+    avatarSeed: "albert",
     timeline: {
-      title: "The curious mind's journey",
-      slug: "demo-sam",
+      title: "Einstein — Violin, sailing, and the universe",
+      slug: "einstein-journey",
       phases: [
         {
-          id: "q1",
-          label: "Early years",
-          ageStart: 7,
-          ageEnd: 11,
+          id: "ae1",
+          label: "Childhood (Germany)",
           order: 0,
           hobbies: [
-            { name: "Reading", intensity: 5 },
-            { name: "Chess", intensity: 3 },
+            { name: "Violin" },
+            { name: "Reading" },
+            { name: "Puzzles" },
           ],
         },
         {
-          id: "q2",
-          label: "School",
-          ageStart: 12,
-          ageEnd: 17,
+          id: "ae2",
+          label: "University / Patent Office",
           order: 1,
           hobbies: [
-            { name: "Reading", intensity: 5 },
-            { name: "Coding", intensity: 4 },
-            { name: "Chess", intensity: 4 },
+            { name: "Violin" },
+            { name: "Sailing" },
+            { name: "Philosophy" },
+            { name: "Hiking" },
           ],
         },
         {
-          id: "q3",
-          label: "University",
-          ageStart: 18,
-          ageEnd: 22,
+          id: "ae3",
+          label: "Princeton years",
           order: 2,
           hobbies: [
-            { name: "Coding", intensity: 5 },
-            { name: "Philosophy", intensity: 4 },
-            { name: "Hiking", intensity: 3 },
-          ],
-        },
-        {
-          id: "q4",
-          label: "Working life",
-          ageStart: 23,
-          ageEnd: 30,
-          order: 3,
-          hobbies: [
-            { name: "Coding", intensity: 4 },
-            { name: "Reading", intensity: 5 },
-            { name: "Woodworking", intensity: 3 },
-            { name: "Chess", intensity: 3 },
+            { name: "Violin" },
+            { name: "Sailing" },
+            { name: "Reading" },
           ],
         },
       ],
     },
   },
   {
-    email: "demo3@significanthobbies.demo",
-    name: "Jordan Lee",
-    username: "jordanlee",
-    avatarSeed: "jordan",
+    email: "feynman@significanthobbies.demo",
+    name: "Richard Feynman",
+    username: "richardfeynman",
+    avatarSeed: "richard",
     timeline: {
-      title: "Creative seasons",
-      slug: "demo-jordan",
+      title: "Feynman — Bongos, safecracking, and physics",
+      slug: "feynman-journey",
       phases: [
         {
-          id: "r1",
-          label: "Childhood",
-          ageStart: 5,
-          ageEnd: 12,
+          id: "rf1",
+          label: "Childhood (Far Rockaway)",
           order: 0,
           hobbies: [
-            { name: "Painting", intensity: 5 },
-            { name: "Dance", intensity: 4 },
-            { name: "Origami", intensity: 3 },
+            { name: "Electronics tinkering" },
+            { name: "Puzzles" },
+            { name: "Reading" },
           ],
         },
         {
-          id: "r2",
-          label: "Teens",
-          ageStart: 13,
-          ageEnd: 18,
+          id: "rf2",
+          label: "MIT / Los Alamos",
           order: 1,
           hobbies: [
-            { name: "Photography", intensity: 4 },
-            { name: "Writing", intensity: 5 },
-            { name: "Dance", intensity: 3 },
+            { name: "Drums" },
+            { name: "Puzzles" },
+            { name: "Lock picking" },
           ],
         },
         {
-          id: "r3",
-          label: "20s",
-          ageStart: 19,
-          ageEnd: 27,
+          id: "rf3",
+          label: "Caltech years",
           order: 2,
           hobbies: [
-            { name: "Writing", intensity: 4 },
-            { name: "Photography", intensity: 5 },
-            { name: "Ceramics", intensity: 3 },
-            { name: "Yoga", intensity: 4 },
+            { name: "Drums" },
+            { name: "Drawing" },
+            { name: "Painting" },
+            { name: "Language learning" },
+          ],
+        },
+      ],
+    },
+  },
+  {
+    email: "juliachild@significanthobbies.demo",
+    name: "Julia Child",
+    username: "juliachild",
+    avatarSeed: "julia",
+    timeline: {
+      title: "Julia Child — The ultimate late bloomer",
+      slug: "julia-child-journey",
+      phases: [
+        {
+          id: "jc1",
+          label: "Childhood / College",
+          order: 0,
+          hobbies: [
+            { name: "Basketball" },
+            { name: "Tennis" },
+            { name: "Golf" },
           ],
         },
         {
-          id: "r4",
-          label: "30s",
-          ageStart: 28,
-          ageEnd: 35,
+          id: "jc2",
+          label: "WWII / OSS (20s-30s)",
+          order: 1,
+          hobbies: [
+            { name: "Writing" },
+            { name: "Travel" },
+          ],
+        },
+        {
+          id: "jc3",
+          label: "Paris (age 36+)",
+          order: 2,
+          hobbies: [
+            { name: "Cooking" },
+            { name: "Writing" },
+            { name: "Wine tasting" },
+          ],
+        },
+        {
+          id: "jc4",
+          label: "TV career (50s-80s)",
           order: 3,
           hobbies: [
-            { name: "Painting", intensity: 5 },
-            { name: "Writing", intensity: 3 },
-            { name: "Yoga", intensity: 5 },
-            { name: "Ceramics", intensity: 4 },
+            { name: "Cooking" },
+            { name: "Gardening" },
+            { name: "Travel" },
+            { name: "Writing" },
+          ],
+        },
+      ],
+    },
+  },
+  {
+    email: "obama@significanthobbies.demo",
+    name: "Barack Obama",
+    username: "barackobama",
+    avatarSeed: "barack",
+    timeline: {
+      title: "Obama — Basketball, books, and playlists",
+      slug: "obama-journey",
+      phases: [
+        {
+          id: "bo1",
+          label: "Childhood (Hawaii)",
+          order: 0,
+          hobbies: [
+            { name: "Basketball" },
+            { name: "Reading" },
+            { name: "Bodysurfing" },
+          ],
+        },
+        {
+          id: "bo2",
+          label: "College / Community organizing",
+          order: 1,
+          hobbies: [
+            { name: "Basketball" },
+            { name: "Writing" },
+            { name: "Reading" },
+          ],
+        },
+        {
+          id: "bo3",
+          label: "Presidency",
+          order: 2,
+          hobbies: [
+            { name: "Basketball" },
+            { name: "Golf" },
+            { name: "Reading" },
+            { name: "Cooking" },
+          ],
+        },
+        {
+          id: "bo4",
+          label: "Post-presidency",
+          order: 3,
+          hobbies: [
+            { name: "Writing" },
+            { name: "Golf" },
+            { name: "Cooking" },
+            { name: "Reading" },
+            { name: "Painting" },
           ],
         },
       ],
@@ -213,24 +249,34 @@ const demoTimelines = [
 
 async function main() {
   const db = await createDb();
-  console.log("🌱 Seeding database...");
+  console.log("🌱 Seeding database with famous hobby journeys...");
 
   try {
-    for (const demo of demoTimelines) {
+    // Remove old demo timelines
+    for (const slug of ["demo-alex", "demo-sam", "demo-jordan"]) {
+      const existing = await db.timeline.findUnique({ where: { slug } });
+      if (existing) {
+        await db.timeline.delete({ where: { slug } });
+        console.log(`  🗑 Removed old demo: ${slug}`);
+      }
+    }
+
+    // Seed famous timelines
+    for (const demo of famousTimelines) {
       const user = await db.user.upsert({
         where: { email: demo.email },
-        update: { username: demo.username },
+        update: { username: demo.username, name: demo.name },
         create: {
           email: demo.email,
           name: demo.name,
           username: demo.username,
-          image: `https://api.dicebear.com/7.x/avataaars/svg?seed=${demo.avatarSeed}`,
+          image: `https://api.dicebear.com/7.x/initials/svg?seed=${demo.name}`,
         },
       });
 
       await db.timeline.upsert({
         where: { slug: demo.timeline.slug },
-        update: { phases: JSON.stringify(demo.timeline.phases) },
+        update: { phases: JSON.stringify(demo.timeline.phases), title: demo.timeline.title },
         create: {
           userId: user.id,
           title: demo.timeline.title,
