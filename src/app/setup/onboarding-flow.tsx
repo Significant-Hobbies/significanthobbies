@@ -401,7 +401,7 @@ export function OnboardingFlow() {
       <div
         className="fixed inset-0"
         style={{
-          background: "linear-gradient(135deg, #FEFDF8 0%, #FDF8EE 50%, #FEFCF3 100%)",
+          background: "linear-gradient(135deg, #FAFAFA 0%, #F5F5F4 50%, #FAFAF9 100%)",
         }}
       />
 

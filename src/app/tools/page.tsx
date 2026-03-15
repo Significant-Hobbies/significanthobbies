@@ -48,13 +48,13 @@ const BADGE_STYLES: Record<string, string> = {
 
 export default function ToolsPage() {
   return (
-    <div className="min-h-screen" style={{ background: "#FEFDF8" }}>
+    <div className="min-h-screen" style={{ background: "#FAFAFA" }}>
       {/* Hero */}
       <section
         className="relative overflow-hidden px-4 py-16 sm:py-24"
         style={{
           background:
-            "linear-gradient(160deg, #ECFDF5 0%, #FFF8EE 50%, #ECFDF5 100%)",
+            "linear-gradient(160deg, #ECFDF5 0%, #F5F5F4 50%, #ECFDF5 100%)",
         }}
       >
         <div className="relative mx-auto max-w-3xl text-center">

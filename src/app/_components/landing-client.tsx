@@ -259,8 +259,8 @@ function StatsBar() {
   return (
     <section
       ref={ref}
-      className="border-y border-amber-200/60 px-4 py-10"
-      style={{ background: "linear-gradient(135deg, #FFF8EE 0%, #FFFBF5 50%, #FFF8EE 100%)" }}
+      className="border-y border-stone-200/60 px-4 py-10"
+      style={{ background: "linear-gradient(135deg, #F5F5F4 0%, #FAFAF9 50%, #F5F5F4 100%)" }}
     >
       <div className="mx-auto max-w-4xl">
         <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
@@ -310,7 +310,7 @@ function FeatureCards() {
   ];
 
   return (
-    <section className="px-4 py-20" style={{ background: "#FEFDF8" }}>
+    <section className="px-4 py-20" style={{ background: "#FAFAFA" }}>
       <div className="mx-auto max-w-5xl">
         <div ref={ref} className="mb-12 text-center"
           style={inView ? { animation: "fadeInUp 0.6s ease-out both" } : { opacity: 0 }}>
@@ -418,7 +418,7 @@ function HowItWorks() {
   ];
 
   return (
-    <section className="px-4 py-20" style={{ background: "linear-gradient(180deg, #FFFBF5 0%, #FFF8EE 100%)" }}>
+    <section className="px-4 py-20" style={{ background: "linear-gradient(180deg, #FAFAF9 0%, #F5F5F4 100%)" }}>
       <div className="mx-auto max-w-5xl">
         <div
           ref={ref}
@@ -491,7 +491,7 @@ function CommunityGallery({ demos }: { demos: DemoTimeline[] }) {
   if (demos.length === 0) return null;
 
   return (
-    <section className="border-y border-stone-200/60 px-4 py-20" style={{ background: "#FEFDF8" }}>
+    <section className="border-y border-stone-200/60 px-4 py-20" style={{ background: "#FAFAFA" }}>
       <div className="mx-auto max-w-5xl">
         <div
           ref={ref}
@@ -599,7 +599,7 @@ function ExportCTA() {
   const { ref, inView } = useInView(0.15);
 
   return (
-    <section className="px-4 py-24" style={{ background: "linear-gradient(135deg, #FFFBF5 0%, #F0FDF4 50%, #FFFBF5 100%)" }}>
+    <section className="px-4 py-24" style={{ background: "linear-gradient(135deg, #FAFAF9 0%, #F0FDF4 50%, #FAFAF9 100%)" }}>
       <div className="mx-auto max-w-5xl">
         <div
           ref={ref}
@@ -727,7 +727,7 @@ function BlogTeaser() {
   const { ref, inView } = useInView(0.1);
 
   return (
-    <section ref={ref} className="border-t border-stone-100 px-4 py-16 bg-amber-50/40">
+    <section ref={ref} className="border-t border-stone-100 px-4 py-16 bg-stone-50">
       <div className="mx-auto max-w-5xl">
         <div
           className="mb-8 text-center"
@@ -808,7 +808,7 @@ function BlogTeaser() {
 
 function FooterStrip() {
   return (
-    <footer className="border-t border-stone-200/60 px-4 py-8" style={{ background: "#FEFDF8" }}>
+    <footer className="border-t border-stone-200/60 px-4 py-8" style={{ background: "#FAFAFA" }}>
       <div className="mx-auto flex max-w-5xl flex-col items-center justify-between gap-4 sm:flex-row">
         <div className="flex items-center gap-2">
           <span className="text-lg font-bold text-emerald-600">SH</span>
@@ -1055,7 +1055,7 @@ export function LandingClient({ demos }: LandingClientProps) {
       <BlogTeaser />
 
       {/* ── Testimonials ──────────────────────────────────────────────────────── */}
-      <section className="border-t border-stone-100 px-4 py-16" style={{ background: "#FEFDF8" }}>
+      <section className="border-t border-stone-100 px-4 py-16" style={{ background: "#FAFAFA" }}>
         <div className="mx-auto max-w-4xl">
           <h2 className="mb-8 text-center text-3xl font-bold text-stone-900">What people are saying</h2>
           <SaaSMakerTestimonials />
@@ -1063,7 +1063,7 @@ export function LandingClient({ demos }: LandingClientProps) {
       </section>
 
       {/* ── Changelog ─────────────────────────────────────────────────────────── */}
-      <section className="border-t border-stone-100 px-4 py-16 bg-amber-50/40">
+      <section className="border-t border-stone-100 px-4 py-16 bg-stone-50">
         <div className="mx-auto max-w-2xl">
           <h2 className="mb-8 text-center text-3xl font-bold text-stone-900">Changelog</h2>
           <SaaSMakerChangelog />

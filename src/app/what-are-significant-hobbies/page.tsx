@@ -116,13 +116,13 @@ export default function WhatAreSignificantHobbiesPage() {
         }}
       />
 
-      <div className="min-h-screen" style={{ background: "#FEFDF8" }}>
+      <div className="min-h-screen" style={{ background: "#FAFAFA" }}>
         {/* Hero */}
         <section
           className="relative overflow-hidden px-4 py-20 sm:py-28"
           style={{
             background:
-              "linear-gradient(160deg, #FFF8EE 0%, #ECFDF5 40%, #FFFBF5 70%, #FFF8EE 100%)",
+              "linear-gradient(160deg, #F5F5F4 0%, #ECFDF5 40%, #FAFAF9 70%, #F5F5F4 100%)",
           }}
         >
           <div className="pointer-events-none absolute inset-0">

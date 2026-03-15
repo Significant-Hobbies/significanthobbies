@@ -195,7 +195,7 @@ export default async function BlogPostPage({
   const style = categoryStyle(post.category);
 
   return (
-    <div className="min-h-screen" style={{ background: "#FEFDF8" }}>
+    <div className="min-h-screen" style={{ background: "#FAFAFA" }}>
       <JsonLd
         data={{
           "@context": "https://schema.org",
@@ -231,7 +231,7 @@ export default async function BlogPostPage({
         className="px-4 pb-12 pt-12 sm:pt-16"
         style={{
           background:
-            "linear-gradient(160deg, #FFF8EE 0%, #ECFDF5 50%, #FFFBF5 100%)",
+            "linear-gradient(160deg, #F5F5F4 0%, #ECFDF5 50%, #FAFAF9 100%)",
         }}
       >
         <div className="mx-auto max-w-3xl">
@@ -312,7 +312,7 @@ export default async function BlogPostPage({
       {/* CTA */}
       <section
         className="border-t border-stone-100 px-4 py-16"
-        style={{ background: "linear-gradient(135deg, #F0FDF4 0%, #FFFBF5 100%)" }}
+        style={{ background: "linear-gradient(135deg, #F0FDF4 0%, #FAFAF9 100%)" }}
       >
         <div className="scroll-reveal-scale mx-auto max-w-3xl text-center">
           <div className="mb-3 text-3xl">🗺️</div>
