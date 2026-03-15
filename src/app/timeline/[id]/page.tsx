@@ -160,6 +160,19 @@ export default async function TimelinePage({ params }: Props) {
             />
           )}
           <ExportButton timeline={timeline} />
+          {currentUserId && !isOwner && session?.user?.username && raw.user?.username && (
+            <Link
+              href={`/compare-journeys?a=${session.user.username}&b=${raw.user.username}`}
+            >
+              <Button
+                variant="outline"
+                size="sm"
+                className="border-stone-300 text-stone-600 hover:text-stone-900"
+              >
+                Compare with mine
+              </Button>
+            </Link>
+          )}
           {isOwner && (
             <Link href={`/timeline/${timeline.id}/edit`}>
               <Button
