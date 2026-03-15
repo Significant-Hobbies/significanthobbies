@@ -4,6 +4,7 @@ import Link from "next/link";
 import { db } from "~/server/db";
 import { Badge } from "~/components/ui/badge";
 import { HOBBY_CATEGORIES, getCategoryForHobby } from "~/lib/hobbies";
+import { getResourcesForHobby } from "~/lib/hobby-resources";
 import { authOptions } from "~/server/auth/config";
 import type { Phase } from "~/lib/types";
 
@@ -69,6 +70,8 @@ export default async function HobbyDetailPage({ params }: Props) {
     (h) => h.toLowerCase() !== hobbyName.toLowerCase(),
   );
 
+  const resources = getResourcesForHobby(hobbyName);
+
   return (
     <div className="mx-auto max-w-4xl px-4 py-12">
       {/* Guest CTA banner */}
@@ -123,6 +126,51 @@ export default async function HobbyDetailPage({ params }: Props) {
           </span>
         </div>
       </div>
+
+      {/* Resources */}
+      {resources.length > 0 && (
+        <div className="mb-8">
+          <h2 className="mb-4 text-sm font-medium uppercase tracking-wide text-stone-500">
+            Tools & resources for {hobbyName}
+          </h2>
+          <div className="space-y-3">
+            {resources.map((r, i) => (
+              <a
+                key={r.url}
+                href={r.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`group flex items-center gap-4 rounded-xl border border-stone-200 bg-white transition-all hover:border-emerald-400 hover:shadow-sm ${
+                  i === 0 ? "p-5" : "px-5 py-3"
+                }`}
+              >
+                <span className={i === 0 ? "text-3xl" : "text-xl"}>{r.icon}</span>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2">
+                    <span className={`font-semibold text-stone-800 group-hover:text-emerald-600 transition-colors ${i === 0 ? "text-base" : "text-sm"}`}>
+                      {r.name}
+                    </span>
+                    {r.type === "own" && (
+                      <span className="rounded-full bg-emerald-50 border border-emerald-200 px-2 py-0.5 text-[10px] font-medium text-emerald-700">
+                        by SignificantHobbies
+                      </span>
+                    )}
+                    {r.type === "sponsored" && (
+                      <span className="rounded-full bg-amber-50 border border-amber-200 px-2 py-0.5 text-[10px] font-medium text-amber-700">
+                        sponsored
+                      </span>
+                    )}
+                  </div>
+                  <p className={`text-stone-500 ${i === 0 ? "text-sm mt-0.5" : "text-xs"}`}>
+                    {r.description}
+                  </p>
+                </div>
+                <span className="text-stone-300 group-hover:text-emerald-500 transition-colors text-sm">↗</span>
+              </a>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Community timelines */}
       <div className="mb-12">
