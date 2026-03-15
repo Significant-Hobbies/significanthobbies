@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Badge } from "~/components/ui/badge";
 import { Lock, Globe, Link as LinkIcon, Heart } from "lucide-react";
 import type { TimelineData } from "~/lib/types";
+import { getTimelineUrl } from "~/lib/timeline-url";
 
 interface Props {
   timeline: TimelineData;
@@ -24,7 +25,7 @@ export function TimelineCard({ timeline, showVisibility = false, likeCount }: Pr
   const VisIcon = VISIBILITY_ICONS[timeline.visibility];
 
   return (
-    <Link href={`/timeline/${timeline.id}`}>
+    <Link href={getTimelineUrl(timeline)}>
       <div className="group rounded-xl border border-stone-200 bg-white p-5 transition-colors hover:border-emerald-400 hover:bg-stone-50">
         {/* Title row */}
         <div className="mb-3 flex items-start justify-between gap-2">

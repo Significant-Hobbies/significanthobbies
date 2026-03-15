@@ -9,7 +9,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   const publicTimelines = await db.timeline.findMany({
     where: { visibility: "PUBLIC" },
-    select: { id: true, updatedAt: true },
+    select: { id: true, slug: true, updatedAt: true, user: { select: { username: true } } },
   });
 
   const users = await db.user.findMany({
@@ -128,7 +128,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...hobbyPages,
     ...blogPages,
     ...publicTimelines.map((t) => ({
-      url: `${baseUrl}/timeline/${t.id}`,
+      url: t.user?.username && t.slug
+        ? `${baseUrl}/u/${t.user.username}/${t.slug}`
+        : `${baseUrl}/timeline/${t.id}`,
       lastModified: t.updatedAt,
       changeFrequency: "monthly" as const,
       priority: 0.5,

@@ -30,6 +30,19 @@ const SaveTimelineSchema = z.object({
   phases: z.array(PhaseSchema),
 });
 
+async function generateSlug(title: string | undefined | null): Promise<string> {
+  if (title) {
+    const baseSlug = title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+    if (baseSlug) {
+      const existing = await db.timeline.findUnique({ where: { slug: baseSlug } });
+      if (!existing) return baseSlug;
+      const suffixed = `${baseSlug}-${nanoid(4)}`;
+      return suffixed;
+    }
+  }
+  return nanoid(8);
+}
+
 export async function saveTimeline(data: {
   title?: string;
   phases: Phase[];
@@ -38,14 +51,19 @@ export async function saveTimeline(data: {
   if (!session?.user?.id) throw new Error("Not authenticated");
 
   const parsed = SaveTimelineSchema.parse(data);
+  const slug = await generateSlug(parsed.title);
   const timeline = await db.timeline.create({
     data: {
       userId: session.user.id,
       title: parsed.title ?? null,
       phases: JSON.stringify(parsed.phases),
+      slug,
     },
   });
   revalidatePath("/timeline");
+  if (session.user.username && slug) {
+    revalidatePath(`/u/${session.user.username}/${slug}`);
+  }
   return timeline;
 }
 
@@ -72,15 +90,26 @@ export async function updateTimeline(
     if (versions.length > 10) versions = versions.slice(-10);
   }
 
+  // Auto-generate slug if missing
+  let slug = timeline.slug;
+  if (!slug) {
+    slug = await generateSlug(parsed.title ?? timeline.title);
+  }
+
   const updated = await db.timeline.update({
     where: { id },
     data: {
       title: parsed.title ?? null,
       phases: newPhasesJson,
       versions: JSON.stringify(versions),
+      ...(slug && !timeline.slug ? { slug } : {}),
     },
   });
   revalidatePath(`/timeline/${id}`);
+  // Also revalidate the new URL if applicable
+  if (updated.slug && session.user.username) {
+    revalidatePath(`/u/${session.user.username}/${updated.slug}`);
+  }
   return updated;
 }
 
@@ -105,6 +134,9 @@ export async function setTimelineVisibility(
     data: { visibility, slug },
   });
   revalidatePath(`/timeline/${id}`);
+  if (updated.slug && session.user.username) {
+    revalidatePath(`/u/${session.user.username}/${updated.slug}`);
+  }
   return updated;
 }
 
@@ -158,6 +190,13 @@ export async function toggleLike(
 
   const count = await db.like.count({ where: { timelineId } });
   revalidatePath(`/timeline/${timelineId}`);
+  const tl = await db.timeline.findUnique({
+    where: { id: timelineId },
+    select: { slug: true, user: { select: { username: true } } },
+  });
+  if (tl?.slug && tl.user?.username) {
+    revalidatePath(`/u/${tl.user.username}/${tl.slug}`);
+  }
   return { liked: !existing, count };
 }
 
@@ -176,6 +215,13 @@ export async function addComment(timelineId: string, body: string) {
   });
 
   revalidatePath(`/timeline/${timelineId}`);
+  const tl = await db.timeline.findUnique({
+    where: { id: timelineId },
+    select: { slug: true, user: { select: { username: true } } },
+  });
+  if (tl?.slug && tl.user?.username) {
+    revalidatePath(`/u/${tl.user.username}/${tl.slug}`);
+  }
   return comment;
 }
 
@@ -189,6 +235,13 @@ export async function deleteComment(commentId: string) {
 
   await db.comment.delete({ where: { id: commentId } });
   revalidatePath(`/timeline/${comment.timelineId}`);
+  const tl = await db.timeline.findUnique({
+    where: { id: comment.timelineId },
+    select: { slug: true, user: { select: { username: true } } },
+  });
+  if (tl?.slug && tl.user?.username) {
+    revalidatePath(`/u/${tl.user.username}/${tl.slug}`);
+  }
 }
 
 const PinSchema = z.object({
@@ -212,11 +265,14 @@ export async function addPin(timelineId: string, pin: TimelinePin) {
   try { pins = JSON.parse(timeline.pins as string); } catch { /* ignore */ }
   pins.push(parsed as TimelinePin);
 
-  await db.timeline.update({
+  const updated = await db.timeline.update({
     where: { id: timelineId },
     data: { pins: JSON.stringify(pins) },
   });
   revalidatePath(`/timeline/${timelineId}`);
+  if (updated.slug && session.user.username) {
+    revalidatePath(`/u/${session.user.username}/${updated.slug}`);
+  }
 }
 
 export async function removePin(timelineId: string, pinId: string) {
@@ -230,9 +286,12 @@ export async function removePin(timelineId: string, pinId: string) {
   try { pins = JSON.parse(timeline.pins as string); } catch { /* ignore */ }
   pins = pins.filter((p) => p.id !== pinId);
 
-  await db.timeline.update({
+  const updatedTl = await db.timeline.update({
     where: { id: timelineId },
     data: { pins: JSON.stringify(pins) },
   });
   revalidatePath(`/timeline/${timelineId}`);
+  if (updatedTl.slug && session.user.username) {
+    revalidatePath(`/u/${session.user.username}/${updatedTl.slug}`);
+  }
 }

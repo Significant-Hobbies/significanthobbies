@@ -34,6 +34,7 @@ export default async function HomePage() {
   const demos = rawDemos.map((t) => ({
     id: t.id,
     title: t.title,
+    slug: t.slug,
     phases: typeof t.phases === "string" ? t.phases : JSON.stringify(t.phases),
     user: t.user ?? null,
   }));

@@ -7,6 +7,7 @@ import { Input } from "~/components/ui/input";
 import { ScrollReveal } from "~/components/scroll-reveal";
 import type { TimelineData } from "~/lib/types";
 import { HOBBY_CATEGORIES } from "~/lib/hobbies";
+import { getTimelineUrl } from "~/lib/timeline-url";
 
 // Phase strip colors cycling through warm/cool hues
 const PHASE_COLORS = [
@@ -47,7 +48,7 @@ function ExploreTimelineCard({ timeline }: { timeline: TimelineData & { likeCoun
   const username = timeline.user?.username ?? timeline.user?.name;
 
   return (
-    <Link href={`/timeline/${timeline.id}`}>
+    <Link href={getTimelineUrl(timeline)}>
       <div className="group flex h-full flex-col rounded-xl border border-stone-200 bg-white p-5 transition-all hover:border-emerald-400 hover:shadow-sm">
         {/* Phase color strip */}
         {phases.length > 0 && (

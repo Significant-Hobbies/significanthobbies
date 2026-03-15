@@ -1,4 +1,4 @@
-import { notFound, redirect } from "next/navigation";
+import { notFound } from "next/navigation";
 import Link from "next/link";
 import { getServerSession } from "next-auth";
 import { authOptions } from "~/server/auth/config";
@@ -19,27 +19,32 @@ import { ArrowLeft, Pencil, User } from "lucide-react";
 import type { Phase, TimelineData, TimelinePin, TimelineVisibility } from "~/lib/types";
 
 interface Props {
-  params: Promise<{ id: string }>;
+  params: Promise<{ username: string; slug: string }>;
 }
 
 export async function generateMetadata({ params }: Props) {
-  const { id } = await params;
-  const timeline = await db.timeline.findUnique({ where: { id } });
-  const title = timeline?.title ? `${timeline.title} — SignificantHobbies` : "Timeline — SignificantHobbies";
+  const { username, slug } = await params;
+  const timeline = await db.timeline.findUnique({
+    where: { slug },
+    include: { user: { select: { username: true } } },
+  });
+  if (!timeline || timeline.user?.username !== username) {
+    return { title: "Timeline — SignificantHobbies" };
+  }
   return {
-    title,
-    description: timeline?.title
-      ? `${timeline.title} — a hobby timeline on SignificantHobbies. See hobbies across life phases, personality insights, and more.`
-      : "A hobby timeline on SignificantHobbies — see hobbies across life phases and discover your hobby personality.",
+    title: timeline.title ? `${timeline.title} — SignificantHobbies` : "Timeline — SignificantHobbies",
+    description: timeline.title
+      ? `${timeline.title} — a hobby timeline by @${username} on SignificantHobbies.`
+      : `A hobby timeline by @${username} on SignificantHobbies.`,
   };
 }
 
-export default async function TimelinePage({ params }: Props) {
-  const { id } = await params;
+export default async function TimelineBySlugPage({ params }: Props) {
+  const { username, slug } = await params;
   const session = await getServerSession(authOptions);
 
   const raw = await db.timeline.findUnique({
-    where: { id },
+    where: { slug },
     include: {
       user: { select: { id: true, name: true, username: true, image: true } },
       likes: { select: { userId: true } },
@@ -56,12 +61,7 @@ export default async function TimelinePage({ params }: Props) {
     },
   });
 
-  if (!raw) notFound();
-
-  // Redirect to new URL format if timeline has a user with username and a slug
-  if (raw.user?.username && raw.slug) {
-    redirect(`/u/${raw.user.username}/${raw.slug}`);
-  }
+  if (!raw || raw.user?.username !== username) notFound();
 
   const isOwner = session?.user?.id === raw.userId;
   const isVisible = raw.visibility !== "PRIVATE" || isOwner;
@@ -101,7 +101,6 @@ export default async function TimelinePage({ params }: Props) {
   const isLiked = raw.likes.some((l) => l.userId === currentUserId);
   const likeCount = raw.likes.length;
 
-  // Which comments belong to the current user (drives delete button visibility)
   const ownCommentIds = new Set(
     currentUserId
       ? raw.comments.filter((c) => c.userId === currentUserId).map((c) => c.id)
@@ -115,19 +114,16 @@ export default async function TimelinePage({ params }: Props) {
     user: c.user,
   }));
 
-  const breadcrumbHref = raw.user?.username ? `/u/${raw.user.username}` : "/";
-  const breadcrumbLabel = raw.user?.username ? `@${raw.user.username}` : "Home";
-
   return (
     <div className="mx-auto max-w-6xl px-4 py-10">
       {/* Breadcrumb */}
       <div className="mb-6">
         <Link
-          href={breadcrumbHref}
+          href={`/u/${username}`}
           className="inline-flex items-center gap-1.5 text-sm text-stone-500 hover:text-stone-700 transition-colors"
         >
           <ArrowLeft className="h-3.5 w-3.5" />
-          {breadcrumbLabel}
+          @{username}
         </Link>
       </div>
 
@@ -139,11 +135,11 @@ export default async function TimelinePage({ params }: Props) {
           </h1>
           {raw.user && (
             <Link
-              href={raw.user.username ? `/u/${raw.user.username}` : "#"}
+              href={`/u/${username}`}
               className="mt-1 inline-flex items-center gap-1.5 text-sm text-stone-500 hover:text-stone-700"
             >
               <User className="h-3.5 w-3.5" />
-              {raw.user.username ? `@${raw.user.username}` : raw.user.name}
+              @{username}
             </Link>
           )}
           <div className="mt-2 flex items-center gap-2">

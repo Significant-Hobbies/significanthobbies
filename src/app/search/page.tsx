@@ -3,6 +3,7 @@ import { db } from "~/server/db";
 import { HOBBY_CATEGORIES } from "~/lib/hobbies";
 import type { Phase, TimelineVisibility } from "~/lib/types";
 import { SearchPageClient } from "./search-client";
+import { getTimelineUrl } from "~/lib/timeline-url";
 
 export const metadata = { title: "Search — SignificantHobbies" };
 
@@ -117,7 +118,7 @@ export default async function SearchPage({ searchParams }: Props) {
                 ).size;
                 const username = t.user?.username ?? t.user?.name;
                 return (
-                  <Link key={t.id} href={`/timeline/${t.id}`}>
+                  <Link key={t.id} href={getTimelineUrl(t)}>
                     <div className="group flex items-center justify-between rounded-xl border border-stone-200 bg-white px-4 py-3.5 transition-all hover:border-emerald-400 hover:bg-stone-50">
                       <div>
                         <p className="font-medium text-stone-800 group-hover:text-emerald-600 transition-colors">

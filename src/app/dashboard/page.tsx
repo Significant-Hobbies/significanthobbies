@@ -10,6 +10,7 @@ import { RecommendationsPanel } from "~/components/timeline-view/recommendations
 import { Button } from "~/components/ui/button";
 import type { Phase, TimelineVisibility } from "~/lib/types";
 import { Plus, Clock } from "lucide-react";
+import { getTimelineUrl } from "~/lib/timeline-url";
 
 export const metadata = {
   title: "Dashboard — SignificantHobbies",
@@ -42,6 +43,13 @@ export default async function DashboardPage() {
     orderBy: { updatedAt: "desc" },
   });
 
+  const currentUser = {
+    id: session.user.id,
+    name: session.user.name ?? null,
+    username: session.user.username ?? null,
+    image: session.user.image ?? null,
+  };
+
   const timelines = rawTimelines.map((raw) => {
     let phases: Phase[] = [];
     try {
@@ -57,6 +65,7 @@ export default async function DashboardPage() {
       phases,
       createdAt: raw.createdAt,
       updatedAt: raw.updatedAt,
+      user: currentUser,
     };
   });
 
@@ -148,7 +157,7 @@ export default async function DashboardPage() {
                     </span>
                     {staleness.isStale && (
                       <Link
-                        href={`/timeline/${timeline.id}`}
+                        href={getTimelineUrl(timeline)}
                         className="ml-auto text-xs text-amber-600 hover:text-amber-700 font-medium"
                       >
                         Time to update?

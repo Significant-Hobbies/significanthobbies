@@ -9,6 +9,7 @@ import { blogPosts } from "~/lib/blog-posts";
 import { authOptions } from "~/server/auth/config";
 import type { Phase } from "~/lib/types";
 import { JsonLd } from "~/components/json-ld";
+import { getTimelineUrl } from "~/lib/timeline-url";
 
 interface Props {
   params: Promise<{ hobby: string }>;
@@ -248,7 +249,7 @@ export default async function HobbyDetailPage({ params }: Props) {
                 phases.flatMap((p) => p.hobbies.map((h) => h.name)),
               ).size;
               return (
-                <Link key={t.id} href={`/timeline/${t.id}`}>
+                <Link key={t.id} href={getTimelineUrl({ id: t.id, slug: t.slug, user: t.user })}>
                   <div className="group rounded-xl border border-stone-200 bg-white p-4 transition-colors hover:border-emerald-400">
                     <h3 className="font-medium text-stone-800 group-hover:text-emerald-600 transition-colors">
                       {t.title ?? "Hobby Timeline"}

@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import { Button } from "~/components/ui/button";
 import type { Phase } from "~/lib/types";
 import { blogPosts } from "~/lib/blog-posts";
+import { getTimelineUrl } from "~/lib/timeline-url";
 import { SaaSMakerTestimonials, SaaSMakerChangelog } from "~/components/saasmaker-feedback";
 
 /* ─── Types ──────────────────────────────────────────────────────────────────── */
@@ -12,6 +13,7 @@ import { SaaSMakerTestimonials, SaaSMakerChangelog } from "~/components/saasmake
 type DemoTimeline = {
   id: string;
   title: string | null;
+  slug: string | null;
   phases: string; // raw JSON string from DB
   user: { name: string | null; username: string | null } | null;
 };
@@ -519,7 +521,7 @@ function CommunityGallery({ demos }: { demos: DemoTimeline[] }) {
             const allHobbies = phases.flatMap((p) => p.hobbies.map((h) => h.name)).slice(0, 8);
 
             return (
-              <Link key={t.id} href={`/timeline/${t.id}`}>
+              <Link key={t.id} href={getTimelineUrl(t)}>
                 <div
                   className="group relative overflow-hidden rounded-2xl border border-stone-200 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_8px_32px_rgba(0,0,0,0.08)]"
                   style={inView ? { animation: `cardReveal 0.6s ${idx * 0.15}s ease-out both`, borderLeftWidth: 4, borderLeftColor: borderColor } : { opacity: 0, borderLeftWidth: 4, borderLeftColor: borderColor }}
