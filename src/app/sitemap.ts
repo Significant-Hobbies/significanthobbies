@@ -84,6 +84,36 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
     ...categoryPages,
     {
+      url: `${baseUrl}/hobbies-for-adults`,
+      lastModified: now,
+      changeFrequency: "monthly",
+      priority: 0.8,
+    },
+    {
+      url: `${baseUrl}/hobbies-for-mental-health`,
+      lastModified: now,
+      changeFrequency: "monthly",
+      priority: 0.8,
+    },
+    {
+      url: `${baseUrl}/hobbies-for-resume`,
+      lastModified: now,
+      changeFrequency: "monthly",
+      priority: 0.8,
+    },
+    {
+      url: `${baseUrl}/hobbies-to-try`,
+      lastModified: now,
+      changeFrequency: "monthly",
+      priority: 0.8,
+    },
+    {
+      url: `${baseUrl}/cheap-hobbies`,
+      lastModified: now,
+      changeFrequency: "monthly",
+      priority: 0.8,
+    },
+    {
       url: `${baseUrl}/compare`,
       lastModified: now,
       changeFrequency: "weekly",
