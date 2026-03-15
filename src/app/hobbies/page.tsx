@@ -21,6 +21,20 @@ const CATEGORY_BORDER_COLORS = [
   "border-l-rose-500",
 ];
 
+// Full-border colors for category card grid
+const CATEGORY_CARD_BORDER_COLORS = [
+  "border-emerald-400",
+  "border-blue-400",
+  "border-purple-400",
+  "border-orange-400",
+  "border-pink-400",
+  "border-teal-400",
+  "border-amber-400",
+  "border-violet-400",
+  "border-sky-400",
+  "border-rose-400",
+];
+
 export default function HobbiesPage() {
   const totalCategories = HOBBY_CATEGORIES.length;
   const totalHobbies = HOBBY_CATEGORIES.reduce((sum, c) => sum + c.hobbies.length, 0);
@@ -42,9 +56,36 @@ export default function HobbiesPage() {
         </p>
       </div>
 
+      {/* Browse by category */}
+      <div className="scroll-reveal mb-10">
+        <h2 className="mb-4 text-sm font-medium uppercase tracking-wide text-stone-500">
+          Browse by category
+        </h2>
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-5">
+          {HOBBY_CATEGORIES.map((category, idx) => {
+            const catSlug = category.name.toLowerCase().replace(/\s+/g, "-");
+            const cardBorderColor = CATEGORY_CARD_BORDER_COLORS[idx % CATEGORY_CARD_BORDER_COLORS.length];
+            return (
+              <Link key={category.name} href={`/hobbies/category/${catSlug}`}>
+                <div className={`group rounded-xl border-2 ${cardBorderColor} bg-white p-3 text-center transition-all hover:shadow-sm cursor-pointer`}>
+                  <span className="text-2xl block mb-1">{category.emoji}</span>
+                  <span className="text-xs font-medium text-stone-700 group-hover:text-emerald-600 transition-colors">
+                    {category.name}
+                  </span>
+                  <span className="block text-[10px] text-stone-400 mt-0.5">
+                    {category.hobbies.length} hobbies
+                  </span>
+                </div>
+              </Link>
+            );
+          })}
+        </div>
+      </div>
+
       <div className="space-y-10">
         {HOBBY_CATEGORIES.map((category, idx) => {
           const borderColor = CATEGORY_BORDER_COLORS[idx % CATEGORY_BORDER_COLORS.length];
+          const catSlug = category.name.toLowerCase().replace(/\s+/g, "-");
           return (
             <div
               key={category.name}
@@ -52,9 +93,11 @@ export default function HobbiesPage() {
             >
               <div className="mb-4 flex items-center gap-2">
                 <span className="text-2xl">{category.emoji}</span>
-                <h2 className="text-xl font-semibold text-stone-800">
-                  {category.name}
-                </h2>
+                <Link href={`/hobbies/category/${catSlug}`}>
+                  <h2 className="text-xl font-semibold text-stone-800 hover:text-emerald-600 transition-colors">
+                    {category.name}
+                  </h2>
+                </Link>
                 <Badge
                   variant="outline"
                   className="border-stone-200 text-xs text-stone-400"
