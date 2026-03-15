@@ -9,6 +9,19 @@ interface Props {
 
 const INTENSITY_LABELS = ["", "Trying", "Casual", "Regular", "Passionate", "Core"];
 
+const PHASE_COLORS = [
+  { border: "#10b981", bg: "rgba(16,185,129,0.06)" },   // emerald
+  { border: "#3b82f6", bg: "rgba(59,130,246,0.06)" },   // blue
+  { border: "#8b5cf6", bg: "rgba(139,92,246,0.06)" },   // violet
+  { border: "#f59e0b", bg: "rgba(245,158,11,0.06)" },   // amber
+  { border: "#ec4899", bg: "rgba(236,72,153,0.06)" },   // pink
+  { border: "#14b8a6", bg: "rgba(20,184,166,0.06)" },   // teal
+  { border: "#f97316", bg: "rgba(249,115,22,0.06)" },   // orange
+  { border: "#6366f1", bg: "rgba(99,102,241,0.06)" },   // indigo
+  { border: "#06b6d4", bg: "rgba(6,182,212,0.06)" },    // cyan
+  { border: "#e11d48", bg: "rgba(225,29,72,0.06)" },    // rose
+];
+
 export function PhaseSwimlane({ phases, pins = [] }: Props) {
   if (!phases.length) return null;
 
@@ -19,15 +32,14 @@ export function PhaseSwimlane({ phases, pins = [] }: Props) {
         style={{ gridTemplateColumns: `repeat(${phases.length}, minmax(160px, 1fr))` }}
       >
         {phases.map((phase, index) => {
-          const hue = index * (120 / Math.max(phases.length - 1, 1)) + 160;
-          const borderColor = `hsl(${hue}, 60%, 45%)`;
+          const color = PHASE_COLORS[index % PHASE_COLORS.length]!;
 
           return (
             <div key={phase.id} className="bg-white flex flex-col">
               {/* Phase header with colored top border */}
               <div
                 className="border-b border-stone-100 px-3 py-3 bg-stone-50"
-                style={{ borderTop: `3px solid ${borderColor}` }}
+                style={{ borderTop: `3px solid ${color.border}`, background: color.bg }}
               >
                 <h3 className="font-semibold text-stone-800 text-sm">
                   {phase.label}
