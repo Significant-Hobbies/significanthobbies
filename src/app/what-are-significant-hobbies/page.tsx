@@ -115,6 +115,44 @@ export default function WhatAreSignificantHobbiesPage() {
           publisher: { "@type": "Organization", name: "SignificantHobbies" },
         }}
       />
+      <JsonLd data={{
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "What are significant hobbies?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Significant hobbies are interests that shaped who you became — not just things you do, but pursuits that connect to your identity, relationships, and personal growth across life phases."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "How do I find my hobby personality?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Build a hobby timeline mapping your interests across life phases (childhood, teens, college, career, now). SignificantHobbies analyzes your pattern and assigns one of 8 archetypes like Renaissance Explorer, Creative Soul, or Action Hero."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "How many hobbies should I have?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Research suggests a balanced 'hobby stack' of 4 types: one creative (Make), one physical (Move), one intellectual (Think), and one social (Connect). You don't need dozens — 3-5 active hobbies is healthy."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Is it too late to start a new hobby?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Never. Julia Child didn't cook until 36. Vera Wang started fashion at 40. Grandma Moses began painting at 78. Age gives you advantages: patience, resources, and knowing what you actually enjoy."
+            }
+          }
+        ]
+      }} />
 
       <div className="min-h-screen" style={{ background: "#FAFAFA" }}>
         {/* Hero */}

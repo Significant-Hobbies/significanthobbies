@@ -110,6 +110,36 @@ export default function HobbiesForMentalHealthPage() {
           publisher: { "@type": "Organization", name: "SignificantHobbies" },
         }}
       />
+      <JsonLd data={{
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "What hobbies help with anxiety?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Four hobbies with strong evidence for reducing anxiety: Yoga (activates the parasympathetic nervous system and lowers cortisol), Gardening (grounding through sensory attention and soil contact), Journaling or writing (translates emotions into language, dampening the amygdala's stress response), and Walking or hiking (rhythmic movement in nature resets the nervous system)."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Can hobbies improve mental health?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes. Research consistently shows that engaged leisure activity improves mental health through three main mechanisms: flow state (complete absorption that quiets rumination), social connection (belonging and shared purpose), and sense of accomplishment (tangible progress that counters feelings of stagnation). Even 2-3 hours of hobby engagement per week produces measurable improvements in wellbeing."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "What is the best hobby for depression?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Three hobbies with particularly strong evidence for depression: Running (aerobic exercise releases endorphins and endocannabinoids, producing genuine mood elevation — comparable to antidepressants in some studies), Gardening (contact with soil bacteria linked to serotonin production, plus the therapeutic effect of watching something grow), and Cooking (mindful, sensory engagement that produces a tangible, shareable result — rare in modern life)."
+            }
+          }
+        ]
+      }} />
 
       <div className="mb-6">
         <Link href="/hobbies" className="text-sm text-stone-500 hover:text-stone-700">

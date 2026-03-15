@@ -120,6 +120,36 @@ export default function HobbiesForResumePage() {
           publisher: { "@type": "Organization", name: "SignificantHobbies" },
         }}
       />
+      <JsonLd data={{
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "What hobbies look good on a resume?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Five hobbies that consistently impress employers: Volunteering (signals civic commitment and initiative), Chess (signals strategic thinking and patience), Marathon running or endurance sports (signals discipline and goal-setting), Open-source coding or creative portfolio work (directly demonstrates skills), and Teaching or coaching (signals communication and leadership). The key is choosing hobbies that signal traits relevant to the role."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Should I put hobbies on my resume?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes, when done intentionally. A hobbies section humanizes you beyond your work history, signals personality and culture fit, and can demonstrate transferable skills. It's especially valuable for early-career candidates, career changers, and roles where personality matters (sales, management, creative fields). Keep it to 2-4 hobbies and choose ones that signal something useful about you."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "What hobbies show leadership?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Three hobby categories that directly signal leadership: Team sports (especially captain or organizer roles — shows you perform under pressure and support teammates), Volunteering (especially coordinator or lead positions — this is genuine management experience), and Dungeon Mastering or running tabletop RPGs (requires sustained creative leadership, conflict resolution, and improvisation for a group — underrated on a resume)."
+            }
+          }
+        ]
+      }} />
 
       <div className="mb-6">
         <Link href="/hobbies" className="text-sm text-stone-500 hover:text-stone-700">

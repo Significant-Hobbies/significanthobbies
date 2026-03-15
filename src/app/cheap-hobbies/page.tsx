@@ -189,6 +189,36 @@ export default function CheapHobbiesPage() {
           publisher: { "@type": "Organization", name: "SignificantHobbies" },
         }}
       />
+      <JsonLd data={{
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "What hobbies are completely free?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Five truly free hobbies: Running (shoes you already own, road outside your door), Writing (any text editor or notebook), Reading (library card unlocks unlimited books for free), Hiking (most trails on public land are free), and Drawing (any pen and any paper is all you need)."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "What hobbies can I start with no equipment?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Five hobbies that need zero equipment to start: Meditation (sit anywhere, close your eyes, breathe — free apps like Insight Timer guide you), Running (walk out your door), Journaling (use your phone's notes app), Bird watching (the free Merlin app identifies birds by sound), and Stargazing (look up — free apps like SkySafari show you what you're seeing)."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "What's the cheapest hobby to start?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "The three cheapest hobbies to start are: Walking or running (completely free — you already own shoes), Journaling (a $2 notebook is enough to start a practice that can last a lifetime), and Stargazing (free with any dark sky and a free astronomy app on your phone — a telescope is optional and not needed to begin)."
+            }
+          }
+        ]
+      }} />
 
       <div className="mb-6">
         <Link href="/hobbies" className="text-sm text-stone-500 hover:text-stone-700">

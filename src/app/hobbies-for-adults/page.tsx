@@ -133,6 +133,36 @@ export default function HobbiesForAdultsPage() {
           publisher: { "@type": "Organization", name: "SignificantHobbies" },
         }}
       />
+      <JsonLd data={{
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "What are good hobbies for adults?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "The best hobbies for adults span multiple dimensions: Photography (creative, accessible), Running (physical, low-cost), Reading (intellectual, high-return), Volunteering (social, purposeful), and Cooking (mindful, practical). A balanced hobby stack covers creative, physical, intellectual, and social pursuits."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "How do I find a hobby as an adult?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Start by taking a hobby personality quiz to identify your archetype. Then try the opposite of what you normally do — if you work with your mind, try something physical; if you work alone, try a social hobby. Give each hobby at least 4 sessions before deciding it's not for you."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "What hobbies can I do at home?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Five great at-home hobbies: Writing (journaling, fiction, or essays — just a notebook or laptop), Drawing (any pen and paper to start), Cooking (build a real skill while eating better), Yoga (a mat and free YouTube is enough), and Music (learn an instrument or produce music digitally)."
+            }
+          }
+        ]
+      }} />
 
       <div className="mb-6">
         <Link href="/hobbies" className="text-sm text-stone-500 hover:text-stone-700">
