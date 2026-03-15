@@ -835,8 +835,8 @@ export function LandingClient({ demos }: LandingClientProps) {
       <section
         className="relative flex min-h-[600px] flex-col items-center justify-center overflow-hidden px-4 py-24 lg:min-h-screen"
       >
-        {/* Animated gradient orbs */}
-        <div className="pointer-events-none absolute inset-0">
+        {/* Decorative elements — rendered with content-visibility for performance */}
+        <div className="pointer-events-none absolute inset-0" style={{ contentVisibility: "auto" }}>
           <div
             className="animate-orb-float absolute rounded-full"
             style={{
@@ -864,16 +864,6 @@ export function LandingClient({ demos }: LandingClientProps) {
             }}
           />
         </div>
-
-        {/* Grain texture overlay */}
-        <div
-          className="pointer-events-none absolute inset-0 opacity-[0.025]"
-          style={{
-            backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")`,
-            backgroundRepeat: "repeat",
-            backgroundSize: "128px",
-          }}
-        />
 
         {/* Floating hobby emojis — hidden on xs, fewer on sm */}
         <div className="pointer-events-none absolute inset-0 hidden sm:block">
@@ -926,15 +916,12 @@ export function LandingClient({ demos }: LandingClientProps) {
 
           {/* Headline */}
           <h1 className="mb-6 text-4xl font-bold leading-tight tracking-tight text-stone-900 sm:text-5xl md:text-6xl lg:text-7xl">
-            <span
-              className="block"
-              style={{ animation: "fadeInUp 0.6s 0.1s ease-out both", opacity: 0 }}
-            >
+            <span className="block">
               Map your hobby journey,
             </span>
             <span
               className="relative mt-1 block italic text-emerald-600"
-              style={{ animation: "fadeInUp 0.6s 0.25s ease-out both", opacity: 0 }}
+              style={{ animation: "fadeInUp 0.4s 0.1s ease-out both", opacity: 0 }}
             >
               rediscover what shaped you
               {/* Wavy underline decoration */}
