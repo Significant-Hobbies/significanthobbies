@@ -34,8 +34,8 @@ export function InsightsPanel({ phases }: Props) {
     <div className="rounded-xl border border-stone-200 bg-white p-5 space-y-5">
       <h2 className="text-lg font-semibold text-stone-800">Insights</h2>
 
-      {/* Stats row — 4 columns */}
-      <div className="grid grid-cols-4 gap-3">
+      {/* Stats row */}
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
         <div
           className="rounded-lg p-3 text-center"
           style={{

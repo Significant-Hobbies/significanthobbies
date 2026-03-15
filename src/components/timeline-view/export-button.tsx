@@ -66,7 +66,7 @@ export function ExportButton({ timeline }: Props) {
 
   return (
     <>
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-1.5 flex-wrap">
         <Button
           onClick={handleExport}
           disabled={isExporting}
@@ -78,7 +78,8 @@ export function ExportButton({ timeline }: Props) {
           ) : (
             <Download className="mr-2 h-4 w-4" />
           )}
-          Export PNG
+          <span className="hidden sm:inline">Export PNG</span>
+          <span className="sm:hidden">PNG</span>
         </Button>
 
         <Button
@@ -88,7 +89,8 @@ export function ExportButton({ timeline }: Props) {
           className="border-stone-300 text-stone-600 hover:text-stone-900"
         >
           <Link2 className="mr-1.5 h-4 w-4" />
-          Copy link
+          <span className="hidden sm:inline">Copy link</span>
+          <span className="sm:hidden">Link</span>
         </Button>
 
         <Button
