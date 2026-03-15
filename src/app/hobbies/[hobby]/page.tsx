@@ -5,6 +5,7 @@ import { db } from "~/server/db";
 import { Badge } from "~/components/ui/badge";
 import { HOBBY_CATEGORIES, getCategoryForHobby } from "~/lib/hobbies";
 import { getResourcesForHobby } from "~/lib/hobby-resources";
+import { blogPosts } from "~/lib/blog-posts";
 import { authOptions } from "~/server/auth/config";
 import type { Phase } from "~/lib/types";
 import { JsonLd } from "~/components/json-ld";
@@ -75,6 +76,15 @@ export default async function HobbyDetailPage({ params }: Props) {
   );
 
   const resources = getResourcesForHobby(hobbyName);
+
+  const relatedPosts = blogPosts.filter((post) => {
+    const search = hobbyName.toLowerCase();
+    return post.title.toLowerCase().includes(search) ||
+           post.excerpt.toLowerCase().includes(search) ||
+           post.content.some((block) =>
+             block.type === "paragraph" && block.text.toLowerCase().includes(search)
+           );
+  }).slice(0, 2);
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-12">
@@ -191,6 +201,32 @@ export default async function HobbyDetailPage({ params }: Props) {
                 </div>
                 <span className="text-stone-300 group-hover:text-emerald-500 transition-colors text-sm">↗</span>
               </a>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Related articles */}
+      {relatedPosts.length > 0 && (
+        <div className="mb-8">
+          <h2 className="mb-4 text-sm font-medium uppercase tracking-wide text-stone-500">
+            Related articles
+          </h2>
+          <div className="space-y-3">
+            {relatedPosts.map((post) => (
+              <Link key={post.slug} href={`/blog/${post.slug}`}>
+                <div className="group rounded-xl border border-stone-200 bg-white p-4 transition-colors hover:border-emerald-400">
+                  <div className="flex items-center gap-3">
+                    <span className="text-2xl">{post.emoji}</span>
+                    <div>
+                      <h3 className="font-medium text-stone-800 group-hover:text-emerald-600 transition-colors">
+                        {post.title}
+                      </h3>
+                      <p className="text-xs text-stone-500 mt-0.5">{post.readTime} min read</p>
+                    </div>
+                  </div>
+                </div>
+              </Link>
             ))}
           </div>
         </div>

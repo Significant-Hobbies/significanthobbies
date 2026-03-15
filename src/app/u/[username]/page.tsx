@@ -270,13 +270,14 @@ export default async function ProfilePage({ params }: Props) {
                   ? (CATEGORY_BADGE_COLORS[cat.name] ?? "border-stone-200 bg-stone-50 text-stone-600")
                   : "border-stone-200 bg-stone-50 text-stone-600";
                 return (
-                  <span
+                  <Link
                     key={hobbyName}
-                    className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-medium ${colorClass}`}
+                    href={`/hobbies/${encodeURIComponent(hobbyName.toLowerCase().replace(/\s+/g, "-"))}`}
+                    className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-medium transition-colors hover:ring-1 hover:ring-emerald-300 ${colorClass}`}
                   >
                     {cat && <span>{cat.emoji}</span>}
                     {hobbyName}
-                  </span>
+                  </Link>
                 );
               })}
             </div>

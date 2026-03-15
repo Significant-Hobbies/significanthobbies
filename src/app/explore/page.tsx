@@ -77,14 +77,15 @@ export default async function ExplorePage() {
           </p>
           <div className="flex flex-wrap gap-2">
             {trendingHobbies.map(({ name, count, emoji }) => (
-              <span
+              <Link
                 key={name}
-                className="inline-flex items-center gap-1 rounded-full border border-stone-200 bg-stone-50 px-3 py-1 text-xs text-stone-600"
+                href={`/hobbies/${encodeURIComponent(name.toLowerCase().replace(/\s+/g, "-"))}`}
+                className="inline-flex items-center gap-1 rounded-full border border-stone-200 bg-stone-50 px-3 py-1 text-xs text-stone-600 hover:border-emerald-400 hover:text-emerald-600 transition-colors"
               >
                 <span>{emoji}</span>
                 <span>{name}</span>
                 <span className="text-stone-400">({count})</span>
-              </span>
+              </Link>
             ))}
           </div>
         </div>
