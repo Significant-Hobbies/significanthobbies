@@ -8,7 +8,7 @@ import { Providers } from "~/components/providers";
 import { Nav } from "~/components/nav";
 import { JsonLd } from "~/components/json-ld";
 
-const geist = Geist({ subsets: ["latin"] });
+const geist = Geist({ subsets: ["latin"], display: "swap" });
 
 export const metadata: Metadata = {
   title: {
