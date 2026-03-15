@@ -122,6 +122,15 @@ export default function HobbiesPage() {
           );
         })}
       </div>
+
+      {/* Famous Hobby Journeys link */}
+      <div className="mt-12 rounded-xl border border-stone-200 bg-emerald-50 p-6 text-center">
+        <h2 className="text-lg font-bold text-stone-900 mb-2">Famous Hobby Journeys</h2>
+        <p className="text-sm text-stone-600 mb-4">See how remarkable people's hobbies shaped who they became.</p>
+        <Link href="/journeys" className="text-sm font-semibold text-emerald-600 hover:text-emerald-700">
+          Explore journeys →
+        </Link>
+      </div>
     </div>
   );
 }
