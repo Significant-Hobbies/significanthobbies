@@ -245,6 +245,269 @@ const famousTimelines = [
       ],
     },
   },
+  {
+    email: "billgates@significanthobbies.demo",
+    name: "Bill Gates",
+    username: "billgates",
+    avatarSeed: "Bill Gates",
+    timeline: {
+      title: "Bill Gates — From encyclopedias to Think Weeks",
+      slug: "bill-gates-journey",
+      phases: [
+        {
+          id: "bg1",
+          label: "Childhood",
+          order: 0,
+          hobbies: [
+            { name: "Reading" },
+            { name: "Chess" },
+            { name: "Math" },
+            { name: "Strategy board games" },
+          ],
+        },
+        {
+          id: "bg2",
+          label: "Teens / Early Career",
+          order: 1,
+          hobbies: [
+            { name: "Programming" },
+            { name: "Deep reading" },
+            { name: "Computer tinkering" },
+          ],
+        },
+        {
+          id: "bg3",
+          label: "Career Peak",
+          order: 2,
+          hobbies: [
+            { name: "Think Weeks (solo reading retreats)" },
+            { name: "Bridge" },
+            { name: "Reading (a book a week)" },
+          ],
+        },
+        {
+          id: "bg4",
+          label: "Later Life",
+          order: 3,
+          hobbies: [
+            { name: "Tennis" },
+            { name: "Settlers of Catan" },
+            { name: "Reading nonfiction" },
+            { name: "Philanthropic travel" },
+          ],
+        },
+      ],
+    },
+  },
+  {
+    email: "arnoldschwarzenegger@significanthobbies.demo",
+    name: "Arnold Schwarzenegger",
+    username: "arnoldschwarzenegger",
+    avatarSeed: "Arnold Schwarzenegger",
+    timeline: {
+      title: "Arnold Schwarzenegger — Chess, tanks, and iron",
+      slug: "arnold-schwarzenegger-journey",
+      phases: [
+        {
+          id: "as1",
+          label: "Childhood",
+          order: 0,
+          hobbies: [
+            { name: "Chess" },
+            { name: "Physical fitness" },
+          ],
+        },
+        {
+          id: "as2",
+          label: "Teens / Military",
+          order: 1,
+          hobbies: [
+            { name: "Bodybuilding" },
+            { name: "Tank operation" },
+            { name: "Weightlifting" },
+          ],
+        },
+        {
+          id: "as3",
+          label: "Hollywood Career",
+          order: 2,
+          hobbies: [
+            { name: "Chess" },
+            { name: "Horseback riding" },
+            { name: "Scuba diving" },
+            { name: "Reading biographies" },
+          ],
+        },
+        {
+          id: "as4",
+          label: "Later Life",
+          order: 3,
+          hobbies: [
+            { name: "Chess" },
+            { name: "Reading" },
+            { name: "Classical music" },
+          ],
+        },
+      ],
+    },
+  },
+  {
+    email: "leonardodavinci@significanthobbies.demo",
+    name: "Leonardo da Vinci",
+    username: "leonardodavinci",
+    avatarSeed: "Leonardo da Vinci",
+    timeline: {
+      title: "Leonardo da Vinci — The original polymath",
+      slug: "leonardo-da-vinci-journey",
+      phases: [
+        {
+          id: "ldv1",
+          label: "Childhood / Youth",
+          order: 0,
+          hobbies: [
+            { name: "Nature observation" },
+            { name: "Drawing" },
+            { name: "Painting apprenticeship" },
+          ],
+        },
+        {
+          id: "ldv2",
+          label: "Young Adult (Milan)",
+          order: 1,
+          hobbies: [
+            { name: "Music (lyre)" },
+            { name: "Singing" },
+            { name: "Anatomy dissection" },
+          ],
+        },
+        {
+          id: "ldv3",
+          label: "Career",
+          order: 2,
+          hobbies: [
+            { name: "Invention" },
+            { name: "Anatomy (30+ dissections)" },
+            { name: "Notebook keeping" },
+            { name: "Cooking and kitchen gadgets" },
+          ],
+        },
+        {
+          id: "ldv4",
+          label: "Later Life",
+          order: 3,
+          hobbies: [
+            { name: "Architecture" },
+            { name: "Mathematics" },
+            { name: "Astronomy" },
+            { name: "Botany" },
+          ],
+        },
+      ],
+    },
+  },
+  {
+    email: "beyonce@significanthobbies.demo",
+    name: "Beyoncé",
+    username: "beyonce",
+    avatarSeed: "Beyonce",
+    timeline: {
+      title: "Beyoncé — From talent shows to beekeeping",
+      slug: "beyonce-journey",
+      phases: [
+        {
+          id: "bey1",
+          label: "Childhood",
+          order: 0,
+          hobbies: [
+            { name: "Dance (from age 7)" },
+            { name: "Talent shows (35 consecutive wins)" },
+            { name: "Opera voice lessons" },
+          ],
+        },
+        {
+          id: "bey2",
+          label: "Teens",
+          order: 1,
+          hobbies: [
+            { name: "Running while singing (stamina training)" },
+            { name: "Obsessive repetition practice" },
+          ],
+        },
+        {
+          id: "bey3",
+          label: "Career Peak",
+          order: 2,
+          hobbies: [
+            { name: "Swimming" },
+            { name: "Horror movies" },
+            { name: "Nintendo video games" },
+            { name: "Italian cooking" },
+          ],
+        },
+        {
+          id: "bey4",
+          label: "Later Life",
+          order: 3,
+          hobbies: [
+            { name: "Beekeeping (80,000 bees)" },
+            { name: "Cooking" },
+            { name: "Family" },
+          ],
+        },
+      ],
+    },
+  },
+  {
+    email: "harukimurakami@significanthobbies.demo",
+    name: "Haruki Murakami",
+    username: "harukimurakami",
+    avatarSeed: "Haruki Murakami",
+    timeline: {
+      title: "Haruki Murakami — Jazz bars, vinyl, and marathons",
+      slug: "haruki-murakami-journey",
+      phases: [
+        {
+          id: "hm1",
+          label: "Teens",
+          order: 0,
+          hobbies: [
+            { name: "Jazz (Art Blakey concert at 15)" },
+            { name: "Vinyl record collecting" },
+          ],
+        },
+        {
+          id: "hm2",
+          label: "Young Adult",
+          order: 1,
+          hobbies: [
+            { name: "Running a jazz bar (Peter Cat)" },
+            { name: "Vinyl collecting (10,000+ records)" },
+          ],
+        },
+        {
+          id: "hm3",
+          label: "Career (Novelist)",
+          order: 2,
+          hobbies: [
+            { name: "Marathon running (started 1982)" },
+            { name: "Reading (2 hours daily)" },
+            { name: "Ultramarathon running" },
+          ],
+        },
+        {
+          id: "hm4",
+          label: "Later Life",
+          order: 3,
+          hobbies: [
+            { name: "Running" },
+            { name: "Reading" },
+            { name: "Vinyl collecting" },
+            { name: "Radio hosting" },
+          ],
+        },
+      ],
+    },
+  },
 ];
 
 async function main() {
