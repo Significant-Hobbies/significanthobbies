@@ -38,7 +38,23 @@
       "Bash(pkill -f \"next dev\" 2>/dev/null || true)",
       "Bash(rtk gain 2>&1)",
       "Bash(rtk gain --history 2>&1)",
-      "Bash(which rtk && rtk --version 2>&1)"
+      "Bash(which rtk && rtk --version 2>&1)",
+      "WebFetch(domain:www.reddit.com)",
+      "WebFetch(domain:old.reddit.com)",
+      "WebSearch",
+      "WebFetch(domain:webcache.googleusercontent.com)",
+      "WebFetch(domain:web.archive.org)",
+      "WebFetch(domain:teddit.net)",
+      "WebFetch(domain:libreddit.kavin.rocks)",
+      "Bash(npx tsc:*)",
+      "WebFetch(domain:www.blogs.significanthobbies.com)",
+      "WebFetch(domain:sometimes-homemade.com)",
+      "WebFetch(domain:hobbystack.net)",
+      "WebFetch(domain:www.allpastimes.com)",
+      "WebFetch(domain:www.burlapandblue.com)",
+      "WebFetch(domain:significanthobbies.com)",
+      "Bash(sed:*)",
+      "Bash(DATABASE_URL=\"libsql://significanthobbies-sarthak927.aws-ap-south-1.turso.io\" TURSO_AUTH_TOKEN=\"eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3NzIzODY3NjAsImlkIjoiMDE5Y2FhNzgtN2EwMS03NGU0LTg4ZDUtOTJiMjJjYWI4M2Y0IiwicmlkIjoiZTVjZTlhZDYtOWEyNy00MzU4LWJmNGEtM2Y1ZDc4N2MxNDEwIn0.puUvY4uYzIeETQo97qIl4ybN5WX1OzFCdHTnn0_7KtfID-Wv0Tl1A_cylybFiR7oW-1wPR1aZFFsOuiUaJp3BA\" pnpm exec prisma db push 2>&1)"
     ]
   }
 }
