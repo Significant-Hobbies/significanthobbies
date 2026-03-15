@@ -84,6 +84,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
     ...categoryPages,
     {
+      url: `${baseUrl}/compare`,
+      lastModified: now,
+      changeFrequency: "weekly",
+      priority: 0.8,
+    },
+    {
       url: `${baseUrl}/side-quests`,
       lastModified: now,
       changeFrequency: "monthly",
