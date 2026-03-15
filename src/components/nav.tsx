@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { getServerAuthSession } from "~/server/auth";
 import { Button } from "~/components/ui/button";
+import { NavLinks } from "./nav-links";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import {
   DropdownMenu,
@@ -11,7 +12,6 @@ import {
 } from "~/components/ui/dropdown-menu";
 import { NavSignOut } from "./nav-sign-out";
 import { MobileMenu } from "./mobile-menu";
-import { Search } from "lucide-react";
 
 const NAV_LINKS = [
   { href: "/hobbies", label: "Discover" },
@@ -35,28 +35,7 @@ export async function Nav() {
 
         {/* Desktop nav */}
         <div className="hidden items-center gap-2 md:flex">
-          {NAV_LINKS.map((link) => (
-            <Link key={link.href} href={link.href}>
-              <Button
-                variant="ghost"
-                size="sm"
-                className="text-stone-500 hover:text-stone-700"
-              >
-                {link.label}
-              </Button>
-            </Link>
-          ))}
-
-          <Link href="/search">
-            <Button
-              variant="ghost"
-              size="sm"
-              className="text-stone-500 hover:text-stone-700"
-              aria-label="Search"
-            >
-              <Search className="h-4 w-4" />
-            </Button>
-          </Link>
+          <NavLinks links={NAV_LINKS} />
 
           {session?.user ? (
             <>

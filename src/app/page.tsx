@@ -1,3 +1,6 @@
+import { redirect } from "next/navigation";
+import { getServerSession } from "next-auth";
+import { authOptions } from "~/server/auth/config";
 import { db } from "~/server/db";
 import { LandingClient } from "./_components/landing-client";
 
@@ -15,9 +18,19 @@ async function getDemoTimelines() {
 }
 
 export default async function HomePage() {
+  const session = await getServerSession(authOptions);
+
+  if (session?.user) {
+    // Logged in but no username → onboarding
+    if (!session.user.username) {
+      redirect("/setup");
+    }
+    // Logged in with username → dashboard
+    redirect("/dashboard");
+  }
+
   const rawDemos = await getDemoTimelines();
 
-  // Serialize for the client component — convert phases JSON field to string
   const demos = rawDemos.map((t) => ({
     id: t.id,
     title: t.title,

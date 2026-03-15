@@ -512,19 +512,12 @@ function SideQuestsInner() {
                   ? "text-emerald-700"
                   : "text-stone-500 hover:text-stone-700"
               }`}
-              dangerouslySetInnerHTML={{ __html: tab.label }}
-            />
-          ))}
-        </div>
-        {/* Active tab indicator */}
-        <div className="mx-auto flex max-w-2xl items-center justify-center">
-          {TABS.map((tab) => (
-            <div
-              key={tab.id}
-              className={`h-0.5 flex-1 transition-all ${
-                activeTab === tab.id ? "bg-emerald-500" : "bg-transparent"
-              }`}
-            />
+            >
+              <span dangerouslySetInnerHTML={{ __html: tab.label }} />
+              {activeTab === tab.id && (
+                <span className="absolute inset-x-2 bottom-0 h-0.5 rounded-full bg-emerald-500" />
+              )}
+            </button>
           ))}
         </div>
       </section>
@@ -779,18 +772,6 @@ function SideQuestsInner() {
               })}
             </div>
           )}
-        </div>
-      </section>
-
-      {/* Back to site */}
-      <section className="border-t border-stone-100 px-4 py-10">
-        <div className="mx-auto max-w-5xl text-center">
-          <Link
-            href="/"
-            className="text-sm text-stone-400 transition-colors hover:text-stone-600"
-          >
-            &#8592; Back to SignificantHobbies
-          </Link>
         </div>
       </section>
 
