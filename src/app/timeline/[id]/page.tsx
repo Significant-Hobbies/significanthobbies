@@ -14,6 +14,7 @@ import { CommentsSectionWithOwn } from "~/components/timeline-view/comments-sect
 import { PersonalityCard } from "~/components/timeline-view/personality-card";
 import { RediscoveryNudges } from "~/components/timeline-view/rediscovery-nudges";
 import { RecommendationsPanel } from "~/components/timeline-view/recommendations-panel";
+import { VersionHistory } from "~/components/timeline-view/version-history";
 import { ArrowLeft, Pencil, User } from "lucide-react";
 import type { Phase, TimelineData, TimelinePin, TimelineVisibility } from "~/lib/types";
 
@@ -69,6 +70,15 @@ export default async function TimelinePage({ params }: Props) {
 
   let pins: TimelinePin[] = [];
   try { pins = JSON.parse(raw.pins as string) as TimelinePin[]; } catch { /* ignore */ }
+
+  let versions: { date: string; phases: Phase[] }[] = [];
+  try {
+    const rawVersions = JSON.parse(raw.versions as string) as { date: string; phases: string }[];
+    versions = rawVersions.map((v) => ({
+      date: v.date,
+      phases: JSON.parse(v.phases) as Phase[],
+    }));
+  } catch { /* ignore */ }
 
   const timeline: TimelineData = {
     id: raw.id,
@@ -212,6 +222,9 @@ export default async function TimelinePage({ params }: Props) {
             currentUserId={currentUserId}
             ownCommentIds={ownCommentIds}
           />
+          {isOwner && versions.length > 0 && (
+            <VersionHistory versions={versions} currentPhases={phases} />
+          )}
         </div>
       )}
     </div>

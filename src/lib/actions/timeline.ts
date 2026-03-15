@@ -61,11 +61,23 @@ export async function updateTimeline(
     throw new Error("Not found");
 
   const parsed = SaveTimelineSchema.parse(data);
+  const newPhasesJson = JSON.stringify(parsed.phases);
+
+  // Snapshot current phases into versions if they changed
+  let versions: { date: string; phases: string }[] = [];
+  try { versions = JSON.parse(timeline.versions as string); } catch { /* ignore */ }
+
+  if (timeline.phases !== newPhasesJson) {
+    versions.push({ date: new Date().toISOString(), phases: timeline.phases as string });
+    if (versions.length > 10) versions = versions.slice(-10);
+  }
+
   const updated = await db.timeline.update({
     where: { id },
     data: {
       title: parsed.title ?? null,
-      phases: JSON.stringify(parsed.phases),
+      phases: newPhasesJson,
+      versions: JSON.stringify(versions),
     },
   });
   revalidatePath(`/timeline/${id}`);

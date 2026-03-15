@@ -72,6 +72,7 @@ model Timeline {
   slug       String?   @unique
   phases     String    @default("[]")
   pins       String    @default("[]")
+  versions   String    @default("[]")  // JSON array of {date, phases} snapshots
   createdAt  DateTime  @default(now())
   updatedAt  DateTime  @updatedAt
   user       User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
