@@ -4,6 +4,7 @@ import { useRef, useState } from "react";
 import { Download, Loader2, Link2 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "~/components/ui/button";
+import { computePersonality } from "~/lib/personality";
 import { ExportCard } from "./export-card";
 import type { TimelineData } from "~/lib/types";
 
@@ -14,6 +15,7 @@ interface Props {
 export function ExportButton({ timeline }: Props) {
   const cardRef = useRef<HTMLDivElement>(null);
   const [isExporting, setIsExporting] = useState(false);
+  const personality = timeline.phases.length > 0 ? computePersonality(timeline.phases) : null;
 
   async function handleExport() {
     if (!cardRef.current) return;
@@ -44,7 +46,9 @@ export function ExportButton({ timeline }: Props) {
 
   function handleTwitterShare() {
     const url = window.location.href;
-    const text = "Check out my hobby timeline on Significant Hobbies";
+    const text = personality
+      ? `I'm a ${personality.archetype.name}! Check out my hobby timeline on Significant Hobbies`
+      : "Check out my hobby timeline on Significant Hobbies";
     window.open(
       `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`,
       "_blank",
