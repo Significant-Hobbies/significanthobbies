@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
+import { EmailCapture } from "~/components/email-capture";
 
 type CheckState = "idle" | "checking" | "available" | "taken" | "invalid";
 
@@ -226,7 +227,7 @@ export function GetStartedClient() {
       </section>
 
       {/* What you get */}
-      <section className="mx-auto max-w-xl px-4 pb-20">
+      <section className="mx-auto max-w-xl px-4 pb-12">
         <p className="mb-4 text-sm font-semibold uppercase tracking-wider text-stone-400">
           What you get with a profile
         </p>
@@ -241,6 +242,15 @@ export function GetStartedClient() {
               <p className="mt-1 text-xs text-stone-500">{desc}</p>
             </div>
           ))}
+        </div>
+      </section>
+
+      {/* Email capture */}
+      <section className="mx-auto max-w-xl px-4 pb-20">
+        <div className="mt-12 rounded-xl border border-stone-200 bg-stone-50 p-6 text-center max-w-lg mx-auto">
+          <p className="font-medium text-stone-800 mb-2">Not ready to sign up yet?</p>
+          <p className="text-sm text-stone-500 mb-4">Get weekly hobby inspiration in your inbox.</p>
+          <EmailCapture source="get-started" />
         </div>
       </section>
     </main>

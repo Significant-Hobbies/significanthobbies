@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { blogPosts, type BlogPost } from "~/lib/blog-posts";
+import { EmailCapture } from "~/components/email-capture";
 
 export const metadata: Metadata = {
   title: "The Hobby Journal",
@@ -187,6 +188,13 @@ export default function BlogPage() {
               <PostCard post={featured} featured />
             </div>
           )}
+
+          {/* Email capture */}
+          <div className="scroll-reveal mb-10 rounded-xl border border-stone-200 bg-stone-50 p-6 text-center">
+            <p className="font-medium text-stone-800 mb-2">Enjoy the journal?</p>
+            <p className="text-sm text-stone-500 mb-4">Get new articles and hobby inspiration in your inbox.</p>
+            <EmailCapture source="blog" />
+          </div>
 
           {/* Divider */}
           <div className="scroll-reveal mb-10 flex items-center gap-4">

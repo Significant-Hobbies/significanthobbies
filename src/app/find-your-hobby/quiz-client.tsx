@@ -1,7 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useRef, useState } from "react";
+import { EmailCapture } from "~/components/email-capture";
+import { QuizResultCard } from "~/components/quiz-result-card";
 import { HOBBY_CATEGORIES } from "~/lib/hobbies";
 
 type Category =
@@ -115,6 +117,8 @@ export function HobbyQuiz() {
   const [answers, setAnswers] = useState<number[]>([]);
   const [selectedOption, setSelectedOption] = useState<number | null>(null);
   const [scores, setScores] = useState<Record<string, number>>({});
+  const [isDownloading, setIsDownloading] = useState(false);
+  const cardRef = useRef<HTMLDivElement>(null);
 
   const isResults = step >= QUESTIONS.length;
   const currentQuestion = QUESTIONS[step];
@@ -154,6 +158,26 @@ export function HobbyQuiz() {
     } else {
       void navigator.clipboard.writeText(text);
       alert("Result copied to clipboard!");
+    }
+  }
+
+  async function handleDownloadCard() {
+    if (!cardRef.current) return;
+    setIsDownloading(true);
+    try {
+      const { toPng } = await import("html-to-image");
+      const dataUrl = await toPng(cardRef.current, {
+        pixelRatio: 2,
+        backgroundColor: "#020617",
+      });
+      const link = document.createElement("a");
+      link.download = "my-hobby-personality.png";
+      link.href = dataUrl;
+      link.click();
+    } catch {
+      alert("Download failed — try again");
+    } finally {
+      setIsDownloading(false);
     }
   }
 
@@ -323,11 +347,35 @@ export function HobbyQuiz() {
                 <span>🔗</span> Share your result
               </button>
               <button
+                onClick={handleDownloadCard}
+                disabled={isDownloading}
+                className="flex items-center gap-2 rounded-lg border border-stone-200 bg-white px-5 py-2.5 text-sm font-medium text-stone-600 transition-colors hover:border-stone-300 hover:bg-stone-50 disabled:opacity-50"
+              >
+                <span>⬇️</span> {isDownloading ? "Downloading..." : "Download Card"}
+              </button>
+              <button
                 onClick={handleRestart}
                 className="text-sm text-stone-400 underline-offset-2 hover:text-stone-600 hover:underline"
               >
                 Retake quiz
               </button>
+            </div>
+
+            {/* Hidden export card — rendered off-screen for PNG export */}
+            <div className="fixed -left-[9999px] -top-[9999px] pointer-events-none">
+              <QuizResultCard
+                archetype={archetype.title}
+                archetypeEmoji={archetype.emoji}
+                topCategories={topCats}
+                recommendedHobbies={recommendedHobbies}
+                exportRef={cardRef}
+              />
+            </div>
+
+            <div className="mt-8 rounded-xl border border-stone-200 bg-stone-50 p-6 text-center">
+              <p className="font-medium text-stone-800 mb-2">Want hobby recommendations in your inbox?</p>
+              <p className="text-sm text-stone-500 mb-4">Weekly inspiration — no spam, unsubscribe anytime.</p>
+              <EmailCapture source="quiz" />
             </div>
           </div>
         )}
