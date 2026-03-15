@@ -1,8 +1,11 @@
 import { type MetadataRoute } from "next";
 import { db } from "~/server/db";
+import { HOBBY_CATEGORIES } from "~/lib/hobbies";
+import { blogPosts } from "~/lib/blog-posts";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = "https://significanthobbies.com";
+  const now = new Date();
 
   const publicTimelines = await db.timeline.findMany({
     where: { visibility: "PUBLIC" },
@@ -14,58 +17,80 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     select: { username: true },
   });
 
-  const hobbyPaths = [
-    "guitar",
-    "piano",
-    "painting",
-    "drawing",
-    "reading",
-    "writing",
-    "hiking",
-    "cycling",
-    "swimming",
-    "running",
-    "chess",
-    "photography",
-    "cooking",
-    "gardening",
-    "yoga",
-    "meditation",
+  const categoryPages = [
+    "creative",
+    "music",
+    "physical",
+    "intellectual",
     "gaming",
-    "coding",
-  ];
+    "outdoor",
+    "culinary",
+    "collecting",
+    "making",
+    "social",
+  ].map((slug) => ({
+    url: `${baseUrl}/hobbies/category/${slug}`,
+    lastModified: now,
+    changeFrequency: "weekly" as const,
+    priority: 0.7,
+  }));
+
+  const hobbyPages = HOBBY_CATEGORIES.flatMap((cat) =>
+    cat.hobbies.map((hobby) => ({
+      url: `${baseUrl}/hobbies/${encodeURIComponent(hobby.toLowerCase().replace(/\s+/g, "-"))}`,
+      lastModified: now,
+      changeFrequency: "weekly" as const,
+      priority: 0.6,
+    }))
+  );
+
+  const blogPages = blogPosts.map((post) => ({
+    url: `${baseUrl}/blog/${post.slug}`,
+    lastModified: now,
+    changeFrequency: "monthly" as const,
+    priority: 0.6,
+  }));
 
   return [
     {
       url: baseUrl,
-      lastModified: new Date(),
+      lastModified: now,
       changeFrequency: "daily",
       priority: 1,
     },
     {
       url: `${baseUrl}/hobbies`,
-      lastModified: new Date(),
+      lastModified: now,
       changeFrequency: "weekly",
       priority: 0.9,
     },
     {
+      url: `${baseUrl}/what-are-significant-hobbies`,
+      lastModified: now,
+      changeFrequency: "monthly",
+      priority: 0.9,
+    },
+    {
       url: `${baseUrl}/explore`,
-      lastModified: new Date(),
+      lastModified: now,
       changeFrequency: "daily",
       priority: 0.8,
     },
     {
       url: `${baseUrl}/blog`,
-      lastModified: new Date(),
+      lastModified: now,
       changeFrequency: "monthly",
       priority: 0.7,
     },
-    ...hobbyPaths.map((slug) => ({
-      url: `${baseUrl}/hobbies/${slug}`,
-      lastModified: new Date(),
-      changeFrequency: "weekly" as const,
+    ...categoryPages,
+    {
+      url: `${baseUrl}/side-quests`,
+      lastModified: now,
+      changeFrequency: "monthly",
       priority: 0.6,
-    })),
+    },
+    ...hobbyPages,
+    ...blogPages,
     ...publicTimelines.map((t) => ({
       url: `${baseUrl}/timeline/${t.id}`,
       lastModified: t.updatedAt,
@@ -76,7 +101,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       .filter((u) => u.username !== null)
       .map((u) => ({
         url: `${baseUrl}/u/${u.username!}`,
-        lastModified: new Date(),
+        lastModified: now,
         changeFrequency: "monthly" as const,
         priority: 0.4,
       })),
