@@ -1,9 +1,13 @@
+import Link from "next/link";
 import { db } from "~/server/db";
 import { ExploreClient } from "./explore-client";
 import { getCategoryForHobby } from "~/lib/hobbies";
 import type { Phase, TimelineData, TimelineVisibility } from "~/lib/types";
 
-export const metadata = { title: "Explore — SignificantHobbies" };
+export const metadata = {
+  title: "Explore Hobby Timelines — SignificantHobbies",
+  description: "Discover how people spend their time across life phases. Browse community hobby timelines, trending interests, and inspiring journeys.",
+};
 
 export default async function ExplorePage() {
   const rawTimelines = await db.timeline.findMany({

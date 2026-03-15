@@ -24,7 +24,13 @@ interface Props {
 export async function generateMetadata({ params }: Props) {
   const { id } = await params;
   const timeline = await db.timeline.findUnique({ where: { id } });
-  return { title: timeline?.title ? `${timeline.title} — SignificantHobbies` : "Timeline — SignificantHobbies" };
+  const title = timeline?.title ? `${timeline.title} — SignificantHobbies` : "Timeline — SignificantHobbies";
+  return {
+    title,
+    description: timeline?.title
+      ? `${timeline.title} — a hobby timeline on SignificantHobbies. See hobbies across life phases, personality insights, and more.`
+      : "A hobby timeline on SignificantHobbies — see hobbies across life phases and discover your hobby personality.",
+  };
 }
 
 export default async function TimelinePage({ params }: Props) {

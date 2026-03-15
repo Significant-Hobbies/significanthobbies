@@ -7,6 +7,7 @@ import { HOBBY_CATEGORIES, getCategoryForHobby } from "~/lib/hobbies";
 import { getResourcesForHobby } from "~/lib/hobby-resources";
 import { authOptions } from "~/server/auth/config";
 import type { Phase } from "~/lib/types";
+import { JsonLd } from "~/components/json-ld";
 
 interface Props {
   params: Promise<{ hobby: string }>;
@@ -30,7 +31,10 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: Props) {
   const { hobby } = await params;
   const name = slugToHobby(decodeURIComponent(hobby));
-  return { title: `${name} — SignificantHobbies` };
+  return {
+    title: `${name} — SignificantHobbies`,
+    description: `Explore ${name} — see community timelines, find tools and resources, and discover related hobbies on SignificantHobbies.`,
+  };
 }
 
 export default async function HobbyDetailPage({ params }: Props) {

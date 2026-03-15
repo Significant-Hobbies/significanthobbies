@@ -2,6 +2,10 @@ import { redirect } from "next/navigation";
 import { getServerAuthSession } from "~/server/auth";
 import { LoginForm } from "./login-form";
 
+export const metadata = {
+  robots: { index: false, follow: false },
+};
+
 export default async function LoginPage() {
   const session = await getServerAuthSession();
   if (session?.user) redirect("/");

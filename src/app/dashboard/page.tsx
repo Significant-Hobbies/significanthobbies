@@ -11,7 +11,10 @@ import { Button } from "~/components/ui/button";
 import type { Phase, TimelineVisibility } from "~/lib/types";
 import { Plus, Clock } from "lucide-react";
 
-export const metadata = { title: "Dashboard — SignificantHobbies" };
+export const metadata = {
+  title: "Dashboard — SignificantHobbies",
+  robots: { index: false, follow: false },
+};
 
 function getStalenessInfo(updatedAt: Date): {
   label: string;

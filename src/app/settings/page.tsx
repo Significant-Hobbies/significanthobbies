@@ -6,7 +6,10 @@ import { db } from "~/server/db";
 import { ProfileForm } from "./profile-form";
 import { ArrowLeft } from "lucide-react";
 
-export const metadata = { title: "Settings — SignificantHobbies" };
+export const metadata = {
+  title: "Settings — SignificantHobbies",
+  robots: { index: false, follow: false },
+};
 
 export default async function SettingsPage() {
   const session = await getServerSession(authOptions);

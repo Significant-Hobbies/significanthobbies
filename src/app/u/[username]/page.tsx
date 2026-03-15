@@ -19,7 +19,10 @@ interface Props {
 
 export async function generateMetadata({ params }: Props) {
   const { username } = await params;
-  return { title: `@${username} — SignificantHobbies` };
+  return {
+    title: `@${username} — SignificantHobbies`,
+    description: `View @${username}'s hobby journey on SignificantHobbies — their timelines, hobby cloud, and badges.`,
+  };
 }
 
 const CATEGORY_BADGE_COLORS: Record<string, string> = {

@@ -2,7 +2,10 @@ import Link from "next/link";
 import { Badge } from "~/components/ui/badge";
 import { HOBBY_CATEGORIES } from "~/lib/hobbies";
 
-export const metadata = { title: "Hobby Directory — SignificantHobbies" };
+export const metadata = {
+  title: "Hobby Directory — SignificantHobbies",
+  description: "Browse 110+ hobbies across 10 categories. Find your next passion — from creative arts and music to outdoor adventures and making.",
+};
 
 // Left-border accent colors cycling through hues per category index
 const CATEGORY_BORDER_COLORS = [
