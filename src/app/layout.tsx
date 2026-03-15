@@ -6,6 +6,7 @@ import { SaasMakerAnalytics } from "~/components/SaasMakerAnalytics";
 import { Geist } from "next/font/google";
 import { Providers } from "~/components/providers";
 import { Nav } from "~/components/nav";
+import { JsonLd } from "~/components/json-ld";
 
 const geist = Geist({ subsets: ["latin"] });
 
@@ -50,6 +51,17 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${geist.className} min-h-screen bg-amber-50 text-stone-900`}>
+        <JsonLd
+          data={{
+            "@context": "https://schema.org",
+            "@type": "Organization",
+            name: "SignificantHobbies",
+            url: "https://significanthobbies.com",
+            description:
+              "Map your hobby history across life phases. Discover what rekindled, what persisted, and what to explore next.",
+            sameAs: [],
+          }}
+        />
         <Providers>
           <Nav />
           <main>{children}</main>

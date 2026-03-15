@@ -78,6 +78,26 @@ export default async function HobbyDetailPage({ params }: Props) {
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-12">
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          itemListElement: [
+            {
+              "@type": "ListItem",
+              position: 1,
+              name: "Hobbies",
+              item: "https://significanthobbies.com/hobbies",
+            },
+            {
+              "@type": "ListItem",
+              position: 2,
+              name: hobbyName,
+              item: `https://significanthobbies.com/hobbies/${hobbySlug}`,
+            },
+          ],
+        }}
+      />
       {/* Guest CTA banner */}
       {!isLoggedIn && (
         <div className="mb-6 flex items-center justify-between gap-4 rounded-xl border border-emerald-300 bg-emerald-50 px-5 py-3">

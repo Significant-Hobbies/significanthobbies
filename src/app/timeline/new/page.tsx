@@ -1,11 +1,24 @@
 import Link from "next/link";
 import { TimelineBuilder } from "~/components/timeline-builder/builder";
+import { JsonLd } from "~/components/json-ld";
 
 export const metadata = { title: "New Timeline — SignificantHobbies" };
 
 export default function NewTimelinePage() {
   return (
     <div className="mx-auto max-w-3xl px-4 py-12">
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@type": "WebApplication",
+          name: "SignificantHobbies Timeline Builder",
+          description:
+            "Build a visual timeline of your hobbies across life phases. Discover your hobby personality and share your journey.",
+          url: "https://significanthobbies.com/timeline/new",
+          applicationCategory: "LifestyleApplication",
+          offers: { "@type": "Offer", price: "0" },
+        }}
+      />
       <div className="mb-8">
         <Link
           href="/"

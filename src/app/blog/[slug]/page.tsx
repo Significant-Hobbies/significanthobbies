@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { blogPosts, type BlogPost, type ContentBlock } from "~/lib/blog-posts";
+import { JsonLd } from "~/components/json-ld";
 
 /* ─── Static generation ──────────────────────────────────────────────────────── */
 
@@ -195,6 +196,23 @@ export default async function BlogPostPage({
 
   return (
     <div className="min-h-screen" style={{ background: "#FEFDF8" }}>
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@type": "Article",
+          headline: post.title,
+          description: post.excerpt,
+          datePublished: post.publishedAt,
+          author: {
+            "@type": "Organization",
+            name: "SignificantHobbies",
+          },
+          publisher: {
+            "@type": "Organization",
+            name: "SignificantHobbies",
+          },
+        }}
+      />
       {/* Back link */}
       <div className="border-b border-stone-100 px-4 py-3">
         <div className="mx-auto max-w-3xl">
