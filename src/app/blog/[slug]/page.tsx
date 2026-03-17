@@ -135,6 +135,30 @@ function BlogContent({ blocks }: { blocks: ContentBlock[] }) {
               </blockquote>
             );
 
+          case "video": {
+            const videoId = block.url.includes("youtu.be/")
+              ? block.url.split("youtu.be/")[1]?.split("?")[0]
+              : new URL(block.url).searchParams.get("v");
+            return (
+              <div key={idx} className="scroll-reveal my-10">
+                <div className="overflow-hidden rounded-2xl border border-stone-200 shadow-sm">
+                  <div className="relative aspect-video">
+                    <iframe
+                      src={`https://www.youtube-nocookie.com/embed/${videoId}`}
+                      title={block.caption ?? "Video"}
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                      className="absolute inset-0 h-full w-full"
+                    />
+                  </div>
+                </div>
+                {block.caption && (
+                  <p className="mt-3 text-center text-sm text-stone-400">{block.caption}</p>
+                )}
+              </div>
+            );
+          }
+
           default:
             return null;
         }

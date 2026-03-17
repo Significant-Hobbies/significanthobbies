@@ -4,7 +4,8 @@ export type ContentBlock =
   | { type: "list"; items: string[] }
   | { type: "callout"; text: string; emoji: string }
   | { type: "divider" }
-  | { type: "quote"; text: string; attribution?: string };
+  | { type: "quote"; text: string; attribution?: string }
+  | { type: "video"; url: string; caption?: string };
 
 export type BlogPost = {
   slug: string;
@@ -3074,6 +3075,190 @@ export const blogPosts: BlogPost[] = [
       {
         type: "paragraph",
         text: "If you're not sure where to start, think about what you've been quietly curious about for years without ever acting on it. That specific, lingering curiosity is usually the right signal. Discovering what kind of learner you are — whether you're drawn to physical skills, intellectual depth, creative expression, or social experiences — is a useful first step. Your hobby journey is particular to you. The interesting version of you is built from that particularity.",
+      },
+    ],
+  },
+  {
+    slug: "hobbies-heal-brain-rot",
+    title: "Your Hobbies Can Literally Heal Your Brain Rot",
+    excerpt:
+      "The average person spends 7 hours a day on screens. Here's the neuroscience of how that rewires your brain — and how hobbies reverse the damage.",
+    category: "Wellbeing",
+    emoji: "🧠",
+    readTime: 8,
+    publishedAt: "March 2026",
+    content: [
+      {
+        type: "video",
+        url: "https://www.youtube.com/watch?v=7b9THb3cQbg",
+        caption: "Dr. Izzy on why hobbies are more important than ever",
+      },
+      {
+        type: "paragraph",
+        text: "The average person now spends 7 hours a day staring at screens. But that level of consumption doesn't just steal your time — it rewires your brain. It shortens your attention span and trains you to reach for your phone the millisecond you start to feel bored.",
+      },
+      {
+        type: "paragraph",
+        text: "Twenty years ago, if you asked someone what their hobbies were, they could rattle off a list: dance classes, gardening, crochet, volunteering at their local community centre. Today, that question is met with a blank stare. Social media has trained our brains to crave quick dopamine hits, and anything slower feels unbearably dull. But the science says hobbies can actually retrain your brain to focus and enjoy the real world again.",
+      },
+      {
+        type: "heading",
+        text: "The Science: 93,000 People Can't Be Wrong",
+        level: 2,
+      },
+      {
+        type: "paragraph",
+        text: "In 2023, scientists published a meta-analysis covering 93,000 people across different countries. The findings were remarkably consistent: hobbies make people feel better. They're happier. Less depressed. Physically healthier. More satisfied with their lives overall.",
+      },
+      {
+        type: "paragraph",
+        text: "Even more striking, specific types of hobbies — creating art, learning a musical instrument — were found to literally increase brain volume, improve memory, and potentially reduce the risk of developing dementia.",
+      },
+      {
+        type: "callout",
+        text: "A 2023 meta-analysis of 93,000 people found that hobbies consistently improve mood, reduce depression, improve physical health, and increase life satisfaction — across every population studied.",
+        emoji: "📊",
+      },
+      {
+        type: "heading",
+        text: "Digital Anhedonia: Why Real Life Feels Boring",
+        level: 2,
+      },
+      {
+        type: "paragraph",
+        text: "We joke about social media giving us the attention span of a goldfish, but the science confirms it's no joke. Consuming rapid, fragmented content on platforms like TikTok or Snapchat initially overwhelms and hyper-stimulates the brain — then rewires it. Studies show this reduces memory, erodes cognitive control, and literally destroys our ability to stay focused.",
+      },
+      {
+        type: "paragraph",
+        text: "But there's something even more insidious: digital anhedonia. This is the reduced ability to find enjoyment in real-world experiences after prolonged digital saturation. Social media is rewiring your brain's reward system from the inside out.",
+      },
+      {
+        type: "heading",
+        text: "The Dopamine Trap: How Your Brain Recalibrates",
+        level: 3,
+      },
+      {
+        type: "paragraph",
+        text: "Here's the mechanism. Your brain has dopamine receptors that receive reward signals. When social media floods your system with dopamine, your brain responds through homeostasis — it downregulates those receptors and becomes less sensitive. It takes more and more stimulation to feel the same reward.",
+      },
+      {
+        type: "paragraph",
+        text: "The real problem hits when you put the phone down. Your brain has recalibrated its baseline for what feels rewarding. A peaceful walk in the park, reading a book, cooking a meal — these produce a gentler dopamine response that your desensitized receptors barely register. They feel boring. Not because they are boring, but because your brain has been chemically reconfigured to need more.",
+      },
+      {
+        type: "callout",
+        text: "Digital anhedonia: the reduced ability to find enjoyment in real-world experiences after prolonged digital stimulation. Your brain's reward system has literally been recalibrated.",
+        emoji: "📱",
+      },
+      {
+        type: "heading",
+        text: "Hobbies as the Antidote",
+        level: 2,
+      },
+      {
+        type: "paragraph",
+        text: "There's a useful analogy from smoking cessation. When patients quit cigarettes, doctors don't just tell them to stop — they suggest a replacement. Something to redirect the energy, like sugar-free lollipops. It's not about blocking the craving, it's about rerouting it.",
+      },
+      {
+        type: "paragraph",
+        text: "Hobbies work the same way for screen dependence. When the evening comes and boredom creeps in and your hand reaches for Instagram — that's the moment to redirect into a chosen hobby instead. The beautiful thing is that hobbies provide dopamine too, just a slower, healthier kind. Plus serotonin.",
+      },
+      {
+        type: "quote",
+        text: "Think of hobbies as the whole, unprocessed food version of dopamine — versus social media, which is hyper-stimulating junk food.",
+        attribution: "Dr. Izzy",
+      },
+      {
+        type: "paragraph",
+        text: "This connects to the ancient Greek concept of eudaimonia — human flourishing through living well and living a good life. Not the hedonic, superficial hit of scrolling, but a deeper sense of meaning, purpose, and flow. Hobbies are one of the most accessible paths to this kind of fulfilment.",
+      },
+      {
+        type: "heading",
+        text: "How to Choose: The Effort-Recovery Framework",
+        level: 2,
+      },
+      {
+        type: "paragraph",
+        text: "The most basic filter for choosing a hobby is simple: what would create joy for you right now? But if you want a more structured approach, business psychologist Joe Pine's effort-recovery theory is useful. We can divide our activities into two categories: things that require output (work, hustle, energy expenditure) and things that help us recover (rest, refilling the well). Hobbies live in the recovery zone.",
+      },
+      {
+        type: "paragraph",
+        text: "Pine suggests four questions to evaluate whether a hobby will genuinely nourish you:",
+      },
+      {
+        type: "list",
+        items: [
+          "Psychological detachment — Does it help me disconnect from work and enter a flow state?",
+          "Relaxation — Does it feel enjoyable and help me feel good?",
+          "Mastery — Does it give me a sense of accomplishment and progress?",
+          "Control — Does it give me a sense of agency outside of work?",
+        ],
+      },
+      {
+        type: "callout",
+        text: "You don't have to turn your hobbies into side hustles. You don't have to post them on social media. A large part of the joy is doing them for their own sake. Resist hobby grindification.",
+        emoji: "⚠️",
+      },
+      {
+        type: "heading",
+        text: "The Four Categories of Hobbies",
+        level: 2,
+      },
+      {
+        type: "paragraph",
+        text: "A balanced hobby life draws from across four categories. The recommendation is to have a reasonable spread, and to run tiny experiments — commit to one or two sessions, see how it feels, then keep or move on.",
+      },
+      {
+        type: "heading",
+        text: "1. Creative",
+        level: 3,
+      },
+      {
+        type: "paragraph",
+        text: "Every human has creative energy waiting to come out — it doesn't matter what the end piece looks like. What matters is the act of showing up and doing the thing. Painting, drawing, scrapbooking, calligraphy, pottery, photography, graphic design, baking, cooking, gardening, interior design, flower arrangement, music (singing, instruments, composing), and writing all live here.",
+      },
+      {
+        type: "heading",
+        text: "2. Intellectual",
+        level: 3,
+      },
+      {
+        type: "paragraph",
+        text: "If you've felt a loss of progress since leaving school, this is your category. Reading (fiction or nonfiction), learning a language, studying history or philosophy, taking courses, and travelling all count. Don't only choose topics you judge to be useful — follow your intuitive interest, because engagement is more predictive of benefits than anything else.",
+      },
+      {
+        type: "heading",
+        text: "3. Wellbeing",
+        level: 3,
+      },
+      {
+        type: "paragraph",
+        text: "Physical, mental, and spiritual. Dancing (social, solo, ecstatic), yoga, pilates, gym, running, hiking, swimming, martial arts, rock climbing, meditation, journaling, and breathwork. These connect you to your body, quiet your mind, and build a foundation for everything else.",
+      },
+      {
+        type: "heading",
+        text: "4. Connection",
+        level: 3,
+      },
+      {
+        type: "paragraph",
+        text: "All about recurring touchpoints with other people. Regular date nights, workout classes with friends, run clubs, pottery classes, hosting dinners, creative clubs, book clubs, hot girl walks. The key word is recurring — one-off hangouts don't build the same thing that weekly rituals do.",
+      },
+      {
+        type: "divider",
+      },
+      {
+        type: "heading",
+        text: "Your Move",
+        level: 2,
+      },
+      {
+        type: "paragraph",
+        text: "Try switching out at least 30 minutes this week to spend on a hobby instead of scrolling your phone. Just 30 minutes. See how you feel afterwards. Your brain's reward system is plastic — it recalibrated toward screens, and it can recalibrate back toward real life. But only if you give it something real to work with.",
+      },
+      {
+        type: "paragraph",
+        text: "If you're not sure where to start, build your hobby timeline to see what you used to love, what you've lost, and what might be worth picking back up. Your brain is waiting to be rewired — this time, in the right direction.",
       },
     ],
   },
