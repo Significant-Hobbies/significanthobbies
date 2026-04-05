@@ -2,20 +2,28 @@ import { type MetadataRoute } from "next";
 import { db } from "~/server/db";
 import { HOBBY_CATEGORIES } from "~/lib/hobbies";
 import { blogPosts } from "~/lib/blog-posts";
+import { eq, isNotNull } from "drizzle-orm";
+import { timelines, users } from "~/db/schema";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = "https://significanthobbies.com";
   const now = new Date();
 
-  const publicTimelines = await db.timeline.findMany({
-    where: { visibility: "PUBLIC" },
-    select: { id: true, slug: true, updatedAt: true, user: { select: { username: true } } },
-  });
+  const publicTimelineRows = await db
+    .select({
+      id: timelines.id,
+      slug: timelines.slug,
+      updatedAt: timelines.updatedAt,
+      userUsername: users.username,
+    })
+    .from(timelines)
+    .leftJoin(users, eq(timelines.userId, users.id))
+    .where(eq(timelines.visibility, "PUBLIC"));
 
-  const users = await db.user.findMany({
-    where: { username: { not: null } },
-    select: { username: true },
-  });
+  const userRows = await db
+    .select({ username: users.username })
+    .from(users)
+    .where(isNotNull(users.username));
 
   const categoryPages = [
     "creative",
@@ -127,15 +135,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
     ...hobbyPages,
     ...blogPages,
-    ...publicTimelines.map((t) => ({
-      url: t.user?.username && t.slug
-        ? `${baseUrl}/u/${t.user.username}/${t.slug}`
+    ...publicTimelineRows.map((t) => ({
+      url: t.userUsername && t.slug
+        ? `${baseUrl}/u/${t.userUsername}/${t.slug}`
         : `${baseUrl}/timeline/${t.id}`,
       lastModified: t.updatedAt,
       changeFrequency: "monthly" as const,
       priority: 0.5,
     })),
-    ...users
+    ...userRows
       .filter((u) => u.username !== null)
       .map((u) => ({
         url: `${baseUrl}/u/${u.username!}`,

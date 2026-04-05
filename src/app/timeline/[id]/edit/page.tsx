@@ -4,6 +4,8 @@ import { authOptions } from "~/server/auth/config";
 import { db } from "~/server/db";
 import { TimelineBuilder } from "~/components/timeline-builder/builder";
 import type { Phase, TimelineData, TimelineVisibility } from "~/lib/types";
+import { eq } from "drizzle-orm";
+import { timelines, users } from "~/db/schema";
 
 interface Props {
   params: Promise<{ id: string }>;
@@ -17,16 +19,22 @@ export default async function EditTimelinePage({ params }: Props) {
 
   if (!session?.user?.id) redirect("/login");
 
-  const raw = await db.timeline.findUnique({
-    where: { id },
-    include: { user: { select: { id: true, name: true, username: true, image: true } } },
+  const raw = await db.query.timelines.findFirst({
+    where: eq(timelines.id, id),
   });
 
   if (!raw || raw.userId !== session.user.id) notFound();
 
+  const timelineUser = raw.userId
+    ? await db.query.users.findFirst({
+        where: eq(users.id, raw.userId),
+        columns: { id: true, name: true, username: true, image: true },
+      })
+    : null;
+
   let phases: Phase[] = [];
   try {
-    phases = JSON.parse(raw.phases as string) as Phase[];
+    phases = JSON.parse(raw.phases) as Phase[];
   } catch { /* ignore */ }
 
   const timeline: TimelineData = {
@@ -37,7 +45,7 @@ export default async function EditTimelinePage({ params }: Props) {
     phases,
     createdAt: raw.createdAt,
     updatedAt: raw.updatedAt,
-    user: raw.user,
+    user: timelineUser,
   };
 
   return (

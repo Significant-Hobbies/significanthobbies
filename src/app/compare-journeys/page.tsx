@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { db } from "~/server/db";
 import { CompareJourneysClient } from "./compare-client";
 import type { Phase } from "~/lib/types";
+import { eq } from "drizzle-orm";
+import { users, timelines } from "~/db/schema";
 
 export const metadata: Metadata = {
   title: "Compare Hobby Journeys — SignificantHobbies",
@@ -23,39 +25,41 @@ export default async function CompareJourneysPage({ searchParams }: Props) {
   let userB: { username: string; phases: Phase[] } | null = null;
 
   if (usernameA) {
-    const raw = await db.user.findUnique({
-      where: { username: usernameA },
-      select: {
-        username: true,
-        timelines: {
-          where: { OR: [{ visibility: "PUBLIC" }, { visibility: "UNLISTED" }] },
-          select: { phases: true },
-        },
-      },
+    const raw = await db.query.users.findFirst({
+      where: eq(users.username, usernameA),
+      columns: { id: true, username: true },
     });
     if (raw) {
-      const phases: Phase[] = raw.timelines.flatMap((t) => {
-        try { return JSON.parse(t.phases as string) as Phase[]; } catch { return []; }
-      });
+      const properTimelines = await db
+        .select({ phases: timelines.phases, visibility: timelines.visibility })
+        .from(timelines)
+        .where(eq(timelines.userId, raw.id));
+
+      const phases: Phase[] = properTimelines
+        .filter((t) => t.visibility === "PUBLIC" || t.visibility === "UNLISTED")
+        .flatMap((t) => {
+          try { return JSON.parse(t.phases) as Phase[]; } catch { return []; }
+        });
       userA = { username: raw.username ?? usernameA, phases };
     }
   }
 
   if (usernameB) {
-    const raw = await db.user.findUnique({
-      where: { username: usernameB },
-      select: {
-        username: true,
-        timelines: {
-          where: { OR: [{ visibility: "PUBLIC" }, { visibility: "UNLISTED" }] },
-          select: { phases: true },
-        },
-      },
+    const raw = await db.query.users.findFirst({
+      where: eq(users.username, usernameB),
+      columns: { id: true, username: true },
     });
     if (raw) {
-      const phases: Phase[] = raw.timelines.flatMap((t) => {
-        try { return JSON.parse(t.phases as string) as Phase[]; } catch { return []; }
-      });
+      const properTimelines = await db
+        .select({ phases: timelines.phases, visibility: timelines.visibility })
+        .from(timelines)
+        .where(eq(timelines.userId, raw.id));
+
+      const phases: Phase[] = properTimelines
+        .filter((t) => t.visibility === "PUBLIC" || t.visibility === "UNLISTED")
+        .flatMap((t) => {
+          try { return JSON.parse(t.phases) as Phase[]; } catch { return []; }
+        });
       userB = { username: raw.username ?? usernameB, phases };
     }
   }

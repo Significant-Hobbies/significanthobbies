@@ -7,6 +7,8 @@ import { Badge } from "~/components/ui/badge";
 import type { Phase } from "~/lib/types";
 import { JsonLd } from "~/components/json-ld";
 import { getTimelineUrl } from "~/lib/timeline-url";
+import { eq, desc } from "drizzle-orm";
+import { timelines, users } from "~/db/schema";
 
 interface Props {
   params: Promise<{ category: string }>;
@@ -68,18 +70,25 @@ export default async function CategoryPage({ params }: Props) {
   // Query public timelines that contain any hobby from this category
   const categoryHobbyNames = new Set(cat.hobbies.map((h) => h.toLowerCase()));
 
-  const rawTimelines = await db.timeline.findMany({
-    where: { visibility: "PUBLIC" },
-    include: {
-      user: { select: { name: true, username: true } },
-    },
-    orderBy: { updatedAt: "desc" },
-    take: 100,
-  });
+  const rawTimelines = await db
+    .select({
+      id: timelines.id,
+      title: timelines.title,
+      slug: timelines.slug,
+      phases: timelines.phases,
+      updatedAt: timelines.updatedAt,
+      userName: users.name,
+      userUsername: users.username,
+    })
+    .from(timelines)
+    .leftJoin(users, eq(timelines.userId, users.id))
+    .where(eq(timelines.visibility, "PUBLIC"))
+    .orderBy(desc(timelines.updatedAt))
+    .limit(100);
 
   const matchingTimelines = rawTimelines.filter((t) => {
     try {
-      const phases = JSON.parse(t.phases as string) as Phase[];
+      const phases = JSON.parse(t.phases) as Phase[];
       return phases.some((p) =>
         p.hobbies.some((h) => categoryHobbyNames.has(h.name.toLowerCase())),
       );
@@ -174,7 +183,7 @@ export default async function CategoryPage({ params }: Props) {
             {displayedTimelines.map((t) => {
               let phases: Phase[] = [];
               try {
-                phases = JSON.parse(t.phases as string) as Phase[];
+                phases = JSON.parse(t.phases) as Phase[];
               } catch {
                 /* ignore */
               }
@@ -182,14 +191,14 @@ export default async function CategoryPage({ params }: Props) {
                 phases.flatMap((p) => p.hobbies.map((h) => h.name)),
               ).size;
               return (
-                <Link key={t.id} href={getTimelineUrl({ id: t.id, slug: t.slug, user: t.user })}>
+                <Link key={t.id} href={getTimelineUrl({ id: t.id, slug: t.slug, user: t.userUsername ? { username: t.userUsername } : null })}>
                   <div className="group rounded-xl border border-stone-200 bg-white p-4 transition-colors hover:border-emerald-400">
                     <h3 className="font-medium text-stone-800 group-hover:text-emerald-600 transition-colors">
                       {t.title ?? "Hobby Timeline"}
                     </h3>
-                    {t.user && (
+                    {t.userName && (
                       <p className="text-xs text-stone-500 mt-0.5">
-                        @{t.user.username ?? t.user.name}
+                        @{t.userUsername ?? t.userName}
                       </p>
                     )}
                     <p className="text-xs text-stone-400 mt-1.5">

@@ -90,7 +90,7 @@ export function CommentsSectionWithOwn({
             id: created.id,
             body: created.body,
             createdAt: created.createdAt,
-            user: created.user,
+            user: created.user ?? { name: null, username: null, image: null },
           },
         ]);
         setLocalOwnIds((prev) => new Set([...prev, created.id]));

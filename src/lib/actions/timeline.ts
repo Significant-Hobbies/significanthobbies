@@ -6,6 +6,8 @@ import { db } from "~/server/db";
 import { revalidatePath } from "next/cache";
 import { nanoid } from "nanoid";
 import { z } from "zod";
+import { eq, and, count } from "drizzle-orm";
+import { timelines, likes, comments, users } from "~/db/schema";
 import type { Phase, TimelineVisibility, TimelinePin } from "~/lib/types";
 
 const HobbySchema = z.object({
@@ -34,7 +36,9 @@ async function generateSlug(title: string | undefined | null): Promise<string> {
   if (title) {
     const baseSlug = title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
     if (baseSlug) {
-      const existing = await db.timeline.findUnique({ where: { slug: baseSlug } });
+      const existing = await db.query.timelines.findFirst({
+        where: eq(timelines.slug, baseSlug),
+      });
       if (!existing) return baseSlug;
       const suffixed = `${baseSlug}-${nanoid(4)}`;
       return suffixed;
@@ -52,14 +56,18 @@ export async function saveTimeline(data: {
 
   const parsed = SaveTimelineSchema.parse(data);
   const slug = await generateSlug(parsed.title);
-  const timeline = await db.timeline.create({
-    data: {
+  const now = new Date();
+  const [timeline] = await db
+    .insert(timelines)
+    .values({
       userId: session.user.id,
       title: parsed.title ?? null,
       phases: JSON.stringify(parsed.phases),
       slug,
-    },
-  });
+      createdAt: now,
+      updatedAt: now,
+    })
+    .returning();
   revalidatePath("/timeline");
   if (session.user.username && slug) {
     revalidatePath(`/u/${session.user.username}/${slug}`);
@@ -74,7 +82,9 @@ export async function updateTimeline(
   const session = await getServerSession(authOptions);
   if (!session?.user?.id) throw new Error("Not authenticated");
 
-  const timeline = await db.timeline.findUnique({ where: { id } });
+  const timeline = await db.query.timelines.findFirst({
+    where: eq(timelines.id, id),
+  });
   if (!timeline || timeline.userId !== session.user.id)
     throw new Error("Not found");
 
@@ -83,10 +93,10 @@ export async function updateTimeline(
 
   // Snapshot current phases into versions if they changed
   let versions: { date: string; phases: string }[] = [];
-  try { versions = JSON.parse(timeline.versions as string); } catch { /* ignore */ }
+  try { versions = JSON.parse(timeline.versions); } catch { /* ignore */ }
 
   if (timeline.phases !== newPhasesJson) {
-    versions.push({ date: new Date().toISOString(), phases: timeline.phases as string });
+    versions.push({ date: new Date().toISOString(), phases: timeline.phases });
     if (versions.length > 10) versions = versions.slice(-10);
   }
 
@@ -96,18 +106,20 @@ export async function updateTimeline(
     slug = await generateSlug(parsed.title ?? timeline.title);
   }
 
-  const updated = await db.timeline.update({
-    where: { id },
-    data: {
+  const [updated] = await db
+    .update(timelines)
+    .set({
       title: parsed.title ?? null,
       phases: newPhasesJson,
       versions: JSON.stringify(versions),
+      updatedAt: new Date(),
       ...(slug && !timeline.slug ? { slug } : {}),
-    },
-  });
+    })
+    .where(eq(timelines.id, id))
+    .returning();
   revalidatePath(`/timeline/${id}`);
   // Also revalidate the new URL if applicable
-  if (updated.slug && session.user.username) {
+  if (updated?.slug && session.user.username) {
     revalidatePath(`/u/${session.user.username}/${updated.slug}`);
   }
   return updated;
@@ -120,7 +132,9 @@ export async function setTimelineVisibility(
   const session = await getServerSession(authOptions);
   if (!session?.user?.id) throw new Error("Not authenticated");
 
-  const timeline = await db.timeline.findUnique({ where: { id } });
+  const timeline = await db.query.timelines.findFirst({
+    where: eq(timelines.id, id),
+  });
   if (!timeline || timeline.userId !== session.user.id)
     throw new Error("Not found");
 
@@ -129,12 +143,13 @@ export async function setTimelineVisibility(
     slug = nanoid(10);
   }
 
-  const updated = await db.timeline.update({
-    where: { id },
-    data: { visibility, slug },
-  });
+  const [updated] = await db
+    .update(timelines)
+    .set({ visibility, slug, updatedAt: new Date() })
+    .where(eq(timelines.id, id))
+    .returning();
   revalidatePath(`/timeline/${id}`);
-  if (updated.slug && session.user.username) {
+  if (updated?.slug && session.user.username) {
     revalidatePath(`/u/${session.user.username}/${updated.slug}`);
   }
   return updated;
@@ -144,11 +159,13 @@ export async function deleteTimeline(id: string) {
   const session = await getServerSession(authOptions);
   if (!session?.user?.id) throw new Error("Not authenticated");
 
-  const timeline = await db.timeline.findUnique({ where: { id } });
+  const timeline = await db.query.timelines.findFirst({
+    where: eq(timelines.id, id),
+  });
   if (!timeline || timeline.userId !== session.user.id)
     throw new Error("Not found");
 
-  await db.timeline.delete({ where: { id } });
+  await db.delete(timelines).where(eq(timelines.id, id));
   revalidatePath("/timeline");
 }
 
@@ -157,17 +174,25 @@ export async function getLikeStatus(
 ): Promise<{ liked: boolean; count: number }> {
   const session = await getServerSession(authOptions);
 
-  const count = await db.like.count({ where: { timelineId } });
+  const [result] = await db
+    .select({ count: count() })
+    .from(likes)
+    .where(eq(likes.timelineId, timelineId));
+
+  const likeCount = result?.count ?? 0;
 
   if (!session?.user?.id) {
-    return { liked: false, count };
+    return { liked: false, count: likeCount };
   }
 
-  const existing = await db.like.findUnique({
-    where: { userId_timelineId: { userId: session.user.id, timelineId } },
+  const existing = await db.query.likes.findFirst({
+    where: and(
+      eq(likes.userId, session.user.id),
+      eq(likes.timelineId, timelineId),
+    ),
   });
 
-  return { liked: !!existing, count };
+  return { liked: !!existing, count: likeCount };
 }
 
 export async function toggleLike(
@@ -176,28 +201,44 @@ export async function toggleLike(
   const session = await getServerSession(authOptions);
   if (!session?.user?.id) throw new Error("Not authenticated");
 
-  const existing = await db.like.findUnique({
-    where: { userId_timelineId: { userId: session.user.id, timelineId } },
+  const existing = await db.query.likes.findFirst({
+    where: and(
+      eq(likes.userId, session.user.id),
+      eq(likes.timelineId, timelineId),
+    ),
   });
 
   if (existing) {
-    await db.like.delete({ where: { id: existing.id } });
+    await db.delete(likes).where(eq(likes.id, existing.id));
   } else {
-    await db.like.create({
-      data: { userId: session.user.id, timelineId },
+    await db.insert(likes).values({
+      userId: session.user.id,
+      timelineId,
     });
   }
 
-  const count = await db.like.count({ where: { timelineId } });
+  const [result] = await db
+    .select({ count: count() })
+    .from(likes)
+    .where(eq(likes.timelineId, timelineId));
+
+  const likeCount = result?.count ?? 0;
   revalidatePath(`/timeline/${timelineId}`);
-  const tl = await db.timeline.findUnique({
-    where: { id: timelineId },
-    select: { slug: true, user: { select: { username: true } } },
+
+  const tl = await db.query.timelines.findFirst({
+    where: eq(timelines.id, timelineId),
+    columns: { slug: true, userId: true },
   });
-  if (tl?.slug && tl.user?.username) {
-    revalidatePath(`/u/${tl.user.username}/${tl.slug}`);
+  if (tl?.slug && tl.userId) {
+    const tlUser = await db.query.users.findFirst({
+      where: eq(users.id, tl.userId),
+      columns: { username: true },
+    });
+    if (tlUser?.username) {
+      revalidatePath(`/u/${tlUser.username}/${tl.slug}`);
+    }
   }
-  return { liked: !existing, count };
+  return { liked: !existing, count: likeCount };
 }
 
 export async function addComment(timelineId: string, body: string) {
@@ -207,40 +248,58 @@ export async function addComment(timelineId: string, body: string) {
   const trimmed = body.trim().slice(0, 280);
   if (!trimmed) throw new Error("Comment body is required");
 
-  const comment = await db.comment.create({
-    data: { userId: session.user.id, timelineId, body: trimmed },
-    include: {
-      user: { select: { name: true, username: true, image: true } },
-    },
+  const [comment] = await db
+    .insert(comments)
+    .values({ userId: session.user.id, timelineId, body: trimmed })
+    .returning();
+
+  // Fetch the user info to return with the comment
+  const commentUser = await db.query.users.findFirst({
+    where: eq(users.id, session.user.id),
+    columns: { name: true, username: true, image: true },
   });
 
   revalidatePath(`/timeline/${timelineId}`);
-  const tl = await db.timeline.findUnique({
-    where: { id: timelineId },
-    select: { slug: true, user: { select: { username: true } } },
+  const tl = await db.query.timelines.findFirst({
+    where: eq(timelines.id, timelineId),
+    columns: { slug: true, userId: true },
   });
-  if (tl?.slug && tl.user?.username) {
-    revalidatePath(`/u/${tl.user.username}/${tl.slug}`);
+  if (tl?.slug && tl.userId) {
+    const tlUser = await db.query.users.findFirst({
+      where: eq(users.id, tl.userId),
+      columns: { username: true },
+    });
+    if (tlUser?.username) {
+      revalidatePath(`/u/${tlUser.username}/${tl.slug}`);
+    }
   }
-  return comment;
+  return { ...comment, user: commentUser };
 }
 
 export async function deleteComment(commentId: string) {
   const session = await getServerSession(authOptions);
   if (!session?.user?.id) throw new Error("Not authenticated");
 
-  const comment = await db.comment.findUnique({ where: { id: commentId } });
+  const comment = await db.query.comments.findFirst({
+    where: eq(comments.id, commentId),
+  });
   if (!comment || comment.userId !== session.user.id)
     throw new Error("Not found");
 
-  await db.comment.delete({ where: { id: commentId } });
+  await db.delete(comments).where(eq(comments.id, commentId));
   revalidatePath(`/timeline/${comment.timelineId}`);
-  const tl = await db.timeline.findUnique({
-    where: { id: comment.timelineId },
-    select: { slug: true, user: { select: { username: true } } },
+  const tl = await db.query.timelines.findFirst({
+    where: eq(timelines.id, comment.timelineId),
+    columns: { slug: true, userId: true },
   });
-  if (tl?.slug && tl.user?.username) {
-    revalidatePath(`/u/${tl.user.username}/${tl.slug}`);
+  if (tl?.slug && tl.userId) {
+    const tlUser = await db.query.users.findFirst({
+      where: eq(users.id, tl.userId),
+      columns: { username: true },
+    });
+    if (tlUser?.username) {
+      revalidatePath(`/u/${tlUser.username}/${tl.slug}`);
+    }
   }
 }
 
@@ -257,20 +316,23 @@ export async function addPin(timelineId: string, pin: TimelinePin) {
   const session = await getServerSession(authOptions);
   if (!session?.user?.id) throw new Error("Not authenticated");
 
-  const timeline = await db.timeline.findUnique({ where: { id: timelineId } });
+  const timeline = await db.query.timelines.findFirst({
+    where: eq(timelines.id, timelineId),
+  });
   if (!timeline || timeline.userId !== session.user.id) throw new Error("Not found");
 
   const parsed = PinSchema.parse(pin);
   let pins: TimelinePin[] = [];
-  try { pins = JSON.parse(timeline.pins as string); } catch { /* ignore */ }
+  try { pins = JSON.parse(timeline.pins); } catch { /* ignore */ }
   pins.push(parsed as TimelinePin);
 
-  const updated = await db.timeline.update({
-    where: { id: timelineId },
-    data: { pins: JSON.stringify(pins) },
-  });
+  const [updated] = await db
+    .update(timelines)
+    .set({ pins: JSON.stringify(pins), updatedAt: new Date() })
+    .where(eq(timelines.id, timelineId))
+    .returning();
   revalidatePath(`/timeline/${timelineId}`);
-  if (updated.slug && session.user.username) {
+  if (updated?.slug && session.user.username) {
     revalidatePath(`/u/${session.user.username}/${updated.slug}`);
   }
 }
@@ -279,19 +341,22 @@ export async function removePin(timelineId: string, pinId: string) {
   const session = await getServerSession(authOptions);
   if (!session?.user?.id) throw new Error("Not authenticated");
 
-  const timeline = await db.timeline.findUnique({ where: { id: timelineId } });
+  const timeline = await db.query.timelines.findFirst({
+    where: eq(timelines.id, timelineId),
+  });
   if (!timeline || timeline.userId !== session.user.id) throw new Error("Not found");
 
   let pins: TimelinePin[] = [];
-  try { pins = JSON.parse(timeline.pins as string); } catch { /* ignore */ }
+  try { pins = JSON.parse(timeline.pins); } catch { /* ignore */ }
   pins = pins.filter((p) => p.id !== pinId);
 
-  const updatedTl = await db.timeline.update({
-    where: { id: timelineId },
-    data: { pins: JSON.stringify(pins) },
-  });
+  const [updatedTl] = await db
+    .update(timelines)
+    .set({ pins: JSON.stringify(pins), updatedAt: new Date() })
+    .where(eq(timelines.id, timelineId))
+    .returning();
   revalidatePath(`/timeline/${timelineId}`);
-  if (updatedTl.slug && session.user.username) {
+  if (updatedTl?.slug && session.user.username) {
     revalidatePath(`/u/${session.user.username}/${updatedTl.slug}`);
   }
 }

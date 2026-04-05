@@ -4,6 +4,8 @@ import { HOBBY_CATEGORIES } from "~/lib/hobbies";
 import type { Phase, TimelineVisibility } from "~/lib/types";
 import { SearchPageClient } from "./search-client";
 import { getTimelineUrl } from "~/lib/timeline-url";
+import { eq, like, or, desc, count } from "drizzle-orm";
+import { timelines, users } from "~/db/schema";
 
 export const metadata = { title: "Search — SignificantHobbies" };
 
@@ -37,22 +39,35 @@ export default async function SearchPage({ searchParams }: Props) {
   const lower = query.toLowerCase();
 
   // --- Timelines ---
-  const rawTimelines = await db.timeline.findMany({
-    where: {
-      visibility: "PUBLIC",
-      title: { contains: query },
-    },
-    include: {
-      user: { select: { id: true, name: true, username: true, image: true } },
-    },
-    orderBy: { updatedAt: "desc" },
-    take: 20,
-  });
+  const rawTimelines = await db
+    .select({
+      id: timelines.id,
+      title: timelines.title,
+      visibility: timelines.visibility,
+      slug: timelines.slug,
+      phases: timelines.phases,
+      createdAt: timelines.createdAt,
+      updatedAt: timelines.updatedAt,
+      userId: users.id,
+      userName: users.name,
+      userUsername: users.username,
+      userImage: users.image,
+    })
+    .from(timelines)
+    .leftJoin(users, eq(timelines.userId, users.id))
+    .where(eq(timelines.visibility, "PUBLIC"))
+    .orderBy(desc(timelines.updatedAt))
+    .limit(100);
 
-  const timelines = rawTimelines.map((raw) => {
+  // Filter by title containing query (SQLite like is case-insensitive by default for ASCII)
+  const filteredTimelines = rawTimelines.filter(
+    (t) => t.title && t.title.toLowerCase().includes(lower),
+  );
+
+  const timelineResults = filteredTimelines.slice(0, 20).map((raw) => {
     let phases: Phase[] = [];
     try {
-      phases = JSON.parse(raw.phases as string) as Phase[];
+      phases = JSON.parse(raw.phases) as Phase[];
     } catch { /* ignore */ }
     return {
       id: raw.id,
@@ -62,27 +77,39 @@ export default async function SearchPage({ searchParams }: Props) {
       phases,
       createdAt: raw.createdAt,
       updatedAt: raw.updatedAt,
-      user: raw.user ?? null,
+      user: raw.userId
+        ? { id: raw.userId, name: raw.userName, username: raw.userUsername, image: raw.userImage }
+        : null,
     };
   });
 
   // --- People ---
-  const users = await db.user.findMany({
-    where: {
-      OR: [
-        { username: { contains: lower } },
-        { name: { contains: query } },
-      ],
-    },
-    select: {
-      id: true,
-      name: true,
-      username: true,
-      image: true,
-      _count: { select: { timelines: true } },
-    },
-    take: 20,
-  });
+  const userResults = await db
+    .select({
+      id: users.id,
+      name: users.name,
+      username: users.username,
+      image: users.image,
+    })
+    .from(users)
+    .where(
+      or(
+        like(users.username, `%${lower}%`),
+        like(users.name, `%${query}%`),
+      ),
+    )
+    .limit(20);
+
+  // Get timeline counts for each user
+  const userWithCounts = await Promise.all(
+    userResults.map(async (u) => {
+      const [result] = await db
+        .select({ count: count() })
+        .from(timelines)
+        .where(eq(timelines.userId, u.id));
+      return { ...u, _count: { timelines: result?.count ?? 0 } };
+    }),
+  );
 
   // --- Hobbies (from static list) ---
   const matchingHobbies = HOBBY_CATEGORIES.flatMap((cat) =>
@@ -107,12 +134,12 @@ export default async function SearchPage({ searchParams }: Props) {
           <h2 className="mb-4 flex items-center gap-2 text-sm font-semibold uppercase tracking-wide text-stone-500">
             Timelines
             <span className="rounded-full bg-stone-100 px-2 py-0.5 text-xs font-medium text-stone-500">
-              {timelines.length}
+              {timelineResults.length}
             </span>
           </h2>
-          {timelines.length > 0 ? (
+          {timelineResults.length > 0 ? (
             <div className="space-y-2">
-              {timelines.map((t) => {
+              {timelineResults.map((t) => {
                 const totalHobbies = new Set(
                   t.phases.flatMap((p) => p.hobbies.map((h) => h.name.toLowerCase())),
                 ).size;
@@ -148,12 +175,12 @@ export default async function SearchPage({ searchParams }: Props) {
           <h2 className="mb-4 flex items-center gap-2 text-sm font-semibold uppercase tracking-wide text-stone-500">
             People
             <span className="rounded-full bg-stone-100 px-2 py-0.5 text-xs font-medium text-stone-500">
-              {users.length}
+              {userWithCounts.length}
             </span>
           </h2>
-          {users.length > 0 ? (
+          {userWithCounts.length > 0 ? (
             <div className="space-y-2">
-              {users.map((user) => (
+              {userWithCounts.map((user) => (
                 <Link
                   key={user.id}
                   href={user.username ? `/u/${user.username}` : "#"}

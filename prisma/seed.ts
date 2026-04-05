@@ -1,12 +1,14 @@
 import "dotenv/config";
-import { PrismaLibSql } from "@prisma/adapter-libsql";
-import { PrismaClient } from "../src/generated/prisma/client.js";
+import { drizzle } from "drizzle-orm/libsql";
+import { createClient } from "@libsql/client";
+import { eq } from "drizzle-orm";
+import * as schema from "../src/db/schema";
 
-async function createDb() {
+function createDb() {
   const url = process.env.DATABASE_URL ?? "file:./dev.db";
   const authToken = process.env.TURSO_AUTH_TOKEN || undefined;
-  const adapter = new PrismaLibSql({ url, authToken });
-  return new PrismaClient({ adapter } as ConstructorParameters<typeof PrismaClient>[0]);
+  const client = createClient({ url, authToken });
+  return drizzle(client, { schema });
 }
 
 const famousTimelines = [
@@ -511,50 +513,75 @@ const famousTimelines = [
 ];
 
 async function main() {
-  const db = await createDb();
-  console.log("🌱 Seeding database with famous hobby journeys...");
+  const db = createDb();
+  console.log("Seeding database with famous hobby journeys...");
 
-  try {
-    // Remove old demo timelines
-    for (const slug of ["demo-alex", "demo-sam", "demo-jordan"]) {
-      const existing = await db.timeline.findUnique({ where: { slug } });
-      if (existing) {
-        await db.timeline.delete({ where: { slug } });
-        console.log(`  🗑 Removed old demo: ${slug}`);
-      }
+  // Remove old demo timelines
+  for (const slug of ["demo-alex", "demo-sam", "demo-jordan"]) {
+    const existing = await db.query.timelines.findFirst({
+      where: eq(schema.timelines.slug, slug),
+    });
+    if (existing) {
+      await db.delete(schema.timelines).where(eq(schema.timelines.slug, slug));
+      console.log(`  Removed old demo: ${slug}`);
     }
+  }
 
-    // Seed famous timelines
-    for (const demo of famousTimelines) {
-      const user = await db.user.upsert({
-        where: { email: demo.email },
-        update: { username: demo.username, name: demo.name },
-        create: {
+  // Seed famous timelines
+  for (const demo of famousTimelines) {
+    // Upsert user
+    let user = await db.query.users.findFirst({
+      where: eq(schema.users.email, demo.email),
+    });
+
+    if (user) {
+      await db
+        .update(schema.users)
+        .set({ username: demo.username, name: demo.name })
+        .where(eq(schema.users.id, user.id));
+    } else {
+      const [newUser] = await db
+        .insert(schema.users)
+        .values({
           email: demo.email,
           name: demo.name,
           username: demo.username,
           image: `https://api.dicebear.com/7.x/initials/svg?seed=${demo.name}`,
-        },
-      });
-
-      await db.timeline.upsert({
-        where: { slug: demo.timeline.slug },
-        update: { phases: JSON.stringify(demo.timeline.phases), title: demo.timeline.title },
-        create: {
-          userId: user.id,
-          title: demo.timeline.title,
-          visibility: "PUBLIC",
-          slug: demo.timeline.slug,
-          phases: JSON.stringify(demo.timeline.phases),
-        },
-      });
-
-      console.log(`  ✓ ${demo.name} (@${demo.username})`);
+        })
+        .returning();
+      user = newUser!;
     }
-    console.log("✅ Seeding complete!");
-  } finally {
-    await db.$disconnect();
+
+    // Upsert timeline
+    const existingTimeline = await db.query.timelines.findFirst({
+      where: eq(schema.timelines.slug, demo.timeline.slug),
+    });
+
+    const now = new Date();
+    if (existingTimeline) {
+      await db
+        .update(schema.timelines)
+        .set({
+          phases: JSON.stringify(demo.timeline.phases),
+          title: demo.timeline.title,
+          updatedAt: now,
+        })
+        .where(eq(schema.timelines.id, existingTimeline.id));
+    } else {
+      await db.insert(schema.timelines).values({
+        userId: user.id,
+        title: demo.timeline.title,
+        visibility: "PUBLIC",
+        slug: demo.timeline.slug,
+        phases: JSON.stringify(demo.timeline.phases),
+        createdAt: now,
+        updatedAt: now,
+      });
+    }
+
+    console.log(`  Done: ${demo.name} (@${demo.username})`);
   }
+  console.log("Seeding complete!");
 }
 
 main().catch((e) => {

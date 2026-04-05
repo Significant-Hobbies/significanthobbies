@@ -1,8 +1,9 @@
-import { PrismaAdapter } from "@next-auth/prisma-adapter";
+import { DrizzleAdapter } from "@auth/drizzle-adapter";
 import { type NextAuthOptions } from "next-auth";
-import { type JWT } from "next-auth/jwt";
 import GoogleProvider from "next-auth/providers/google";
 import { db } from "~/server/db";
+import { eq } from "drizzle-orm";
+import { users } from "~/db/schema";
 
 declare module "next-auth" {
   interface Session {
@@ -24,7 +25,7 @@ declare module "next-auth/jwt" {
 }
 
 export const authOptions: NextAuthOptions = {
-  adapter: PrismaAdapter(db),
+  adapter: DrizzleAdapter(db),
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID ?? "",
@@ -48,9 +49,9 @@ export const authOptions: NextAuthOptions = {
       }
       // On update trigger or if username not yet set, fetch from DB
       if (trigger === "update" || (token.userId && token.username === undefined)) {
-        const dbUser = await db.user.findUnique({
-          where: { id: token.userId as string },
-          select: { username: true },
+        const dbUser = await db.query.users.findFirst({
+          where: eq(users.id, token.userId as string),
+          columns: { username: true },
         });
         token.username = dbUser?.username ?? null;
       }

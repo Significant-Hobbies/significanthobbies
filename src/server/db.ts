@@ -1,23 +1,20 @@
-// eslint-disable-next-line @typescript-eslint/no-require-imports
-const { PrismaLibSql } = require("@prisma/adapter-libsql") as typeof import("@prisma/adapter-libsql");
-import { PrismaClient } from "~/generated/prisma/client";
+import { drizzle } from "drizzle-orm/libsql";
+import { createClient } from "@libsql/client";
+import * as schema from "~/db/schema";
 
-function createPrismaClient() {
+function createDrizzleClient() {
   const url = process.env.DATABASE_URL ?? "file:./dev.db";
   const authToken = process.env.TURSO_AUTH_TOKEN;
 
-  const adapter = new PrismaLibSql({ url, authToken });
+  const client = createClient({ url, authToken });
 
-  return new PrismaClient({
-    adapter,
-    log: process.env.NODE_ENV === "development" ? ["error", "warn"] : ["error"],
-  } as ConstructorParameters<typeof PrismaClient>[0]);
+  return drizzle(client, { schema });
 }
 
-const globalForPrisma = globalThis as unknown as {
-  prisma: ReturnType<typeof createPrismaClient> | undefined;
+const globalForDrizzle = globalThis as unknown as {
+  db: ReturnType<typeof createDrizzleClient> | undefined;
 };
 
-export const db = globalForPrisma.prisma ?? createPrismaClient();
+export const db = globalForDrizzle.db ?? createDrizzleClient();
 
-if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = db;
+if (process.env.NODE_ENV !== "production") globalForDrizzle.db = db;

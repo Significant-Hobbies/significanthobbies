@@ -11,6 +11,8 @@ import { Button } from "~/components/ui/button";
 import type { Phase, TimelineVisibility } from "~/lib/types";
 import { Plus, Clock } from "lucide-react";
 import { getTimelineUrl } from "~/lib/timeline-url";
+import { eq, desc } from "drizzle-orm";
+import { timelines } from "~/db/schema";
 
 export const metadata = {
   title: "Dashboard — SignificantHobbies",
@@ -38,10 +40,11 @@ export default async function DashboardPage() {
   const session = await getServerSession(authOptions);
   if (!session?.user) redirect("/login");
 
-  const rawTimelines = await db.timeline.findMany({
-    where: { userId: session.user.id },
-    orderBy: { updatedAt: "desc" },
-  });
+  const rawTimelines = await db
+    .select()
+    .from(timelines)
+    .where(eq(timelines.userId, session.user.id))
+    .orderBy(desc(timelines.updatedAt));
 
   const currentUser = {
     id: session.user.id,
@@ -50,10 +53,10 @@ export default async function DashboardPage() {
     image: session.user.image ?? null,
   };
 
-  const timelines = rawTimelines.map((raw) => {
+  const timelineList = rawTimelines.map((raw) => {
     let phases: Phase[] = [];
     try {
-      phases = JSON.parse(raw.phases as string) as Phase[];
+      phases = JSON.parse(raw.phases) as Phase[];
     } catch {
       /* ignore */
     }
@@ -70,7 +73,7 @@ export default async function DashboardPage() {
   });
 
   // Aggregate all phases across all timelines for global insights
-  const allPhases = timelines.flatMap((t) => t.phases);
+  const allPhases = timelineList.flatMap((t) => t.phases);
   const personality = allPhases.length > 0 ? computePersonality(allPhases) : null;
 
   return (
@@ -134,7 +137,7 @@ export default async function DashboardPage() {
           </Link>
         </div>
 
-        {timelines.length === 0 ? (
+        {timelineList.length === 0 ? (
           <div className="rounded-xl border border-dashed border-stone-300 bg-stone-50 p-10 text-center">
             <p className="text-stone-500 mb-4">You haven&apos;t created any timelines yet.</p>
             <Link href="/timeline/new">
@@ -145,7 +148,7 @@ export default async function DashboardPage() {
           </div>
         ) : (
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {timelines.map((timeline) => {
+            {timelineList.map((timeline) => {
               const staleness = getStalenessInfo(timeline.updatedAt);
               return (
                 <div key={timeline.id} className="relative">
@@ -178,7 +181,7 @@ export default async function DashboardPage() {
       {allPhases.length > 0 && <RecommendationsPanel phases={allPhases} />}
 
       {/* CTA: Create new timeline */}
-      {timelines.length > 0 && (
+      {timelineList.length > 0 && (
         <div className="rounded-xl border border-stone-200 bg-stone-50 p-6 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div>
             <h3 className="font-semibold text-stone-800">Start a new chapter</h3>

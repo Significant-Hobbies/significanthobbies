@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
 import { db } from "~/server/db";
+import { eq } from "drizzle-orm";
+import { users } from "~/db/schema";
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
@@ -13,9 +15,9 @@ export async function GET(request: Request) {
     return NextResponse.json({ available: false, reason: "invalid" });
   }
 
-  const existing = await db.user.findUnique({
-    where: { username },
-    select: { username: true },
+  const existing = await db.query.users.findFirst({
+    where: eq(users.username, username),
+    columns: { username: true },
   });
 
   return NextResponse.json({

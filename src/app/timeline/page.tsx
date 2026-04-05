@@ -6,6 +6,8 @@ import { Button } from "~/components/ui/button";
 import { TimelineCard } from "~/components/timeline-card";
 import { Plus, LayoutList } from "lucide-react";
 import type { Phase, TimelineData, TimelineVisibility } from "~/lib/types";
+import { eq, desc } from "drizzle-orm";
+import { timelines } from "~/db/schema";
 
 export const metadata = { title: "My Timelines — SignificantHobbies" };
 
@@ -16,15 +18,16 @@ export default async function MyTimelinesPage() {
     redirect("/login");
   }
 
-  const rawTimelines = await db.timeline.findMany({
-    where: { userId: session.user.id },
-    orderBy: { updatedAt: "desc" },
-  });
+  const rawTimelines = await db
+    .select()
+    .from(timelines)
+    .where(eq(timelines.userId, session.user.id))
+    .orderBy(desc(timelines.updatedAt));
 
-  const timelines: TimelineData[] = rawTimelines.map((raw) => {
+  const timelineList: TimelineData[] = rawTimelines.map((raw) => {
     let phases: Phase[] = [];
     try {
-      phases = JSON.parse(raw.phases as string) as Phase[];
+      phases = JSON.parse(raw.phases) as Phase[];
     } catch { /* ignore */ }
 
     return {
@@ -45,8 +48,8 @@ export default async function MyTimelinesPage() {
         <div>
           <h1 className="text-2xl font-bold text-stone-900">My Timelines</h1>
           <p className="mt-1 text-sm text-stone-500">
-            {timelines.length > 0
-              ? `${timelines.length} timeline${timelines.length === 1 ? "" : "s"}`
+            {timelineList.length > 0
+              ? `${timelineList.length} timeline${timelineList.length === 1 ? "" : "s"}`
               : "Track your hobbies across life phases"}
           </p>
         </div>
@@ -58,7 +61,7 @@ export default async function MyTimelinesPage() {
         </Link>
       </div>
 
-      {timelines.length === 0 ? (
+      {timelineList.length === 0 ? (
         /* Empty state */
         <div className="flex flex-col items-center justify-center rounded-2xl border border-stone-200 bg-stone-50 px-6 py-20 text-center">
           <div className="mb-5 flex h-14 w-14 items-center justify-center rounded-full border border-stone-200 bg-stone-100">
@@ -81,7 +84,7 @@ export default async function MyTimelinesPage() {
       ) : (
         /* Timeline grid */
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {timelines.map((timeline) => (
+          {timelineList.map((timeline) => (
             <TimelineCard
               key={timeline.id}
               timeline={timeline}
