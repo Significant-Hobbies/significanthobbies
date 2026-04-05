@@ -47,4 +47,4 @@ dev.db
 *.db
 .env.vercel.tmp
 .claude/settings.local.json
-.claude/settings.local.json
+package-lock.json
