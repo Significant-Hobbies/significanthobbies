@@ -12,6 +12,8 @@ import { BadgeCollection } from "~/components/badge-collection";
 import { Plus, ExternalLink, Pencil } from "lucide-react";
 import type { Phase, TimelineVisibility } from "~/lib/types";
 import { getCategoryForHobby } from "~/lib/hobbies";
+import { eq, and, or, desc, count } from "drizzle-orm";
+import { users, follows, timelines } from "~/db/schema";
 
 interface Props {
   params: Promise<{ username: string }>;
@@ -42,9 +44,9 @@ export default async function ProfilePage({ params }: Props) {
   const { username } = await params;
   const session = await getServerSession(authOptions);
 
-  const user = await db.user.findUnique({
-    where: { username },
-    select: {
+  const user = await db.query.users.findFirst({
+    where: eq(users.username, username),
+    columns: {
       id: true,
       name: true,
       username: true,
@@ -53,16 +55,6 @@ export default async function ProfilePage({ params }: Props) {
       website: true,
       createdAt: true,
       earnedBadges: true,
-      _count: {
-        select: {
-          followers: true,
-          following: true,
-        },
-      },
-      timelines: {
-        orderBy: { updatedAt: "desc" },
-        where: { OR: [{ visibility: "PUBLIC" }, { visibility: "UNLISTED" }] },
-      },
     },
   });
 
@@ -70,38 +62,60 @@ export default async function ProfilePage({ params }: Props) {
 
   const isOwner = session?.user?.id === user.id;
 
+  // Get follower and following counts
+  const [followerResult] = await db
+    .select({ count: count() })
+    .from(follows)
+    .where(eq(follows.followingId, user.id));
+  const [followingResult] = await db
+    .select({ count: count() })
+    .from(follows)
+    .where(eq(follows.followerId, user.id));
+
+  const followerCount = followerResult?.count ?? 0;
+  const followingCount = followingResult?.count ?? 0;
+
+  // Get timelines - public/unlisted for visitors, all for owner
+  let ownTimelines;
+  if (isOwner) {
+    ownTimelines = await db
+      .select()
+      .from(timelines)
+      .where(eq(timelines.userId, user.id))
+      .orderBy(desc(timelines.updatedAt));
+  } else {
+    ownTimelines = await db
+      .select()
+      .from(timelines)
+      .where(
+        and(
+          eq(timelines.userId, user.id),
+          or(eq(timelines.visibility, "PUBLIC"), eq(timelines.visibility, "UNLISTED")),
+        ),
+      )
+      .orderBy(desc(timelines.updatedAt));
+  }
+
   // Parse earned badges
   let earnedBadgeIds: string[] = [];
-  try { earnedBadgeIds = JSON.parse(user.earnedBadges as string) as string[]; } catch { /* ignore */ }
+  try { earnedBadgeIds = JSON.parse(user.earnedBadges) as string[]; } catch { /* ignore */ }
 
   // Check if the current user is following this profile
   let isFollowing = false;
   if (session?.user?.id && !isOwner) {
-    const followRecord = await db.follow.findUnique({
-      where: {
-        followerId_followingId: {
-          followerId: session.user.id,
-          followingId: user.id,
-        },
-      },
+    const followRecord = await db.query.follows.findFirst({
+      where: and(
+        eq(follows.followerId, session.user.id),
+        eq(follows.followingId, user.id),
+      ),
     });
     isFollowing = !!followRecord;
   }
 
-  // Get owned timelines (including private) for owner
-  let ownTimelines = user.timelines;
-  if (isOwner) {
-    const allTimelines = await db.timeline.findMany({
-      where: { userId: user.id },
-      orderBy: { updatedAt: "desc" },
-    });
-    ownTimelines = allTimelines;
-  }
-
-  const timelines = ownTimelines.map((t) => {
+  const timelineList = ownTimelines.map((t) => {
     let phases: Phase[] = [];
     try {
-      phases = JSON.parse(t.phases as string) as Phase[];
+      phases = JSON.parse(t.phases) as Phase[];
     } catch { /* ignore */ }
     return {
       id: t.id,
@@ -116,21 +130,21 @@ export default async function ProfilePage({ params }: Props) {
   });
 
   const allHobbies = [
-    ...new Set(timelines.flatMap((t) => t.phases.flatMap((p) => p.hobbies.map((h) => h.name)))),
+    ...new Set(timelineList.flatMap((t) => t.phases.flatMap((p) => p.hobbies.map((h) => h.name)))),
   ];
 
-  const totalPhases = timelines.reduce((sum, t) => sum + t.phases.length, 0);
+  const totalPhases = timelineList.reduce((sum, t) => sum + t.phases.length, 0);
 
   // Build hobby cloud: top 10 most-used hobbies by occurrence count
-  const hobbyCount: Record<string, number> = {};
-  for (const t of timelines) {
+  const hobbyCountMap: Record<string, number> = {};
+  for (const t of timelineList) {
     for (const p of t.phases) {
       for (const h of p.hobbies) {
-        hobbyCount[h.name] = (hobbyCount[h.name] ?? 0) + 1;
+        hobbyCountMap[h.name] = (hobbyCountMap[h.name] ?? 0) + 1;
       }
     }
   }
-  const top10Hobbies = Object.entries(hobbyCount)
+  const top10Hobbies = Object.entries(hobbyCountMap)
     .sort((a, b) => b[1] - a[1])
     .slice(0, 10)
     .map(([name]) => name);
@@ -196,8 +210,8 @@ export default async function ProfilePage({ params }: Props) {
           {/* Stats bar */}
           <div className="mt-3 flex flex-wrap gap-2">
             <span className="inline-flex items-center gap-1.5 rounded-full border border-stone-200 bg-stone-50 px-3 py-1 text-xs text-stone-700">
-              <span className="text-emerald-600 font-semibold">{timelines.length}</span>
-              <span className="text-stone-500">timeline{timelines.length !== 1 ? "s" : ""}</span>
+              <span className="text-emerald-600 font-semibold">{timelineList.length}</span>
+              <span className="text-stone-500">timeline{timelineList.length !== 1 ? "s" : ""}</span>
             </span>
             <span className="inline-flex items-center gap-1.5 rounded-full border border-stone-200 bg-stone-50 px-3 py-1 text-xs text-stone-700">
               <span className="text-emerald-600 font-semibold">{allHobbies.length}</span>
@@ -208,11 +222,11 @@ export default async function ProfilePage({ params }: Props) {
               <span className="text-stone-500">phase{totalPhases !== 1 ? "s" : ""}</span>
             </span>
             <span className="inline-flex items-center gap-1.5 rounded-full border border-stone-200 bg-stone-50 px-3 py-1 text-xs text-stone-700">
-              <span className="text-emerald-600 font-semibold">{user._count.followers}</span>
-              <span className="text-stone-500">follower{user._count.followers !== 1 ? "s" : ""}</span>
+              <span className="text-emerald-600 font-semibold">{followerCount}</span>
+              <span className="text-stone-500">follower{followerCount !== 1 ? "s" : ""}</span>
             </span>
             <span className="inline-flex items-center gap-1.5 rounded-full border border-stone-200 bg-stone-50 px-3 py-1 text-xs text-stone-700">
-              <span className="text-emerald-600 font-semibold">{user._count.following}</span>
+              <span className="text-emerald-600 font-semibold">{followingCount}</span>
               <span className="text-stone-500">following</span>
             </span>
           </div>
@@ -223,7 +237,7 @@ export default async function ProfilePage({ params }: Props) {
               <FollowButton
                 targetUserId={user.id}
                 initialFollowing={isFollowing}
-                initialCount={user._count.followers}
+                initialCount={followerCount}
                 isOwnProfile={false}
               />
             </div>
@@ -239,8 +253,8 @@ export default async function ProfilePage({ params }: Props) {
                 Follow
               </Link>
               <span className="ml-3 text-sm text-stone-500">
-                <span className="font-semibold text-stone-700">{user._count.followers}</span>{" "}
-                {user._count.followers === 1 ? "follower" : "followers"}
+                <span className="font-semibold text-stone-700">{followerCount}</span>{" "}
+                {followerCount === 1 ? "follower" : "followers"}
               </span>
             </div>
           )}
@@ -297,13 +311,13 @@ export default async function ProfilePage({ params }: Props) {
         )}
 
         {/* Timelines */}
-        {timelines.length > 0 ? (
+        {timelineList.length > 0 ? (
           <div className="scroll-reveal scroll-reveal-d2">
             <h2 className="mb-4 text-sm font-medium uppercase tracking-wide text-stone-500">
               Timelines
             </h2>
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-              {timelines.map((t) => (
+              {timelineList.map((t) => (
                 <TimelineCard
                   key={t.id}
                   timeline={t}

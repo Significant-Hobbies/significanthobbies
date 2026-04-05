@@ -2,6 +2,8 @@ import { ImageResponse } from "next/og";
 import { db } from "~/server/db";
 import type { Phase } from "~/lib/types";
 import { computePersonality } from "~/lib/personality";
+import { eq } from "drizzle-orm";
+import { timelines, users } from "~/db/schema";
 
 export const runtime = "nodejs";
 export const size = { width: 1200, height: 630 };
@@ -14,9 +16,8 @@ export default async function OgImage({
 }) {
   const { id } = await params;
 
-  const timeline = await db.timeline.findUnique({
-    where: { id },
-    include: { user: { select: { name: true, username: true } } },
+  const timeline = await db.query.timelines.findFirst({
+    where: eq(timelines.id, id),
   });
 
   if (!timeline) {
@@ -42,9 +43,16 @@ export default async function OgImage({
     );
   }
 
+  const timelineUser = timeline.userId
+    ? await db.query.users.findFirst({
+        where: eq(users.id, timeline.userId),
+        columns: { name: true, username: true },
+      })
+    : null;
+
   let phases: Phase[] = [];
   try {
-    phases = JSON.parse(timeline.phases as string) as Phase[];
+    phases = JSON.parse(timeline.phases) as Phase[];
   } catch {
     /* ignore */
   }
@@ -82,9 +90,9 @@ export default async function OgImage({
           <div style={{ fontSize: 22, color: "#059669", fontWeight: 700 }}>
             significanthobbies.com
           </div>
-          {timeline.user?.username && (
+          {timelineUser?.username && (
             <div style={{ fontSize: 22, color: "#78716C" }}>
-              @{timeline.user.username}
+              @{timelineUser.username}
             </div>
           )}
         </div>

@@ -3,6 +3,8 @@ import { db } from "~/server/db";
 import { ExploreClient } from "./explore-client";
 import { getCategoryForHobby } from "~/lib/hobbies";
 import type { Phase, TimelineData, TimelineVisibility } from "~/lib/types";
+import { eq, desc, count } from "drizzle-orm";
+import { timelines, likes, users } from "~/db/schema";
 
 export const metadata = {
   title: "Explore Hobby Timelines — SignificantHobbies",
@@ -10,20 +12,44 @@ export const metadata = {
 };
 
 export default async function ExplorePage() {
-  const rawTimelines = await db.timeline.findMany({
-    where: { visibility: "PUBLIC" },
-    include: {
-      user: { select: { id: true, name: true, username: true, image: true } },
-      _count: { select: { likes: true } },
-    },
-    orderBy: { updatedAt: "desc" },
-    take: 100,
-  });
+  const rawTimelines = await db
+    .select({
+      id: timelines.id,
+      title: timelines.title,
+      visibility: timelines.visibility,
+      slug: timelines.slug,
+      phases: timelines.phases,
+      createdAt: timelines.createdAt,
+      updatedAt: timelines.updatedAt,
+      userId: timelines.userId,
+      userName: users.name,
+      userUsername: users.username,
+      userImage: users.image,
+      userIdRef: users.id,
+    })
+    .from(timelines)
+    .leftJoin(users, eq(timelines.userId, users.id))
+    .where(eq(timelines.visibility, "PUBLIC"))
+    .orderBy(desc(timelines.updatedAt))
+    .limit(100);
 
-  const timelines: (TimelineData & { likeCount: number })[] = rawTimelines.map((raw) => {
+  // Get like counts for these timelines
+  const timelineIds = rawTimelines.map((t) => t.id);
+  const likeCounts: Record<string, number> = {};
+  if (timelineIds.length > 0) {
+    for (const t of rawTimelines) {
+      const [result] = await db
+        .select({ count: count() })
+        .from(likes)
+        .where(eq(likes.timelineId, t.id));
+      likeCounts[t.id] = result?.count ?? 0;
+    }
+  }
+
+  const timelineList: (TimelineData & { likeCount: number })[] = rawTimelines.map((raw) => {
     let phases: Phase[] = [];
     try {
-      phases = JSON.parse(raw.phases as string) as Phase[];
+      phases = JSON.parse(raw.phases) as Phase[];
     } catch { /* ignore */ }
     return {
       id: raw.id,
@@ -33,13 +59,13 @@ export default async function ExplorePage() {
       phases,
       createdAt: raw.createdAt,
       updatedAt: raw.updatedAt,
-      likeCount: raw._count.likes,
-      user: raw.user
+      likeCount: likeCounts[raw.id] ?? 0,
+      user: raw.userIdRef
         ? {
-            id: raw.user.id,
-            name: raw.user.name,
-            username: raw.user.username,
-            image: raw.user.image,
+            id: raw.userIdRef,
+            name: raw.userName,
+            username: raw.userUsername,
+            image: raw.userImage,
           }
         : null,
     };
@@ -47,7 +73,7 @@ export default async function ExplorePage() {
 
   // Aggregate trending hobbies
   const hobbyCount: Record<string, number> = {};
-  for (const t of timelines) {
+  for (const t of timelineList) {
     for (const p of t.phases) {
       for (const h of p.hobbies) {
         hobbyCount[h.name] = (hobbyCount[h.name] ?? 0) + 1;
@@ -91,7 +117,7 @@ export default async function ExplorePage() {
         </div>
       )}
 
-      <ExploreClient timelines={timelines} />
+      <ExploreClient timelines={timelineList} />
     </div>
   );
 }

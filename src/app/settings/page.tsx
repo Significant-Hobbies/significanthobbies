@@ -5,6 +5,8 @@ import { authOptions } from "~/server/auth/config";
 import { db } from "~/server/db";
 import { ProfileForm } from "./profile-form";
 import { ArrowLeft } from "lucide-react";
+import { eq } from "drizzle-orm";
+import { users } from "~/db/schema";
 
 export const metadata = {
   title: "Settings — SignificantHobbies",
@@ -18,9 +20,9 @@ export default async function SettingsPage() {
     redirect("/login");
   }
 
-  const user = await db.user.findUnique({
-    where: { id: session.user.id },
-    select: {
+  const user = await db.query.users.findFirst({
+    where: eq(users.id, session.user.id),
+    columns: {
       id: true,
       name: true,
       username: true,

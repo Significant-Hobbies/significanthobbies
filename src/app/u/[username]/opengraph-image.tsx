@@ -1,6 +1,8 @@
 import { ImageResponse } from "next/og";
 import { db } from "~/server/db";
 import type { Phase } from "~/lib/types";
+import { eq } from "drizzle-orm";
+import { users, timelines } from "~/db/schema";
 
 export const runtime = "nodejs";
 export const size = { width: 1200, height: 630 };
@@ -13,11 +15,8 @@ export default async function OgImage({
 }) {
   const { username } = await params;
 
-  const user = await db.user.findUnique({
-    where: { username },
-    include: {
-      timelines: { where: { visibility: "PUBLIC" }, take: 3 },
-    },
+  const user = await db.query.users.findFirst({
+    where: eq(users.username, username),
   });
 
   if (!user) {
@@ -43,10 +42,18 @@ export default async function OgImage({
     );
   }
 
+  const userTimelines = await db
+    .select()
+    .from(timelines)
+    .where(eq(timelines.userId, user.id))
+    .limit(3);
+
+  const publicTimelines = userTimelines.filter((t) => t.visibility === "PUBLIC");
+
   const allHobbies = new Set<string>();
-  for (const t of user.timelines) {
+  for (const t of publicTimelines) {
     try {
-      const phases = JSON.parse(t.phases as string) as Phase[];
+      const phases = JSON.parse(t.phases) as Phase[];
       phases.forEach((p) => p.hobbies.forEach((h) => allHobbies.add(h.name)));
     } catch {
       /* ignore */
@@ -132,7 +139,7 @@ export default async function OgImage({
               fontWeight: 700,
             }}
           >
-            {user.timelines.length} timeline{user.timelines.length !== 1 ? "s" : ""}
+            {publicTimelines.length} timeline{publicTimelines.length !== 1 ? "s" : ""}
           </div>
           <div
             style={{

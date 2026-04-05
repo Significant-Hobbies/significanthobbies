@@ -17,6 +17,8 @@ import { RecommendationsPanel } from "~/components/timeline-view/recommendations
 import { VersionHistory } from "~/components/timeline-view/version-history";
 import { ArrowLeft, Pencil, User } from "lucide-react";
 import type { Phase, TimelineData, TimelinePin, TimelineVisibility } from "~/lib/types";
+import { eq, asc } from "drizzle-orm";
+import { timelines, likes as likesTable, comments as commentsTable, users } from "~/db/schema";
 
 interface Props {
   params: Promise<{ id: string }>;
@@ -24,7 +26,9 @@ interface Props {
 
 export async function generateMetadata({ params }: Props) {
   const { id } = await params;
-  const timeline = await db.timeline.findUnique({ where: { id } });
+  const timeline = await db.query.timelines.findFirst({
+    where: eq(timelines.id, id),
+  });
   const title = timeline?.title ? `${timeline.title} — SignificantHobbies` : "Timeline — SignificantHobbies";
   return {
     title,
@@ -38,29 +42,23 @@ export default async function TimelinePage({ params }: Props) {
   const { id } = await params;
   const session = await getServerSession(authOptions);
 
-  const raw = await db.timeline.findUnique({
-    where: { id },
-    include: {
-      user: { select: { id: true, name: true, username: true, image: true } },
-      likes: { select: { userId: true } },
-      comments: {
-        select: {
-          id: true,
-          userId: true,
-          body: true,
-          createdAt: true,
-          user: { select: { name: true, username: true, image: true } },
-        },
-        orderBy: { createdAt: "asc" },
-      },
-    },
+  const raw = await db.query.timelines.findFirst({
+    where: eq(timelines.id, id),
   });
 
   if (!raw) notFound();
 
+  // Get user info
+  const timelineUser = raw.userId
+    ? await db.query.users.findFirst({
+        where: eq(users.id, raw.userId),
+        columns: { id: true, name: true, username: true, image: true },
+      })
+    : null;
+
   // Redirect to new URL format if timeline has a user with username and a slug
-  if (raw.user?.username && raw.slug) {
-    redirect(`/u/${raw.user.username}/${raw.slug}`);
+  if (timelineUser?.username && raw.slug) {
+    redirect(`/u/${timelineUser.username}/${raw.slug}`);
   }
 
   const isOwner = session?.user?.id === raw.userId;
@@ -70,15 +68,15 @@ export default async function TimelinePage({ params }: Props) {
 
   let phases: Phase[] = [];
   try {
-    phases = JSON.parse(raw.phases as string) as Phase[];
+    phases = JSON.parse(raw.phases) as Phase[];
   } catch { /* ignore */ }
 
   let pins: TimelinePin[] = [];
-  try { pins = JSON.parse(raw.pins as string) as TimelinePin[]; } catch { /* ignore */ }
+  try { pins = JSON.parse(raw.pins) as TimelinePin[]; } catch { /* ignore */ }
 
   let versions: { date: string; phases: Phase[] }[] = [];
   try {
-    const rawVersions = JSON.parse(raw.versions as string) as { date: string; phases: string }[];
+    const rawVersions = JSON.parse(raw.versions) as { date: string; phases: string }[];
     versions = rawVersions.map((v) => ({
       date: v.date,
       phases: JSON.parse(v.phases) as Phase[],
@@ -94,29 +92,58 @@ export default async function TimelinePage({ params }: Props) {
     pins,
     createdAt: raw.createdAt,
     updatedAt: raw.updatedAt,
-    user: raw.user,
+    user: timelineUser,
   };
 
+  // Get likes
+  const likeRows = await db
+    .select({ userId: likesTable.userId })
+    .from(likesTable)
+    .where(eq(likesTable.timelineId, raw.id));
+
   const currentUserId = session?.user?.id ?? null;
-  const isLiked = raw.likes.some((l) => l.userId === currentUserId);
-  const likeCount = raw.likes.length;
+  const isLiked = likeRows.some((l) => l.userId === currentUserId);
+  const likeCount = likeRows.length;
+
+  // Get comments
+  const commentRows = await db
+    .select({
+      id: commentsTable.id,
+      userId: commentsTable.userId,
+      body: commentsTable.body,
+      createdAt: commentsTable.createdAt,
+    })
+    .from(commentsTable)
+    .where(eq(commentsTable.timelineId, raw.id))
+    .orderBy(asc(commentsTable.createdAt));
+
+  // Fetch comment users
+  const commentUserIds = [...new Set(commentRows.map((c) => c.userId))];
+  const commentUsersMap: Record<string, { name: string | null; username: string | null; image: string | null }> = {};
+  for (const uid of commentUserIds) {
+    const u = await db.query.users.findFirst({
+      where: eq(users.id, uid),
+      columns: { name: true, username: true, image: true },
+    });
+    if (u) commentUsersMap[uid] = u;
+  }
 
   // Which comments belong to the current user (drives delete button visibility)
   const ownCommentIds = new Set(
     currentUserId
-      ? raw.comments.filter((c) => c.userId === currentUserId).map((c) => c.id)
+      ? commentRows.filter((c) => c.userId === currentUserId).map((c) => c.id)
       : [],
   );
 
-  const comments = raw.comments.map((c) => ({
+  const commentList = commentRows.map((c) => ({
     id: c.id,
     body: c.body,
     createdAt: c.createdAt,
-    user: c.user,
+    user: commentUsersMap[c.userId] ?? { name: null, username: null, image: null },
   }));
 
-  const breadcrumbHref = raw.user?.username ? `/u/${raw.user.username}` : "/";
-  const breadcrumbLabel = raw.user?.username ? `@${raw.user.username}` : "Home";
+  const breadcrumbHref = timelineUser?.username ? `/u/${timelineUser.username}` : "/";
+  const breadcrumbLabel = timelineUser?.username ? `@${timelineUser.username}` : "Home";
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-10">
@@ -137,13 +164,13 @@ export default async function TimelinePage({ params }: Props) {
           <h1 className="text-2xl font-bold text-stone-900">
             {timeline.title ?? "Hobby Timeline"}
           </h1>
-          {raw.user && (
+          {timelineUser && (
             <Link
-              href={raw.user.username ? `/u/${raw.user.username}` : "#"}
+              href={timelineUser.username ? `/u/${timelineUser.username}` : "#"}
               className="mt-1 inline-flex items-center gap-1.5 text-sm text-stone-500 hover:text-stone-700"
             >
               <User className="h-3.5 w-3.5" />
-              {raw.user.username ? `@${raw.user.username}` : raw.user.name}
+              {timelineUser.username ? `@${timelineUser.username}` : timelineUser.name}
             </Link>
           )}
           <div className="mt-2 flex items-center gap-2">
@@ -175,9 +202,9 @@ export default async function TimelinePage({ params }: Props) {
             />
           )}
           <ExportButton timeline={timeline} />
-          {currentUserId && !isOwner && session?.user?.username && raw.user?.username && (
+          {currentUserId && !isOwner && session?.user?.username && timelineUser?.username && (
             <Link
-              href={`/compare-journeys?a=${session.user.username}&b=${raw.user.username}`}
+              href={`/compare-journeys?a=${session.user.username}&b=${timelineUser.username}`}
             >
               <Button
                 variant="outline"
@@ -223,7 +250,7 @@ export default async function TimelinePage({ params }: Props) {
           {isOwner && <RecommendationsPanel phases={phases} />}
           <CommentsSectionWithOwn
             timelineId={timeline.id}
-            initialComments={comments}
+            initialComments={commentList}
             currentUserId={currentUserId}
             ownCommentIds={ownCommentIds}
           />

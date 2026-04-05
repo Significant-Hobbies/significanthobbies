@@ -5,6 +5,8 @@ import { authOptions } from "~/server/auth/config";
 import { db } from "~/server/db";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
+import { eq, and, count } from "drizzle-orm";
+import { users, follows } from "~/db/schema";
 
 const UsernameSchema = z
   .string()
@@ -21,17 +23,18 @@ export async function setUsername(username: string, birthYear?: number) {
 
   const parsed = UsernameSchema.parse(username.toLowerCase());
 
-  const existing = await db.user.findUnique({
-    where: { username: parsed },
+  const existing = await db.query.users.findFirst({
+    where: eq(users.username, parsed),
   });
   if (existing && existing.id !== session.user.id) {
     throw new Error("Username already taken");
   }
 
-  const user = await db.user.update({
-    where: { id: session.user.id },
-    data: { username: parsed, ...(birthYear ? { birthYear } : {}) },
-  });
+  const [user] = await db
+    .update(users)
+    .set({ username: parsed, ...(birthYear ? { birthYear } : {}) })
+    .where(eq(users.id, session.user.id))
+    .returning();
   revalidatePath(`/u/${parsed}`);
   return user;
 }
@@ -40,9 +43,9 @@ export async function getMyProfile() {
   const session = await getServerSession(authOptions);
   if (!session?.user?.id) return null;
 
-  return db.user.findUnique({
-    where: { id: session.user.id },
-    select: { id: true, name: true, username: true, image: true },
+  return db.query.users.findFirst({
+    where: eq(users.id, session.user.id),
+    columns: { id: true, name: true, username: true, image: true },
   });
 }
 
@@ -58,31 +61,33 @@ export async function toggleFollow(
     throw new Error("Cannot follow yourself");
   }
 
-  const existing = await db.follow.findUnique({
-    where: {
-      followerId_followingId: {
-        followerId: currentUserId,
-        followingId: targetUserId,
-      },
-    },
+  const existing = await db.query.follows.findFirst({
+    where: and(
+      eq(follows.followerId, currentUserId),
+      eq(follows.followingId, targetUserId),
+    ),
   });
 
   if (existing) {
-    await db.follow.delete({ where: { id: existing.id } });
+    await db.delete(follows).where(eq(follows.id, existing.id));
   } else {
-    await db.follow.create({
-      data: { followerId: currentUserId, followingId: targetUserId },
+    await db.insert(follows).values({
+      followerId: currentUserId,
+      followingId: targetUserId,
     });
   }
 
-  const followerCount = await db.follow.count({
-    where: { followingId: targetUserId },
-  });
+  const [result] = await db
+    .select({ count: count() })
+    .from(follows)
+    .where(eq(follows.followingId, targetUserId));
+
+  const followerCount = result?.count ?? 0;
 
   // Revalidate the target user's profile page
-  const targetUser = await db.user.findUnique({
-    where: { id: targetUserId },
-    select: { username: true },
+  const targetUser = await db.query.users.findFirst({
+    where: eq(users.id, targetUserId),
+    columns: { username: true },
   });
   if (targetUser?.username) {
     revalidatePath(`/u/${targetUser.username}`);
@@ -106,20 +111,20 @@ export async function updateProfile(data: {
     }
   }
 
-  await db.user.update({
-    where: { id: session.user.id },
-    data: {
+  await db
+    .update(users)
+    .set({
       ...(data.name !== undefined ? { name: data.name } : {}),
       ...(data.bio !== undefined ? { bio: data.bio } : {}),
       ...(data.website !== undefined
         ? { website: data.website.trim() || null }
         : {}),
-    },
-  });
+    })
+    .where(eq(users.id, session.user.id));
 
-  const user = await db.user.findUnique({
-    where: { id: session.user.id },
-    select: { username: true },
+  const user = await db.query.users.findFirst({
+    where: eq(users.id, session.user.id),
+    columns: { username: true },
   });
   if (user?.username) {
     revalidatePath(`/u/${user.username}`);
@@ -131,28 +136,28 @@ export async function syncQuestProgress(completedQuests: string[], earnedBadges:
   const session = await getServerSession(authOptions);
   if (!session?.user?.id) throw new Error("Not authenticated");
 
-  await db.user.update({
-    where: { id: session.user.id },
-    data: {
+  await db
+    .update(users)
+    .set({
       completedQuests: JSON.stringify(completedQuests),
       earnedBadges: JSON.stringify(earnedBadges),
-    },
-  });
+    })
+    .where(eq(users.id, session.user.id));
 }
 
 export async function getQuestProgress(): Promise<{ completedQuests: string[]; earnedBadges: string[] }> {
   const session = await getServerSession(authOptions);
   if (!session?.user?.id) return { completedQuests: [], earnedBadges: [] };
 
-  const user = await db.user.findUnique({
-    where: { id: session.user.id },
-    select: { completedQuests: true, earnedBadges: true },
+  const user = await db.query.users.findFirst({
+    where: eq(users.id, session.user.id),
+    columns: { completedQuests: true, earnedBadges: true },
   });
 
   if (!user) return { completedQuests: [], earnedBadges: [] };
 
   return {
-    completedQuests: JSON.parse(user.completedQuests as string) as string[],
-    earnedBadges: JSON.parse(user.earnedBadges as string) as string[],
+    completedQuests: JSON.parse(user.completedQuests) as string[],
+    earnedBadges: JSON.parse(user.earnedBadges) as string[],
   };
 }

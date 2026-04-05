@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useState, useTransition } from "react";
 import { Trash2 } from "lucide-react";
 import { toast } from "sonner";
@@ -90,7 +91,7 @@ export function CommentsSectionWithOwn({
             id: created.id,
             body: created.body,
             createdAt: created.createdAt,
-            user: created.user,
+            user: created.user ?? { name: null, username: null, image: null },
           },
         ]);
         setLocalOwnIds((prev) => new Set([...prev, created.id]));
@@ -149,12 +150,12 @@ export function CommentsSectionWithOwn({
         </div>
       ) : (
         <div className="mb-6 rounded-lg border border-stone-100 bg-stone-50 px-4 py-3 text-sm text-stone-500">
-          <a
+          <Link
             href="/api/auth/signin"
             className="text-emerald-600 hover:underline font-medium"
           >
             Sign in
-          </a>{" "}
+          </Link>{" "}
           to join the conversation
         </div>
       )}
