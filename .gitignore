@@ -48,3 +48,4 @@ dev.db
 .env.vercel.tmp
 .claude/settings.local.json
 package-lock.json
+.saasmaker.json
