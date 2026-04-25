@@ -1,6 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  output: "standalone",
   reactCompiler: true,
   // Keep libsql stack external so workerd-compatible exports resolve at runtime via wrangler
   serverExternalPackages: [
