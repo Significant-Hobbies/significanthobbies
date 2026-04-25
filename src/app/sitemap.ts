@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { type MetadataRoute } from "next";
 import { db } from "~/server/db";
 import { HOBBY_CATEGORIES } from "~/lib/hobbies";
