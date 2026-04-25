@@ -8,7 +8,7 @@
     "cf:build": "opennextjs-cloudflare build",
     "start": "next start",
     "preview": "opennextjs-cloudflare preview",
-    "deploy": "pnpm cf:build && mkdir -p .pages-deploy && cp -r .open-next/assets/. .pages-deploy/ && cp -r .open-next/cloudflare .pages-deploy/ && cp -r .open-next/middleware .pages-deploy/ && cp -r .open-next/.build .pages-deploy/ && cp -r .open-next/server-functions .pages-deploy/ && cp .open-next/worker.js .pages-deploy/_worker.js && wrangler pages deploy --project-name=significanthobbies --branch=main",
+    "deploy": "pnpm cf:build && wrangler deploy --minify",
     "lint": "eslint",
     "test": "vitest run",
     "test:watch": "vitest",
