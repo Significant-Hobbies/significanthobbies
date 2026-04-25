@@ -33,6 +33,7 @@ yarn-error.log*
 # env files
 .env
 .env.local
+.env.production
 .env.*.local
 
 # vercel
@@ -48,3 +49,10 @@ dev.db
 .env.vercel.tmp
 .claude/settings.local.json
 package-lock.json
+.saasmaker.json
+
+# Cloudflare / OpenNext build output
+.open-next
+.dev.vars
+.env*.local
+.wrangler
