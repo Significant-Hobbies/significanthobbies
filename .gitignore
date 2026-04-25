@@ -53,6 +53,7 @@ package-lock.json
 
 # Cloudflare / OpenNext build output
 .open-next
+.pages-deploy
 .dev.vars
 .env*.local
 .wrangler
