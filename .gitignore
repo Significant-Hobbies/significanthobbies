@@ -33,6 +33,7 @@ yarn-error.log*
 # env files
 .env
 .env.local
+.env.production
 .env.*.local
 
 # vercel
@@ -53,3 +54,5 @@ package-lock.json
 # Cloudflare / OpenNext build output
 .open-next
 .dev.vars
+.env*.local
+.wrangler
