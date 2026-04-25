@@ -1,6 +1,5 @@
 import { notFound, redirect } from "next/navigation";
-import { getServerSession } from "next-auth";
-import { authOptions } from "~/server/auth/config";
+import { getServerAuthSession } from "~/server/auth";
 import { db } from "~/server/db";
 import { TimelineBuilder } from "~/components/timeline-builder/builder";
 import type { Phase, TimelineData, TimelineVisibility } from "~/lib/types";
@@ -15,7 +14,7 @@ export const metadata = { title: "Edit Timeline — SignificantHobbies" };
 
 export default async function EditTimelinePage({ params }: Props) {
   const { id } = await params;
-  const session = await getServerSession(authOptions);
+  const session = await getServerAuthSession();
 
   if (!session?.user?.id) redirect("/login");
 

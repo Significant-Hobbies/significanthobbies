@@ -1,8 +1,7 @@
 import { notFound } from "next/navigation";
-import { getServerSession } from "next-auth";
 import Link from "next/link";
 import Image from "next/image";
-import { authOptions } from "~/server/auth/config";
+import { getServerAuthSession } from "~/server/auth";
 import { db } from "~/server/db";
 import { Button } from "~/components/ui/button";
 import { TimelineCard } from "~/components/timeline-card";
@@ -42,7 +41,7 @@ const CATEGORY_BADGE_COLORS: Record<string, string> = {
 
 export default async function ProfilePage({ params }: Props) {
   const { username } = await params;
-  const session = await getServerSession(authOptions);
+  const session = await getServerAuthSession();
 
   const user = await db.query.users.findFirst({
     where: eq(users.username, username),

@@ -1,6 +1,6 @@
 "use client";
 
-import { signIn } from "next-auth/react";
+import { authClient } from "~/lib/auth-client";
 import { useState } from "react";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent } from "~/components/ui/card";
@@ -10,7 +10,7 @@ export function LoginForm() {
 
   async function handleGoogle() {
     setLoading(true);
-    await signIn("google", { callbackUrl: "/" });
+    await authClient.signIn.social({ provider: "google", callbackURL: "/dashboard" });
   }
 
   return (

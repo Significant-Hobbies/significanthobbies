@@ -3,7 +3,7 @@
 import { useState, useRef, useCallback, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { useSession } from "next-auth/react";
+import { authClient } from "~/lib/auth-client";
 import { toast } from "sonner";
 import { setUsername } from "~/lib/actions/user";
 
@@ -198,7 +198,7 @@ function ProgressDots({ current, total }: { current: number; total: number }) {
 
 // ─── Main OnboardingFlow ─────────────────────────────────────────────────────
 export function OnboardingFlow() {
-  const { data: session } = useSession();
+  const { data: session } = authClient.useSession();
   const router = useRouter();
 
   const [step, setStep] = useState(0);

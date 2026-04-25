@@ -1,7 +1,6 @@
 import { notFound, redirect } from "next/navigation";
 import Link from "next/link";
-import { getServerSession } from "next-auth";
-import { authOptions } from "~/server/auth/config";
+import { getServerAuthSession } from "~/server/auth";
 import { db } from "~/server/db";
 import { Button } from "~/components/ui/button";
 import { Badge } from "~/components/ui/badge";
@@ -40,7 +39,7 @@ export async function generateMetadata({ params }: Props) {
 
 export default async function TimelinePage({ params }: Props) {
   const { id } = await params;
-  const session = await getServerSession(authOptions);
+  const session = await getServerAuthSession();
 
   const raw = await db.query.timelines.findFirst({
     where: eq(timelines.id, id),

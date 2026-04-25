@@ -1,6 +1,5 @@
 import { redirect } from "next/navigation";
-import { getServerSession } from "next-auth";
-import { authOptions } from "~/server/auth/config";
+import { getServerAuthSession } from "~/server/auth";
 import { db } from "~/server/db";
 import { LandingClient } from "./_components/landing-client";
 import { eq, asc } from "drizzle-orm";
@@ -29,7 +28,7 @@ async function getDemoTimelines() {
 }
 
 export default async function HomePage() {
-  const session = await getServerSession(authOptions);
+  const session = await getServerAuthSession();
 
   if (session?.user) {
     // Logged in but no username -> onboarding

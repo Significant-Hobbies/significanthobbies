@@ -1,7 +1,6 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { getServerSession } from "next-auth";
-import { authOptions } from "~/server/auth/config";
+import { getServerAuthSession } from "~/server/auth";
 import { db } from "~/server/db";
 import { ProfileForm } from "./profile-form";
 import { ArrowLeft } from "lucide-react";
@@ -14,7 +13,7 @@ export const metadata = {
 };
 
 export default async function SettingsPage() {
-  const session = await getServerSession(authOptions);
+  const session = await getServerAuthSession();
 
   if (!session?.user?.id) {
     redirect("/login");

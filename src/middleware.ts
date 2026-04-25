@@ -16,12 +16,10 @@ export function middleware(req: NextRequest) {
 
   if (!isProtected) return NextResponse.next();
 
-  // NextAuth v4 with DB adapter uses a session token cookie (not JWT).
-  // Presence of the cookie is sufficient to pass through — the page itself
-  // calls getServerSession and redirects if the session is invalid.
+  // better-auth uses a cookie named "better-auth.session_token" (or "__Secure-" prefix in prod)
   const sessionCookie =
-    req.cookies.get("next-auth.session-token") ??
-    req.cookies.get("__Secure-next-auth.session-token");
+    req.cookies.get("better-auth.session_token") ??
+    req.cookies.get("__Secure-better-auth.session_token");
 
   if (!sessionCookie) {
     const loginUrl = new URL("/login", req.nextUrl);

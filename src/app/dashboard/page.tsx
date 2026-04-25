@@ -1,7 +1,6 @@
 import { redirect } from "next/navigation";
-import { getServerSession } from "next-auth";
 import Link from "next/link";
-import { authOptions } from "~/server/auth/config";
+import { getServerAuthSession } from "~/server/auth";
 import { db } from "~/server/db";
 import { computePersonality } from "~/lib/personality";
 import { TimelineCard } from "~/components/timeline-card";
@@ -37,7 +36,7 @@ function getStalenessInfo(updatedAt: Date): {
 }
 
 export default async function DashboardPage() {
-  const session = await getServerSession(authOptions);
+  const session = await getServerAuthSession();
   if (!session?.user) redirect("/login");
 
   const rawTimelines = await db

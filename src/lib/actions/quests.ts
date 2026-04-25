@@ -1,7 +1,6 @@
 "use server";
 
-import { getServerSession } from "next-auth";
-import { authOptions } from "~/server/auth/config";
+import { getServerAuthSession } from "~/server/auth";
 import { db } from "~/server/db";
 import { revalidatePath } from "next/cache";
 import { evaluateBadges } from "~/lib/badges";
@@ -11,7 +10,7 @@ import { users } from "~/db/schema";
 export async function completeQuest(
   questId: string,
 ): Promise<{ success: boolean; newBadges?: string[] }> {
-  const session = await getServerSession(authOptions);
+  const session = await getServerAuthSession();
   if (!session?.user?.id) throw new Error("Not authenticated");
 
   const user = await db.query.users.findFirst({
@@ -54,7 +53,7 @@ export async function completeQuest(
 export async function uncompleteQuest(
   questId: string,
 ): Promise<{ success: boolean }> {
-  const session = await getServerSession(authOptions);
+  const session = await getServerAuthSession();
   if (!session?.user?.id) throw new Error("Not authenticated");
 
   const user = await db.query.users.findFirst({
@@ -91,7 +90,7 @@ export async function getUserQuestProgress(): Promise<{
   completedQuests: string[];
   earnedBadges: string[];
 }> {
-  const session = await getServerSession(authOptions);
+  const session = await getServerAuthSession();
   if (!session?.user?.id) return { completedQuests: [], earnedBadges: [] };
 
   const user = await db.query.users.findFirst({

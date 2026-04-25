@@ -1,12 +1,21 @@
 "use client";
 
-import { signOut } from "next-auth/react";
+import { authClient } from "~/lib/auth-client";
+import { useRouter } from "next/navigation";
 import { DropdownMenuItem } from "~/components/ui/dropdown-menu";
 
 export function NavSignOut() {
+  const router = useRouter();
+
+  async function handleSignOut() {
+    await authClient.signOut();
+    router.push("/");
+    router.refresh();
+  }
+
   return (
     <DropdownMenuItem
-      onClick={() => signOut({ callbackUrl: "/" })}
+      onClick={handleSignOut}
       className="cursor-pointer text-stone-700 hover:text-stone-900"
     >
       Sign out

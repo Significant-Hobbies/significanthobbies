@@ -1,7 +1,6 @@
 "use server";
 
-import { getServerSession } from "next-auth";
-import { authOptions } from "~/server/auth/config";
+import { getServerAuthSession } from "~/server/auth";
 import { db } from "~/server/db";
 import { revalidatePath } from "next/cache";
 import { nanoid } from "nanoid";
@@ -51,7 +50,7 @@ export async function saveTimeline(data: {
   title?: string;
   phases: Phase[];
 }) {
-  const session = await getServerSession(authOptions);
+  const session = await getServerAuthSession();
   if (!session?.user?.id) throw new Error("Not authenticated");
 
   const parsed = SaveTimelineSchema.parse(data);
@@ -79,7 +78,7 @@ export async function updateTimeline(
   id: string,
   data: { title?: string; phases: Phase[] },
 ) {
-  const session = await getServerSession(authOptions);
+  const session = await getServerAuthSession();
   if (!session?.user?.id) throw new Error("Not authenticated");
 
   const timeline = await db.query.timelines.findFirst({
@@ -129,7 +128,7 @@ export async function setTimelineVisibility(
   id: string,
   visibility: TimelineVisibility,
 ) {
-  const session = await getServerSession(authOptions);
+  const session = await getServerAuthSession();
   if (!session?.user?.id) throw new Error("Not authenticated");
 
   const timeline = await db.query.timelines.findFirst({
@@ -156,7 +155,7 @@ export async function setTimelineVisibility(
 }
 
 export async function deleteTimeline(id: string) {
-  const session = await getServerSession(authOptions);
+  const session = await getServerAuthSession();
   if (!session?.user?.id) throw new Error("Not authenticated");
 
   const timeline = await db.query.timelines.findFirst({
@@ -172,7 +171,7 @@ export async function deleteTimeline(id: string) {
 export async function getLikeStatus(
   timelineId: string,
 ): Promise<{ liked: boolean; count: number }> {
-  const session = await getServerSession(authOptions);
+  const session = await getServerAuthSession();
 
   const [result] = await db
     .select({ count: count() })
@@ -198,7 +197,7 @@ export async function getLikeStatus(
 export async function toggleLike(
   timelineId: string,
 ): Promise<{ liked: boolean; count: number }> {
-  const session = await getServerSession(authOptions);
+  const session = await getServerAuthSession();
   if (!session?.user?.id) throw new Error("Not authenticated");
 
   const existing = await db.query.likes.findFirst({
@@ -242,7 +241,7 @@ export async function toggleLike(
 }
 
 export async function addComment(timelineId: string, body: string) {
-  const session = await getServerSession(authOptions);
+  const session = await getServerAuthSession();
   if (!session?.user?.id) throw new Error("Not authenticated");
 
   const trimmed = body.trim().slice(0, 280);
@@ -277,7 +276,7 @@ export async function addComment(timelineId: string, body: string) {
 }
 
 export async function deleteComment(commentId: string) {
-  const session = await getServerSession(authOptions);
+  const session = await getServerAuthSession();
   if (!session?.user?.id) throw new Error("Not authenticated");
 
   const comment = await db.query.comments.findFirst({
@@ -313,7 +312,7 @@ const PinSchema = z.object({
 });
 
 export async function addPin(timelineId: string, pin: TimelinePin) {
-  const session = await getServerSession(authOptions);
+  const session = await getServerAuthSession();
   if (!session?.user?.id) throw new Error("Not authenticated");
 
   const timeline = await db.query.timelines.findFirst({
@@ -338,7 +337,7 @@ export async function addPin(timelineId: string, pin: TimelinePin) {
 }
 
 export async function removePin(timelineId: string, pinId: string) {
-  const session = await getServerSession(authOptions);
+  const session = await getServerAuthSession();
   if (!session?.user?.id) throw new Error("Not authenticated");
 
   const timeline = await db.query.timelines.findFirst({

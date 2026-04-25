@@ -1,54 +1,21 @@
-import { withAuth } from "next-auth/middleware";
-import { NextResponse } from "next/server";
+import { betterFetch } from "@better-fetch/fetch";
+import { NextRequest, NextResponse } from "next/server";
 
-export default withAuth(
-  function middleware(req) {
-    const token = req.nextauth.token;
-    const { pathname } = req.nextUrl;
+export async function middleware(request: NextRequest) {
+  const { data: session } = await betterFetch("/api/auth/get-session", {
+    baseURL: request.nextUrl.origin,
+    headers: { cookie: request.headers.get("cookie") || "" },
+  });
 
-    // Skip API routes, setup, and login pages
-    if (
-      pathname.startsWith("/api") ||
-      pathname === "/setup" ||
-      pathname === "/login"
-    ) {
-      return NextResponse.next();
-    }
+  const protectedPaths = ['/dashboard', '/profile', '/quests'];
+  const isProtected = protectedPaths.some(p => request.nextUrl.pathname.startsWith(p));
 
-    // If authenticated but no username, redirect to /setup to complete onboarding
-    if (token && !token.username) {
-      return NextResponse.redirect(new URL("/setup", req.url));
-    }
-
-    return NextResponse.next();
-  },
-  {
-    callbacks: {
-      authorized: ({ req, token }) => {
-        const { pathname } = req.nextUrl;
-        // Protect edit routes
-        if (pathname.match(/^\/timeline\/.*\/edit$/)) {
-          return !!token;
-        }
-        // Protect setup page
-        if (pathname === "/setup") {
-          return !!token;
-        }
-        return true;
-      },
-    },
-  },
-);
+  if (!session && isProtected) {
+    return NextResponse.redirect(new URL('/login', request.url));
+  }
+  return NextResponse.next();
+}
 
 export const config = {
-  matcher: [
-    "/timeline/:path*",
-    "/explore",
-    "/search",
-    "/settings",
-    "/setup",
-    "/dashboard",
-    "/side-quests",
-    "/u/:path*",
-  ],
+  matcher: ['/((?!api|_next/static|_next/image|favicon.ico|login|$).*)'],
 };

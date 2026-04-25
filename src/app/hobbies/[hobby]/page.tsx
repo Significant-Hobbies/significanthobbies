@@ -1,12 +1,11 @@
 import { notFound } from "next/navigation";
-import { getServerSession } from "next-auth";
 import Link from "next/link";
 import { db } from "~/server/db";
 import { Badge } from "~/components/ui/badge";
 import { HOBBY_CATEGORIES, getCategoryForHobby } from "~/lib/hobbies";
 import { getResourcesForHobby } from "~/lib/hobby-resources";
 import { blogPosts } from "~/lib/blog-posts";
-import { authOptions } from "~/server/auth/config";
+import { getServerAuthSession } from "~/server/auth";
 import type { Phase } from "~/lib/types";
 import { JsonLd } from "~/components/json-ld";
 import { getTimelineUrl } from "~/lib/timeline-url";
@@ -48,7 +47,7 @@ export default async function HobbyDetailPage({ params }: Props) {
   const category = getCategoryForHobby(hobbyName);
   if (!category) notFound();
 
-  const session = await getServerSession(authOptions);
+  const session = await getServerAuthSession();
   const isLoggedIn = !!session?.user;
 
   // Find public timelines that include this hobby

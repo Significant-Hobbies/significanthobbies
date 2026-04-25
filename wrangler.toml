@@ -4,4 +4,4 @@ compatibility_date = "2025-09-23"
 compatibility_flags = ["nodejs_compat", "global_fetch_strictly_public"]
 
 [vars]
-NEXTAUTH_URL = "https://significanthobbies.pages.dev"
+NODE_ENV = "production"

@@ -1,7 +1,6 @@
 "use server";
 
-import { getServerSession } from "next-auth";
-import { authOptions } from "~/server/auth/config";
+import { getServerAuthSession } from "~/server/auth";
 import { db } from "~/server/db";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
@@ -18,7 +17,7 @@ const UsernameSchema = z
   );
 
 export async function setUsername(username: string, birthYear?: number) {
-  const session = await getServerSession(authOptions);
+  const session = await getServerAuthSession();
   if (!session?.user?.id) throw new Error("Not authenticated");
 
   const parsed = UsernameSchema.parse(username.toLowerCase());
@@ -40,7 +39,7 @@ export async function setUsername(username: string, birthYear?: number) {
 }
 
 export async function getMyProfile() {
-  const session = await getServerSession(authOptions);
+  const session = await getServerAuthSession();
   if (!session?.user?.id) return null;
 
   return db.query.users.findFirst({
@@ -52,7 +51,7 @@ export async function getMyProfile() {
 export async function toggleFollow(
   targetUserId: string,
 ): Promise<{ following: boolean; followerCount: number }> {
-  const session = await getServerSession(authOptions);
+  const session = await getServerAuthSession();
   if (!session?.user?.id) throw new Error("Not authenticated");
 
   const currentUserId = session.user.id;
@@ -101,7 +100,7 @@ export async function updateProfile(data: {
   website?: string;
   name?: string;
 }): Promise<void> {
-  const session = await getServerSession(authOptions);
+  const session = await getServerAuthSession();
   if (!session?.user?.id) throw new Error("Not authenticated");
 
   // Validate website format if provided
@@ -133,7 +132,7 @@ export async function updateProfile(data: {
 }
 
 export async function syncQuestProgress(completedQuests: string[], earnedBadges: string[]) {
-  const session = await getServerSession(authOptions);
+  const session = await getServerAuthSession();
   if (!session?.user?.id) throw new Error("Not authenticated");
 
   await db
@@ -146,7 +145,7 @@ export async function syncQuestProgress(completedQuests: string[], earnedBadges:
 }
 
 export async function getQuestProgress(): Promise<{ completedQuests: string[]; earnedBadges: string[] }> {
-  const session = await getServerSession(authOptions);
+  const session = await getServerAuthSession();
   if (!session?.user?.id) return { completedQuests: [], earnedBadges: [] };
 
   const user = await db.query.users.findFirst({
