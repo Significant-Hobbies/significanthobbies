@@ -3,6 +3,9 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   output: "standalone",
   reactCompiler: true,
+  experimental: {
+    optimizePackageImports: ["lucide-react"],
+  },
   // Keep libsql stack external so workerd-compatible exports resolve at runtime via wrangler
   serverExternalPackages: [
     "@libsql/client",
