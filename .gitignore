@@ -57,3 +57,10 @@ package-lock.json
 .dev.vars
 .env*.local
 .wrangler
+
+# fallow cache
+.fallow/
+cache.bin
+
+# CF Pages build output
+.cf-pages-bundle/
