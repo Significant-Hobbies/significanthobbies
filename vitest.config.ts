@@ -1,20 +1,15 @@
-import { defineConfig } from 'vitest/config'
-import { resolve } from 'path'
+import { resolve } from 'path';
 
-export default defineConfig({
-  test: {
-    environment: 'jsdom',
-    globals: true,
-    exclude: ['e2e/**', 'node_modules/**'],
-  },
-coverage: {
-    provider: 'v8',
-    reporter: ['json', 'text-summary'],
-    exclude: ['node_modules', 'dist', '.next', 'coverage', '**/*.d.ts', '**/*.config.*', '**/test/**'],
-  },,
-  resolve: {
-    alias: {
-      '@': resolve(__dirname, './src'),
+import { defineVitestConfig } from '@saas-maker/test-config/vitest';
+
+export default defineVitestConfig({
+  environment: 'jsdom',
+  exclude: ['e2e/**'],
+  extend: {
+    resolve: {
+      alias: {
+        '@': resolve(__dirname, './src'),
+      },
     },
   },
-})
+});

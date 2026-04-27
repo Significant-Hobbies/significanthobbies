@@ -1,6 +1,7 @@
 import "~/app/globals.css";
 
 import { type Metadata, type Viewport } from "next";
+import { AnalyticsProvider } from "~/components/posthog-provider";
 import { SaaSMakerFeedback } from "~/components/saasmaker-feedback";
 import { SaasMakerAnalytics } from "~/components/SaasMakerAnalytics";
 import { Geist } from "next/font/google";
@@ -62,12 +63,14 @@ export default function RootLayout({
             sameAs: [],
           }}
         />
-        <Providers>
-          <Nav />
-          <main>{children}</main>
-          <SaaSMakerFeedback />
-          <SaasMakerAnalytics />
-        </Providers>
+        <AnalyticsProvider>
+          <Providers>
+            <Nav />
+            <main>{children}</main>
+            <SaaSMakerFeedback />
+            <SaasMakerAnalytics />
+          </Providers>
+        </AnalyticsProvider>
       </body>
     </html>
   );
