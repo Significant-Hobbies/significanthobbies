@@ -20,6 +20,5 @@ export async function POST(request: Request) {
     // SaaS Maker not available, that's ok
   }
 
-  console.log(`[subscribe] ${email} from ${source}`);
   return NextResponse.json({ ok: true });
 }

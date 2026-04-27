@@ -95,6 +95,19 @@ export async function toggleFollow(
   return { following: !existing, followerCount };
 }
 
+const UpdateProfileSchema = z.object({
+  name: z.string().max(60).optional(),
+  bio: z.string().max(160).optional(),
+  website: z
+    .string()
+    .max(200)
+    .refine(
+      (v) => !v || v.trim() === "" || /^https?:\/\/.+/.test(v.trim()),
+      "Website must start with http:// or https://",
+    )
+    .optional(),
+});
+
 export async function updateProfile(data: {
   bio?: string;
   website?: string;
@@ -103,21 +116,15 @@ export async function updateProfile(data: {
   const session = await getServerAuthSession();
   if (!session?.user?.id) throw new Error("Not authenticated");
 
-  // Validate website format if provided
-  if (data.website && data.website.trim() !== "") {
-    if (!/^https?:\/\/.+/.test(data.website.trim())) {
-      throw new Error("Website must start with http:// or https://");
-    }
-  }
+  const parsed = UpdateProfileSchema.parse(data);
+  const website = parsed.website?.trim() ?? undefined;
 
   await db
     .update(users)
     .set({
-      ...(data.name !== undefined ? { name: data.name } : {}),
-      ...(data.bio !== undefined ? { bio: data.bio } : {}),
-      ...(data.website !== undefined
-        ? { website: data.website.trim() || null }
-        : {}),
+      ...(parsed.name !== undefined ? { name: parsed.name } : {}),
+      ...(parsed.bio !== undefined ? { bio: parsed.bio } : {}),
+      ...(website !== undefined ? { website: website || null } : {}),
     })
     .where(eq(users.id, session.user.id));
 

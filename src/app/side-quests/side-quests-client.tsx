@@ -432,9 +432,9 @@ function SideQuestsInner() {
     completedCount >= 3 && !savePromptDismissed;
 
   const TABS: { id: Tab; label: string }[] = [
-    { id: "random", label: "&#127922; Random" },
-    { id: "pick", label: "&#127919; Help Me Pick" },
-    { id: "board", label: "&#128203; Quest Board" },
+    { id: "random", label: "\u{1F3B2} Random" },
+    { id: "pick", label: "\u{1F3AF} Help Me Pick" },
+    { id: "board", label: "\u{1F4CB} Quest Board" },
   ];
 
   return (
@@ -513,7 +513,7 @@ function SideQuestsInner() {
                   : "text-stone-500 hover:text-stone-700"
               }`}
             >
-              <span dangerouslySetInnerHTML={{ __html: tab.label }} />
+              <span>{tab.label}</span>
               {activeTab === tab.id && (
                 <span className="absolute inset-x-2 bottom-0 h-0.5 rounded-full bg-emerald-500" />
               )}
