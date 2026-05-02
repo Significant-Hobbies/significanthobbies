@@ -2,6 +2,20 @@ name: Deploy to Cloudflare Workers
 on:
   push:
     branches: [main]
+    paths:
+      - '.github/workflows/deploy.yml'
+      - 'src/**'
+      - 'public/**'
+      - 'drizzle/**'
+      - 'scripts/cf-build.mjs'
+      - 'drizzle.config.ts'
+      - 'next.config.ts'
+      - 'open-next.config.ts'
+      - 'package.json'
+      - 'pnpm-lock.yaml'
+      - 'postcss.config.mjs'
+      - 'tsconfig.json'
+      - 'wrangler.toml'
   pull_request:
     branches: [main]
 
@@ -22,6 +36,8 @@ jobs:
         with:
           apiToken: ${{ secrets.CF_API_TOKEN }}
           command: deploy --minify
+      - name: Smoke check production
+        run: curl --fail --silent --show-error --retry 3 --retry-delay 5 --max-time 20 https://significanthobbies.com/ > /dev/null
 
   deploy-preview:
     if: github.event_name == 'pull_request'
