@@ -14,6 +14,7 @@ import {
 } from "~/lib/side-quests";
 import { getBadgeById } from "~/lib/badges";
 import { useQuestProgress } from "~/hooks/use-quest-progress";
+import { AccountabilityCircles } from "~/components/accountability-circles";
 
 // ── Category color mapping ──────────────────────────────────────
 
@@ -59,7 +60,7 @@ const DIFFICULTY_DOTS: Record<string, number> = {
   hard: 3,
 };
 
-type Tab = "random" | "pick" | "board";
+type Tab = "random" | "pick" | "board" | "circles";
 
 // ── Sub-components ──────────────────────────────────────────────
 
@@ -357,6 +358,11 @@ function SideQuestsInner() {
 
   // Initialize
   useEffect(() => {
+    const tabParam = searchParams.get("tab");
+    if (tabParam === "circles") {
+      setActiveTab("circles");
+    }
+
     const qParam = searchParams.get("q");
     if (qParam) {
       const quest = getQuestById(qParam);
@@ -435,6 +441,7 @@ function SideQuestsInner() {
     { id: "random", label: "\u{1F3B2} Random" },
     { id: "pick", label: "\u{1F3AF} Help Me Pick" },
     { id: "board", label: "\u{1F4CB} Quest Board" },
+    { id: "circles", label: "\u{1F91D} Circles" },
   ];
 
   return (
@@ -771,6 +778,10 @@ function SideQuestsInner() {
                 );
               })}
             </div>
+          )}
+
+          {activeTab === "circles" && (
+            <AccountabilityCircles completedQuestIds={completed} />
           )}
         </div>
       </section>
