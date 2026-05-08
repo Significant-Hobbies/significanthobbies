@@ -16,6 +16,7 @@ import { MobileMenu } from "./mobile-menu";
 const NAV_LINKS = [
   { href: "/hobbies", label: "Discover" },
   { href: "/find-your-hobby", label: "Quiz" },
+  { href: "/starter-kits", label: "Kits" },
   { href: "/explore", label: "Explore" },
   { href: "/side-quests", label: "Side Quests" },
   { href: "/side-quests?tab=circles", label: "Circles" },

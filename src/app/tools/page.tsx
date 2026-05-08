@@ -39,6 +39,14 @@ const TOOLS: Tool[] = [
       "Compare two hobbies side by side on cost, time commitment, skill curve, and more to find the right fit.",
     href: "/compare",
   },
+  {
+    emoji: "🧰",
+    title: "Starter Kits",
+    description:
+      "Run a first hobby experiment with nearby materials, a small budget, and a clear signal for whether to keep going.",
+    href: "/starter-kits",
+    badge: "New",
+  },
 ];
 
 const BADGE_STYLES: Record<string, string> = {
@@ -75,7 +83,7 @@ export default function ToolsPage() {
       {/* Tools grid */}
       <section className="px-4 py-14">
         <div className="mx-auto max-w-5xl">
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {TOOLS.map((tool) => (
               <Link
                 key={tool.href}
