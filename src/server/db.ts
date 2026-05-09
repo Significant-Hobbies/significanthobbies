@@ -3,8 +3,8 @@ import { createClient } from "@libsql/client";
 import * as schema from "~/db/schema";
 
 function createDrizzleClient() {
-  const url = process.env.DATABASE_URL ?? "file:./dev.db";
-  const authToken = process.env.TURSO_AUTH_TOKEN;
+  const url = process.env.DATABASE_URL?.trim() || "file:./dev.db";
+  const authToken = process.env.TURSO_AUTH_TOKEN?.trim() || undefined;
 
   const client = createClient({ url, authToken });
 
