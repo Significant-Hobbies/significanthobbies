@@ -13,9 +13,13 @@ interface Props {
   searchParams: Promise<{ q?: string }>;
 }
 
+const MAX_QUERY_LENGTH = 80;
+
 export default async function SearchPage({ searchParams }: Props) {
   const { q } = await searchParams;
-  const query = (q ?? "").trim();
+  // Cap to bound SQLite LIKE work and protect against pathological queries
+  // pasted into the URL bar.
+  const query = (q ?? "").trim().slice(0, MAX_QUERY_LENGTH);
 
   if (!query) {
     return (
@@ -37,6 +41,11 @@ export default async function SearchPage({ searchParams }: Props) {
   }
 
   const lower = query.toLowerCase();
+  // Strip LIKE wildcards so `%foo` doesn't match every username. Drizzle's
+  // like() doesn't pass through an ESCAPE clause, so escaping with backslash
+  // is a no-op in SQLite — removal is the safe move.
+  const safeLower = lower.replace(/[%_]/g, "");
+  const safeQuery = query.replace(/[%_]/g, "");
 
   // --- Timelines ---
   const rawTimelines = await db
@@ -94,8 +103,8 @@ export default async function SearchPage({ searchParams }: Props) {
     .from(users)
     .where(
       or(
-        like(users.username, `%${lower}%`),
-        like(users.name, `%${query}%`),
+        like(users.username, `%${safeLower}%`),
+        like(users.name, `%${safeQuery}%`),
       ),
     )
     .limit(20);
