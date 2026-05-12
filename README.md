@@ -7,8 +7,8 @@ Map your hobby history across life phases. Visualize insights. Share your journe
 ```bash
 pnpm install
 cp .env.example .env          # fill in your values
-pnpm prisma migrate dev
-pnpm prisma db seed
+pnpm db:push                  # apply Drizzle schema to local SQLite (dev.db)
+pnpm db:seed
 pnpm dev
 ```
 
@@ -20,8 +20,8 @@ Open [http://localhost:3000](http://localhost:3000).
 |----------|----------|-------------|
 | `DATABASE_URL` | Yes | `file:./dev.db` for local, `libsql://...` for Turso |
 | `TURSO_AUTH_TOKEN` | Turso only | Token from `turso db tokens create <db>` |
-| `NEXTAUTH_SECRET` | Yes | `openssl rand -base64 32` |
-| `NEXTAUTH_URL` | Yes | `http://localhost:3000` in dev |
+| `BETTER_AUTH_SECRET` | Yes | `openssl rand -base64 32` |
+| `BETTER_AUTH_URL` | Yes | `http://localhost:3000` in dev |
 | `GOOGLE_CLIENT_ID` | Yes | From Google Cloud Console |
 | `GOOGLE_CLIENT_SECRET` | Yes | From Google Cloud Console |
 
@@ -54,7 +54,9 @@ TURSO_AUTH_TOKEN="<token>"
 ## Running Tests
 
 ```bash
-pnpm test
+pnpm test            # vitest unit + accessibility
+pnpm test:e2e        # playwright (assumes pnpm dev is running on :3000)
+pnpm test:e2e:ui     # playwright UI mode
 ```
 
 ## Routes
@@ -75,12 +77,12 @@ pnpm test
 
 ## Stack
 
-- **Framework**: Next.js 14 App Router + TypeScript
-- **Database**: Prisma + Turso (libSQL / SQLite)
-- **Auth**: NextAuth v4 (Google OAuth)
-- **UI**: Tailwind CSS v4 + shadcn/ui
+- **Framework**: Next.js 16 App Router + TypeScript
+- **Database**: Drizzle + Turso (libSQL / SQLite)
+- **Auth**: better-auth (Google OAuth)
+- **UI**: Tailwind CSS v4 + shadcn/ui + @dnd-kit for drag/drop
 - **Export**: html-to-image (client-side PNG)
-- **Testing**: Vitest
+- **Testing**: Vitest + Playwright (e2e), Lighthouse CI
 
 ## Features
 
