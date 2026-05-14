@@ -33,6 +33,12 @@ NODE_ENV = "production"
 
 [env.preview]
 name = "significanthobbies-preview"
+# Disinherit prod routes — preview deploys to the workers.dev subdomain
+# only. Without these overrides wrangler tries to attach the preview
+# worker to significanthobbies.com/* and fails because the prod worker
+# already owns them.
+workers_dev = true
+routes = []
 
 [env.preview.observability]
 enabled = true
