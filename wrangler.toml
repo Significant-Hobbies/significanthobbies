@@ -25,3 +25,29 @@ simple = { limit = 1000, period = 60 }
 
 [vars]
 NODE_ENV = "production"
+
+# ─── Preview environment ───────────────────────────────────────────────
+# Used by the PR deploy job: `wrangler deploy --env preview`. Deploys to
+# significanthobbies-preview.<account>.workers.dev (no production routes).
+# Routes intentionally absent so PRs never touch the prod domain.
+
+[env.preview]
+name = "significanthobbies-preview"
+
+[env.preview.observability]
+enabled = true
+head_sampling_rate = 0.1
+
+[env.preview.limits]
+cpu_ms = 30000
+
+# Separate namespace_id so preview traffic doesn't drain the prod rate
+# bucket (and vice versa).
+[[env.preview.unsafe.bindings]]
+name = "RATE_LIMITER"
+type = "ratelimit"
+namespace_id = "1002"
+simple = { limit = 1000, period = 60 }
+
+[env.preview.vars]
+NODE_ENV = "production"
