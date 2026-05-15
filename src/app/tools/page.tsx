@@ -45,6 +45,13 @@ const TOOLS: Tool[] = [
     description:
       "Run a first hobby experiment with nearby materials, a small budget, and a clear signal for whether to keep going.",
     href: "/starter-kits",
+  },
+  {
+    emoji: "💰",
+    title: "Cost Calculator",
+    description:
+      "Add equipment, lessons, subscriptions and supplies — see the honest year-one and steady-state cost before you commit.",
+    href: "/tools/cost-calculator",
     badge: "New",
   },
 ];
