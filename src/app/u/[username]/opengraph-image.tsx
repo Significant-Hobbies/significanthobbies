@@ -8,6 +8,29 @@ export const runtime = "nodejs";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
+function fallbackImage(message: string) {
+  return new ImageResponse(
+    (
+      <div
+        style={{
+          background: "#FEFDF8",
+          width: "100%",
+          height: "100%",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          fontSize: 40,
+          fontFamily: "system-ui, sans-serif",
+          color: "#78716C",
+        }}
+      >
+        {message}
+      </div>
+    ),
+    { width: 1200, height: 630 },
+  );
+}
+
 export default async function OgImage({
   params,
 }: {
@@ -15,38 +38,28 @@ export default async function OgImage({
 }) {
   const { username } = await params;
 
-  const user = await db.query.users.findFirst({
-    where: eq(users.username, username),
-  });
-
-  if (!user) {
-    return new ImageResponse(
-      (
-        <div
-          style={{
-            background: "#FEFDF8",
-            width: "100%",
-            height: "100%",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            fontSize: 40,
-            fontFamily: "system-ui, sans-serif",
-            color: "#78716C",
-          }}
-        >
-          User not found
-        </div>
-      ),
-      { width: 1200, height: 630 },
-    );
+  let user: Awaited<ReturnType<typeof db.query.users.findFirst>>;
+  try {
+    user = await db.query.users.findFirst({
+      where: eq(users.username, username),
+    });
+  } catch (err) {
+    console.error("opengraph-image[u]: user lookup failed", err);
+    return fallbackImage("Significant Hobbies");
   }
 
-  const userTimelines = await db
-    .select()
-    .from(timelines)
-    .where(eq(timelines.userId, user.id))
-    .limit(3);
+  if (!user) return fallbackImage("User not found");
+
+  let userTimelines: Array<{ phases: string; visibility: string }> = [];
+  try {
+    userTimelines = await db
+      .select()
+      .from(timelines)
+      .where(eq(timelines.userId, user.id))
+      .limit(3);
+  } catch (err) {
+    console.error("opengraph-image[u]: timelines fetch failed", err);
+  }
 
   const publicTimelines = userTimelines.filter((t) => t.visibility === "PUBLIC");
 

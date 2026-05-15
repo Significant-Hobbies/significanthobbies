@@ -11,21 +11,35 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = "https://significanthobbies.com";
   const now = new Date();
 
-  const publicTimelineRows = await db
-    .select({
-      id: timelines.id,
-      slug: timelines.slug,
-      updatedAt: timelines.updatedAt,
-      userUsername: users.username,
-    })
-    .from(timelines)
-    .leftJoin(users, eq(timelines.userId, users.id))
-    .where(eq(timelines.visibility, "PUBLIC"));
+  // The static portion of the sitemap (landing, category pages, blog) must
+  // ship even if Turso is unreachable. Dynamic rows degrade to empty.
+  let publicTimelineRows: Array<{
+    id: string;
+    slug: string | null;
+    updatedAt: Date;
+    userUsername: string | null;
+  }> = [];
+  let userRows: Array<{ username: string | null }> = [];
 
-  const userRows = await db
-    .select({ username: users.username })
-    .from(users)
-    .where(isNotNull(users.username));
+  try {
+    publicTimelineRows = await db
+      .select({
+        id: timelines.id,
+        slug: timelines.slug,
+        updatedAt: timelines.updatedAt,
+        userUsername: users.username,
+      })
+      .from(timelines)
+      .leftJoin(users, eq(timelines.userId, users.id))
+      .where(eq(timelines.visibility, "PUBLIC"));
+
+    userRows = await db
+      .select({ username: users.username })
+      .from(users)
+      .where(isNotNull(users.username));
+  } catch (err) {
+    console.error("sitemap: dynamic rows fetch failed; returning static only", err);
+  }
 
   const categoryPages = [
     "creative",

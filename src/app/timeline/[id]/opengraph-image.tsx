@@ -9,6 +9,29 @@ export const runtime = "nodejs";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
+function fallbackImage(message: string) {
+  return new ImageResponse(
+    (
+      <div
+        style={{
+          background: "#FEFDF8",
+          width: "100%",
+          height: "100%",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          fontSize: 40,
+          fontFamily: "system-ui, sans-serif",
+          color: "#78716C",
+        }}
+      >
+        {message}
+      </div>
+    ),
+    { width: 1200, height: 630 },
+  );
+}
+
 export default async function OgImage({
   params,
 }: {
@@ -16,39 +39,30 @@ export default async function OgImage({
 }) {
   const { id } = await params;
 
-  const timeline = await db.query.timelines.findFirst({
-    where: eq(timelines.id, id),
-  });
-
-  if (!timeline) {
-    return new ImageResponse(
-      (
-        <div
-          style={{
-            background: "#FEFDF8",
-            width: "100%",
-            height: "100%",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            fontSize: 40,
-            fontFamily: "system-ui, sans-serif",
-            color: "#78716C",
-          }}
-        >
-          Timeline not found
-        </div>
-      ),
-      { width: 1200, height: 630 },
-    );
+  let timeline: Awaited<ReturnType<typeof db.query.timelines.findFirst>>;
+  try {
+    timeline = await db.query.timelines.findFirst({
+      where: eq(timelines.id, id),
+    });
+  } catch (err) {
+    console.error("opengraph-image: timeline lookup failed", err);
+    return fallbackImage("Significant Hobbies");
   }
 
-  const timelineUser = timeline.userId
-    ? await db.query.users.findFirst({
-        where: eq(users.id, timeline.userId),
-        columns: { name: true, username: true },
-      })
-    : null;
+  if (!timeline) return fallbackImage("Timeline not found");
+
+  let timelineUser: { name: string | null; username: string | null } | null = null;
+  if (timeline.userId) {
+    try {
+      timelineUser =
+        (await db.query.users.findFirst({
+          where: eq(users.id, timeline.userId),
+          columns: { name: true, username: true },
+        })) ?? null;
+    } catch (err) {
+      console.error("opengraph-image: user lookup failed", err);
+    }
+  }
 
   let phases: Phase[] = [];
   try {

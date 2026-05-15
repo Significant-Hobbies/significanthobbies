@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import {
   DndContext,
   closestCenter,
@@ -115,6 +115,35 @@ export function TimelineBuilder({ existing }: Props) {
     }),
   );
 
+  const draftKey = existing ? `timeline-draft-${existing.id}` : null;
+
+  // Restore an unsaved draft on first mount (existing timelines only).
+  // New timelines stay in component state until first Save.
+  useEffect(() => {
+    if (!draftKey) return;
+    try {
+      const raw = localStorage.getItem(draftKey);
+      if (!raw) return;
+      const draft = JSON.parse(raw) as { title?: string; phases?: Phase[] };
+      if (typeof draft.title === "string") setTitle(draft.title);
+      if (Array.isArray(draft.phases) && draft.phases.length > 0) {
+        setPhases(draft.phases);
+      }
+    } catch {}
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- restore once on mount
+  }, []);
+
+  // Mirror edits to localStorage so reordering / typing isn't lost on reload.
+  useEffect(() => {
+    if (!draftKey) return;
+    const t = setTimeout(() => {
+      try {
+        localStorage.setItem(draftKey, JSON.stringify({ title, phases }));
+      } catch {}
+    }, 800);
+    return () => clearTimeout(t);
+  }, [draftKey, title, phases]);
+
   function handlePickTemplate(template: TimelineTemplate) {
     setPhases(templateToPhases(template));
     setTemplatePicked(true);
@@ -161,6 +190,9 @@ export function TimelineBuilder({ existing }: Props) {
           result = await updateTimeline(existing.id, { title: title || undefined, phases });
         } else {
           result = await saveTimeline({ title: title || undefined, phases });
+        }
+        if (draftKey) {
+          try { localStorage.removeItem(draftKey); } catch {}
         }
         toast.success(existing ? "Timeline updated" : "Timeline saved!");
         // Redirect to timeline — username lookup happens via server redirect from /timeline/[id]
