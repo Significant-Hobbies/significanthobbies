@@ -48,7 +48,7 @@ function ExploreTimelineCard({ timeline }: { timeline: TimelineData & { likeCoun
   const username = timeline.user?.username ?? timeline.user?.name;
 
   return (
-    <Link href={getTimelineUrl(timeline)}>
+    <Link href={getTimelineUrl(timeline)} prefetch={false}>
       <div className="group flex h-full flex-col rounded-xl border border-stone-200 bg-white p-5 transition-all hover:border-emerald-400 hover:shadow-sm">
         {/* Phase color strip */}
         {phases.length > 0 && (
@@ -236,6 +236,7 @@ export function ExploreClient({ timelines }: ExploreClientProps) {
           {!query && !categoryFilter && (
             <Link
               href="/timeline/new"
+              prefetch={false}
               className="mt-5 rounded-lg bg-emerald-600 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-700 transition-colors"
             >
               Build your timeline
