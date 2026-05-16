@@ -9,7 +9,7 @@
     "start": "next start",
     "preview": "opennextjs-cloudflare preview",
     "deploy": "pnpm cf:build && wrangler deploy --minify",
-    "lint": "next lint || true",
+    "lint": "eslint .",
     "test": "vitest run",
     "test:watch": "vitest",
     "db:push": "drizzle-kit push",
