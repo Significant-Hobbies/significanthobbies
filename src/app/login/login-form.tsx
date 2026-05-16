@@ -1,6 +1,7 @@
 "use client";
 
 import { authClient } from "~/lib/auth-client";
+import { captureAuthFailure } from "~/lib/foundry-monitoring";
 import { useState } from "react";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent } from "~/components/ui/card";
@@ -10,7 +11,28 @@ export function LoginForm() {
 
   async function handleGoogle() {
     setLoading(true);
-    await authClient.signIn.social({ provider: "google", callbackURL: "/dashboard" });
+    try {
+      const result = await authClient.signIn.social({ provider: "google", callbackURL: "/dashboard" });
+      if (result?.error) {
+        captureAuthFailure({
+          projectSlug: "significanthobbies",
+          provider: "google",
+          stage: "signin",
+          reason: result.error.message ?? "Google sign-in failed",
+          source: "login-form",
+        });
+        setLoading(false);
+      }
+    } catch (error) {
+      captureAuthFailure({
+        projectSlug: "significanthobbies",
+        provider: "google",
+        stage: "signin",
+        reason: error instanceof Error ? error.message : "Google sign-in failed",
+        source: "login-form",
+      });
+      setLoading(false);
+    }
   }
 
   return (

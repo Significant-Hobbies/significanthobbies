@@ -10,5 +10,9 @@ export default async function SetupPage() {
   const session = await getServerAuthSession();
   if (!session?.user) redirect("/login");
   if (session.user.username) redirect(`/u/${session.user.username}`);
-  return <OnboardingFlow />;
+  return (
+    <OnboardingFlow
+      user={{ name: session.user.name, image: session.user.image }}
+    />
+  );
 }

@@ -25,7 +25,6 @@ import { PhaseCard } from "./phase-card";
 import { saveTimeline, updateTimeline } from "~/lib/actions/timeline";
 import type { Phase, TimelineData } from "~/lib/types";
 import { useRouter } from "next/navigation";
-import { authClient } from "~/lib/auth-client";
 import { TIMELINE_TEMPLATES, type TimelineTemplate } from "~/lib/templates";
 
 interface Props {
@@ -97,7 +96,6 @@ function TemplatePicker({ onPick }: { onPick: (template: TimelineTemplate) => vo
 
 export function TimelineBuilder({ existing }: Props) {
   const router = useRouter();
-  const { data: session } = authClient.useSession();
   const [title, setTitle] = useState(existing?.title ?? "");
   const [phases, setPhases] = useState<Phase[]>(
     existing?.phases?.length

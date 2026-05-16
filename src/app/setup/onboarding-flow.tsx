@@ -3,9 +3,13 @@
 import { useState, useRef, useCallback, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { authClient } from "~/lib/auth-client";
 import { toast } from "sonner";
 import { setUsername } from "~/lib/actions/user";
+
+type OnboardingUser = {
+  name?: string | null;
+  image?: string | null;
+};
 
 // ─── Decorative background emojis ──────────────────────────────────────────
 const BG_EMOJIS = [
@@ -197,8 +201,7 @@ function ProgressDots({ current, total }: { current: number; total: number }) {
 }
 
 // ─── Main OnboardingFlow ─────────────────────────────────────────────────────
-export function OnboardingFlow() {
-  const { data: session } = authClient.useSession();
+export function OnboardingFlow({ user }: { user: OnboardingUser }) {
   const router = useRouter();
 
   const [step, setStep] = useState(0);
@@ -211,9 +214,9 @@ export function OnboardingFlow() {
   const holdTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  const firstName = session?.user?.name?.split(" ")[0] ?? "there";
-  const avatarUrl = session?.user?.image;
-  const initials = session?.user?.name
+  const firstName = user?.name?.split(" ")[0] ?? "there";
+  const avatarUrl = user?.image;
+  const initials = user?.name
     ?.split(" ")
     .map((n) => n[0])
     .join("")
@@ -521,7 +524,7 @@ export function OnboardingFlow() {
                   {avatarUrl ? (
                     <img
                       src={avatarUrl}
-                      alt={session?.user?.name ?? "Avatar"}
+                      alt={user?.name ?? "Avatar"}
                       className="avatar-glow h-16 w-16 sm:h-20 sm:w-20 rounded-full object-cover relative z-10"
                     />
                   ) : (
