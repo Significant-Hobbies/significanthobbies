@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { FeedbackWidget } from "@saas-maker/feedback";
 import "@saas-maker/feedback/dist/index.css";
 import { TestimonialWall } from "@saas-maker/testimonials";
@@ -9,6 +10,39 @@ import "@saas-maker/changelog-widget/dist/index.css";
 
 const API_KEY = process.env.NEXT_PUBLIC_SAASMAKER_API_KEY ?? "";
 const API_BASE = "https://api.sassmaker.com";
+
+type ContentStatus = "loading" | "empty" | "ready";
+
+function useSaaSMakerContentStatus(path: string) {
+  const [status, setStatus] = useState<ContentStatus>("loading");
+
+  useEffect(() => {
+    if (!API_KEY) {
+      setStatus("empty");
+      return;
+    }
+
+    let cancelled = false;
+
+    fetch(`${API_BASE}${path}`, {
+      headers: { "X-Project-Key": API_KEY },
+    })
+      .then((response) => (response.ok ? response.json() : { data: [] }))
+      .then((payload) => {
+        if (cancelled) return;
+        setStatus(Array.isArray(payload.data) && payload.data.length > 0 ? "ready" : "empty");
+      })
+      .catch(() => {
+        if (!cancelled) setStatus("empty");
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [path]);
+
+  return status;
+}
 
 export function SaaSMakerFeedback() {
   if (!API_KEY) return null;
@@ -34,6 +68,21 @@ export function SaaSMakerTestimonials() {
   );
 }
 
+export function SaaSMakerTestimonialsSection() {
+  const status = useSaaSMakerContentStatus("/v1/testimonials?limit=6");
+
+  if (status !== "ready") return null;
+
+  return (
+    <section className="border-t border-stone-100 px-4 py-16" style={{ background: "#FAFAFA" }}>
+      <div className="mx-auto max-w-4xl">
+        <h2 className="mb-8 text-center text-3xl font-bold text-stone-900">What people are saying</h2>
+        <SaaSMakerTestimonials />
+      </div>
+    </section>
+  );
+}
+
 export function SaaSMakerChangelog() {
   if (!API_KEY) return null;
   return (
@@ -42,5 +91,20 @@ export function SaaSMakerChangelog() {
       apiBaseUrl={API_BASE}
       theme="auto"
     />
+  );
+}
+
+export function SaaSMakerChangelogSection() {
+  const status = useSaaSMakerContentStatus("/v1/changelog?limit=10");
+
+  if (status !== "ready") return null;
+
+  return (
+    <section className="border-t border-stone-100 px-4 py-16 bg-stone-50">
+      <div className="mx-auto max-w-2xl">
+        <h2 className="mb-8 text-center text-3xl font-bold text-stone-900">Changelog</h2>
+        <SaaSMakerChangelog />
+      </div>
+    </section>
   );
 }

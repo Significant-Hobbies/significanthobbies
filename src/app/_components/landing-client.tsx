@@ -6,7 +6,10 @@ import { Button } from "~/components/ui/button";
 import type { Phase } from "~/lib/types";
 import { blogPosts } from "~/lib/blog-posts";
 import { getTimelineUrl } from "~/lib/timeline-url";
-import { SaaSMakerTestimonials, SaaSMakerChangelog } from "~/components/saasmaker-feedback";
+import {
+  SaaSMakerChangelogSection,
+  SaaSMakerTestimonialsSection,
+} from "~/components/saasmaker-feedback";
 
 /* ─── Types ──────────────────────────────────────────────────────────────────── */
 
@@ -505,7 +508,7 @@ function CommunityGallery({ demos }: { demos: DemoTimeline[] }) {
             <h2 className="text-2xl font-bold text-stone-900 sm:text-3xl">Real hobby journeys</h2>
             <p className="mt-1 text-stone-500">Shared by curious people like you</p>
           </div>
-          <Link href="/hobbies">
+          <Link href="/hobbies" prefetch={false}>
             <Button variant="ghost" size="sm" className="text-emerald-600 hover:text-emerald-700">
               Explore all →
             </Button>
@@ -521,7 +524,7 @@ function CommunityGallery({ demos }: { demos: DemoTimeline[] }) {
             const allHobbies = phases.flatMap((p) => p.hobbies.map((h) => h.name)).slice(0, 8);
 
             return (
-              <Link key={t.id} href={getTimelineUrl(t)}>
+              <Link key={t.id} href={getTimelineUrl(t)} prefetch={false}>
                 <div
                   className="group relative overflow-hidden rounded-2xl border border-stone-200 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_8px_32px_rgba(0,0,0,0.08)]"
                   style={inView ? { animation: `cardReveal 0.6s ${idx * 0.15}s ease-out both`, borderLeftWidth: 4, borderLeftColor: borderColor } : { opacity: 0, borderLeftWidth: 4, borderLeftColor: borderColor }}
@@ -618,7 +621,7 @@ function ExportCTA() {
               Generate a stunning card of your hobby journey. One click, ready to share anywhere.
             </p>
             <div className="flex flex-wrap gap-4">
-              <Link href="/timeline/new">
+              <Link href="/timeline/new" prefetch={false}>
                 <Button
                   size="lg"
                   className="animate-glow-pulse bg-emerald-600 px-8 text-white hover:bg-emerald-700"
@@ -626,7 +629,7 @@ function ExportCTA() {
                   Start for free
                 </Button>
               </Link>
-              <Link href="/hobbies">
+              <Link href="/hobbies" prefetch={false}>
                 <Button size="lg" variant="outline" className="border-stone-300 px-8 text-stone-600 hover:text-stone-900">
                   Browse hobbies
                 </Button>
@@ -751,7 +754,7 @@ function BlogTeaser() {
               };
 
             return (
-              <Link key={post.slug} href={`/blog/${post.slug}`} className="group block"
+              <Link key={post.slug} href={`/blog/${post.slug}`} prefetch={false} className="group block"
                 style={inView ? { animation: `cardReveal 0.6s ${idx * 0.12}s ease-out both` } : { opacity: 0 }}
               >
                 <div className="flex h-full flex-col overflow-hidden rounded-2xl border border-stone-200 bg-white p-5 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-emerald-300 hover:shadow-[0_8px_32px_rgba(16,185,129,0.10)]">
@@ -794,6 +797,7 @@ function BlogTeaser() {
         >
           <Link
             href="/blog"
+            prefetch={false}
             className="inline-flex items-center gap-1.5 text-sm font-semibold text-emerald-600 transition-all duration-200 hover:gap-2 hover:text-emerald-700"
           >
             Read all articles →
@@ -815,10 +819,10 @@ function FooterStrip() {
           <span className="text-sm font-semibold text-stone-700">SignificantHobbies</span>
         </div>
         <div className="flex gap-6 text-sm text-stone-400">
-          <Link href="/timeline/new" className="transition-colors hover:text-stone-700">Start</Link>
-          <Link href="/hobbies" className="transition-colors hover:text-stone-700">Explore</Link>
-          <Link href="/explore" className="transition-colors hover:text-stone-700">Community</Link>
-          <Link href="/blog" className="transition-colors hover:text-stone-700">Blog</Link>
+          <Link href="/timeline/new" prefetch={false} className="transition-colors hover:text-stone-700">Start</Link>
+          <Link href="/hobbies" prefetch={false} className="transition-colors hover:text-stone-700">Explore</Link>
+          <Link href="/explore" prefetch={false} className="transition-colors hover:text-stone-700">Community</Link>
+          <Link href="/blog" prefetch={false} className="transition-colors hover:text-stone-700">Blog</Link>
         </div>
         <div className="text-xs text-stone-400">Made with love for curious people</div>
       </div>
@@ -962,7 +966,7 @@ export function LandingClient({ demos }: LandingClientProps) {
             className="flex flex-wrap items-center justify-center gap-4"
             style={{ animation: "fadeInUp 0.6s 0.55s ease-out both", opacity: 0 }}
           >
-            <Link href="/timeline/new">
+            <Link href="/timeline/new" prefetch={false}>
               <Button
                 size="lg"
                 className="bg-emerald-600 px-8 text-white shadow-[0_0_24px_rgba(16,185,129,0.3)] ring-1 ring-emerald-500/30 transition-all duration-200 hover:-translate-y-0.5 hover:bg-emerald-700 hover:shadow-[0_0_36px_rgba(16,185,129,0.45)]"
@@ -970,7 +974,7 @@ export function LandingClient({ demos }: LandingClientProps) {
                 Discover your hobby story →
               </Button>
             </Link>
-            <Link href="/hobbies">
+            <Link href="/hobbies" prefetch={false}>
               <Button
                 size="lg"
                 variant="outline"
@@ -989,7 +993,7 @@ export function LandingClient({ demos }: LandingClientProps) {
           </p>
 
           <p className="mt-2 text-sm text-emerald-600" style={{ animation: "fadeInUp 0.6s 0.75s ease-out both", opacity: 0 }}>
-            <Link href="/get-started" className="hover:underline">
+            <Link href="/get-started" prefetch={false} className="hover:underline">
               Or get your username first →
             </Link>
           </p>
@@ -1041,21 +1045,8 @@ export function LandingClient({ demos }: LandingClientProps) {
       {/* ── Blog Teaser ───────────────────────────────────────────────────────── */}
       <BlogTeaser />
 
-      {/* ── Testimonials ──────────────────────────────────────────────────────── */}
-      <section className="border-t border-stone-100 px-4 py-16" style={{ background: "#FAFAFA" }}>
-        <div className="mx-auto max-w-4xl">
-          <h2 className="mb-8 text-center text-3xl font-bold text-stone-900">What people are saying</h2>
-          <SaaSMakerTestimonials />
-        </div>
-      </section>
-
-      {/* ── Changelog ─────────────────────────────────────────────────────────── */}
-      <section className="border-t border-stone-100 px-4 py-16 bg-stone-50">
-        <div className="mx-auto max-w-2xl">
-          <h2 className="mb-8 text-center text-3xl font-bold text-stone-900">Changelog</h2>
-          <SaaSMakerChangelog />
-        </div>
-      </section>
+      <SaaSMakerTestimonialsSection />
+      <SaaSMakerChangelogSection />
 
       {/* ── Footer ────────────────────────────────────────────────────────────── */}
       <FooterStrip />
