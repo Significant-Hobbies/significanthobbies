@@ -16,7 +16,7 @@ export function NavLinks({ links }: NavLinksProps) {
       {links.map((link) => {
         const isActive = pathname === link.href || pathname.startsWith(link.href + "/");
         return (
-          <Link key={link.href} href={link.href}>
+          <Link key={link.href} href={link.href} prefetch={false}>
             <Button
               variant="ghost"
               size="sm"

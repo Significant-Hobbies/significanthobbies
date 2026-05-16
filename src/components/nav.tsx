@@ -31,6 +31,7 @@ export async function Nav() {
       <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-4">
         <Link
           href="/"
+          prefetch={false}
           className="text-lg font-semibold tracking-tight text-emerald-600 hover:text-emerald-700 transition-colors"
         >
           SignificantHobbies
@@ -42,7 +43,7 @@ export async function Nav() {
 
           {session?.user ? (
             <>
-              <Link href="/dashboard">
+              <Link href="/dashboard" prefetch={false}>
                 <Button
                   variant="ghost"
                   size="sm"
@@ -51,7 +52,7 @@ export async function Nav() {
                   Dashboard
                 </Button>
               </Link>
-              <Link href="/timeline/new">
+              <Link href="/timeline/new" prefetch={false}>
                 <Button
                   size="sm"
                   className="bg-emerald-600 hover:bg-emerald-700 text-white"
@@ -76,19 +77,19 @@ export async function Nav() {
                 >
                   {session.user.username ? (
                     <DropdownMenuItem asChild>
-                      <Link href={`/u/${session.user.username}`}>
+                      <Link href={`/u/${session.user.username}`} prefetch={false}>
                         My Profile
                       </Link>
                     </DropdownMenuItem>
                   ) : (
                     <DropdownMenuItem asChild>
-                      <Link href="/setup" className="text-yellow-600">
+                      <Link href="/setup" prefetch={false} className="text-yellow-600">
                         Set username →
                       </Link>
                     </DropdownMenuItem>
                   )}
                   <DropdownMenuItem asChild>
-                    <Link href="/dashboard">Dashboard</Link>
+                    <Link href="/dashboard" prefetch={false}>Dashboard</Link>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator className="bg-stone-200" />
                   <NavSignOut />
@@ -96,7 +97,7 @@ export async function Nav() {
               </DropdownMenu>
             </>
           ) : (
-            <Link href="/login">
+            <Link href="/login" prefetch={false}>
               <Button
                 size="sm"
                 variant="outline"
@@ -128,19 +129,19 @@ export async function Nav() {
               >
                 {session.user.username ? (
                   <DropdownMenuItem asChild>
-                    <Link href={`/u/${session.user.username}`}>
+                    <Link href={`/u/${session.user.username}`} prefetch={false}>
                       My Profile
                     </Link>
                   </DropdownMenuItem>
                 ) : (
                   <DropdownMenuItem asChild>
-                    <Link href="/setup" className="text-yellow-600">
+                    <Link href="/setup" prefetch={false} className="text-yellow-600">
                       Set username →
                     </Link>
                   </DropdownMenuItem>
                 )}
                 <DropdownMenuItem asChild>
-                  <Link href="/dashboard">Dashboard</Link>
+                  <Link href="/dashboard" prefetch={false}>Dashboard</Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator className="bg-stone-200" />
                 <NavSignOut />
