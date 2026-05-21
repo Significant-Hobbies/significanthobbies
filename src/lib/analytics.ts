@@ -1,0 +1,103 @@
+/**
+ * Owner-facing analytics — the fixed 4-event taxonomy.
+ *
+ * Every fleet project emits exactly these four events — `signup`, `activated`,
+ * `core_action`, `returned` — so a single PostHog project can build one
+ * cross-fleet funnel (signup -> activated -> core_action) and a D1/D7
+ * retention insight, with no custom dashboard.
+ *
+ * Every event carries `project: "significanthobbies"`.
+ *
+ *  - `signup`      — first session after a SignificantHobbies account is created.
+ *  - `activated`   — first real value: the user saves their first timeline.
+ *  - `core_action` — the thing the product exists to do: saving a hobby
+ *                    timeline, or exporting a timeline share card.
+ *  - `returned`    — a later session for a user who already has prior activity.
+ *
+ * It is isomorphic: in the browser it routes through `@saas-maker/posthog-client`
+ * (`track`); inside a server action it POSTs directly to the PostHog capture
+ * API. The server path uses a plain `fetch` rather than importing
+ * `posthog-node`, which keeps the Node-only module out of the client bundle.
+ */
+import { track } from "@saas-maker/posthog-client";
+
+const PROJECT = "significanthobbies" as const;
+
+// Shared PostHog project for the whole fleet.
+const POSTHOG_KEY = "phc_qgiAarw4Co4pw9fz3Fxj4UJaHmqzFetqs4JrXhGc35Nd";
+const POSTHOG_HOST = "https://us.i.posthog.com";
+
+/** The product-specific action behind a `core_action` event. */
+export type CoreAction = "timeline_saved" | "timeline_exported";
+
+interface AnalyticsEventMap {
+  /** First session after an account is created. */
+  signup: { project: typeof PROJECT };
+  /** The user reaches first real value — their first saved timeline. */
+  activated: { project: typeof PROJECT };
+  /** The thing the product exists to do. */
+  core_action: { project: typeof PROJECT; action: CoreAction };
+  /** A return session by a user with prior activity. */
+  returned: { project: typeof PROJECT };
+}
+
+function emitServer(
+  event: string,
+  props: Record<string, unknown>,
+  distinctId?: string,
+) {
+  // Fire-and-forget: analytics must never block or break a server action.
+  void fetch(`${POSTHOG_HOST}/i/v0/e/`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      api_key: POSTHOG_KEY,
+      event,
+      distinct_id: distinctId ?? `${PROJECT}-server`,
+      properties: props,
+    }),
+  }).catch(() => {
+    // Swallow — best-effort only.
+  });
+}
+
+function emit<K extends keyof AnalyticsEventMap>(
+  event: K,
+  props: Omit<AnalyticsEventMap[K], "project">,
+  distinctId?: string,
+): void {
+  const payload = { project: PROJECT, ...props };
+  try {
+    if (typeof window === "undefined") {
+      emitServer(event, payload, distinctId);
+    } else {
+      track(event, payload);
+    }
+  } catch {
+    // Analytics must NEVER break a user flow. Swallow and move on.
+  }
+}
+
+/** Fire once, on the first session after an account is created. */
+export function trackSignup(): void {
+  emit("signup", {});
+}
+
+/**
+ * Fire once, when the user first reaches real value (their first saved
+ * timeline). Pass `distinctId` when firing from a server action so the
+ * event attaches to the right user.
+ */
+export function trackActivated(distinctId?: string): void {
+  emit("activated", {}, distinctId);
+}
+
+/** Fire on each completion of the core product action. */
+export function trackCoreAction(action: CoreAction, distinctId?: string): void {
+  emit("core_action", { action }, distinctId);
+}
+
+/** Fire on session start for a user who has prior activity. */
+export function trackReturned(): void {
+  emit("returned", {});
+}
