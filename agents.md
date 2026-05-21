@@ -12,9 +12,9 @@ Hobby discovery and journaling platform — timeline builder, quiz-based recomme
 - Language: TypeScript (strict)
 - Styling: Tailwind CSS v4 + shadcn/ui
 - DB: Turso (libSQL) via Drizzle ORM. Local dev: `file:./dev.db`
-- Auth: NextAuth v4 (Google OAuth) + `@auth/drizzle-adapter`
+- Auth: better-auth (Google OAuth)
 - Testing: Vitest (unit, co-located in `src/lib/*.test.ts`), Playwright (e2e in `e2e/`)
-- Deploy: Vercel
+- Deploy: Cloudflare Workers (`significanthobbies`) via @opennextjs/cloudflare
 - Package manager: pnpm
 
 ## Repo structure
@@ -47,7 +47,7 @@ src/
     side-quests.ts        # Quest definitions (50 micro-adventures, static)
     famous-journeys.ts    # Celebrity journey data (static)
     badges.ts             # Badge evaluation logic
-  server/auth/            # NextAuth config
+  server/auth/            # better-auth config
 e2e/                      # Playwright specs
 prisma/seed.ts            # Hobby catalog seed (uses Drizzle now — legacy dir name only)
 drizzle.config.ts         # Turso dialect

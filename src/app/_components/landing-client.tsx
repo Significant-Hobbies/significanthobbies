@@ -56,10 +56,21 @@ const PHASE_COLORS = [
   { bg: "#EDE9FE", border: "#8B5CF6", label: "Now", hobbies: 9 },
 ];
 
-const STATS = [
-  { value: 2847, label: "hobbies tracked", suffix: "" },
-  { value: 412, label: "timelines built", suffix: "" },
-  { value: 89, label: "life phases mapped", suffix: "" },
+// Honest value-prop trio. No fabricated usage counts — these describe what
+// the product does, not invented metrics.
+const VALUE_PROPS = [
+  {
+    title: "Free to start",
+    body: "Build your first timeline without an account or a card.",
+  },
+  {
+    title: "Yours to keep",
+    body: "Export a share card any time, or keep your timeline private.",
+  },
+  {
+    title: "Built for reflection",
+    body: "See what rekindled, what stuck, and what to try next.",
+  },
 ];
 
 const CARD_BORDER_COLORS = [
@@ -106,30 +117,6 @@ function useInView(threshold = 0.15) {
   }, [threshold]);
 
   return { ref, inView };
-}
-
-/* ─── Animated Counter ───────────────────────────────────────────────────────── */
-
-function AnimatedCounter({ target, inView }: { target: number; inView: boolean }) {
-  const [count, setCount] = useState(0);
-
-  useEffect(() => {
-    if (!inView) return;
-    const duration = 1400;
-    const steps = 60;
-    const increment = target / steps;
-    let current = 0;
-    let step = 0;
-    const timer = setInterval(() => {
-      step++;
-      current = Math.min(Math.round(increment * step), target);
-      setCount(current);
-      if (step >= steps) clearInterval(timer);
-    }, duration / steps);
-    return () => clearInterval(timer);
-  }, [inView, target]);
-
-  return <span>{count.toLocaleString()}</span>;
 }
 
 /* ─── SVG Illustrations ──────────────────────────────────────────────────────── */
@@ -254,8 +241,10 @@ function HeroPhaseStrip() {
   );
 }
 
-/* ─── Stats Bar ───────────────────────────────────────────────────────────────── */
+/* ─── Value Bar ───────────────────────────────────────────────────────────────── */
 
+// Honest value-prop strip. Deliberately carries no usage counts — earlier
+// fabricated metrics ("2,847 hobbies tracked" etc.) were removed.
 function StatsBar() {
   const { ref, inView } = useInView(0.3);
 
@@ -267,20 +256,19 @@ function StatsBar() {
     >
       <div className="mx-auto max-w-4xl">
         <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
-          {STATS.map((stat, i) => (
+          {VALUE_PROPS.map((item, i) => (
             <div
-              key={stat.label}
+              key={item.title}
               className="relative text-center"
               style={inView ? { animation: `counterUp 0.5s ${i * 0.15}s ease-out both` } : { opacity: 0 }}
             >
               {i > 0 && (
                 <div className="absolute left-0 top-1/2 hidden h-8 w-px -translate-y-1/2 bg-amber-200 md:block" />
               )}
-              <div className="text-4xl font-bold text-stone-900 sm:text-5xl">
-                <AnimatedCounter target={stat.value} inView={inView} />
-                {stat.suffix}
+              <div className="text-lg font-bold text-stone-900 sm:text-xl">
+                {item.title}
               </div>
-              <div className="mt-1 text-sm font-medium text-stone-500">{stat.label}</div>
+              <div className="mt-1 text-sm font-medium text-stone-500">{item.body}</div>
             </div>
           ))}
         </div>

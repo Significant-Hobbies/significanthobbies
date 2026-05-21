@@ -8,6 +8,7 @@ import { z } from "zod";
 import { eq, and, count } from "drizzle-orm";
 import { timelines, likes, comments, users } from "~/db/schema";
 import type { Phase, TimelineVisibility, TimelinePin } from "~/lib/types";
+import { trackActivated, trackCoreAction } from "~/lib/analytics";
 
 const HobbySchema = z.object({
   name: z.string().min(1).max(100),
@@ -55,6 +56,13 @@ export async function saveTimeline(data: {
 
   const parsed = SaveTimelineSchema.parse(data);
   const slug = await generateSlug(parsed.title);
+
+  // Whether this is the user's first-ever timeline — drives `activated`.
+  const [{ value: priorCount }] = await db
+    .select({ value: count() })
+    .from(timelines)
+    .where(eq(timelines.userId, session.user.id));
+
   const now = new Date();
   const [timeline] = await db
     .insert(timelines)
@@ -71,6 +79,14 @@ export async function saveTimeline(data: {
   if (session.user.username && slug) {
     revalidatePath(`/u/${session.user.username}/${slug}`);
   }
+
+  // Owner analytics: saving a timeline is the core action; the first save is
+  // the user's `activated` milestone.
+  trackCoreAction("timeline_saved", session.user.id);
+  if (priorCount === 0) {
+    trackActivated(session.user.id);
+  }
+
   return timeline;
 }
 

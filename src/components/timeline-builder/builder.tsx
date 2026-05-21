@@ -6,6 +6,7 @@ import {
   closestCenter,
   KeyboardSensor,
   PointerSensor,
+  TouchSensor,
   useSensor,
   useSensors,
   type DragEndEvent,
@@ -23,6 +24,7 @@ import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { PhaseCard } from "./phase-card";
 import { saveTimeline, updateTimeline } from "~/lib/actions/timeline";
+import { captureError } from "~/lib/foundry-monitoring";
 import type { Phase, TimelineData } from "~/lib/types";
 import { useRouter } from "next/navigation";
 import { TIMELINE_TEMPLATES, type TimelineTemplate } from "~/lib/templates";
@@ -106,8 +108,16 @@ export function TimelineBuilder({ existing }: Props) {
   // Show template picker only for new timelines (no existing prop)
   const [templatePicked, setTemplatePicked] = useState(!!existing);
 
+  // On touch, require a short press-and-hold before a drag starts so normal
+  // vertical scrolling of the phase list is never hijacked. Pointer (mouse)
+  // gets a small distance threshold for the same reason.
   const sensors = useSensors(
-    useSensor(PointerSensor),
+    useSensor(PointerSensor, {
+      activationConstraint: { distance: 8 },
+    }),
+    useSensor(TouchSensor, {
+      activationConstraint: { delay: 200, tolerance: 8 },
+    }),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
     }),
@@ -201,7 +211,13 @@ export function TimelineBuilder({ existing }: Props) {
           toast.error("Sign in to save your timeline");
           router.push("/login");
         } else {
-          toast.error(msg);
+          // Don't leak a raw server error to users; the draft is kept in
+          // localStorage so nothing is lost — they can retry.
+          console.error("Timeline save failed", err);
+          captureError(err, { scope: "timeline-builder", source: "save" });
+          toast.error(
+            "Couldn't save your timeline — your changes are kept here, try again in a moment.",
+          );
         }
       }
     });
@@ -229,7 +245,7 @@ export function TimelineBuilder({ existing }: Props) {
       </div>
 
       {/* Progress indicator */}
-      <div className="flex items-center gap-3">
+      <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5">
         <span
           className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
             allEmpty

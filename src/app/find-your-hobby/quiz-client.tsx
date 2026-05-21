@@ -154,10 +154,15 @@ export function HobbyQuiz() {
     const archetype = ARCHETYPE_MAP[topCats[0]!];
     const text = `I took the Hobby Finder Quiz and I'm ${archetype?.title ?? "a hobby explorer"}! Find your perfect hobby at significanthobbies.com/find-your-hobby`;
     if (navigator.share) {
-      void navigator.share({ title: "My Hobby Archetype", text, url: "https://significanthobbies.com/find-your-hobby" });
+      // share() rejects when the user cancels — that's not an error.
+      void navigator
+        .share({ title: "My Hobby Archetype", text, url: "https://significanthobbies.com/find-your-hobby" })
+        .catch(() => {});
     } else {
-      void navigator.clipboard.writeText(text);
-      alert("Result copied to clipboard!");
+      navigator.clipboard
+        .writeText(text)
+        .then(() => alert("Result copied to clipboard!"))
+        .catch(() => alert("Couldn't copy — select and copy the text manually."));
     }
   }
 
@@ -174,8 +179,9 @@ export function HobbyQuiz() {
       link.download = "my-hobby-personality.png";
       link.href = dataUrl;
       link.click();
-    } catch {
-      alert("Download failed — try again");
+    } catch (err) {
+      console.error("Quiz card PNG export failed", err);
+      alert("Couldn't create the image — try again in a moment.");
     } finally {
       setIsDownloading(false);
     }

@@ -53,14 +53,15 @@ export function PhaseCard({ phase, onChange, onDelete, isOnly }: Props) {
       }`}
     >
       {/* Header */}
-      <div className="flex items-center gap-2 px-4 py-3">
+      <div className="flex items-center gap-1 px-2 py-2 sm:gap-2 sm:px-3">
+        {/* Drag handle — padded to a 44px touch target for one-handed use. */}
         <button
           {...attributes}
           {...listeners}
-          className="cursor-grab touch-none text-stone-400 hover:text-stone-600 active:cursor-grabbing"
+          className="flex h-11 w-11 shrink-0 cursor-grab touch-none items-center justify-center rounded-md text-stone-400 hover:text-stone-600 active:cursor-grabbing"
           aria-label="Drag to reorder"
         >
-          <GripVertical className="h-4 w-4" />
+          <GripVertical className="h-5 w-5" />
         </button>
 
         {/* Colored dot */}
@@ -73,32 +74,34 @@ export function PhaseCard({ phase, onChange, onDelete, isOnly }: Props) {
           value={phase.label}
           onChange={(e) => update({ label: e.target.value })}
           placeholder="Phase name (e.g. High school)"
-          className="h-8 flex-1 border-transparent bg-transparent text-sm font-medium text-stone-800 placeholder:text-stone-400 focus-visible:border-stone-300 focus-visible:bg-stone-50"
+          className="h-9 flex-1 border-transparent bg-transparent text-sm font-medium text-stone-800 placeholder:text-stone-400 focus-visible:border-stone-300 focus-visible:bg-stone-50"
         />
 
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-0.5">
           {!isOnly && (
             <Button
               type="button"
               variant="ghost"
               size="icon"
-              className="h-7 w-7 text-stone-400 hover:text-red-500"
+              className="h-11 w-11 text-stone-400 hover:text-red-500"
               onClick={onDelete}
+              aria-label="Delete phase"
             >
-              <Trash2 className="h-3.5 w-3.5" />
+              <Trash2 className="h-4 w-4" />
             </Button>
           )}
           <Button
             type="button"
             variant="ghost"
             size="icon"
-            className="h-7 w-7 text-stone-400 hover:text-stone-700"
+            className="h-11 w-11 text-stone-400 hover:text-stone-700"
             onClick={() => setOpen((v) => !v)}
+            aria-label={open ? "Collapse phase" : "Expand phase"}
           >
             {open ? (
-              <ChevronUp className="h-3.5 w-3.5" />
+              <ChevronUp className="h-4 w-4" />
             ) : (
-              <ChevronDown className="h-3.5 w-3.5" />
+              <ChevronDown className="h-4 w-4" />
             )}
           </Button>
         </div>
@@ -120,7 +123,7 @@ export function PhaseCard({ phase, onChange, onDelete, isOnly }: Props) {
                   })
                 }
                 placeholder="From"
-                className="h-7 border-stone-300 bg-stone-50 text-xs"
+                className="h-10 border-stone-300 bg-stone-50 text-sm"
               />
               <span className="text-stone-400 text-xs">–</span>
               <Input
@@ -132,7 +135,7 @@ export function PhaseCard({ phase, onChange, onDelete, isOnly }: Props) {
                   })
                 }
                 placeholder="To"
-                className="h-7 border-stone-300 bg-stone-50 text-xs"
+                className="h-10 border-stone-300 bg-stone-50 text-sm"
               />
             </div>
           </div>

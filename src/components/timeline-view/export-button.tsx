@@ -5,6 +5,8 @@ import { Download, Loader2, Link2 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "~/components/ui/button";
 import { computePersonality } from "~/lib/personality";
+import { captureError } from "~/lib/foundry-monitoring";
+import { trackCoreAction } from "~/lib/analytics";
 import { ExportCard } from "./export-card";
 import type { TimelineData } from "~/lib/types";
 
@@ -31,17 +33,28 @@ export function ExportButton({ timeline }: Props) {
       link.href = dataUrl;
       link.click();
       toast.success("Downloaded!");
-    } catch {
-      toast.error("Export failed — try again");
+      // Owner analytics: exporting a share card is a core product action.
+      trackCoreAction("timeline_exported");
+    } catch (err) {
+      // PNG rendering can fail on tainted canvases / large timelines —
+      // surface a clear message and capture detail for debugging.
+      console.error("Timeline PNG export failed", err);
+      captureError(err, { scope: "timeline-edit", source: "png_export" });
+      toast.error("Couldn't export the image — try again in a moment.");
     } finally {
       setIsExporting(false);
     }
   }
 
   function handleCopyLink() {
-    void navigator.clipboard.writeText(window.location.href).then(() => {
-      toast.success("Link copied!");
-    });
+    void navigator.clipboard
+      .writeText(window.location.href)
+      .then(() => {
+        toast.success("Link copied!");
+      })
+      .catch(() => {
+        toast.error("Couldn't copy the link — copy it from the address bar.");
+      });
   }
 
   function handleTwitterShare() {
