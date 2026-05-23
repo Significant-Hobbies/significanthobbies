@@ -20,7 +20,6 @@ const baseURL =
   "https://significanthobbies.com";
 const googleClientId = process.env.GOOGLE_CLIENT_ID?.trim();
 const googleClientSecret = process.env.GOOGLE_CLIENT_SECRET?.trim();
-const isProductionRuntime = process.env.NODE_ENV === "production";
 
 export const auth = betterAuth({
   secret: authSecret,
@@ -34,14 +33,4 @@ export const auth = betterAuth({
       ? { google: { clientId: googleClientId, clientSecret: googleClientSecret } }
       : {},
   trustedOrigins: [baseURL],
-  rateLimit: {
-    enabled: isProductionRuntime,
-    window: 60,
-    max: 300,
-    customRules: {
-      "/api/auth/get-session": false,
-      "/api/auth/callback/*": false,
-      "/api/auth/sign-in/social": { window: 60, max: 30 },
-    },
-  },
 });
