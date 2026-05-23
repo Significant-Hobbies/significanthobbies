@@ -1,7 +1,8 @@
 "use client";
 
+import { track } from "@saas-maker/posthog-client";
 import Link from "next/link";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { EmailCapture } from "~/components/email-capture";
 import { QuizResultCard } from "~/components/quiz-result-card";
 import { HOBBY_CATEGORIES } from "~/lib/hobbies";
@@ -27,6 +28,15 @@ interface QuizOption {
 interface QuizQuestion {
   question: string;
   options: QuizOption[];
+}
+
+interface HobbyExperiment {
+  hobby: string;
+  category: Category;
+  time: string;
+  cost: string;
+  firstStep: string;
+  reason: string;
 }
 
 const QUESTIONS: QuizQuestion[] = [
@@ -112,13 +122,51 @@ function getRecommendedHobbies(topCats: Category[]): string[] {
   return results.slice(0, 6);
 }
 
+function getHobbyCategory(hobby: string): Category {
+  return (
+    (HOBBY_CATEGORIES.find((category) => category.hobbies.includes(hobby))?.name as Category | undefined) ??
+    "Creative"
+  );
+}
+
+function buildHobbyExperiments(hobbies: string[], topCats: Category[]): HobbyExperiment[] {
+  return hobbies.slice(0, 3).map((hobby, index) => {
+    const category = getHobbyCategory(hobby);
+    const primaryMatch = topCats[0] === category;
+    const time = index === 0 ? "25 minutes" : index === 1 ? "45 minutes" : "1 weekend hour";
+    const cost = index === 0 ? "$0 starter" : index === 1 ? "Under $15" : "Use what you have";
+    return {
+      hobby,
+      category,
+      time,
+      cost,
+      firstStep: primaryMatch
+        ? `Do one tiny ${hobby.toLowerCase()} session today and write down what felt easy.`
+        : `Try the smallest version of ${hobby.toLowerCase()} before buying gear or joining a class.`,
+      reason: primaryMatch
+        ? `This matches your strongest quiz signal: ${category.toLowerCase()} energy.`
+        : `This gives your ${category.toLowerCase()} side a low-risk test without changing your whole routine.`,
+    };
+  });
+}
+
+function trackRecommendationEvent(name: "recommendation_started" | "recommendation_saved", properties: Record<string, unknown>) {
+  try {
+    track(name, { project: "significanthobbies", ...properties });
+  } catch {
+    // Best-effort only; recommendations should never fail because analytics did.
+  }
+}
+
 export function HobbyQuiz() {
   const [step, setStep] = useState(0); // 0-4 = questions, 5 = results
   const [answers, setAnswers] = useState<number[]>([]);
   const [selectedOption, setSelectedOption] = useState<number | null>(null);
   const [scores, setScores] = useState<Record<string, number>>({});
   const [isDownloading, setIsDownloading] = useState(false);
+  const [savedExperimentPlan, setSavedExperimentPlan] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
+  const trackedRecommendationStartRef = useRef(false);
 
   const isResults = step >= QUESTIONS.length;
   const currentQuestion = QUESTIONS[step];
@@ -147,6 +195,8 @@ export function HobbyQuiz() {
     setAnswers([]);
     setSelectedOption(null);
     setScores({});
+    setSavedExperimentPlan(false);
+    trackedRecommendationStartRef.current = false;
   }
 
   function handleShare() {
@@ -191,6 +241,32 @@ export function HobbyQuiz() {
   const primaryCat = topCats[0];
   const archetype = primaryCat ? ARCHETYPE_MAP[primaryCat] : null;
   const recommendedHobbies = isResults ? getRecommendedHobbies(topCats) : [];
+  const hobbyExperiments = isResults ? buildHobbyExperiments(recommendedHobbies, topCats) : [];
+
+  useEffect(() => {
+    if (!isResults || !archetype) return;
+    if (trackedRecommendationStartRef.current) return;
+    trackedRecommendationStartRef.current = true;
+    trackRecommendationEvent("recommendation_started", {
+      archetype: archetype.title,
+      top_categories: topCats,
+      recommended_hobbies: recommendedHobbies.slice(0, 3),
+    });
+  }, [archetype, isResults, recommendedHobbies, topCats]);
+
+  function handleSaveExperimentPlan() {
+    const payload = {
+      savedAt: new Date().toISOString(),
+      archetype: archetype?.title ?? "Hobby Explorer",
+      experiments: hobbyExperiments,
+    };
+    localStorage.setItem("significant-hobbies:experiment-plan", JSON.stringify(payload));
+    setSavedExperimentPlan(true);
+    trackRecommendationEvent("recommendation_saved", {
+      archetype: payload.archetype,
+      hobbies: hobbyExperiments.map((experiment) => experiment.hobby),
+    });
+  }
 
   return (
     <div className="mx-auto max-w-2xl px-4 py-12">
@@ -327,6 +403,53 @@ export function HobbyQuiz() {
                   );
                 })}
               </div>
+            </div>
+
+            {/* Guided hobby experiments */}
+            <div className="mb-8 rounded-2xl border border-stone-200 bg-white p-5 shadow-sm">
+              <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+                <div>
+                  <h2 className="text-lg font-semibold text-stone-900">Try one tiny experiment</h2>
+                  <p className="text-sm text-stone-500">
+                    Pick the lowest-friction test before committing to a whole new identity.
+                  </p>
+                </div>
+                <button
+                  onClick={handleSaveExperimentPlan}
+                  className="rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-2 text-sm font-semibold text-emerald-700 transition-colors hover:border-emerald-300 hover:bg-emerald-100"
+                >
+                  {savedExperimentPlan ? "Plan saved" : "Save plan"}
+                </button>
+              </div>
+              <div className="grid gap-3">
+                {hobbyExperiments.map((experiment) => {
+                  const category = HOBBY_CATEGORIES.find((item) => item.name === experiment.category);
+                  return (
+                    <div key={experiment.hobby} className="rounded-xl border border-stone-200 bg-stone-50 p-4">
+                      <div className="mb-3 flex items-start justify-between gap-3">
+                        <div>
+                          <p className="text-sm font-semibold text-stone-900">
+                            {category?.emoji ?? "✨"} {experiment.hobby}
+                          </p>
+                          <p className="mt-1 text-xs text-stone-500">{experiment.reason}</p>
+                        </div>
+                        <div className="flex shrink-0 flex-col items-end gap-1 text-[11px] font-medium text-stone-500">
+                          <span>{experiment.time}</span>
+                          <span>{experiment.cost}</span>
+                        </div>
+                      </div>
+                      <p className="rounded-lg bg-white px-3 py-2 text-sm text-stone-700">
+                        {experiment.firstStep}
+                      </p>
+                    </div>
+                  );
+                })}
+              </div>
+              {savedExperimentPlan && (
+                <p className="mt-3 text-center text-xs font-medium text-emerald-700">
+                  Saved on this device. Turn the experiment into a timeline when you are ready.
+                </p>
+              )}
             </div>
 
             {/* CTAs */}
