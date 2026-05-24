@@ -4,6 +4,8 @@ import { db } from "~/server/db";
 import { Badge } from "~/components/ui/badge";
 import { HOBBY_CATEGORIES, getCategoryForHobby } from "~/lib/hobbies";
 import { getResourcesForHobby } from "~/lib/hobby-resources";
+import { getRoadmapForHobby } from "~/lib/hobby-roadmap";
+import { HobbyRoadmapCard } from "~/components/hobby-roadmap-card";
 import { blogPosts } from "~/lib/blog-posts";
 import { getServerAuthSession } from "~/server/auth";
 import type { Phase } from "~/lib/types";
@@ -85,6 +87,7 @@ export default async function HobbyDetailPage({ params }: Props) {
   );
 
   const resources = getResourcesForHobby(hobbyName);
+  const roadmap = getRoadmapForHobby(hobbyName);
 
   const relatedPosts = blogPosts.filter((post) => {
     const search = hobbyName.toLowerCase();
@@ -168,6 +171,11 @@ export default async function HobbyDetailPage({ params }: Props) {
               : "public timelines feature this hobby"}
           </span>
         </div>
+      </div>
+
+      {/* Roadmap: concrete next-step path from today → 3 months */}
+      <div className="mb-8">
+        <HobbyRoadmapCard roadmap={roadmap} />
       </div>
 
       {/* Resources */}
