@@ -5,6 +5,7 @@ import { Badge } from "~/components/ui/badge";
 import { HOBBY_CATEGORIES, getCategoryForHobby } from "~/lib/hobbies";
 import { getResourcesForHobby } from "~/lib/hobby-resources";
 import { getRoadmapForHobby } from "~/lib/hobby-roadmap";
+import { getRelatedHobbies } from "~/lib/hobby-affinities";
 import { HobbyRoadmapCard } from "~/components/hobby-roadmap-card";
 import { blogPosts } from "~/lib/blog-posts";
 import { getServerAuthSession } from "~/server/auth";
@@ -88,6 +89,7 @@ export default async function HobbyDetailPage({ params }: Props) {
 
   const resources = getResourcesForHobby(hobbyName);
   const roadmap = getRoadmapForHobby(hobbyName);
+  const crossCategoryHobbies = getRelatedHobbies(hobbyName);
 
   const relatedPosts = blogPosts.filter((post) => {
     const search = hobbyName.toLowerCase();
@@ -299,7 +301,7 @@ export default async function HobbyDetailPage({ params }: Props) {
 
       {/* Related hobbies in same category */}
       {otherHobbies.length > 0 && (
-        <div>
+        <div className="mb-8">
           <h2 className="mb-4 text-sm font-medium uppercase tracking-wide text-stone-500">
             {category.emoji} Other {category.name.toLowerCase()} hobbies
           </h2>
@@ -317,6 +319,39 @@ export default async function HobbyDetailPage({ params }: Props) {
                 </Badge>
               </Link>
             ))}
+          </div>
+        </div>
+      )}
+
+      {/* Cross-category related hobbies */}
+      {crossCategoryHobbies.length > 0 && (
+        <div>
+          <h2 className="mb-1 text-sm font-medium uppercase tracking-wide text-stone-500">
+            You might also like
+          </h2>
+          <p className="mb-4 text-xs text-stone-400">
+            Hobbies people pair with {hobbyName.toLowerCase()}, often from a completely different direction.
+          </p>
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+            {crossCategoryHobbies.map((affinity) => {
+              const affinityCategory = getCategoryForHobby(affinity.name);
+              const slug = affinity.name.toLowerCase().replace(/\s+/g, "-");
+              return (
+                <Link
+                  key={affinity.name}
+                  href={`/hobbies/${encodeURIComponent(slug)}`}
+                  className="group block rounded-xl border border-stone-200 bg-white p-4 transition-colors hover:border-emerald-400"
+                >
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="text-lg">{affinityCategory?.emoji ?? "🎯"}</span>
+                    <span className="font-semibold text-stone-800 text-sm group-hover:text-emerald-600 transition-colors">
+                      {affinity.name}
+                    </span>
+                  </div>
+                  <p className="text-xs text-stone-500 leading-relaxed">{affinity.reason}</p>
+                </Link>
+              );
+            })}
           </div>
         </div>
       )}
