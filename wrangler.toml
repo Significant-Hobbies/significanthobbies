@@ -17,12 +17,6 @@ head_sampling_rate = 0.1
 [limits]
 cpu_ms = 30000
 
-[[unsafe.bindings]]
-name = "RATE_LIMITER"
-type = "ratelimit"
-namespace_id = "1001"
-simple = { limit = 1000, period = 60 }
-
 [vars]
 NODE_ENV = "production"
 
@@ -46,14 +40,6 @@ head_sampling_rate = 0.1
 
 [env.preview.limits]
 cpu_ms = 30000
-
-# Separate namespace_id so preview traffic doesn't drain the prod rate
-# bucket (and vice versa).
-[[env.preview.unsafe.bindings]]
-name = "RATE_LIMITER"
-type = "ratelimit"
-namespace_id = "1002"
-simple = { limit = 1000, period = 60 }
 
 [env.preview.vars]
 NODE_ENV = "production"
