@@ -37,8 +37,12 @@ const PHASE_COLORS = [
 
 export default async function JourneyDetailPage({ params }: Props) {
   const { slug } = await params;
-  const person = FAMOUS_JOURNEYS.find((p) => p.slug === slug);
+  const idx = FAMOUS_JOURNEYS.findIndex((p) => p.slug === slug);
+  const person = idx >= 0 ? FAMOUS_JOURNEYS[idx] : undefined;
   if (!person) notFound();
+
+  const prevPerson = idx > 0 ? FAMOUS_JOURNEYS[idx - 1] : null;
+  const nextPerson = idx < FAMOUS_JOURNEYS.length - 1 ? FAMOUS_JOURNEYS[idx + 1] : null;
 
   const firstPhaseLabel = person.phases[0]?.label ?? "early life";
   const lastPhaseLabel = person.phases[person.phases.length - 1]?.label ?? "peak career";
@@ -172,6 +176,51 @@ export default async function JourneyDetailPage({ params }: Props) {
               )}
             </blockquote>
           </div>
+        )}
+
+        {/* Prev / Next journey navigation */}
+        {(prevPerson || nextPerson) && (
+          <nav
+            aria-label="Famous journeys navigation"
+            className="scroll-reveal mb-8 grid grid-cols-1 gap-3 sm:grid-cols-2"
+          >
+            {prevPerson ? (
+              <Link
+                href={`/journeys/${prevPerson.slug}`}
+                className="group flex items-center gap-3 rounded-xl border border-stone-200 bg-white p-4 transition-all hover:-translate-y-0.5 hover:border-emerald-300 hover:shadow-sm"
+              >
+                <span className="text-2xl">{prevPerson.emoji}</span>
+                <div className="min-w-0 flex-1">
+                  <p className="text-[10px] font-semibold uppercase tracking-wider text-stone-400">
+                    ← Previous journey
+                  </p>
+                  <p className="truncate text-sm font-semibold text-stone-800 group-hover:text-emerald-700">
+                    {prevPerson.name}
+                  </p>
+                </div>
+              </Link>
+            ) : (
+              <div className="hidden sm:block" />
+            )}
+            {nextPerson ? (
+              <Link
+                href={`/journeys/${nextPerson.slug}`}
+                className="group flex items-center gap-3 rounded-xl border border-stone-200 bg-white p-4 text-right transition-all hover:-translate-y-0.5 hover:border-emerald-300 hover:shadow-sm sm:flex-row-reverse sm:text-right"
+              >
+                <span className="text-2xl">{nextPerson.emoji}</span>
+                <div className="min-w-0 flex-1">
+                  <p className="text-[10px] font-semibold uppercase tracking-wider text-stone-400">
+                    Next journey →
+                  </p>
+                  <p className="truncate text-sm font-semibold text-stone-800 group-hover:text-emerald-700">
+                    {nextPerson.name}
+                  </p>
+                </div>
+              </Link>
+            ) : (
+              <div className="hidden sm:block" />
+            )}
+          </nav>
         )}
 
         {/* CTA */}

@@ -327,13 +327,35 @@ export default async function ProfilePage({ params }: Props) {
           </div>
         ) : (
           <div className="rounded-xl border border-stone-200 bg-stone-50 p-10 text-center">
-            <p className="text-stone-500">No public timelines yet.</p>
-            {isOwner && (
+            <p className="text-stone-600 font-medium">
+              {isOwner ? "You haven't built a timeline yet." : `@${username} hasn't shared a timeline yet.`}
+            </p>
+            <p className="mt-1 text-sm text-stone-400">
+              {isOwner
+                ? "Map the hobbies that shaped each chapter of your life."
+                : "Check back later, or explore other people's hobby journeys in the meantime."}
+            </p>
+            {isOwner ? (
               <Link href="/timeline/new">
                 <Button className="mt-4 bg-emerald-600 text-white hover:bg-emerald-700">
                   Build your first timeline
                 </Button>
               </Link>
+            ) : (
+              <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
+                <Link
+                  href="/explore"
+                  className="inline-flex items-center gap-1.5 rounded-full bg-emerald-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-emerald-700"
+                >
+                  Explore timelines
+                </Link>
+                <Link
+                  href="/journeys"
+                  className="inline-flex items-center gap-1.5 rounded-full border border-stone-300 bg-white px-4 py-2 text-sm font-medium text-stone-700 transition-colors hover:border-emerald-400 hover:text-emerald-700"
+                >
+                  Famous journeys
+                </Link>
+              </div>
             )}
           </div>
         )}
