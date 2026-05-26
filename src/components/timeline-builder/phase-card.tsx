@@ -10,6 +10,33 @@ import { Label } from "~/components/ui/label";
 import { HobbyInput } from "./hobby-input";
 import type { Phase } from "~/lib/types";
 
+const MILESTONE_PROMPTS: Array<{ pattern: RegExp; prompt: string }> = [
+  {
+    pattern: /child|kid|young|early|elementary|primary|grade school/i,
+    prompt: "Think back: outdoor games, sports, drawing, collecting, building, make-believe…",
+  },
+  {
+    pattern: /school|high school|teen|secondary|middle school|college|uni|student/i,
+    prompt: "Think back: clubs, team sports, music, art, gaming, social activities…",
+  },
+  {
+    pattern: /work|career|adult|professional|office|job/i,
+    prompt: "Think about: weekend activities, fitness routines, creative outlets, travel…",
+  },
+  {
+    pattern: /now|current|today|present|lately|recent/i,
+    prompt: "What fills your evenings and weekends? New skills you're picking up?",
+  },
+];
+
+function getMilestonePrompt(label: string): string | null {
+  if (!label.trim()) return null;
+  for (const { pattern, prompt } of MILESTONE_PROMPTS) {
+    if (pattern.test(label)) return prompt;
+  }
+  return null;
+}
+
 interface Props {
   phase: Phase;
   onChange: (phase: Phase) => void;
@@ -31,6 +58,7 @@ export function PhaseCard({ phase, onChange, onDelete, isOnly }: Props) {
 
   const hasHobbies = phase.hobbies.length > 0;
   const dotColor = `hsl(${phase.order * 40 + 160}, 70%, 45%)`;
+  const milestonePrompt = !hasHobbies ? getMilestonePrompt(phase.label) : null;
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -148,6 +176,9 @@ export function PhaseCard({ phase, onChange, onDelete, isOnly }: Props) {
                 ({phase.hobbies.length})
               </span>
             </Label>
+            {milestonePrompt && (
+              <p className="text-xs text-stone-400 italic">{milestonePrompt}</p>
+            )}
             <HobbyInput
               hobbies={phase.hobbies}
               onChange={(hobbies) => update({ hobbies })}

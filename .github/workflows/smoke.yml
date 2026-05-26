@@ -1,0 +1,31 @@
+name: Production Smoke
+on:
+  schedule:
+    # Every 6 hours
+    - cron: '0 */6 * * *'
+  workflow_dispatch:
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Probe homepage
+        run: |
+          status=$(curl -o /dev/null -s -w "%{http_code}" \
+            -A "smoke-probe/1.0" \
+            --max-time 20 \
+            https://significanthobbies.com/)
+          echo "HTTP status: $status"
+          case "$status" in
+            200)
+              echo "OK"
+              ;;
+            429|1015)
+              echo "ERROR: Cloudflare rate limiting active (HTTP $status) — remove zone-level rate limit rule in Cloudflare dashboard"
+              exit 1
+              ;;
+            *)
+              echo "ERROR: Unexpected status $status"
+              exit 1
+              ;;
+          esac

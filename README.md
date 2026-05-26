@@ -102,3 +102,20 @@ pnpm test:e2e:ui     # playwright UI mode
 - **Profile** — `/@username` portfolio of your public timelines
 - **Discovery** — personalized hobby suggestions + directory
 - **Guest mode** — build and export without an account
+
+<!-- ACTIVE-AI-TASK-LOG:START -->
+## Active AI Task Log
+
+This section is maintained by the SaaS Maker Active-AI product/design loop so future agents do not reopen duplicate UI tasks.
+
+- Business lane: P1 Explore
+- Rule: do not create another broad "improve the UI" task unless the acceptance criteria differ materially from the tasks listed here.
+- Source of truth for task status: SaaS Maker task board. README entries are durable context only.
+
+| Task | Status | Priority | Last known note |
+| --- | --- | --- | --- |
+| `df83bb7f` significanthobbies: fix Cloudflare 1015 rate-limit blocking homepage | done | high | 2026-05-25 17:07:37 |
+| `4692120d` significanthobbies: add sample hobby journey and start CTA | done | medium | 2026-05-26: added SampleJourneyCard to hero, simplified copy, updated primary CTA to "Start your hobby map →" |
+| `6f687fd4` significanthobbies: add share-preview proof card | done | medium | 2026-05-26: added ShareProofSection to landing — dark card preview with phase labels, personality archetype, share action strip (copy/Twitter/WhatsApp/PNG), "What your friends see" label, and "Share your map →" primary CTA |
+| `d9e4af4d` significanthobbies: add example gallery empty state | done | low | 2026-05-26: CommunityGallery now shows 3 static sample cards with "Sample" badge + "Build and share yours →" CTA instead of returning null when demos are empty |
+<!-- ACTIVE-AI-TASK-LOG:END -->

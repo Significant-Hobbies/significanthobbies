@@ -208,35 +208,51 @@ function HobbyTagsIllustration() {
   );
 }
 
-/* ─── Hero Phase Preview Strip ───────────────────────────────────────────────── */
+/* ─── Sample Journey Card ─────────────────────────────────────────────────────── */
 
-function HeroPhaseStrip() {
+const SAMPLE_JOURNEY_PHASES = [
+  { label: "Childhood", color: "#10b981", bg: "#D1FAE5", hobbies: ["lego", "swimming", "chess", "drawing"] },
+  { label: "Teen Years", color: "#F59E0B", bg: "#FEF3C7", hobbies: ["guitar", "skateboarding", "video games"] },
+  { label: "College", color: "#3B82F6", bg: "#DBEAFE", hobbies: ["hiking", "photography", "coding"] },
+  { label: "Now", color: "#8B5CF6", bg: "#EDE9FE", hobbies: ["running", "cooking", "pottery"] },
+];
+
+function SampleJourneyCard() {
   return (
-    <div className="mt-10 flex items-stretch gap-0 overflow-hidden rounded-2xl border border-stone-200/80 bg-white/60 shadow-lg shadow-stone-200/40 backdrop-blur-sm"
-      style={{ maxWidth: 520, margin: "2.5rem auto 0" }}>
-      {PHASE_COLORS.map((phase, i) => (
+    <div
+      className="mt-8 mx-auto w-full max-w-md overflow-hidden rounded-2xl border border-stone-200/80 bg-white/90 shadow-lg shadow-stone-200/40 backdrop-blur-sm text-left"
+      style={{ animation: "fadeInUp 0.7s 0.85s ease-out both", opacity: 0 }}
+    >
+      <div className="flex items-center justify-between border-b border-stone-100 px-4 py-2.5">
+        <span className="text-xs font-semibold text-stone-600">Sam&apos;s hobby journey</span>
+        <span className="rounded-full bg-emerald-50 border border-emerald-200 px-2 py-0.5 text-[10px] font-medium text-emerald-600">example</span>
+      </div>
+      {SAMPLE_JOURNEY_PHASES.map((phase) => (
         <div
           key={phase.label}
-          className="group relative flex-1 cursor-default overflow-hidden px-2 py-3 text-center transition-all duration-300 hover:flex-[1.5]"
-          style={{
-            background: phase.bg,
-            borderRight: i < PHASE_COLORS.length - 1 ? `1px solid ${phase.border}22` : "none",
-            animation: `phaseBarIn 0.5s ${i * 0.1}s ease-out both`,
-          }}
+          className="flex items-start gap-3 border-b border-stone-50 px-4 py-3 last:border-0"
+          style={{ background: `${phase.bg}50` }}
         >
-          <div className="text-xs font-semibold" style={{ color: phase.border }}>{phase.label}</div>
-          <div className="mt-1 text-[10px] text-stone-500 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
-            {phase.hobbies} hobbies
+          <div className="flex items-center gap-1.5 min-w-[80px] pt-0.5">
+            <div className="h-2 w-2 rounded-full shrink-0" style={{ background: phase.color }} />
+            <span className="text-[11px] font-semibold" style={{ color: phase.color }}>{phase.label}</span>
           </div>
-          <div
-            className="absolute inset-x-0 bottom-0 h-0.5"
-            style={{
-              background: phase.border,
-              animation: `phaseBarIn 0.6s ${i * 0.12 + 0.3}s ease-out both`,
-            }}
-          />
+          <div className="flex flex-wrap gap-1">
+            {phase.hobbies.map((h) => (
+              <span
+                key={h}
+                className="rounded-full border px-2 py-0.5 text-[11px] font-medium"
+                style={{ background: phase.bg, borderColor: `${phase.color}40`, color: phase.color }}
+              >
+                {h}
+              </span>
+            ))}
+          </div>
         </div>
       ))}
+      <div className="px-4 py-2 text-center text-[10px] text-stone-400 bg-stone-50/60">
+        4 phases · 13 hobbies · your journey will look different
+      </div>
     </div>
   );
 }
@@ -476,10 +492,104 @@ function HowItWorks() {
 
 /* ─── Community Gallery ───────────────────────────────────────────────────────── */
 
+const SAMPLE_DEMO_TIMELINES = [
+  {
+    title: "Alex's Hobby Journey",
+    username: "alex",
+    phases: [
+      { name: "Childhood", hobbies: ["LEGO", "Cycling", "Swimming"] },
+      { name: "College", hobbies: ["Photography", "Guitar", "Hiking"] },
+      { name: "Now", hobbies: ["Rock Climbing", "Cooking", "Reading"] },
+    ],
+  },
+  {
+    title: "Jamie's Creative Path",
+    username: "jamie",
+    phases: [
+      { name: "Teen Years", hobbies: ["Sketching", "Piano"] },
+      { name: "Early Career", hobbies: ["Oil Painting", "Pottery", "Ceramics"] },
+      { name: "Now", hobbies: ["Digital Art", "Illustration", "Photography"] },
+    ],
+  },
+  {
+    title: "Morgan's Adventure Log",
+    username: "morgan",
+    phases: [
+      { name: "Childhood", hobbies: ["Football", "Swimming", "Chess"] },
+      { name: "College", hobbies: ["Hiking", "Photography", "Yoga"] },
+      { name: "Now", hobbies: ["Trail Running", "Rock Climbing", "Meditation"] },
+    ],
+  },
+];
+
+function SampleTimelineCard({ sample, idx }: { sample: typeof SAMPLE_DEMO_TIMELINES[0]; idx: number }) {
+  const borderColor = CARD_BORDER_COLORS[idx % CARD_BORDER_COLORS.length] ?? "#10b981";
+  const allHobbies = sample.phases.flatMap((p) => p.hobbies);
+  const totalHobbies = new Set(allHobbies).size;
+
+  return (
+    <div
+      className="relative overflow-hidden rounded-2xl border border-stone-200 bg-white opacity-80 shadow-sm"
+      style={{ borderLeftWidth: 4, borderLeftColor: borderColor }}
+    >
+      {/* Sample badge */}
+      <div className="absolute right-3 top-3 rounded-full bg-stone-100 px-2 py-0.5 text-[9px] font-semibold uppercase tracking-wider text-stone-400">
+        Sample
+      </div>
+
+      {/* Phase color bar strip */}
+      <div className="flex h-1.5 overflow-hidden">
+        {sample.phases.map((_, pi) => (
+          <div
+            key={pi}
+            className="flex-1"
+            style={{ background: CARD_BORDER_COLORS[pi % CARD_BORDER_COLORS.length] }}
+          />
+        ))}
+      </div>
+
+      <div className="p-5">
+        <h3 className="mb-0.5 font-semibold text-stone-800">{sample.title}</h3>
+        <p className="mb-3 text-xs text-stone-400">@{sample.username}</p>
+
+        <div className="mb-3 flex items-center gap-2">
+          <div className="flex flex-1 gap-0.5 overflow-hidden rounded-full">
+            {sample.phases.map((_, pi) => (
+              <div
+                key={pi}
+                className="h-1.5 flex-1 rounded-full"
+                style={{ background: CARD_BORDER_COLORS[pi % CARD_BORDER_COLORS.length], opacity: 0.6 }}
+              />
+            ))}
+          </div>
+          <span className="shrink-0 text-[10px] text-stone-400">
+            {sample.phases.length} phases · {totalHobbies} hobbies
+          </span>
+        </div>
+
+        <div className="flex flex-wrap gap-1">
+          {allHobbies.slice(0, 6).map((h) => (
+            <span
+              key={h}
+              className="rounded-full border border-stone-100 bg-stone-50 px-2 py-0.5 text-[10px] text-stone-500"
+            >
+              {h}
+            </span>
+          ))}
+          {totalHobbies > 6 && (
+            <span className="rounded-full border border-stone-100 bg-stone-50 px-2 py-0.5 text-[10px] text-stone-400">
+              +{totalHobbies - 6} more
+            </span>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function CommunityGallery({ demos }: { demos: DemoTimeline[] }) {
   const { ref, inView } = useInView(0.1);
-
-  if (demos.length === 0) return null;
+  const isEmpty = demos.length === 0;
 
   return (
     <section className="border-y border-stone-200/60 px-4 py-20" style={{ background: "#FAFAFA" }}>
@@ -494,7 +604,9 @@ function CommunityGallery({ demos }: { demos: DemoTimeline[] }) {
               Community
             </span>
             <h2 className="text-2xl font-bold text-stone-900 sm:text-3xl">Real hobby journeys</h2>
-            <p className="mt-1 text-stone-500">Shared by curious people like you</p>
+            <p className="mt-1 text-stone-500">
+              {isEmpty ? "Be the first to share your journey" : "Shared by curious people like you"}
+            </p>
           </div>
           <Link href="/hobbies" prefetch={false}>
             <Button variant="ghost" size="sm" className="text-emerald-600 hover:text-emerald-700">
@@ -503,81 +615,266 @@ function CommunityGallery({ demos }: { demos: DemoTimeline[] }) {
           </Link>
         </div>
 
-        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {demos.map((t, idx) => {
-            let phases: Phase[] = [];
-            try { phases = JSON.parse(t.phases) as Phase[]; } catch { /* ignore */ }
-            const totalHobbies = new Set(phases.flatMap((p) => p.hobbies.map((h) => h.name))).size;
-            const borderColor = CARD_BORDER_COLORS[idx % CARD_BORDER_COLORS.length] ?? "#10b981";
-            const allHobbies = phases.flatMap((p) => p.hobbies.map((h) => h.name)).slice(0, 8);
+        {isEmpty ? (
+          <>
+            <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+              {SAMPLE_DEMO_TIMELINES.map((sample, idx) => (
+                <SampleTimelineCard key={sample.username} sample={sample} idx={idx} />
+              ))}
+            </div>
+            <div className="mt-8 flex flex-col items-center gap-3 text-center">
+              <p className="text-sm text-stone-500">These are examples — no timelines have been shared yet.</p>
+              <Link href="/timeline/new" prefetch={false}>
+                <Button size="sm" className="bg-emerald-600 text-white hover:bg-emerald-700">
+                  Build and share yours →
+                </Button>
+              </Link>
+            </div>
+          </>
+        ) : (
+          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {demos.map((t, idx) => {
+              let phases: Phase[] = [];
+              try { phases = JSON.parse(t.phases) as Phase[]; } catch { /* ignore */ }
+              const totalHobbies = new Set(phases.flatMap((p) => p.hobbies.map((h) => h.name))).size;
+              const borderColor = CARD_BORDER_COLORS[idx % CARD_BORDER_COLORS.length] ?? "#10b981";
+              const allHobbies = phases.flatMap((p) => p.hobbies.map((h) => h.name)).slice(0, 8);
 
-            return (
-              <Link key={t.id} href={getTimelineUrl(t)} prefetch={false}>
-                <div
-                  className="group relative overflow-hidden rounded-2xl border border-stone-200 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_8px_32px_rgba(0,0,0,0.08)]"
-                  style={inView ? { animation: `cardReveal 0.6s ${idx * 0.15}s ease-out both`, borderLeftWidth: 4, borderLeftColor: borderColor } : { opacity: 0, borderLeftWidth: 4, borderLeftColor: borderColor }}
+              return (
+                <Link key={t.id} href={getTimelineUrl(t)} prefetch={false}>
+                  <div
+                    className="group relative overflow-hidden rounded-2xl border border-stone-200 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_8px_32px_rgba(0,0,0,0.08)]"
+                    style={inView ? { animation: `cardReveal 0.6s ${idx * 0.15}s ease-out both`, borderLeftWidth: 4, borderLeftColor: borderColor } : { opacity: 0, borderLeftWidth: 4, borderLeftColor: borderColor }}
+                  >
+                    {/* Phase color bar strip */}
+                    <div className="flex h-1.5 overflow-hidden">
+                      {phases.slice(0, 5).map((_, pi) => (
+                        <div
+                          key={pi}
+                          className="flex-1"
+                          style={{ background: CARD_BORDER_COLORS[pi % CARD_BORDER_COLORS.length] }}
+                        />
+                      ))}
+                    </div>
+
+                    <div className="p-5">
+                      <h3 className="mb-0.5 font-semibold text-stone-800 transition-colors group-hover:text-emerald-600">
+                        {t.title ?? "Hobby Timeline"}
+                      </h3>
+                      {t.user && (
+                        <p className="mb-3 text-xs text-stone-400">@{t.user.username ?? t.user.name}</p>
+                      )}
+
+                      {/* Phase timeline visualization */}
+                      <div className="mb-3 flex items-center gap-2">
+                        <div className="flex flex-1 gap-0.5 overflow-hidden rounded-full">
+                          {phases.slice(0, 6).map((_, pi) => (
+                            <div
+                              key={pi}
+                              className="h-1.5 flex-1 rounded-full transition-opacity group-hover:opacity-100"
+                              style={{ background: CARD_BORDER_COLORS[pi % CARD_BORDER_COLORS.length], opacity: 0.6 }}
+                            />
+                          ))}
+                        </div>
+                        <span className="shrink-0 text-[10px] text-stone-400">
+                          {phases.length} phases · {totalHobbies} hobbies
+                        </span>
+                      </div>
+
+                      {/* Hobby tag cloud */}
+                      <div className="flex flex-wrap gap-1">
+                        {allHobbies.slice(0, 6).map((h) => (
+                          <span
+                            key={h}
+                            className="rounded-full border border-stone-100 bg-stone-50 px-2 py-0.5 text-[10px] text-stone-500 transition-colors group-hover:border-emerald-200 group-hover:bg-emerald-50 group-hover:text-emerald-700"
+                          >
+                            {h}
+                          </span>
+                        ))}
+                        {totalHobbies > 6 && (
+                          <span className="rounded-full border border-stone-100 bg-stone-50 px-2 py-0.5 text-[10px] text-stone-400">
+                            +{totalHobbies - 6} more
+                          </span>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Hover footer */}
+                    <div className="translate-y-full border-t border-stone-100 bg-emerald-50 px-5 py-2.5 text-xs font-semibold text-emerald-700 transition-transform duration-200 group-hover:translate-y-0">
+                      View timeline →
+                    </div>
+                  </div>
+                </Link>
+              );
+            })}
+          </div>
+        )}
+      </div>
+    </section>
+  );
+}
+
+/* ─── Share Proof Section ─────────────────────────────────────────────────────── */
+
+function ShareProofSection() {
+  const { ref, inView } = useInView(0.15);
+
+  return (
+    <section className="px-4 py-24" style={{ background: "linear-gradient(135deg, #FAFAF9 0%, #F0FDF4 50%, #FAFAF9 100%)" }}>
+      <div className="mx-auto max-w-5xl">
+        <div
+          ref={ref}
+          className="grid grid-cols-1 items-center gap-12 lg:grid-cols-2"
+        >
+          {/* Left: text + CTA */}
+          <div style={inView ? { animation: "slideInLeft 0.6s ease-out both" } : { opacity: 0 }}>
+            <span className="mb-4 inline-block rounded-full border border-emerald-200 bg-emerald-50 px-4 py-1 text-xs font-semibold uppercase tracking-widest text-emerald-700">
+              Share
+            </span>
+            <h2 className="mb-4 text-3xl font-bold leading-tight text-stone-900 sm:text-4xl">
+              Share your map —<br />
+              <span className="italic text-emerald-600">one tap away</span>
+            </h2>
+            <p className="mb-6 text-lg text-stone-500">
+              Build your hobby journey, then share a beautiful card of your whole story. Your friends see exactly what you see on the right.
+            </p>
+            <ul className="mb-8 space-y-2 text-sm text-stone-500">
+              <li className="flex items-center gap-2">
+                <span className="text-emerald-500">✓</span> Download as a PNG and post anywhere
+              </li>
+              <li className="flex items-center gap-2">
+                <span className="text-emerald-500">✓</span> Copy a link — opens a live, interactive view
+              </li>
+              <li className="flex items-center gap-2">
+                <span className="text-emerald-500">✓</span> One-tap share to Twitter / X or WhatsApp
+              </li>
+            </ul>
+            <div className="flex flex-wrap gap-4">
+              <Link href="/timeline/new" prefetch={false}>
+                <Button
+                  size="lg"
+                  className="animate-glow-pulse bg-emerald-600 px-8 text-white hover:bg-emerald-700"
                 >
-                  {/* Phase color bar strip */}
-                  <div className="flex h-1.5 overflow-hidden">
-                    {phases.slice(0, 5).map((_, pi) => (
-                      <div
-                        key={pi}
-                        className="flex-1"
-                        style={{ background: CARD_BORDER_COLORS[pi % CARD_BORDER_COLORS.length] }}
-                      />
+                  Share your map →
+                </Button>
+              </Link>
+              <Link href="/hobbies" prefetch={false}>
+                <Button size="lg" variant="outline" className="border-stone-300 px-8 text-stone-600 hover:text-stone-900">
+                  Browse hobbies
+                </Button>
+              </Link>
+            </div>
+            <p className="mt-4 text-sm text-stone-400">No sign-up required. Always free.</p>
+          </div>
+
+          {/* Right: share card preview with viewer context */}
+          <div
+            className="flex flex-col items-center lg:items-end"
+            style={inView ? { animation: "slideInRight 0.6s 0.1s ease-out both" } : { opacity: 0 }}
+          >
+            {/* "What your friends see" label */}
+            <div className="mb-3 flex items-center gap-2 self-stretch lg:self-end lg:max-w-sm">
+              <div className="h-px flex-1 bg-stone-200" />
+              <span className="shrink-0 text-[11px] font-medium uppercase tracking-widest text-stone-400">
+                What your friends see
+              </span>
+              <div className="h-px flex-1 bg-stone-200" />
+            </div>
+
+            {/* Dark share card */}
+            <div
+              className="animate-float relative w-full max-w-sm overflow-hidden rounded-2xl border border-emerald-900/30 bg-slate-900 p-7 shadow-2xl"
+              style={{ boxShadow: "0 0 40px rgba(16,185,129,0.2), 0 24px 64px rgba(0,0,0,0.3)" }}
+            >
+              {/* Shine pass */}
+              <div className="pointer-events-none absolute inset-0 overflow-hidden rounded-2xl" style={{ zIndex: 10 }}>
+                <div
+                  style={{
+                    position: "absolute",
+                    top: 0,
+                    left: "-100%",
+                    width: "60%",
+                    height: "100%",
+                    background: "linear-gradient(105deg, transparent 30%, rgba(255,255,255,0.06) 50%, transparent 70%)",
+                    animation: "shinePass 4s 1s ease-in-out infinite",
+                  }}
+                />
+              </div>
+
+              {/* Card content */}
+              <div className="relative z-0">
+                <div className="mb-1 text-xs font-semibold tracking-widest text-emerald-400 uppercase">My Hobby Journey</div>
+                <div className="mb-0.5 text-lg font-bold text-white">A Life in Hobbies</div>
+                <div className="mb-4 text-xs text-slate-500">@alex</div>
+
+                {/* Phase strip */}
+                <div className="mb-4 overflow-hidden rounded-lg">
+                  <div className="flex h-8">
+                    {PHASE_COLORS.map((c) => (
+                      <div key={c.label} className="flex flex-1 flex-col items-center justify-center gap-0.5" style={{ background: `${c.border}22` }}>
+                        <div className="h-1 w-3/4 rounded-full" style={{ background: c.border, opacity: 0.8 }} />
+                        <div className="text-[7px] font-medium" style={{ color: c.border, opacity: 0.7 }}>{c.label}</div>
+                      </div>
                     ))}
                   </div>
+                </div>
 
-                  <div className="p-5">
-                    <h3 className="mb-0.5 font-semibold text-stone-800 transition-colors group-hover:text-emerald-600">
-                      {t.title ?? "Hobby Timeline"}
-                    </h3>
-                    {t.user && (
-                      <p className="mb-3 text-xs text-stone-400">@{t.user.username ?? t.user.name}</p>
-                    )}
+                {/* Hobby cloud */}
+                <div className="mb-4 flex flex-wrap gap-1.5">
+                  {["guitar 🎸", "chess ♟", "hiking 🏔", "reading 📚", "pottery 🏺", "swimming 🏊"].map((h) => (
+                    <span key={h} className="rounded-full bg-slate-800 px-2.5 py-1 text-xs text-slate-300">{h}</span>
+                  ))}
+                </div>
 
-                    {/* Phase timeline visualization */}
-                    <div className="mb-3 flex items-center gap-2">
-                      <div className="flex flex-1 gap-0.5 overflow-hidden rounded-full">
-                        {phases.slice(0, 6).map((_, pi) => (
-                          <div
-                            key={pi}
-                            className="h-1.5 flex-1 rounded-full transition-opacity group-hover:opacity-100"
-                            style={{ background: CARD_BORDER_COLORS[pi % CARD_BORDER_COLORS.length], opacity: 0.6 }}
-                          />
-                        ))}
-                      </div>
-                      <span className="shrink-0 text-[10px] text-stone-400">
-                        {phases.length} phases · {totalHobbies} hobbies
-                      </span>
-                    </div>
-
-                    {/* Hobby tag cloud */}
-                    <div className="flex flex-wrap gap-1">
-                      {allHobbies.slice(0, 6).map((h) => (
-                        <span
-                          key={h}
-                          className="rounded-full border border-stone-100 bg-stone-50 px-2 py-0.5 text-[10px] text-stone-500 transition-colors group-hover:border-emerald-200 group-hover:bg-emerald-50 group-hover:text-emerald-700"
-                        >
-                          {h}
-                        </span>
-                      ))}
-                      {totalHobbies > 6 && (
-                        <span className="rounded-full border border-stone-100 bg-stone-50 px-2 py-0.5 text-[10px] text-stone-400">
-                          +{totalHobbies - 6} more
-                        </span>
-                      )}
-                    </div>
-                  </div>
-
-                  {/* Hover footer */}
-                  <div className="translate-y-full border-t border-stone-100 bg-emerald-50 px-5 py-2.5 text-xs font-semibold text-emerald-700 transition-transform duration-200 group-hover:translate-y-0">
-                    View timeline →
+                {/* Personality archetype */}
+                <div className="mb-4 flex items-center gap-2 rounded-lg bg-slate-800/60 px-3 py-2">
+                  <span className="text-lg">🌍</span>
+                  <div>
+                    <div className="text-xs font-bold text-emerald-400">Renaissance Explorer</div>
+                    <div className="text-[10px] text-slate-500">interests span every corner of life</div>
                   </div>
                 </div>
-              </Link>
-            );
-          })}
+
+                {/* Stats row */}
+                <div className="mb-3 grid grid-cols-3 gap-2">
+                  {[{ val: "5", label: "phases" }, { val: "34", label: "hobbies" }, { val: "3", label: "rekindled" }].map((s) => (
+                    <div key={s.label} className="rounded-lg bg-slate-800 px-2 py-2 text-center">
+                      <div className="text-sm font-bold text-emerald-400">{s.val}</div>
+                      <div className="text-[9px] text-slate-500">{s.label}</div>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="h-px bg-gradient-to-r from-transparent via-emerald-500/40 to-transparent" />
+                <div className="mt-3 text-right text-[9px] text-slate-600">significanthobbies.com</div>
+              </div>
+            </div>
+
+            {/* Share action strip — shows viewer the sharing UX */}
+            <div className="mt-4 flex w-full max-w-sm items-center justify-between rounded-xl border border-stone-200 bg-white px-4 py-3 shadow-sm">
+              <span className="text-xs text-stone-400">Share via</span>
+              <div className="flex gap-2">
+                {[
+                  { icon: "🔗", label: "Copy link" },
+                  { icon: "𝕏", label: "Twitter" },
+                  { icon: "💬", label: "WhatsApp" },
+                ].map((btn) => (
+                  <div
+                    key={btn.label}
+                    className="flex cursor-default items-center gap-1 rounded-lg border border-stone-100 bg-stone-50 px-2.5 py-1.5 text-xs font-medium text-stone-600"
+                    title={btn.label}
+                  >
+                    <span>{btn.icon}</span>
+                    <span className="hidden sm:inline">{btn.label}</span>
+                  </div>
+                ))}
+                <div className="flex cursor-default items-center gap-1 rounded-lg border border-stone-100 bg-stone-50 px-2.5 py-1.5 text-xs font-medium text-stone-600">
+                  <span>⬇</span>
+                  <span className="hidden sm:inline">PNG</span>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -909,13 +1206,13 @@ export function LandingClient({ demos }: LandingClientProps) {
           {/* Headline */}
           <h1 className="mb-6 text-4xl font-bold leading-tight tracking-tight text-stone-900 sm:text-5xl md:text-6xl lg:text-7xl">
             <span className="block">
-              Map your hobby journey,
+              What hobbies have
             </span>
             <span
               className="relative mt-1 block italic text-emerald-600"
               style={{ animation: "fadeInUp 0.4s 0.1s ease-out both", opacity: 0 }}
             >
-              rediscover what shaped you
+              shaped your life?
               {/* Wavy underline decoration */}
               <svg
                 className="absolute -bottom-2 left-0 w-full"
@@ -933,12 +1230,6 @@ export function LandingClient({ demos }: LandingClientProps) {
                 />
               </svg>
             </span>
-            <span
-              className="block"
-              style={{ animation: "fadeInUp 0.6s 0.35s ease-out both", opacity: 0 }}
-            >
-              and find what to try next.
-            </span>
           </h1>
 
           {/* Subtext */}
@@ -946,7 +1237,7 @@ export function LandingClient({ demos }: LandingClientProps) {
             className="mx-auto mb-10 max-w-xl text-lg text-stone-500 sm:text-xl"
             style={{ animation: "fadeInUp 0.6s 0.4s ease-out both", opacity: 0 }}
           >
-            Build a shareable timeline of your hobbies across life — and discover the story your interests tell about you.
+            List your hobbies from when you were a kid to today. See the map of your life. Share it with anyone.
           </p>
 
           {/* CTA buttons */}
@@ -959,10 +1250,10 @@ export function LandingClient({ demos }: LandingClientProps) {
                 size="lg"
                 className="bg-emerald-600 px-8 text-white shadow-[0_0_24px_rgba(16,185,129,0.3)] ring-1 ring-emerald-500/30 transition-all duration-200 hover:-translate-y-0.5 hover:bg-emerald-700 hover:shadow-[0_0_36px_rgba(16,185,129,0.45)]"
               >
-                Discover your hobby story →
+                Start your hobby map →
               </Button>
             </Link>
-            <Link href="/hobbies" prefetch={false}>
+            <Link href="/journeys" prefetch={false}>
               <Button
                 size="lg"
                 variant="outline"
@@ -986,10 +1277,8 @@ export function LandingClient({ demos }: LandingClientProps) {
             </Link>
           </p>
 
-          {/* Phase strip preview */}
-          <div style={{ animation: "fadeInUp 0.7s 0.85s ease-out both", opacity: 0 }}>
-            <HeroPhaseStrip />
-          </div>
+          {/* Sample journey — concrete proof of what the product does */}
+          <SampleJourneyCard />
         </div>
       </section>
 
@@ -1026,6 +1315,9 @@ export function LandingClient({ demos }: LandingClientProps) {
 
       {/* ── Community Gallery ─────────────────────────────────────────────────── */}
       <CommunityGallery demos={demos} />
+
+      {/* ── Share Proof ───────────────────────────────────────────────────────── */}
+      <ShareProofSection />
 
       {/* ── Export CTA ────────────────────────────────────────────────────────── */}
       <ExportCTA />
