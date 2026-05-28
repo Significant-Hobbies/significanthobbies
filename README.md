@@ -9,7 +9,7 @@ Map your hobby history across life phases. Visualize insights. Share your journe
 | Hosting | Cloudflare Workers (`significanthobbies`) via `@opennextjs/cloudflare`; routes `significanthobbies.com` + `www.significanthobbies.com`. PRs deploy a `significanthobbies-preview` env on `*.workers.dev`. |
 | Database | Turso (libSQL); Drizzle ORM |
 | Auth | better-auth + Google OAuth |
-| Analytics | PostHog (via `@saas-maker/posthog-client`) |
+| Analytics | PostHog (via `local posthog-js wrapper`) |
 | CI/CD | GitHub Actions (`.github/workflows/deploy.yml`) — auto-deploy to Cloudflare on push to `main`, preview deploy on PR |
 
 ## Quick Start

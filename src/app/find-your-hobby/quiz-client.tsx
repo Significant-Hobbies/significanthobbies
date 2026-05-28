@@ -1,6 +1,6 @@
 "use client";
 
-import { track } from "@saas-maker/posthog-client";
+import posthog from "posthog-js";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { EmailCapture } from "~/components/email-capture";
@@ -152,7 +152,7 @@ function buildHobbyExperiments(hobbies: string[], topCats: Category[]): HobbyExp
 
 function trackRecommendationEvent(name: "recommendation_started" | "recommendation_saved", properties: Record<string, unknown>) {
   try {
-    track(name, { project: "significanthobbies", ...properties });
+    posthog.capture(name, { project_id: "significanthobbies", ...properties });
   } catch {
     // Best-effort only; recommendations should never fail because analytics did.
   }

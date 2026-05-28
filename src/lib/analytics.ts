@@ -6,7 +6,7 @@
  * cross-fleet funnel (signup -> activated -> core_action) and a D1/D7
  * retention insight, with no custom dashboard.
  *
- * Every event carries `project: "significanthobbies"`.
+ * Every event carries `project_id: "significanthobbies"`.
  *
  *  - `signup`      — first session after a SignificantHobbies account is created.
  *  - `activated`   — first real value: the user saves their first timeline.
@@ -14,12 +14,12 @@
  *                    timeline, or exporting a timeline share card.
  *  - `returned`    — a later session for a user who already has prior activity.
  *
- * It is isomorphic: in the browser it routes through `@saas-maker/posthog-client`
+ * It is isomorphic: in the browser it routes through `posthog-js`
  * (`track`); inside a server action it POSTs directly to the PostHog capture
  * API. The server path uses a plain `fetch` rather than importing
  * `posthog-node`, which keeps the Node-only module out of the client bundle.
  */
-import { track } from "@saas-maker/posthog-client";
+import posthog from "posthog-js";
 
 const PROJECT = "significanthobbies" as const;
 
@@ -32,13 +32,13 @@ export type CoreAction = "timeline_saved" | "timeline_exported";
 
 interface AnalyticsEventMap {
   /** First session after an account is created. */
-  signup: { project: typeof PROJECT };
+  signup: { project_id: typeof PROJECT };
   /** The user reaches first real value — their first saved timeline. */
-  activated: { project: typeof PROJECT };
+  activated: { project_id: typeof PROJECT };
   /** The thing the product exists to do. */
-  core_action: { project: typeof PROJECT; action: CoreAction };
+  core_action: { project_id: typeof PROJECT; action: CoreAction };
   /** A return session by a user with prior activity. */
-  returned: { project: typeof PROJECT };
+  returned: { project_id: typeof PROJECT };
 }
 
 function emitServer(
@@ -61,21 +61,29 @@ function emitServer(
   });
 }
 
-function emit<K extends keyof AnalyticsEventMap>(
-  event: K,
-  props: Omit<AnalyticsEventMap[K], "project">,
+export function trackEvent(
+  event: string,
+  properties: Record<string, unknown> = {},
   distinctId?: string,
 ): void {
-  const payload = { project: PROJECT, ...props };
+  const payload = { project_id: PROJECT, ...properties };
   try {
     if (typeof window === "undefined") {
       emitServer(event, payload, distinctId);
     } else {
-      track(event, payload);
+      posthog.capture(event, payload);
     }
   } catch {
     // Analytics must NEVER break a user flow. Swallow and move on.
   }
+}
+
+function emit<K extends keyof AnalyticsEventMap>(
+  event: K,
+  props: Omit<AnalyticsEventMap[K], "project_id">,
+  distinctId?: string,
+): void {
+  trackEvent(event, props, distinctId);
 }
 
 /** Fire once, on the first session after an account is created. */
