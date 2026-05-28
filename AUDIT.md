@@ -8,15 +8,15 @@ Clean. No `.env`, `.pem`, `.key`, or service-account files found in git history.
 ## Credentials on Disk
 **HIGH RISK**: `.env.local` contains live production secrets on disk:
 - Turso DB URL + auth token (JWT)
-- `NEXTAUTH_SECRET` (production value)
+- Better Auth secret
 - Google OAuth client ID + secret (`GOCSPX-...`)
 - SaaSMaker API key (`pk_0d4e...`)
 
-`.env.vercel.tmp` contains a Vercel OIDC JWT token (likely expired, but should be deleted).
+Historical `.env.vercel.tmp` references are stale; active deploy is Cloudflare Workers.
 `.env` has only placeholder/dev values -- low risk.
 
 ## Deployment
-Deployed on **Vercel** (`.vercel/` directory present, `NEXTAUTH_URL=https://significanthobbies.com`).
+Deployed on Cloudflare Workers via `@opennextjs/cloudflare` and Wrangler.
 No wide-open CORS patterns in source code. CORS errors in browser logs are from external SaaSMaker API.
 
 ## Code Security
@@ -24,6 +24,6 @@ No wide-open CORS patterns in source code. CORS errors in browser logs are from 
 - API keys loaded via `process.env` -- no hardcoded secrets in source.
 
 ## Action Items
-- [ ] Delete `.env.local` and `.env.vercel.tmp` from disk (secrets should only live in Vercel dashboard)
-- [ ] Rotate Turso auth token, NextAuth secret, and Google OAuth secret (exposed on local disk)
+- [ ] Keep local env files uncommitted; do not inspect or copy secrets during routine agent work.
+- [ ] Rotate Turso auth token, Better Auth secret, and Google OAuth secret if local disk exposure is considered risky.
 - [ ] Audit `dangerouslySetInnerHTML` in `hobbies-for-resume/page.tsx` if data becomes user-sourced

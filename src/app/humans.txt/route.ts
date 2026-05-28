@@ -6,7 +6,7 @@ GitHub: sarthakagrawal927
 
 /* SITE */
 Last updated: 2026-05-15
-Software: Next.js, React, Drizzle ORM, Turso, NextAuth, shadcn/ui, dnd-kit
+Software: Next.js, React, Drizzle ORM, Turso, better-auth, shadcn/ui, dnd-kit
 `;
 
 export function GET() {

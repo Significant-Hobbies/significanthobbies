@@ -16,7 +16,6 @@ const authSecret =
 
 const baseURL =
   process.env.BETTER_AUTH_URL?.trim() ||
-  process.env.NEXTAUTH_URL?.trim() ||
   "https://significanthobbies.com";
 const googleClientId = process.env.GOOGLE_CLIENT_ID?.trim();
 const googleClientSecret = process.env.GOOGLE_CLIENT_SECRET?.trim();

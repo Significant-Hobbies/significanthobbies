@@ -15,7 +15,6 @@ export function LoginForm() {
       const result = await authClient.signIn.social({ provider: "google", callbackURL: "/dashboard" });
       if (result?.error) {
         captureAuthFailure({
-          projectSlug: "significanthobbies",
           provider: "google",
           stage: "signin",
           reason: result.error.message ?? "Google sign-in failed",
@@ -25,7 +24,6 @@ export function LoginForm() {
       }
     } catch (error) {
       captureAuthFailure({
-        projectSlug: "significanthobbies",
         provider: "google",
         stage: "signin",
         reason: error instanceof Error ? error.message : "Google sign-in failed",
