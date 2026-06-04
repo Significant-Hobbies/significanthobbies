@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build --webpack",
+    "build": "next build --webpack && node scripts/inline-critical-css.mjs",
     "cf:build": "node scripts/cf-build.mjs",
     "validate:env:deploy": "node scripts/validate-env.mjs deploy",
     "start": "next start",
@@ -50,12 +50,12 @@
     "nanoid": "5.1.9",
     "next": "16.2.4",
     "next-themes": "0.4.6",
+    "posthog-js": "^1.372.1",
     "react": "19.2.5",
     "react-dom": "19.2.5",
     "sonner": "2.0.7",
     "tailwind-merge": "3.5.0",
-    "zod": "4.3.6",
-    "posthog-js": "^1.372.1"
+    "zod": "4.3.6"
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.11.2",
@@ -73,6 +73,7 @@
     "@types/react-dom": "19",
     "@vitest/coverage-v8": "4.1.5",
     "babel-plugin-react-compiler": "1.0.0",
+    "beasties": "^0.4.2",
     "dotenv": "17.4.2",
     "drizzle-kit": "0.31.10",
     "eslint": "10.2.1",
