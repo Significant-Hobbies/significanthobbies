@@ -30,6 +30,22 @@ export function middleware(req: NextRequest) {
     return NextResponse.redirect(new URL("/dashboard", req.url));
   }
 
+  // Force CF Edge to cache anon `/`. OpenNext was emitting s-maxage only,
+  // which CF was treating as DYNAMIC; max-age + CDN-Cache-Control is the
+  // combination CF actually honors for HTML.
+  if (pathname === "/") {
+    const res = NextResponse.next();
+    res.headers.set(
+      "Cache-Control",
+      "public, max-age=3600, s-maxage=86400, stale-while-revalidate=604800",
+    );
+    res.headers.set(
+      "CDN-Cache-Control",
+      "public, s-maxage=86400, stale-while-revalidate=604800",
+    );
+    return res;
+  }
+
   const isProtected = PROTECTED_PREFIXES.some(
     (p) => pathname === p || pathname.startsWith(`${p}/`)
   );
