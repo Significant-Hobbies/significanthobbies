@@ -84,15 +84,25 @@ export default async function ExplorePage() {
     .sort((a, b) => b[1] - a[1])
     .slice(0, 8)
     .map(([name, count]) => ({ name, count, emoji: getCategoryForHobby(name)?.emoji ?? "✨" }));
+  const totalPhases = timelineList.reduce((sum, timeline) => sum + timeline.phases.length, 0);
+  const totalUniqueHobbies = Object.keys(hobbyCount).length;
+  const totalLikes = timelineList.reduce((sum, timeline) => sum + timeline.likeCount, 0);
 
   return (
-    <div className="mx-auto max-w-5xl px-4 py-12">
+    <div className="mx-auto min-h-screen max-w-5xl px-4 py-12 pb-16">
       {/* Page header */}
-      <div className="scroll-reveal mb-8">
-        <h1 className="text-3xl font-bold text-stone-900">Explore timelines</h1>
-        <p className="mt-2 text-stone-500">
-          Discover how people spend their time — across life phases, hobbies, and chapters.
-        </p>
+      <div className="scroll-reveal mb-8 grid gap-5 md:grid-cols-[minmax(0,1fr)_22rem] md:items-end">
+        <div>
+          <h1 className="text-3xl font-bold text-stone-900">Explore timelines</h1>
+          <p className="mt-2 text-stone-500">
+            Discover how people spend their time — across life phases, hobbies, and chapters.
+          </p>
+        </div>
+        <div className="grid grid-cols-3 gap-2">
+          <ExploreStat label="Public" value={String(timelineList.length)} />
+          <ExploreStat label="Phases" value={String(totalPhases)} />
+          <ExploreStat label="Signals" value={String(totalUniqueHobbies + totalLikes)} />
+        </div>
       </div>
 
       {/* Trending hobbies */}
@@ -119,6 +129,15 @@ export default async function ExplorePage() {
       )}
 
       <ExploreClient timelines={timelineList} />
+    </div>
+  );
+}
+
+function ExploreStat({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="rounded-xl border border-stone-200 bg-white px-3 py-2">
+      <p className="text-[10px] font-semibold uppercase tracking-wider text-stone-400">{label}</p>
+      <p className="mt-1 text-lg font-bold text-stone-900">{value}</p>
     </div>
   );
 }

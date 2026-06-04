@@ -1,8 +1,17 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import type { ReactNode } from "react";
 import Link from "next/link";
-import { Search, LayoutList } from "lucide-react";
+import {
+  ArrowRight,
+  CalendarDays,
+  Heart,
+  Layers3,
+  LayoutList,
+  Search,
+  Sparkles,
+} from "lucide-react";
 import { Input } from "~/components/ui/input";
 import { ScrollReveal } from "~/components/scroll-reveal";
 import type { TimelineData } from "~/lib/types";
@@ -27,6 +36,27 @@ interface ExploreClientProps {
   timelines: (TimelineData & { likeCount?: number })[];
 }
 
+function categoryForHobby(hobby: string) {
+  const lower = hobby.toLowerCase();
+  return HOBBY_CATEGORIES.find((category) =>
+    category.hobbies.some((name) => name.toLowerCase() === lower),
+  );
+}
+
+function timelineSpan(phases: TimelineData["phases"]) {
+  const years = phases
+    .flatMap((phase) => [phase.yearStart, phase.yearEnd])
+    .filter((year): year is number => typeof year === "number");
+  if (years.length > 0) return `${Math.min(...years)}-${Math.max(...years)}`;
+
+  const ages = phases
+    .flatMap((phase) => [phase.ageStart, phase.ageEnd])
+    .filter((age): age is number => typeof age === "number");
+  if (ages.length > 0) return `ages ${Math.min(...ages)}-${Math.max(...ages)}`;
+
+  return `${phases.length} phase${phases.length !== 1 ? "s" : ""}`;
+}
+
 function ExploreTimelineCard({ timeline }: { timeline: TimelineData & { likeCount?: number } }) {
   const { phases } = timeline;
   const totalHobbies = new Set(
@@ -46,10 +76,19 @@ function ExploreTimelineCard({ timeline }: { timeline: TimelineData & { likeCoun
     .map(([name]) => name);
 
   const username = timeline.user?.username ?? timeline.user?.name;
+  const visiblePhases = phases.slice(0, 3);
+  const categories = Array.from(
+    new Map(
+      top3Hobbies.flatMap((hobby) => {
+        const category = categoryForHobby(hobby);
+        return category ? [[category.name, category] as const] : [];
+      }),
+    ).values(),
+  ).slice(0, 3);
 
   return (
     <Link href={getTimelineUrl(timeline)} prefetch={false}>
-      <div className="group flex h-full flex-col rounded-xl border border-stone-200 bg-white p-5 transition-all hover:border-emerald-400 hover:shadow-sm">
+      <div className="group flex h-full flex-col rounded-xl border border-stone-200 bg-white p-5 transition-all hover:-translate-y-0.5 hover:border-emerald-400 hover:shadow-sm">
         {/* Phase color strip */}
         {phases.length > 0 && (
           <div className="mb-4 flex h-1.5 w-full overflow-hidden rounded-full gap-px">
@@ -62,19 +101,28 @@ function ExploreTimelineCard({ timeline }: { timeline: TimelineData & { likeCoun
           </div>
         )}
 
-        {/* Title */}
-        <h3 className="mb-1 font-semibold text-stone-800 group-hover:text-emerald-600 transition-colors leading-tight">
-          {timeline.title ?? "Hobby Timeline"}
-        </h3>
+        <div className="flex items-start justify-between gap-3">
+          <div className="min-w-0">
+            <h3 className="font-semibold leading-tight text-stone-800 transition-colors group-hover:text-emerald-600">
+              {timeline.title ?? "Hobby Timeline"}
+            </h3>
+            {username && <p className="mt-1 text-xs text-stone-400">@{username}</p>}
+          </div>
+          <div className="shrink-0 rounded-lg border border-stone-200 bg-stone-50 px-2 py-1 text-right">
+            <div className="text-[10px] font-semibold uppercase tracking-wider text-stone-400">Span</div>
+            <div className="text-xs font-semibold text-stone-700">{timelineSpan(phases)}</div>
+          </div>
+        </div>
 
-        {/* User */}
-        {username && (
-          <p className="mb-3 text-xs text-stone-400">@{username}</p>
-        )}
+        <div className="mt-4 grid grid-cols-3 gap-2 text-xs">
+          <MiniStat icon={<Layers3 className="h-3.5 w-3.5" />} label="Phases" value={String(phases.length)} />
+          <MiniStat icon={<Sparkles className="h-3.5 w-3.5" />} label="Hobbies" value={String(totalHobbies)} />
+          <MiniStat icon={<Heart className="h-3.5 w-3.5" />} label="Likes" value={String(timeline.likeCount ?? 0)} />
+        </div>
 
         {/* Top hobby tags */}
         {top3Hobbies.length > 0 && (
-          <div className="mb-3 flex flex-wrap gap-1">
+          <div className="mt-4 flex flex-wrap gap-1">
             {top3Hobbies.map((hobby) => (
               <span
                 key={hobby}
@@ -86,16 +134,123 @@ function ExploreTimelineCard({ timeline }: { timeline: TimelineData & { likeCoun
           </div>
         )}
 
-        {/* Stats footer */}
-        <p className="mt-auto pt-2 text-xs text-stone-400">
-          {phases.length} phase{phases.length !== 1 ? "s" : ""} &middot;{" "}
-          {totalHobbies} hobb{totalHobbies !== 1 ? "ies" : "y"}
-          {timeline.likeCount !== undefined && timeline.likeCount > 0 && (
-            <> &middot; {timeline.likeCount} like{timeline.likeCount !== 1 ? "s" : ""}</>
-          )}
-        </p>
+        {visiblePhases.length > 0 && (
+          <div className="mt-4 space-y-2">
+            {visiblePhases.map((phase, index) => (
+              <div key={phase.id} className="rounded-lg border border-stone-100 bg-stone-50/70 px-3 py-2">
+                <div className="flex items-center gap-2">
+                  <span className={`h-2 w-2 rounded-full ${PHASE_COLORS[index % PHASE_COLORS.length]}`} />
+                  <p className="truncate text-xs font-semibold text-stone-700">{phase.label}</p>
+                </div>
+                <p className="mt-1 truncate text-xs text-stone-500">
+                  {phase.hobbies.slice(0, 3).map((hobby) => hobby.name).join(" · ") || "No hobbies listed"}
+                </p>
+              </div>
+            ))}
+            {phases.length > visiblePhases.length && (
+              <p className="pl-3 text-xs text-stone-400">
+                +{phases.length - visiblePhases.length} more phase{phases.length - visiblePhases.length !== 1 ? "s" : ""}
+              </p>
+            )}
+          </div>
+        )}
+
+        {categories.length > 0 && (
+          <div className="mt-4 flex flex-wrap gap-1.5">
+            {categories.map((category) => (
+              <span key={category.name} className="rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-medium text-emerald-700">
+                {category.emoji} {category.name}
+              </span>
+            ))}
+          </div>
+        )}
+
+        <div className="mt-auto flex items-center justify-between gap-3 pt-5 text-xs text-stone-400">
+          <span className="inline-flex items-center gap-1">
+            <CalendarDays className="h-3.5 w-3.5" />
+            Updated {new Date(timeline.updatedAt).toLocaleDateString("en", { month: "short", day: "numeric" })}
+          </span>
+          <span className="inline-flex items-center gap-1 font-medium text-emerald-600">
+            View <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
+          </span>
+        </div>
       </div>
     </Link>
+  );
+}
+
+function MiniStat({ icon, label, value }: { icon: ReactNode; label: string; value: string }) {
+  return (
+    <div className="rounded-lg border border-stone-100 bg-stone-50 px-2 py-2">
+      <div className="flex items-center gap-1 text-stone-400">
+        {icon}
+        <span>{label}</span>
+      </div>
+      <div className="mt-1 font-semibold text-stone-800">{value}</div>
+    </div>
+  );
+}
+
+function ExploreBackfill({ hasResults }: { hasResults: boolean }) {
+  return (
+    <section className="mt-10 grid gap-4 md:grid-cols-3">
+      {[
+        {
+          title: "Deep hobby arcs",
+          body: "Find timelines where one interest returns across school, work, family, and later chapters.",
+          href: "/hobbies",
+          cta: "Browse hobbies",
+        },
+        {
+          title: "Quest sparks",
+          body: "Use short experiments to turn a thin phase into a fuller story with evidence and notes.",
+          href: "/side-quests",
+          cta: "Open quests",
+        },
+        {
+          title: hasResults ? "Share your map" : "Start the index",
+          body: "Public timelines make Explore better: phases, hobby tags, and updates all feed this page.",
+          href: "/timeline/new",
+          cta: "Build timeline",
+        },
+      ].map((item) => (
+        <Link
+          key={item.title}
+          href={item.href}
+          prefetch={false}
+          className="group rounded-xl border border-stone-200 bg-white p-5 transition-colors hover:border-emerald-400"
+        >
+          <h3 className="font-semibold text-stone-800">{item.title}</h3>
+          <p className="mt-2 text-sm leading-6 text-stone-500">{item.body}</p>
+          <p className="mt-4 inline-flex items-center gap-1 text-sm font-medium text-emerald-600">
+            {item.cta}
+            <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+          </p>
+        </Link>
+      ))}
+    </section>
+  );
+}
+
+function ExploreFooter() {
+  return (
+    <section className="mt-10 rounded-xl border border-stone-200 bg-stone-900 px-5 py-6 text-white md:flex md:items-center md:justify-between md:gap-6">
+      <div>
+        <p className="text-xs font-semibold uppercase tracking-wider text-emerald-300">Community signal</p>
+        <h2 className="mt-2 text-xl font-semibold">Explore grows with every public phase.</h2>
+        <p className="mt-2 max-w-2xl text-sm leading-6 text-stone-300">
+          Add a timeline with hobbies, dates, and phase labels so other people can discover patterns beyond a flat list of interests.
+        </p>
+      </div>
+      <Link
+        href="/timeline/new"
+        prefetch={false}
+        className="mt-5 inline-flex items-center justify-center gap-2 rounded-lg bg-emerald-500 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-emerald-400 md:mt-0"
+      >
+        Build your timeline
+        <ArrowRight className="h-4 w-4" />
+      </Link>
+    </section>
   );
 }
 
@@ -259,6 +414,9 @@ export function ExploreClient({ timelines }: ExploreClientProps) {
           </div>
         </>
       )}
+
+      <ExploreBackfill hasResults={filtered.length > 0} />
+      <ExploreFooter />
     </div>
   );
 }
