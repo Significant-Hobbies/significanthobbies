@@ -1,0 +1,35 @@
+---
+// Archetype Preview — the "What will your hobby story reveal?" strip
+// immediately below the hero. Port of the inline section in
+// LandingClient.tsx.
+const ARCHETYPES = [
+  { emoji: '🌍', name: 'Renaissance Explorer', description: 'Your interests span every corner of life' },
+  { emoji: '🎯', name: 'Deep Specialist', description: 'You go deep, not wide' },
+  { emoji: '🎨', name: 'Creative Soul', description: 'Art and expression run through everything you do' },
+  { emoji: '💪', name: 'Action Hero', description: "You're wired for movement and challenge" },
+  { emoji: '🧠', name: 'Mind Builder', description: 'You feed your curiosity with knowledge' },
+  { emoji: '🤝', name: 'Social Butterfly', description: 'Your hobbies connect you to others' },
+  { emoji: '🔧', name: 'Maker', description: 'You build, craft, and create with your hands' },
+  { emoji: '⚖️', name: 'Balanced Explorer', description: 'A little of everything, mastered through breadth' },
+];
+---
+
+<section class="py-16 bg-stone-50 px-4">
+  <div class="max-w-4xl mx-auto text-center">
+    <h2 class="text-2xl font-bold text-stone-900 mb-2">
+      What will your hobby story reveal?
+    </h2>
+    <p class="text-stone-500 mb-8">
+      Your hobbies tell a story about who you are. Discover your archetype.
+    </p>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+      {ARCHETYPES.map((a) => (
+        <div class="rounded-xl border border-stone-200 bg-white p-4 text-center">
+          <div class="text-3xl mb-2">{a.emoji}</div>
+          <div class="font-semibold text-stone-800 text-sm">{a.name}</div>
+          <div class="text-xs text-stone-500 mt-1">{a.description}</div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>

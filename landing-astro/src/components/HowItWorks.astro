@@ -1,0 +1,182 @@
+---
+// HowItWorks — three-step stepper with mockup illustrations.
+// Desktop: horizontal stepper with a gradient connecting line.
+// Mobile: vertical stepper with a left-rail line + numbered bubble.
+//
+// React version drove entry animations with useInView; we use the CSS
+// .scroll-reveal classes instead.
+const PHASE_COLORS = [
+  { bg: '#D1FAE5', border: '#10b981', label: 'Childhood' },
+  { bg: '#FEF3C7', border: '#F59E0B', label: 'Teen Years' },
+  { bg: '#DBEAFE', border: '#3B82F6', label: 'College' },
+  { bg: '#FCE7F3', border: '#EC4899', label: 'Early Career' },
+  { bg: '#EDE9FE', border: '#8B5CF6', label: 'Now' },
+];
+
+const PHASES_3 = ['Childhood', 'Teen Years', 'College'];
+const HOBBIES_STEP_2 = ['lego', 'swimming', 'drawing', 'chess', '+ more'];
+const HOBBIES_STEP_3 = ['lego', 'swimming', 'guitar', 'chess'];
+---
+
+<section class="px-4 py-20" style="background: linear-gradient(180deg, #FAFAF9 0%, #F5F5F4 100%);">
+  <div class="mx-auto max-w-5xl">
+    <div class="mb-14 text-center scroll-reveal">
+      <span class="mb-3 inline-block rounded-full border border-amber-200 bg-amber-50 px-4 py-1 text-xs font-semibold uppercase tracking-widest text-amber-700">
+        How it works
+      </span>
+      <h2 class="text-3xl font-bold text-stone-900 sm:text-4xl">Three steps to your story</h2>
+    </div>
+
+    {/* Desktop: horizontal stepper */}
+    <div class="hidden lg:block">
+      <div class="relative grid grid-cols-3 gap-8">
+        <div class="absolute left-[16.5%] right-[16.5%] top-[52px] h-px bg-gradient-to-r from-emerald-300 via-amber-300 to-blue-300" />
+
+        {/* Step 01 */}
+        <div class="relative scroll-reveal scroll-reveal-d1">
+          <div class="relative mx-auto mb-6 flex h-[52px] w-[52px] items-center justify-center rounded-full border-2 border-emerald-300 bg-white text-sm font-bold text-emerald-700 shadow-md">
+            01
+          </div>
+          <h3 class="mb-2 text-center text-base font-semibold text-stone-800">Add your phases</h3>
+          <p class="mb-4 text-center text-sm text-stone-500">Name each chapter of your life — Childhood, College, First Job, whatever feels right.</p>
+          <div class="rounded-xl border border-stone-200 bg-white p-4 shadow-sm">
+            <div class="mb-2 text-xs font-semibold uppercase tracking-widest text-stone-400">Life Phases</div>
+            {PHASES_3.map((p, i) => (
+              <div class="mb-2 flex items-center gap-2 rounded-lg bg-stone-50 px-3 py-2">
+                <span class="h-2 w-2 rounded-full" style={`background: ${PHASE_COLORS[i]?.border ?? '#10b981'};`} />
+                <span class="text-xs font-medium text-stone-700">{p}</span>
+              </div>
+            ))}
+            <div class="mt-2 flex items-center gap-2 rounded-lg border border-dashed border-stone-300 px-3 py-2">
+              <span class="text-xs text-stone-400">+ Add phase</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Step 02 */}
+        <div class="relative scroll-reveal scroll-reveal-d2">
+          <div class="relative mx-auto mb-6 flex h-[52px] w-[52px] items-center justify-center rounded-full border-2 border-emerald-300 bg-white text-sm font-bold text-emerald-700 shadow-md">
+            02
+          </div>
+          <h3 class="mb-2 text-center text-base font-semibold text-stone-800">Add hobbies to each phase</h3>
+          <p class="mb-4 text-center text-sm text-stone-500">Tag every interest you remember — even the ones you only tried once.</p>
+          <div class="rounded-xl border border-stone-200 bg-white p-4 shadow-sm">
+            <div class="mb-2 flex items-center gap-2">
+              <span class="h-2 w-2 rounded-full bg-emerald-400" />
+              <span class="text-xs font-semibold text-emerald-700">Childhood</span>
+            </div>
+            <div class="flex flex-wrap gap-1.5">
+              {HOBBIES_STEP_2.map((h) => (
+                <span
+                  class="rounded-full border px-2.5 py-0.5 text-[10px] font-medium"
+                  style={`background: ${h === '+ more' ? '#f0fdf4' : '#D1FAE5'}; border-color: ${h === '+ more' ? '#a7f3d0' : '#10b981'}; color: #059669;`}
+                >
+                  {h}
+                </span>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Step 03 */}
+        <div class="relative scroll-reveal scroll-reveal-d3">
+          <div class="relative mx-auto mb-6 flex h-[52px] w-[52px] items-center justify-center rounded-full border-2 border-emerald-300 bg-white text-sm font-bold text-emerald-700 shadow-md">
+            03
+          </div>
+          <h3 class="mb-2 text-center text-base font-semibold text-stone-800">Get your visual</h3>
+          <p class="mb-4 text-center text-sm text-stone-500">Export a beautiful card of your full hobby journey, ready to share.</p>
+          <div class="rounded-xl border border-emerald-900/30 bg-slate-900 p-4 shadow-lg shadow-emerald-900/20">
+            <div class="mb-3 text-xs font-semibold text-emerald-400">My Hobby Journey</div>
+            <div class="mb-3 flex gap-1">
+              {PHASE_COLORS.map((c) => (
+                <div class="h-2 flex-1 rounded-full" style={`background: ${c.border}; opacity: 0.8;`} />
+              ))}
+            </div>
+            <div class="flex flex-wrap gap-1">
+              {HOBBIES_STEP_3.map((h) => (
+                <span class="rounded-full bg-emerald-900/50 px-2 py-0.5 text-[9px] text-emerald-300">{h}</span>
+              ))}
+            </div>
+            <div class="mt-3 text-right text-[9px] text-slate-500">significanthobbies.com</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {/* Mobile: vertical stepper */}
+    <div class="flex flex-col gap-0 lg:hidden">
+      {['01', '02', '03'].map((num, i) => (
+        <div class="relative flex gap-4">
+          <div class="flex flex-col items-center">
+            <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border-2 border-emerald-300 bg-white text-xs font-bold text-emerald-700 shadow">
+              {num}
+            </div>
+            {i < 2 && <div class="mt-1 w-px flex-1 bg-emerald-200" />}
+          </div>
+          <div class={`pb-10 scroll-reveal-right ${i === 0 ? '' : i === 1 ? 'scroll-reveal-d2' : 'scroll-reveal-d3'}`}>
+            {i === 0 && (
+              <>
+                <h3 class="mb-1 mt-2 font-semibold text-stone-800">Add your phases</h3>
+                <p class="mb-4 text-sm text-stone-500">Name each chapter of your life — Childhood, College, First Job, whatever feels right.</p>
+                <div class="rounded-xl border border-stone-200 bg-white p-4 shadow-sm">
+                  <div class="mb-2 text-xs font-semibold uppercase tracking-widest text-stone-400">Life Phases</div>
+                  {PHASES_3.map((p, j) => (
+                    <div class="mb-2 flex items-center gap-2 rounded-lg bg-stone-50 px-3 py-2">
+                      <span class="h-2 w-2 rounded-full" style={`background: ${PHASE_COLORS[j]?.border ?? '#10b981'};`} />
+                      <span class="text-xs font-medium text-stone-700">{p}</span>
+                    </div>
+                  ))}
+                  <div class="mt-2 flex items-center gap-2 rounded-lg border border-dashed border-stone-300 px-3 py-2">
+                    <span class="text-xs text-stone-400">+ Add phase</span>
+                  </div>
+                </div>
+              </>
+            )}
+            {i === 1 && (
+              <>
+                <h3 class="mb-1 mt-2 font-semibold text-stone-800">Add hobbies to each phase</h3>
+                <p class="mb-4 text-sm text-stone-500">Tag every interest you remember — even the ones you only tried once.</p>
+                <div class="rounded-xl border border-stone-200 bg-white p-4 shadow-sm">
+                  <div class="mb-2 flex items-center gap-2">
+                    <span class="h-2 w-2 rounded-full bg-emerald-400" />
+                    <span class="text-xs font-semibold text-emerald-700">Childhood</span>
+                  </div>
+                  <div class="flex flex-wrap gap-1.5">
+                    {HOBBIES_STEP_2.map((h) => (
+                      <span
+                        class="rounded-full border px-2.5 py-0.5 text-[10px] font-medium"
+                        style={`background: ${h === '+ more' ? '#f0fdf4' : '#D1FAE5'}; border-color: ${h === '+ more' ? '#a7f3d0' : '#10b981'}; color: #059669;`}
+                      >
+                        {h}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </>
+            )}
+            {i === 2 && (
+              <>
+                <h3 class="mb-1 mt-2 font-semibold text-stone-800">Get your visual</h3>
+                <p class="mb-4 text-sm text-stone-500">Export a beautiful card of your full hobby journey, ready to share.</p>
+                <div class="rounded-xl border border-emerald-900/30 bg-slate-900 p-4 shadow-lg shadow-emerald-900/20">
+                  <div class="mb-3 text-xs font-semibold text-emerald-400">My Hobby Journey</div>
+                  <div class="mb-3 flex gap-1">
+                    {PHASE_COLORS.map((c) => (
+                      <div class="h-2 flex-1 rounded-full" style={`background: ${c.border}; opacity: 0.8;`} />
+                    ))}
+                  </div>
+                  <div class="flex flex-wrap gap-1">
+                    {HOBBIES_STEP_3.map((h) => (
+                      <span class="rounded-full bg-emerald-900/50 px-2 py-0.5 text-[9px] text-emerald-300">{h}</span>
+                    ))}
+                  </div>
+                  <div class="mt-3 text-right text-[9px] text-slate-500">significanthobbies.com</div>
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>

@@ -1,0 +1,101 @@
+---
+// Blog Teaser — three featured posts. The React version reads
+// `blogPosts.slice(0, 3)` from src/lib/blog-posts.ts. We hard-code
+// those three here to decouple the Pages build from the Next.js
+// `src/lib` tree. See README → "Hard-coded blog teasers" — update
+// these when the canonical blog catalog re-orders its first three
+// entries.
+const POSTS = [
+  {
+    slug: 'side-quests',
+    title: "You're Bored Because You're Not Doing Side Quests",
+    excerpt:
+      'Life is more than working and throwing yourself into bed. Here\'s why treating hobbies as side quests changes everything — and how to start yours today.',
+    category: 'Inspiration',
+    emoji: '⚔️',
+    readTime: 5,
+  },
+  {
+    slug: 'why-hobbies-matter',
+    title: 'Why Your Hobbies Matter More Than You Think',
+    excerpt:
+      'Your hobbies are a record of who you have been, who you are, and who you are becoming. Here is why mapping them changes how you see yourself.',
+    category: 'Wellbeing',
+    emoji: '🌱',
+    readTime: 6,
+  },
+  {
+    slug: 'how-to-choose-a-hobby',
+    title: "How to Choose Your Next Hobby: The Curious Person's Guide",
+    excerpt:
+      'Stuck staring at a blank slate? A framework for picking a hobby that actually sticks — not the one Instagram told you to want.',
+    category: 'Getting Started',
+    emoji: '🎯',
+    readTime: 7,
+  },
+];
+
+const CATEGORY_COLORS: Record<string, { bg: string; text: string; border: string }> = {
+  Wellbeing: { bg: 'bg-emerald-50', text: 'text-emerald-700', border: 'border-emerald-200' },
+  'Getting Started': { bg: 'bg-amber-50', text: 'text-amber-700', border: 'border-amber-200' },
+  Psychology: { bg: 'bg-violet-50', text: 'text-violet-700', border: 'border-violet-200' },
+  Reflection: { bg: 'bg-blue-50', text: 'text-blue-700', border: 'border-blue-200' },
+  Inspiration: { bg: 'bg-rose-50', text: 'text-rose-700', border: 'border-rose-200' },
+};
+
+const FALLBACK = { bg: 'bg-stone-50', text: 'text-stone-600', border: 'border-stone-200' };
+---
+
+<section class="border-t border-stone-100 px-4 py-16 bg-stone-50">
+  <div class="mx-auto max-w-5xl">
+    <div class="mb-8 text-center scroll-reveal">
+      <p class="text-xs font-semibold uppercase tracking-widest text-emerald-600 mb-2">
+        The Hobby Journal
+      </p>
+      <h2 class="text-3xl font-bold text-stone-900">
+        Thoughts on hobbies &amp; identity
+      </h2>
+    </div>
+
+    <div class="grid grid-cols-1 gap-5 sm:grid-cols-3">
+      {POSTS.map((post, idx) => {
+        const style = CATEGORY_COLORS[post.category] ?? FALLBACK;
+        const delay = idx === 0 ? '' : idx === 1 ? 'scroll-reveal-d2' : 'scroll-reveal-d3';
+        return (
+          <a href={`/blog/${post.slug}`} class={`group block scroll-reveal ${delay}`}>
+            <div class="flex h-full flex-col overflow-hidden rounded-2xl border border-stone-200 bg-white p-5 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-emerald-300 hover:shadow-[0_8px_32px_rgba(16,185,129,0.10)]">
+              <div class="mb-4 h-0.5 origin-left scale-x-0 rounded-full bg-gradient-to-r from-emerald-400 to-emerald-300 transition-transform duration-300 group-hover:scale-x-100" />
+              <div class="mb-3 text-3xl transition-transform duration-300 group-hover:scale-110">
+                {post.emoji}
+              </div>
+              <span class={`mb-2 inline-flex w-fit items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold ${style.bg} ${style.text} ${style.border}`}>
+                {post.category}
+              </span>
+              <h3 class="mb-2 text-sm font-bold leading-snug text-stone-900 transition-colors group-hover:text-emerald-700">
+                {post.title}
+              </h3>
+              <p class="line-clamp-2 flex-1 text-xs leading-relaxed text-stone-500">
+                {post.excerpt}
+              </p>
+              <div class="mt-3 flex items-center justify-between border-t border-stone-100 pt-3">
+                <span class="text-xs text-stone-400">{post.readTime} min read</span>
+                <span class="text-xs font-semibold text-emerald-600 opacity-0 transition-opacity group-hover:opacity-100">
+                  Read →
+                </span>
+              </div>
+            </div>
+          </a>
+        );
+      })}
+    </div>
+
+    <div class="mt-6 text-center scroll-reveal scroll-reveal-d4">
+      <a
+        href="/blog"
+        class="inline-flex items-center gap-1.5 text-sm font-semibold text-emerald-600 transition-all duration-200 hover:gap-2 hover:text-emerald-700"
+      >
+        Read all articles →
+      </a>
+    </div>
+  </div>
+</section>

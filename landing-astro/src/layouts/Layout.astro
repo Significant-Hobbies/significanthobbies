@@ -1,0 +1,106 @@
+---
+import '@/styles/landing.css';
+
+interface Props {
+  title: string;
+  description: string;
+}
+
+const { title, description } = Astro.props;
+
+const SITE_URL = 'https://significanthobbies.com';
+// OG image lives on the Next.js Worker at /opengraph-image (Next file
+// convention → dynamic JSX → PNG). Post-cutover Pages takes only `/`
+// and Workers keeps every other route, so this URL still resolves.
+// See README → cutover notes.
+const OG_IMAGE = `${SITE_URL}/opengraph-image`;
+
+// Mirrors the Organization JSON-LD the Next.js layout.tsx renders on
+// every page. Kept verbatim so search-engine signals don't change at
+// cutover.
+const ORG_JSON_LD = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: 'SignificantHobbies',
+  url: SITE_URL,
+  description:
+    'Map your hobby history across life phases. Discover what rekindled, what persisted, and what to explore next.',
+  sameAs: [],
+};
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#059669" />
+    <meta name="format-detection" content="telephone=no" />
+
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="application-name" content="SignificantHobbies" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="SignificantHobbies" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+
+    <link rel="canonical" href={SITE_URL} />
+    <link rel="icon" href="/favicon.ico" />
+    <link rel="icon" href="/icon.svg" type="image/svg+xml" />
+    <link rel="manifest" href="/manifest.json" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={SITE_URL} />
+    <meta property="og:site_name" content="SignificantHobbies" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={OG_IMAGE} />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={OG_IMAGE} />
+
+    {/* ── Geist (latin) ──────────────────────────────────────────────
+       The Next.js layout used `next/font/google` Geist with subset
+       ["latin"] and display="swap". Reproduce that here via the async
+       preload pattern: preload the stylesheet, load it as media=print
+       on parse so it doesn't block first paint, then flip to media=all
+       on load. Plain <link rel="stylesheet"> sits inside <noscript> as
+       the no-JS fallback. */}
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+    <link
+      rel="preload"
+      as="style"
+      href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&display=swap"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&display=swap"
+      media="print"
+      onload="this.media='all'"
+    />
+    <noscript>
+      <link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&display=swap"
+      />
+    </noscript>
+
+    {/* Wire the same `--font-geist-sans` CSS var Next.js's `next/font`
+       sets up, so any inline styles that reference it keep working. */}
+    <style is:inline>
+      :root {
+        --font-geist-sans: 'Geist', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      }
+      body { margin: 0; font-family: var(--font-geist-sans); }
+    </style>
+
+    <script type="application/ld+json" set:html={JSON.stringify(ORG_JSON_LD)} />
+  </head>
+  <body class="antialiased min-h-screen bg-amber-50 text-stone-900">
+    <slot />
+  </body>
+</html>

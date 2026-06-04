@@ -1,0 +1,42 @@
+---
+// StatsBar — three-up value-prop strip. The React version used
+// `useInView` + `counterUp` animation; we swap that for the CSS-only
+// `.scroll-reveal` class (animation-timeline: view()), which gives
+// the same "fade up as the section enters the viewport" feel without
+// any JS.
+const VALUE_PROPS = [
+  {
+    title: 'Free to start',
+    body: 'Build your first timeline without an account or a card.',
+  },
+  {
+    title: 'Yours to keep',
+    body: 'Export a share card any time, or keep your timeline private.',
+  },
+  {
+    title: 'Built for reflection',
+    body: 'See what rekindled, what stuck, and what to try next.',
+  },
+];
+---
+
+<section
+  class="border-y border-stone-200/60 px-4 py-10"
+  style="background: linear-gradient(135deg, #F5F5F4 0%, #FAFAF9 50%, #F5F5F4 100%);"
+>
+  <div class="mx-auto max-w-4xl">
+    <div class="grid grid-cols-1 gap-8 md:grid-cols-3">
+      {VALUE_PROPS.map((item, i) => (
+        <div class={`scroll-reveal relative text-center ${i === 0 ? '' : i === 1 ? 'scroll-reveal-d2' : 'scroll-reveal-d3'}`}>
+          {i > 0 && (
+            <div class="absolute left-0 top-1/2 hidden h-8 w-px -translate-y-1/2 bg-amber-200 md:block" />
+          )}
+          <div class="text-lg font-bold text-stone-900 sm:text-xl">
+            {item.title}
+          </div>
+          <div class="mt-1 text-sm font-medium text-stone-500">{item.body}</div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
