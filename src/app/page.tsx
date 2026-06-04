@@ -1,9 +1,13 @@
-import { redirect } from "next/navigation";
-import { getServerAuthSession } from "~/server/auth";
 import { db } from "~/server/db";
 import { LandingClient } from "./_components/landing-client";
 import { eq, asc } from "drizzle-orm";
 import { timelines, users } from "~/db/schema";
+
+// ISR — the demo timelines change rarely (curated public PUBLIC rows), so
+// we render this page at build/edge revalidate cadence instead of
+// re-reading Turso on every request. Signed-in redirect lives in
+// middleware.ts now, so this route stays statically renderable.
+export const revalidate = 3600;
 
 async function getDemoTimelines() {
   try {
@@ -28,17 +32,6 @@ async function getDemoTimelines() {
 }
 
 export default async function HomePage() {
-  const session = await getServerAuthSession();
-
-  if (session?.user) {
-    // Logged in but no username -> onboarding
-    if (!session.user.username) {
-      redirect("/setup");
-    }
-    // Logged in with username -> dashboard
-    redirect("/dashboard");
-  }
-
   const rawDemos = await getDemoTimelines();
 
   const demos = rawDemos.map((t) => ({
