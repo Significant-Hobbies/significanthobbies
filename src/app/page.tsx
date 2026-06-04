@@ -7,7 +7,6 @@ import { timelines, users } from "~/db/schema";
 // we render this page at build/edge revalidate cadence instead of
 // re-reading Turso on every request. Signed-in redirect lives in
 // middleware.ts now, so this route stays statically renderable.
-export const revalidate = 3600;
 
 async function getDemoTimelines() {
   try {
