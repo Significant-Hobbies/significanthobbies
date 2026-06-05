@@ -1,5 +1,6 @@
 ---
 import '@/styles/landing.css';
+import '@fontsource-variable/geist';
 
 interface Props {
   title: string;
@@ -62,38 +63,18 @@ const ORG_JSON_LD = {
     <meta name="twitter:image" content={OG_IMAGE} />
 
     {/* ── Geist (latin) ──────────────────────────────────────────────
-       The Next.js layout used `next/font/google` Geist with subset
-       ["latin"] and display="swap". Reproduce that here via the async
-       preload pattern: preload the stylesheet, load it as media=print
-       on parse so it doesn't block first paint, then flip to media=all
-       on load. Plain <link rel="stylesheet"> sits inside <noscript> as
-       the no-JS fallback. */}
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-
-    <link
-      rel="preload"
-      as="style"
-      href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&display=swap"
-    />
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&display=swap"
-      media="print"
-      onload="this.media='all'"
-    />
-    <noscript>
-      <link
-        rel="stylesheet"
-        href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&display=swap"
-      />
-    </noscript>
+       Self-hosted via @fontsource-variable/geist (imported in the
+       frontmatter). Astro/Vite extracts the @font-face into the page's
+       CSS and serves the woff2 same-origin from /_astro/, so there is
+       no external CSS fetch on the LCP path. `font-display: swap` is
+       preserved by Fontsource. */}
 
     {/* Wire the same `--font-geist-sans` CSS var Next.js's `next/font`
-       sets up, so any inline styles that reference it keep working. */}
+       sets up, so any inline styles that reference it keep working.
+       Fontsource registers the family as 'Geist Variable'. */}
     <style is:inline>
       :root {
-        --font-geist-sans: 'Geist', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        --font-geist-sans: 'Geist Variable', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
       }
       body { margin: 0; font-family: var(--font-geist-sans); }
     </style>
