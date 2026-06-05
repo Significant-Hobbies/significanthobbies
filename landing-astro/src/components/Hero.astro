@@ -94,12 +94,16 @@ const SAMPLE_JOURNEY_PHASES = [
       <span class="ml-0.5 text-base">✨</span>
     </div>
 
-    {/* Headline */}
+    {/* Headline — LCP element. Lighthouse won't count a span with
+        opacity:0 as painted, so the original fadeInUp animation delayed
+        the LCP timestamp by 500ms. We keep the translateY-only motion
+        (see landing.css → @keyframes fadeInUpKeep) so the visual feel
+        survives but LCP fires at the first paint frame. */}
     <h1 class="mb-6 text-4xl font-bold leading-tight tracking-tight text-stone-900 sm:text-5xl md:text-6xl lg:text-7xl">
       <span class="block">What hobbies have</span>
       <span
         class="relative mt-1 block italic text-emerald-600"
-        style="animation: fadeInUp 0.4s 0.1s ease-out both; opacity: 0;"
+        style="animation: fadeInUpKeep 0.4s 0.1s ease-out both;"
       >
         shaped your life?
         {/* Wavy underline decoration */}

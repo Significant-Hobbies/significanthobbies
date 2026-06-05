@@ -1,6 +1,13 @@
 ---
 import '@/styles/landing.css';
 import '@fontsource-variable/geist';
+// Import the latin woff2 directly so Vite gives us a hashed asset URL we
+// can <link rel="preload"> in the document head. psi-swarm showed the
+// hero LCP element ("shaped your life?") waiting on this font: the
+// @font-face in Fontsource's CSS is discovered lazily, so the browser
+// only kicks off the woff2 fetch ~600ms in. Preloading drops it onto
+// the LCP critical path next to the HTML, cutting render delay.
+import geistLatinUrl from '@fontsource-variable/geist/files/geist-latin-wght-normal.woff2?url';
 
 interface Props {
   title: string;
@@ -49,6 +56,20 @@ const ORG_JSON_LD = {
     <link rel="icon" href="/favicon.ico" />
     <link rel="icon" href="/icon.svg" type="image/svg+xml" />
     <link rel="manifest" href="/manifest.json" />
+
+    {/* Preload the latin Geist woff2 used by the hero LCP text. Without
+        this, Fontsource's @font-face is parsed only after CSS arrives,
+        so the woff2 fetch starts late and the LCP element repaints
+        ~1s into the page. `crossorigin` is required because Fontsource
+        injects the @font-face that fetches with credentials="omit" by
+        default. */}
+    <link
+      rel="preload"
+      href={geistLatinUrl}
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
 
     <meta property="og:type" content="website" />
     <meta property="og:url" content={SITE_URL} />
