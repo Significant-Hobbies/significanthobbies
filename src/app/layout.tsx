@@ -29,10 +29,15 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     siteName: "SignificantHobbies",
+    url: "https://significanthobbies.com",
     title: "SignificantHobbies — Your Hobby Journey",
     description:
       "Map your hobby history across life phases. Discover what rekindled, what persisted, and what to explore next.",
   },
+  alternates: {
+    canonical: "https://significanthobbies.com",
+  },
+  metadataBase: new URL("https://significanthobbies.com"),
   twitter: {
     card: "summary_large_image",
     title: "SignificantHobbies — Your Hobby Journey",

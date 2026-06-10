@@ -2,6 +2,7 @@
   "name": "significanthobbies",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://significanthobbies.com",
   "scripts": {
     "dev": "next dev",
     "build": "next build --webpack && node scripts/inline-critical-css.mjs",
