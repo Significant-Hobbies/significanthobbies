@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test";
+import { expect,test } from "@playwright/test";
 
 test.describe("Hobby directory", () => {
   test("loads and shows categories", async ({ page }) => {

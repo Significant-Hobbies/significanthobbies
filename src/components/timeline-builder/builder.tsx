@@ -1,33 +1,35 @@
 "use client";
 
-import { useEffect, useState, useTransition } from "react";
 import {
-  DndContext,
   closestCenter,
+  DndContext,
+  type DragEndEvent,
   KeyboardSensor,
   PointerSensor,
   TouchSensor,
   useSensor,
   useSensors,
-  type DragEndEvent,
 } from "@dnd-kit/core";
 import {
+  arrayMove,
   SortableContext,
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
-  arrayMove,
 } from "@dnd-kit/sortable";
-import { Plus, Save, Loader2 } from "lucide-react";
+import { Loader2,Plus, Save } from "lucide-react";
 import { nanoid } from "nanoid";
+import { useRouter } from "next/navigation";
+import { useEffect, useState, useTransition } from "react";
 import { toast } from "sonner";
+
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
-import { PhaseCard } from "./phase-card";
 import { saveTimeline, updateTimeline } from "~/lib/actions/timeline";
 import { captureError } from "~/lib/foundry-monitoring";
-import type { Phase, TimelineData } from "~/lib/types";
-import { useRouter } from "next/navigation";
 import { TIMELINE_TEMPLATES, type TimelineTemplate } from "~/lib/templates";
+import type { Phase, TimelineData } from "~/lib/types";
+
+import { PhaseCard } from "./phase-card";
 
 interface Props {
   existing?: TimelineData;

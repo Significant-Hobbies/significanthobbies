@@ -1,23 +1,24 @@
-import { notFound, redirect } from "next/navigation";
+import { asc,eq } from "drizzle-orm";
+import { ArrowLeft, Pencil, User } from "lucide-react";
 import Link from "next/link";
+import { notFound, redirect } from "next/navigation";
+
+import { CommentsSectionWithOwn } from "~/components/timeline-view/comments-section";
+import { ExportButton } from "~/components/timeline-view/export-button";
+import { InsightsPanel } from "~/components/timeline-view/insights-panel";
+import { LikeButton } from "~/components/timeline-view/like-button";
+import { PersonalityCard } from "~/components/timeline-view/personality-card";
+import { PhaseSwimlane } from "~/components/timeline-view/phase-swimlane";
+import { RecommendationsPanel } from "~/components/timeline-view/recommendations-panel";
+import { RediscoveryNudges } from "~/components/timeline-view/rediscovery-nudges";
+import { VersionHistory } from "~/components/timeline-view/version-history";
+import { VisibilityToggle } from "~/components/timeline-view/visibility-toggle";
+import { Badge } from "~/components/ui/badge";
+import { Button } from "~/components/ui/button";
+import { comments as commentsTable, likes as likesTable, timelines, users } from "~/db/schema";
+import type { Phase, TimelineData, TimelinePin, TimelineVisibility } from "~/lib/types";
 import { getServerAuthSession } from "~/server/auth";
 import { db } from "~/server/db";
-import { Button } from "~/components/ui/button";
-import { Badge } from "~/components/ui/badge";
-import { PhaseSwimlane } from "~/components/timeline-view/phase-swimlane";
-import { InsightsPanel } from "~/components/timeline-view/insights-panel";
-import { ExportButton } from "~/components/timeline-view/export-button";
-import { VisibilityToggle } from "~/components/timeline-view/visibility-toggle";
-import { LikeButton } from "~/components/timeline-view/like-button";
-import { CommentsSectionWithOwn } from "~/components/timeline-view/comments-section";
-import { PersonalityCard } from "~/components/timeline-view/personality-card";
-import { RediscoveryNudges } from "~/components/timeline-view/rediscovery-nudges";
-import { RecommendationsPanel } from "~/components/timeline-view/recommendations-panel";
-import { VersionHistory } from "~/components/timeline-view/version-history";
-import { ArrowLeft, Pencil, User } from "lucide-react";
-import type { Phase, TimelineData, TimelinePin, TimelineVisibility } from "~/lib/types";
-import { eq, asc } from "drizzle-orm";
-import { timelines, likes as likesTable, comments as commentsTable, users } from "~/db/schema";
 
 interface Props {
   params: Promise<{ id: string }>;

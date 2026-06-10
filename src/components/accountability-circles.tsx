@@ -5,10 +5,10 @@ import { useEffect, useMemo, useState } from "react";
 
 import {
   buildCirclePlan,
-  createDefaultCircle,
-  normalizeMemberList,
   type CircleCadence,
+  createDefaultCircle,
   type HobbyCircle,
+  normalizeMemberList,
 } from "~/lib/accountability-circles";
 import { QUEST_CATEGORIES, type QuestCategory } from "~/lib/side-quests";
 

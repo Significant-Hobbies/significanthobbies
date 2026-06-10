@@ -1,10 +1,11 @@
 "use client";
 
-import { authClient } from "~/lib/auth-client";
-import { captureAuthFailure } from "~/lib/foundry-monitoring";
 import { useState } from "react";
+
 import { Button } from "~/components/ui/button";
 import { Card, CardContent } from "~/components/ui/card";
+import { authClient } from "~/lib/auth-client";
+import { captureAuthFailure } from "~/lib/foundry-monitoring";
 
 export function LoginForm() {
   const [loading, setLoading] = useState(false);

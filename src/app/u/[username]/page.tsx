@@ -1,18 +1,19 @@
-import { notFound } from "next/navigation";
-import Link from "next/link";
+import { and, count,desc, eq } from "drizzle-orm";
+import { ExternalLink, Pencil,Plus } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
+import { notFound } from "next/navigation";
+
+import { BadgeCollection } from "~/components/badge-collection";
+import { FollowButton } from "~/components/follow-button";
+import { SuggestionsPanel } from "~/components/suggestions-panel";
+import { TimelineCard } from "~/components/timeline-card";
+import { Button } from "~/components/ui/button";
+import { follows, timelines,users } from "~/db/schema";
+import { getCategoryForHobby } from "~/lib/hobbies";
+import type { Phase, TimelineVisibility } from "~/lib/types";
 import { getServerAuthSession } from "~/server/auth";
 import { db } from "~/server/db";
-import { Button } from "~/components/ui/button";
-import { TimelineCard } from "~/components/timeline-card";
-import { SuggestionsPanel } from "~/components/suggestions-panel";
-import { FollowButton } from "~/components/follow-button";
-import { BadgeCollection } from "~/components/badge-collection";
-import { Plus, ExternalLink, Pencil } from "lucide-react";
-import type { Phase, TimelineVisibility } from "~/lib/types";
-import { getCategoryForHobby } from "~/lib/hobbies";
-import { eq, and, desc, count } from "drizzle-orm";
-import { users, follows, timelines } from "~/db/schema";
 
 interface Props {
   params: Promise<{ username: string }>;

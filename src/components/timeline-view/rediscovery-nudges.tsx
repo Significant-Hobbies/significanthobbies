@@ -1,7 +1,8 @@
+import { RotateCcw } from "lucide-react";
+
 import { Badge } from "~/components/ui/badge";
 import { findRediscoveryOpportunities } from "~/lib/rediscovery";
 import type { Phase } from "~/lib/types";
-import { RotateCcw } from "lucide-react";
 
 interface Props {
   phases: Phase[];

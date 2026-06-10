@@ -1,11 +1,13 @@
+import { count,desc, eq, like, or } from "drizzle-orm";
 import Link from "next/link";
-import { db } from "~/server/db";
-import { HOBBY_CATEGORIES } from "~/lib/hobbies";
-import type { Phase, TimelineVisibility } from "~/lib/types";
-import { SearchPageClient } from "./search-client";
-import { getTimelineUrl } from "~/lib/timeline-url";
-import { eq, like, or, desc, count } from "drizzle-orm";
+
 import { timelines, users } from "~/db/schema";
+import { HOBBY_CATEGORIES } from "~/lib/hobbies";
+import { getTimelineUrl } from "~/lib/timeline-url";
+import type { Phase, TimelineVisibility } from "~/lib/types";
+import { db } from "~/server/db";
+
+import { SearchPageClient } from "./search-client";
 
 export const metadata = { title: "Search — SignificantHobbies" };
 

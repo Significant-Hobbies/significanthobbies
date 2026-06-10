@@ -1,7 +1,8 @@
+import { Sparkles } from "lucide-react";
+
 import { Badge } from "~/components/ui/badge";
 import { getRecommendations } from "~/lib/recommendations";
 import type { Phase } from "~/lib/types";
-import { Sparkles } from "lucide-react";
 
 interface Props {
   phases: Phase[];

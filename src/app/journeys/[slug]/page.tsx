@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+
 import { FAMOUS_JOURNEYS } from "~/lib/famous-journeys";
 
 type Props = {
@@ -94,7 +95,7 @@ export default async function JourneyDetailPage({ params }: Props) {
             <span className="text-5xl">{person.emoji}</span>
             <div>
               <h1 className="text-3xl font-bold text-stone-900">
-                {person.name}'s Hobby Journey
+                {person.name}&apos;s Hobby Journey
               </h1>
               <p className="mt-1 text-stone-400 text-sm">{person.born}</p>
               <span className="mt-3 inline-block rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700">
@@ -164,7 +165,7 @@ export default async function JourneyDetailPage({ params }: Props) {
           <div className="scroll-reveal mb-10">
             <blockquote className="border-l-4 border-emerald-400 pl-5">
               <p className="text-base italic leading-relaxed text-stone-600">
-                "{person.quote.text}"
+                &ldquo;{person.quote.text}&rdquo;
               </p>
               {person.quote.attribution && (
                 <footer className="mt-2 text-sm text-stone-400">

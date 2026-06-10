@@ -1,13 +1,14 @@
 import "~/app/globals.css";
 
 import { type Metadata, type Viewport } from "next";
+import { Geist } from "next/font/google";
+
+import { JsonLd } from "~/components/json-ld";
+import { Nav } from "~/components/nav";
 import { AnalyticsProvider } from "~/components/posthog-provider";
+import { Providers } from "~/components/providers";
 import { SaaSMakerFeedback } from "~/components/saasmaker-feedback";
 import { SaasMakerAnalytics } from "~/components/SaasMakerAnalytics";
-import { Geist } from "next/font/google";
-import { Providers } from "~/components/providers";
-import { Nav } from "~/components/nav";
-import { JsonLd } from "~/components/json-ld";
 import { SiteFooter } from "~/components/site-footer";
 
 const geist = Geist({ subsets: ["latin"], display: "swap" });

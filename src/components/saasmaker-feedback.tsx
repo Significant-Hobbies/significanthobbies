@@ -1,12 +1,13 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { FeedbackWidget } from "@saas-maker/feedback";
 import "@saas-maker/feedback/dist/index.css";
-import { TestimonialWall } from "@saas-maker/testimonials";
 import "@saas-maker/testimonials/dist/index.css";
-import { ChangelogTimeline } from "@saas-maker/changelog-widget";
 import "@saas-maker/changelog-widget/dist/index.css";
+
+import { ChangelogTimeline } from "@saas-maker/changelog-widget";
+import { FeedbackWidget } from "@saas-maker/feedback";
+import { TestimonialWall } from "@saas-maker/testimonials";
+import { useEffect, useState } from "react";
 
 const API_KEY = process.env.NEXT_PUBLIC_SAASMAKER_API_KEY ?? "";
 const API_BASE = "https://api.sassmaker.com";

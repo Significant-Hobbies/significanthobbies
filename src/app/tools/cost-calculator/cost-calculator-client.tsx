@@ -83,7 +83,7 @@ export default function CostCalculatorClient() {
       const parsed = JSON.parse(raw);
       // eslint-disable-next-line react-hooks/set-state-in-effect
       if (Array.isArray(parsed.items)) setItems(parsed.items);
-      // eslint-disable-next-line react-hooks/set-state-in-effect
+       
       if (typeof parsed.hobbyName === "string") setHobbyName(parsed.hobbyName);
     } catch {
       /* ignore corrupt state */

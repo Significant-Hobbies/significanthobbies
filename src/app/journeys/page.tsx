@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+
 import { FAMOUS_JOURNEYS } from "~/lib/famous-journeys";
 
 export const metadata: Metadata = {
@@ -15,7 +16,7 @@ export default function JourneysPage() {
       <div className="scroll-reveal mb-10">
         <h1 className="text-3xl font-bold text-stone-900">Famous Hobby Journeys</h1>
         <p className="mt-2 text-stone-500">
-          How the world's most interesting people spent their free time
+          How the world&apos;s most interesting people spent their free time
         </p>
         <p className="mt-3 text-sm text-stone-400">
           <span className="font-medium text-stone-600">{FAMOUS_JOURNEYS.length}</span> remarkable people
@@ -71,7 +72,7 @@ export default function JourneysPage() {
 
       {/* CTA section */}
       <div className="mt-16 rounded-xl border border-stone-200 bg-emerald-50 p-8 text-center">
-        <h2 className="mb-2 text-lg font-bold text-stone-900">What's your hobby story?</h2>
+        <h2 className="mb-2 text-lg font-bold text-stone-900">What&apos;s your hobby story?</h2>
         <p className="mb-5 text-sm text-stone-600">
           Map your own journey — from childhood pastimes to current obsessions.
         </p>

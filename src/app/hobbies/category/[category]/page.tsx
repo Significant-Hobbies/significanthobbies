@@ -1,14 +1,15 @@
-import { notFound } from "next/navigation";
-import Link from "next/link";
+import { desc,eq } from "drizzle-orm";
 import type { Metadata } from "next";
-import { HOBBY_CATEGORIES, type HobbyCategory } from "~/lib/hobbies";
-import { db } from "~/server/db";
-import { Badge } from "~/components/ui/badge";
-import type { Phase } from "~/lib/types";
+import Link from "next/link";
+import { notFound } from "next/navigation";
+
 import { JsonLd } from "~/components/json-ld";
-import { getTimelineUrl } from "~/lib/timeline-url";
-import { eq, desc } from "drizzle-orm";
+import { Badge } from "~/components/ui/badge";
 import { timelines, users } from "~/db/schema";
+import { HOBBY_CATEGORIES, type HobbyCategory } from "~/lib/hobbies";
+import { getTimelineUrl } from "~/lib/timeline-url";
+import type { Phase } from "~/lib/types";
+import { db } from "~/server/db";
 
 interface Props {
   params: Promise<{ category: string }>;

@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { blogPosts, type BlogPost, type ContentBlock } from "~/lib/blog-posts";
+
 import { JsonLd } from "~/components/json-ld";
+import { type BlogPost, blogPosts, type ContentBlock } from "~/lib/blog-posts";
 
 /* ─── Static generation ──────────────────────────────────────────────────────── */
 

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+
 import { JsonLd } from "~/components/json-ld";
 import { STARTER_KIT_CATEGORIES, STARTER_KITS } from "~/lib/starter-kits";
 

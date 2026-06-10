@@ -1,9 +1,10 @@
 "use client";
 
+import { Trash2 } from "lucide-react";
 import Link from "next/link";
 import { useState, useTransition } from "react";
-import { Trash2 } from "lucide-react";
 import { toast } from "sonner";
+
 import { addComment, deleteComment } from "~/lib/actions/timeline";
 
 type Comment = {

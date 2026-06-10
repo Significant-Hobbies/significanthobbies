@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test";
+import { expect,test } from "@playwright/test";
 
 /**
  * Mobile-viewport regression checks. The Playwright config's `mobile` project

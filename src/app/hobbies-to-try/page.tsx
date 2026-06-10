@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+
 import { JsonLd } from "~/components/json-ld";
 
 export const metadata: Metadata = {
@@ -299,7 +300,7 @@ export default function HobbiesToTryPage() {
         40 New Hobbies to Try in 2026
       </h1>
       <p className="text-lg text-stone-500 mb-4 leading-relaxed">
-        The biggest barrier to starting a new hobby isn&apos;t motivation — it&apos;s friction. The gap between "I want to try that" and actually doing it is almost always about unclear next steps, not lack of interest.
+        The biggest barrier to starting a new hobby isn&apos;t motivation — it&apos;s friction. The gap between &ldquo;I want to try that&rdquo; and actually doing it is almost always about unclear next steps, not lack of interest.
       </p>
       <p className="text-lg text-stone-500 mb-8 leading-relaxed">
         This list is organized by effort-to-entry, not by category. Find your current available bandwidth — tonight, this weekend, this month, or this year — and start from there.

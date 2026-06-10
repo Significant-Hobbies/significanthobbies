@@ -1,7 +1,8 @@
-import { NextResponse } from "next/server";
-import { db } from "~/server/db";
 import { eq } from "drizzle-orm";
+import { NextResponse } from "next/server";
+
 import { users } from "~/db/schema";
+import { db } from "~/server/db";
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);

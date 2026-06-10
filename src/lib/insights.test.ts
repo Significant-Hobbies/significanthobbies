@@ -1,15 +1,16 @@
-import { describe, it, expect } from "vitest";
+import { describe, expect,it } from "vitest";
+
 import {
+  computeInsights,
   getAddedPerPhase,
-  getDroppedPerPhase,
-  getRekindledHobbies,
-  getMostPersistent,
-  getCoOccurrencePairs,
   getCategoryDiversity,
+  getCoOccurrencePairs,
+  getDroppedPerPhase,
   getHobbyVelocity,
   getLongestStreak,
+  getMostPersistent,
   getPhaseTransitions,
-  computeInsights,
+  getRekindledHobbies,
 } from "./insights";
 import type { Phase } from "./types";
 

@@ -1,6 +1,5 @@
-import { resolve } from 'path';
-
 import { defineVitestConfig } from '@saas-maker/test-config/vitest';
+import { resolve } from 'path';
 
 export default defineVitestConfig({
   environment: 'jsdom',

@@ -1,13 +1,14 @@
-import { redirect } from "next/navigation";
+import { desc,eq } from "drizzle-orm";
+import { LayoutList,Plus } from "lucide-react";
 import Link from "next/link";
+import { redirect } from "next/navigation";
+
+import { TimelineCard } from "~/components/timeline-card";
+import { Button } from "~/components/ui/button";
+import { timelines } from "~/db/schema";
+import type { Phase, TimelineData, TimelineVisibility } from "~/lib/types";
 import { getServerAuthSession } from "~/server/auth";
 import { db } from "~/server/db";
-import { Button } from "~/components/ui/button";
-import { TimelineCard } from "~/components/timeline-card";
-import { Plus, LayoutList } from "lucide-react";
-import type { Phase, TimelineData, TimelineVisibility } from "~/lib/types";
-import { eq, desc } from "drizzle-orm";
-import { timelines } from "~/db/schema";
 
 export const metadata = { title: "My Timelines — SignificantHobbies" };
 

@@ -1,7 +1,8 @@
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
+
+import { account, session, user, verification } from "~/db/schema";
 import { db } from "~/server/db";
-import { user, session, account, verification } from "~/db/schema";
 
 const canUseLocalAuthSecret =
   process.env.NODE_ENV !== "production" ||

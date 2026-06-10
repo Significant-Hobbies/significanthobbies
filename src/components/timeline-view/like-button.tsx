@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useTransition } from "react";
 import { Heart } from "lucide-react";
+import { useState, useTransition } from "react";
 import { toast } from "sonner";
+
 import { toggleLike } from "~/lib/actions/timeline";
 
 interface Props {

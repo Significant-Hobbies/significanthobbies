@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
+import { useState, useTransition } from "react";
+
 import { updateProfile } from "~/lib/actions/user";
 
 interface ProfileFormProps {

@@ -1,4 +1,4 @@
-import { HOBBY_CATEGORIES, getCategoryForHobby } from "./hobbies";
+import { getCategoryForHobby,HOBBY_CATEGORIES } from "./hobbies";
 import type { Phase } from "./types";
 
 export type RecommendedHobby = {

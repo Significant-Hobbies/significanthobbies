@@ -1,10 +1,11 @@
+import { eq } from "drizzle-orm";
 import { notFound, redirect } from "next/navigation";
+
+import { TimelineBuilder } from "~/components/timeline-builder/builder";
+import { timelines, users } from "~/db/schema";
+import type { Phase, TimelineData, TimelineVisibility } from "~/lib/types";
 import { getServerAuthSession } from "~/server/auth";
 import { db } from "~/server/db";
-import { TimelineBuilder } from "~/components/timeline-builder/builder";
-import type { Phase, TimelineData, TimelineVisibility } from "~/lib/types";
-import { eq } from "drizzle-orm";
-import { timelines, users } from "~/db/schema";
 
 interface Props {
   params: Promise<{ id: string }>;

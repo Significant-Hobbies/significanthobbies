@@ -1,9 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { Menu, Search,X } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, X, Search } from "lucide-react";
+import { useState } from "react";
 
 interface MobileMenuProps {
   links: { href: string; label: string }[];

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
+
 import { toggleFollow } from "~/lib/actions/user";
 
 interface FollowButtonProps {

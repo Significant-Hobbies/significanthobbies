@@ -1,19 +1,20 @@
-import { notFound } from "next/navigation";
+import { desc,eq } from "drizzle-orm";
 import Link from "next/link";
-import { db } from "~/server/db";
+import { notFound } from "next/navigation";
+
+import { HobbyRoadmapCard } from "~/components/hobby-roadmap-card";
+import { JsonLd } from "~/components/json-ld";
 import { Badge } from "~/components/ui/badge";
-import { HOBBY_CATEGORIES, getCategoryForHobby } from "~/lib/hobbies";
+import { timelines, users } from "~/db/schema";
+import { blogPosts } from "~/lib/blog-posts";
+import { getCategoryForHobby,HOBBY_CATEGORIES } from "~/lib/hobbies";
+import { getRelatedHobbies } from "~/lib/hobby-affinities";
 import { getResourcesForHobby } from "~/lib/hobby-resources";
 import { getRoadmapForHobby } from "~/lib/hobby-roadmap";
-import { getRelatedHobbies } from "~/lib/hobby-affinities";
-import { HobbyRoadmapCard } from "~/components/hobby-roadmap-card";
-import { blogPosts } from "~/lib/blog-posts";
-import { getServerAuthSession } from "~/server/auth";
-import type { Phase } from "~/lib/types";
-import { JsonLd } from "~/components/json-ld";
 import { getTimelineUrl } from "~/lib/timeline-url";
-import { eq, desc } from "drizzle-orm";
-import { timelines, users } from "~/db/schema";
+import type { Phase } from "~/lib/types";
+import { getServerAuthSession } from "~/server/auth";
+import { db } from "~/server/db";
 
 interface Props {
   params: Promise<{ hobby: string }>;

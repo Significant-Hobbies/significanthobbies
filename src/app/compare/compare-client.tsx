@@ -1,11 +1,12 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { ArrowRight, Search, User, UserCheck, Users, UsersRound,X } from "lucide-react";
 import Link from "next/link";
-import { Search, X, ArrowRight, Users, User, UserCheck, UsersRound } from "lucide-react";
+import { useEffect,useRef, useState } from "react";
+
 import { Input } from "~/components/ui/input";
-import { HOBBY_DETAILS, ALL_COMPARABLE_HOBBIES, type HobbyDetail } from "~/lib/hobby-details";
 import { getCategoryForHobby } from "~/lib/hobbies";
+import { ALL_COMPARABLE_HOBBIES, HOBBY_DETAILS, type HobbyDetail } from "~/lib/hobby-details";
 
 // ── Helpers ────────────────────────────────────────────────────────────────
 

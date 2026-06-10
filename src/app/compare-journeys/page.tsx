@@ -1,9 +1,11 @@
-import type { Metadata } from "next";
-import { db } from "~/server/db";
-import { CompareJourneysClient } from "./compare-client";
-import type { Phase } from "~/lib/types";
 import { eq } from "drizzle-orm";
-import { users, timelines } from "~/db/schema";
+import type { Metadata } from "next";
+
+import { timelines,users } from "~/db/schema";
+import type { Phase } from "~/lib/types";
+import { db } from "~/server/db";
+
+import { CompareJourneysClient } from "./compare-client";
 
 export const metadata: Metadata = {
   title: "Compare Hobby Journeys — SignificantHobbies",

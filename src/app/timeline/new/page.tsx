@@ -1,6 +1,7 @@
 import Link from "next/link";
-import { TimelineBuilder } from "~/components/timeline-builder/builder";
+
 import { JsonLd } from "~/components/json-ld";
+import { TimelineBuilder } from "~/components/timeline-builder/builder";
 
 export const metadata = { title: "New Timeline — SignificantHobbies" };
 

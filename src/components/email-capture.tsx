@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 
@@ -34,7 +35,7 @@ export function EmailCapture({ source }: Props) {
   if (status === "success") {
     return (
       <p className="text-sm font-medium text-emerald-600">
-        You're in! Check your inbox for a welcome note.
+        You&apos;re in! Check your inbox for a welcome note.
       </p>
     );
   }

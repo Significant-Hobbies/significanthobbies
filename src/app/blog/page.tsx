@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { blogPosts, type BlogPost } from "~/lib/blog-posts";
+
 import { EmailCapture } from "~/components/email-capture";
+import { type BlogPost,blogPosts } from "~/lib/blog-posts";
 
 export const metadata: Metadata = {
   title: "The Hobby Journal",

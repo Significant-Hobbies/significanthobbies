@@ -1,8 +1,9 @@
 "use client";
 
-import { authClient } from "~/lib/auth-client";
 import { useRouter } from "next/navigation";
+
 import { DropdownMenuItem } from "~/components/ui/dropdown-menu";
+import { authClient } from "~/lib/auth-client";
 
 export function NavSignOut() {
   const router = useRouter();

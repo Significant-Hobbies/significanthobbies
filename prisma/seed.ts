@@ -1,7 +1,9 @@
 import "dotenv/config";
-import { drizzle } from "drizzle-orm/libsql";
+
 import { createClient } from "@libsql/client";
 import { eq } from "drizzle-orm";
+import { drizzle } from "drizzle-orm/libsql";
+
 import * as schema from "../src/db/schema";
 
 function createDb() {

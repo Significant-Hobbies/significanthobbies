@@ -1,5 +1,8 @@
+import Link from "next/link";
 import { redirect } from "next/navigation";
+
 import { getServerAuthSession } from "~/server/auth";
+
 import { LoginForm } from "./login-form";
 
 export const metadata = {
@@ -22,9 +25,9 @@ export default async function LoginPage() {
         <LoginForm />
         <p className="mt-4 text-center text-xs text-stone-400">
           Or{" "}
-          <a href="/timeline/new" className="text-emerald-600 hover:underline">
+          <Link href="/timeline/new" className="text-emerald-600 hover:underline">
             continue as guest
-          </a>{" "}
+          </Link>{" "}
           — build and export without an account
         </p>
       </div>

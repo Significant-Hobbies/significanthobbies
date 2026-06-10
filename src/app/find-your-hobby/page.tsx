@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
+
 import { JsonLd } from "~/components/json-ld";
+
 import { HobbyQuiz } from "./quiz-client";
 
 export const metadata: Metadata = {

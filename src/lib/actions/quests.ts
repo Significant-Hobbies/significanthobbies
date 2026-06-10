@@ -1,12 +1,13 @@
 "use server";
 
-import { getServerAuthSession } from "~/server/auth";
-import { db } from "~/server/db";
+import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
+
+import { users } from "~/db/schema";
 import { evaluateBadges } from "~/lib/badges";
 import { parseStringArray } from "~/lib/utils";
-import { eq } from "drizzle-orm";
-import { users } from "~/db/schema";
+import { getServerAuthSession } from "~/server/auth";
+import { db } from "~/server/db";
 
 export async function completeQuest(
   questId: string,

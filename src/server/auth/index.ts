@@ -1,9 +1,10 @@
-import { cache } from "react";
-import { auth } from "~/lib/auth";
-import { headers } from "next/headers";
-import { db } from "~/server/db";
 import { eq } from "drizzle-orm";
+import { headers } from "next/headers";
+import { cache } from "react";
+
 import { users } from "~/db/schema";
+import { auth } from "~/lib/auth";
+import { db } from "~/server/db";
 
 export { auth };
 

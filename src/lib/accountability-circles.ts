@@ -1,7 +1,7 @@
 import {
   QUEST_CATEGORIES,
-  SIDE_QUESTS,
   type QuestCategory,
+  SIDE_QUESTS,
   type SideQuest,
 } from "./side-quests";
 

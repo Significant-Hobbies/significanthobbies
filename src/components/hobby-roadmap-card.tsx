@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+
 import type { HobbyRoadmap, RoadmapStep } from "~/lib/hobby-roadmap";
 
 type SavedProgress = {

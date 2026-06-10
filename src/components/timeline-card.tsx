@@ -1,8 +1,9 @@
+import { Globe, Heart,Link as LinkIcon, Lock } from "lucide-react";
 import Link from "next/link";
+
 import { Badge } from "~/components/ui/badge";
-import { Lock, Globe, Link as LinkIcon, Heart } from "lucide-react";
-import type { TimelineData } from "~/lib/types";
 import { getTimelineUrl } from "~/lib/timeline-url";
+import type { TimelineData } from "~/lib/types";
 
 interface Props {
   timeline: TimelineData;

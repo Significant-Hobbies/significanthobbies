@@ -1,20 +1,21 @@
 "use client";
 
-import { useState, useEffect, useCallback, useMemo, Suspense } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
+import { Suspense,useCallback, useEffect, useMemo, useState } from "react";
+
+import { AccountabilityCircles } from "~/components/accountability-circles";
+import { useQuestProgress } from "~/hooks/use-quest-progress";
+import { getBadgeById } from "~/lib/badges";
 import {
-  SIDE_QUESTS,
-  QUEST_CATEGORIES,
   filterQuests,
   getQuestById,
-  type SideQuest,
+  QUEST_CATEGORIES,
   type QuestCategory,
   type QuestFilters,
+  SIDE_QUESTS,
+  type SideQuest,
 } from "~/lib/side-quests";
-import { getBadgeById } from "~/lib/badges";
-import { useQuestProgress } from "~/hooks/use-quest-progress";
-import { AccountabilityCircles } from "~/components/accountability-circles";
 
 // ── Category color mapping ──────────────────────────────────────
 

@@ -1,17 +1,18 @@
-import { redirect } from "next/navigation";
+import { desc,eq } from "drizzle-orm";
+import { Clock,Plus } from "lucide-react";
 import Link from "next/link";
+import { redirect } from "next/navigation";
+
+import { TimelineCard } from "~/components/timeline-card";
+import { RecommendationsPanel } from "~/components/timeline-view/recommendations-panel";
+import { RediscoveryNudges } from "~/components/timeline-view/rediscovery-nudges";
+import { Button } from "~/components/ui/button";
+import { timelines } from "~/db/schema";
+import { computePersonality } from "~/lib/personality";
+import { getTimelineUrl } from "~/lib/timeline-url";
+import type { Phase, TimelineVisibility } from "~/lib/types";
 import { getServerAuthSession } from "~/server/auth";
 import { db } from "~/server/db";
-import { computePersonality } from "~/lib/personality";
-import { TimelineCard } from "~/components/timeline-card";
-import { RediscoveryNudges } from "~/components/timeline-view/rediscovery-nudges";
-import { RecommendationsPanel } from "~/components/timeline-view/recommendations-panel";
-import { Button } from "~/components/ui/button";
-import type { Phase, TimelineVisibility } from "~/lib/types";
-import { Plus, Clock } from "lucide-react";
-import { getTimelineUrl } from "~/lib/timeline-url";
-import { eq, desc } from "drizzle-orm";
-import { timelines } from "~/db/schema";
 
 export const metadata = {
   title: "Dashboard — SignificantHobbies",

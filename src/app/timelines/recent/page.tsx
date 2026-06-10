@@ -1,8 +1,8 @@
+import { desc, eq } from "drizzle-orm";
 import Link from "next/link";
 
-import { db } from "~/server/db";
 import { timelines, users } from "~/db/schema";
-import { desc, eq } from "drizzle-orm";
+import { db } from "~/server/db";
 
 export const metadata = {
   title: "Recent timelines — Significant Hobbies",

@@ -1,11 +1,13 @@
-import { redirect } from "next/navigation";
+import { eq } from "drizzle-orm";
+import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
+import { redirect } from "next/navigation";
+
+import { users } from "~/db/schema";
 import { getServerAuthSession } from "~/server/auth";
 import { db } from "~/server/db";
+
 import { ProfileForm } from "./profile-form";
-import { ArrowLeft } from "lucide-react";
-import { eq } from "drizzle-orm";
-import { users } from "~/db/schema";
 
 export const metadata = {
   title: "Settings — SignificantHobbies",

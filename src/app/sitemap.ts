@@ -1,11 +1,12 @@
 export const dynamic = "force-dynamic";
 
-import { type MetadataRoute } from "next";
-import { db } from "~/server/db";
-import { HOBBY_CATEGORIES } from "~/lib/hobbies";
-import { blogPosts } from "~/lib/blog-posts";
 import { eq, isNotNull } from "drizzle-orm";
+import { type MetadataRoute } from "next";
+
 import { timelines, users } from "~/db/schema";
+import { blogPosts } from "~/lib/blog-posts";
+import { HOBBY_CATEGORIES } from "~/lib/hobbies";
+import { db } from "~/server/db";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = "https://significanthobbies.com";

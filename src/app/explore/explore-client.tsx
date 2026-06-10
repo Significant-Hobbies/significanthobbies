@@ -1,8 +1,5 @@
 "use client";
 
-import { useState, useMemo } from "react";
-import type { ReactNode } from "react";
-import Link from "next/link";
 import {
   ArrowRight,
   CalendarDays,
@@ -12,11 +9,15 @@ import {
   Search,
   Sparkles,
 } from "lucide-react";
-import { Input } from "~/components/ui/input";
+import Link from "next/link";
+import type { ReactNode } from "react";
+import { useMemo,useState } from "react";
+
 import { ScrollReveal } from "~/components/scroll-reveal";
-import type { TimelineData } from "~/lib/types";
+import { Input } from "~/components/ui/input";
 import { HOBBY_CATEGORIES } from "~/lib/hobbies";
 import { getTimelineUrl } from "~/lib/timeline-url";
+import type { TimelineData } from "~/lib/types";
 
 // Phase strip colors cycling through warm/cool hues
 const PHASE_COLORS = [

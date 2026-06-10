@@ -1,4 +1,4 @@
-import { getSuggestedHobbies, getCategoryForHobby, HOBBY_CATEGORIES } from "~/lib/hobbies";
+import { getCategoryForHobby, getSuggestedHobbies, HOBBY_CATEGORIES } from "~/lib/hobbies";
 
 interface Props {
   existingHobbies: string[];

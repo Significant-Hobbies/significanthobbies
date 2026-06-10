@@ -1,8 +1,9 @@
 "use client";
 
-import posthog from "posthog-js";
 import Link from "next/link";
+import posthog from "posthog-js";
 import { useEffect, useRef, useState } from "react";
+
 import { EmailCapture } from "~/components/email-capture";
 import { QuizResultCard } from "~/components/quiz-result-card";
 import { HOBBY_CATEGORIES } from "~/lib/hobbies";

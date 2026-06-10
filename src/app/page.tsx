@@ -1,7 +1,9 @@
-import { db } from "~/server/db";
-import { LandingClient } from "./_components/landing-client";
-import { eq, asc } from "drizzle-orm";
+import { asc,eq } from "drizzle-orm";
+
 import { timelines, users } from "~/db/schema";
+import { db } from "~/server/db";
+
+import { LandingClient } from "./_components/landing-client";
 
 // ISR — the demo timelines change rarely (curated public PUBLIC rows), so
 // we render this page at build/edge revalidate cadence instead of

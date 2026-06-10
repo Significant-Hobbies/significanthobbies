@@ -1,5 +1,5 @@
-import { computePersonality } from "~/lib/personality";
 import { HOBBY_CATEGORIES } from "~/lib/hobbies";
+import { computePersonality } from "~/lib/personality";
 import type { Phase } from "~/lib/types";
 
 interface Props {

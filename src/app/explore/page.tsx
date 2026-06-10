@@ -1,10 +1,12 @@
+import { count,desc, eq } from "drizzle-orm";
 import Link from "next/link";
-import { db } from "~/server/db";
-import { ExploreClient } from "./explore-client";
+
+import { likes, timelines, users } from "~/db/schema";
 import { getCategoryForHobby } from "~/lib/hobbies";
 import type { Phase, TimelineData, TimelineVisibility } from "~/lib/types";
-import { eq, desc, count } from "drizzle-orm";
-import { timelines, likes, users } from "~/db/schema";
+import { db } from "~/server/db";
+
+import { ExploreClient } from "./explore-client";
 
 export const metadata = {
   title: "Explore Hobby Timelines — SignificantHobbies",

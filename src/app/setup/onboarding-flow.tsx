@@ -1,9 +1,10 @@
 "use client";
 
-import { useState, useRef, useCallback, useEffect } from "react";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useCallback, useEffect,useRef, useState } from "react";
 import { toast } from "sonner";
+
 import { setUsername } from "~/lib/actions/user";
 
 type OnboardingUser = {

@@ -1,8 +1,9 @@
-import { ImageResponse } from "next/og";
-import { db } from "~/server/db";
-import type { Phase } from "~/lib/types";
 import { eq } from "drizzle-orm";
-import { users, timelines } from "~/db/schema";
+import { ImageResponse } from "next/og";
+
+import { timelines,users } from "~/db/schema";
+import type { Phase } from "~/lib/types";
+import { db } from "~/server/db";
 
 export const runtime = "nodejs";
 export const size = { width: 1200, height: 630 };

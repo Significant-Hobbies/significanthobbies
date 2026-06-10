@@ -1,5 +1,5 @@
-import { sqliteTable, text, integer, uniqueIndex, index, primaryKey } from "drizzle-orm/sqlite-core";
 import { sql } from "drizzle-orm";
+import { index, integer, primaryKey,sqliteTable, text, uniqueIndex } from "drizzle-orm/sqlite-core";
 
 // ─── Better-auth core tables ──────────────────────────────────────────────
 // Stored as auth_user / auth_session / auth_account / auth_verification to

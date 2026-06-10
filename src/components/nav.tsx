@@ -1,8 +1,7 @@
 import Link from "next/link";
-import { getServerAuthSession } from "~/server/auth";
-import { Button } from "~/components/ui/button";
-import { NavLinks } from "./nav-links";
+
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
+import { Button } from "~/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -10,8 +9,11 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
-import { NavSignOut } from "./nav-sign-out";
+import { getServerAuthSession } from "~/server/auth";
+
 import { MobileMenu } from "./mobile-menu";
+import { NavLinks } from "./nav-links";
+import { NavSignOut } from "./nav-sign-out";
 
 const NAV_LINKS = [
   { href: "/hobbies", label: "Discover" },

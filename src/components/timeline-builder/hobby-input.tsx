@@ -1,10 +1,11 @@
 "use client";
 
-import { useState, type KeyboardEvent } from "react";
-import { Input } from "~/components/ui/input";
+import { X } from "lucide-react";
+import { type KeyboardEvent,useState } from "react";
+
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
-import { X } from "lucide-react";
+import { Input } from "~/components/ui/input";
 import type { HobbyEntry } from "~/lib/types";
 
 interface Props {

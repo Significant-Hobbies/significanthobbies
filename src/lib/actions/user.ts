@@ -1,12 +1,13 @@
 "use server";
 
-import { getServerAuthSession } from "~/server/auth";
-import { db } from "~/server/db";
+import { and, count,eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
-import { eq, and, count } from "drizzle-orm";
-import { users, follows } from "~/db/schema";
+
+import { follows,users } from "~/db/schema";
 import { parseStringArray } from "~/lib/utils";
+import { getServerAuthSession } from "~/server/auth";
+import { db } from "~/server/db";
 
 const UsernameSchema = z
   .string()

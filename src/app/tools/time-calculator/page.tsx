@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+
 import { TimeCalculatorClient } from "./time-calculator-client";
 
 export const metadata: Metadata = {

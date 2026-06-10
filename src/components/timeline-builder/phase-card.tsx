@@ -1,14 +1,16 @@
 "use client";
 
-import { useState } from "react";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { GripVertical, ChevronDown, ChevronUp, Trash2 } from "lucide-react";
+import { ChevronDown, ChevronUp, GripVertical, Trash2 } from "lucide-react";
+import { useState } from "react";
+
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
-import { HobbyInput } from "./hobby-input";
 import type { Phase } from "~/lib/types";
+
+import { HobbyInput } from "./hobby-input";
 
 const MILESTONE_PROMPTS: Array<{ pattern: RegExp; prompt: string }> = [
   {

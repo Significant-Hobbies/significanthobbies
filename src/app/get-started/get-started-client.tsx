@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
+
 import { EmailCapture } from "~/components/email-capture";
 
 type CheckState = "idle" | "checking" | "available" | "taken" | "invalid";

@@ -1,4 +1,4 @@
-import { getCategoryForHobby, ALL_HOBBIES } from "./hobbies";
+import { ALL_HOBBIES,getCategoryForHobby } from "./hobbies";
 
 export type HobbyAffinity = {
   name: string;

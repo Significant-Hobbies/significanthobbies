@@ -2,14 +2,15 @@
 
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import { Button } from "~/components/ui/button";
-import type { Phase } from "~/lib/types";
-import { blogPosts } from "~/lib/blog-posts";
-import { getTimelineUrl } from "~/lib/timeline-url";
+
 import {
   SaaSMakerChangelogSection,
   SaaSMakerTestimonialsSection,
 } from "~/components/saasmaker-feedback";
+import { Button } from "~/components/ui/button";
+import { blogPosts } from "~/lib/blog-posts";
+import { getTimelineUrl } from "~/lib/timeline-url";
+import type { Phase } from "~/lib/types";
 
 /* ─── Types ──────────────────────────────────────────────────────────────────── */
 

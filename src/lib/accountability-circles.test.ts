@@ -3,8 +3,8 @@ import { describe, expect, it } from "vitest";
 import {
   buildCirclePlan,
   createDefaultCircle,
-  normalizeMemberList,
   type HobbyCircle,
+  normalizeMemberList,
 } from "./accountability-circles";
 
 describe("accountability circles", () => {

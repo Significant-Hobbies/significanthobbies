@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+
 import { GetStartedClient } from "./get-started-client";
 
 export const metadata: Metadata = {
