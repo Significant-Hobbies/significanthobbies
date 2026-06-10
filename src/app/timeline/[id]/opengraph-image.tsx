@@ -51,6 +51,12 @@ export default async function OgImage({
 
   if (!timeline) return fallbackImage("Timeline not found");
 
+  // Never render private timeline content on this unauthenticated endpoint
+  // (link unfurlers fetch it without cookies and cache the result).
+  if (timeline.visibility === "PRIVATE") {
+    return fallbackImage("Significant Hobbies");
+  }
+
   let timelineUser: { name: string | null; username: string | null } | null = null;
   if (timeline.userId) {
     try {

@@ -4,6 +4,7 @@ import { getServerAuthSession } from "~/server/auth";
 import { db } from "~/server/db";
 import { revalidatePath } from "next/cache";
 import { evaluateBadges } from "~/lib/badges";
+import { parseStringArray } from "~/lib/utils";
 import { eq } from "drizzle-orm";
 import { users } from "~/db/schema";
 
@@ -19,8 +20,8 @@ export async function completeQuest(
   });
   if (!user) throw new Error("User not found");
 
-  const completedQuests: string[] = JSON.parse(user.completedQuests ?? "[]");
-  const earnedBadges: string[] = JSON.parse(user.earnedBadges ?? "[]");
+  const completedQuests = parseStringArray(user.completedQuests);
+  const earnedBadges = parseStringArray(user.earnedBadges);
 
   // Already completed — no-op
   if (completedQuests.includes(questId)) {
@@ -62,7 +63,7 @@ export async function uncompleteQuest(
   });
   if (!user) throw new Error("User not found");
 
-  const completedQuests: string[] = JSON.parse(user.completedQuests ?? "[]");
+  const completedQuests = parseStringArray(user.completedQuests);
 
   if (!completedQuests.includes(questId)) {
     return { success: true };
@@ -101,7 +102,7 @@ export async function getUserQuestProgress(): Promise<{
   if (!user) return { completedQuests: [], earnedBadges: [] };
 
   return {
-    completedQuests: JSON.parse(user.completedQuests ?? "[]") as string[],
-    earnedBadges: JSON.parse(user.earnedBadges ?? "[]") as string[],
+    completedQuests: parseStringArray(user.completedQuests),
+    earnedBadges: parseStringArray(user.earnedBadges),
   };
 }

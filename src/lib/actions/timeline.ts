@@ -108,7 +108,10 @@ export async function updateTimeline(
 
   // Snapshot current phases into versions if they changed
   let versions: { date: string; phases: string }[] = [];
-  try { versions = JSON.parse(timeline.versions); } catch { /* ignore */ }
+  try {
+    const parsedVersions: unknown = JSON.parse(timeline.versions);
+    if (Array.isArray(parsedVersions)) versions = parsedVersions as typeof versions;
+  } catch { /* ignore */ }
 
   if (timeline.phases !== newPhasesJson) {
     versions.push({ date: new Date().toISOString(), phases: timeline.phases });
@@ -140,12 +143,16 @@ export async function updateTimeline(
   return updated;
 }
 
+const VisibilitySchema = z.enum(["PRIVATE", "UNLISTED", "PUBLIC"]);
+
 export async function setTimelineVisibility(
   id: string,
   visibility: TimelineVisibility,
 ) {
   const session = await getServerAuthSession();
   if (!session?.user?.id) throw new Error("Not authenticated");
+
+  const nextVisibility = VisibilitySchema.parse(visibility);
 
   const timeline = await db.query.timelines.findFirst({
     where: eq(timelines.id, id),
@@ -154,13 +161,13 @@ export async function setTimelineVisibility(
     throw new Error("Not found");
 
   let slug = timeline.slug;
-  if ((visibility === "PUBLIC" || visibility === "UNLISTED") && !slug) {
+  if ((nextVisibility === "PUBLIC" || nextVisibility === "UNLISTED") && !slug) {
     slug = nanoid(10);
   }
 
   const [updated] = await db
     .update(timelines)
-    .set({ visibility, slug, updatedAt: new Date() })
+    .set({ visibility: nextVisibility, slug, updatedAt: new Date() })
     .where(eq(timelines.id, id))
     .returning();
   revalidatePath(`/timeline/${id}`);
@@ -338,7 +345,10 @@ export async function addPin(timelineId: string, pin: TimelinePin) {
 
   const parsed = PinSchema.parse(pin);
   let pins: TimelinePin[] = [];
-  try { pins = JSON.parse(timeline.pins); } catch { /* ignore */ }
+  try {
+    const parsedPins: unknown = JSON.parse(timeline.pins);
+    if (Array.isArray(parsedPins)) pins = parsedPins as TimelinePin[];
+  } catch { /* ignore */ }
   pins.push(parsed as TimelinePin);
 
   const [updated] = await db
@@ -362,7 +372,10 @@ export async function removePin(timelineId: string, pinId: string) {
   if (!timeline || timeline.userId !== session.user.id) throw new Error("Not found");
 
   let pins: TimelinePin[] = [];
-  try { pins = JSON.parse(timeline.pins); } catch { /* ignore */ }
+  try {
+    const parsedPins: unknown = JSON.parse(timeline.pins);
+    if (Array.isArray(parsedPins)) pins = parsedPins as TimelinePin[];
+  } catch { /* ignore */ }
   pins = pins.filter((p) => p.id !== pinId);
 
   const [updatedTl] = await db

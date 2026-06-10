@@ -6,6 +6,7 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { eq, and, count } from "drizzle-orm";
 import { users, follows } from "~/db/schema";
+import { parseStringArray } from "~/lib/utils";
 
 const UsernameSchema = z
   .string()
@@ -138,15 +139,22 @@ export async function updateProfile(data: {
   revalidatePath("/settings");
 }
 
+const QuestProgressArraySchema = z.array(z.string().max(100)).max(500);
+
 export async function syncQuestProgress(completedQuests: string[], earnedBadges: string[]) {
   const session = await getServerAuthSession();
   if (!session?.user?.id) throw new Error("Not authenticated");
 
+  // Validate before persisting: a non-array payload here would corrupt the
+  // JSON columns and break every later quest read for this user.
+  const quests = QuestProgressArraySchema.parse(completedQuests);
+  const badges = QuestProgressArraySchema.parse(earnedBadges);
+
   await db
     .update(users)
     .set({
-      completedQuests: JSON.stringify(completedQuests),
-      earnedBadges: JSON.stringify(earnedBadges),
+      completedQuests: JSON.stringify(quests),
+      earnedBadges: JSON.stringify(badges),
     })
     .where(eq(users.id, session.user.id));
 }
@@ -163,7 +171,7 @@ export async function getQuestProgress(): Promise<{ completedQuests: string[]; e
   if (!user) return { completedQuests: [], earnedBadges: [] };
 
   return {
-    completedQuests: JSON.parse(user.completedQuests) as string[],
-    earnedBadges: JSON.parse(user.earnedBadges) as string[],
+    completedQuests: parseStringArray(user.completedQuests),
+    earnedBadges: parseStringArray(user.earnedBadges),
   };
 }

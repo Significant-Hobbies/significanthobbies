@@ -11,7 +11,7 @@ import { BadgeCollection } from "~/components/badge-collection";
 import { Plus, ExternalLink, Pencil } from "lucide-react";
 import type { Phase, TimelineVisibility } from "~/lib/types";
 import { getCategoryForHobby } from "~/lib/hobbies";
-import { eq, and, or, desc, count } from "drizzle-orm";
+import { eq, and, desc, count } from "drizzle-orm";
 import { users, follows, timelines } from "~/db/schema";
 
 interface Props {
@@ -74,7 +74,8 @@ export default async function ProfilePage({ params }: Props) {
   const followerCount = followerResult?.count ?? 0;
   const followingCount = followingResult?.count ?? 0;
 
-  // Get timelines - public/unlisted for visitors, all for owner
+  // Get timelines - public for visitors, all for owner. UNLISTED means
+  // "anyone with the link" — it must never be listed on the public profile.
   let ownTimelines;
   if (isOwner) {
     ownTimelines = await db
@@ -89,7 +90,7 @@ export default async function ProfilePage({ params }: Props) {
       .where(
         and(
           eq(timelines.userId, user.id),
-          or(eq(timelines.visibility, "PUBLIC"), eq(timelines.visibility, "UNLISTED")),
+          eq(timelines.visibility, "PUBLIC"),
         ),
       )
       .orderBy(desc(timelines.updatedAt));

@@ -9,6 +9,29 @@ export const runtime = "nodejs";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
+function fallbackImage(message: string) {
+  return new ImageResponse(
+    (
+      <div
+        style={{
+          background: "#FEFDF8",
+          width: "100%",
+          height: "100%",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          fontSize: 40,
+          fontFamily: "system-ui, sans-serif",
+          color: "#78716C",
+        }}
+      >
+        {message}
+      </div>
+    ),
+    { width: 1200, height: 630 },
+  );
+}
+
 export default async function OgImage({
   params,
 }: {
@@ -21,26 +44,13 @@ export default async function OgImage({
   });
 
   if (!timeline) {
-    return new ImageResponse(
-      (
-        <div
-          style={{
-            background: "#FEFDF8",
-            width: "100%",
-            height: "100%",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            fontSize: 40,
-            fontFamily: "system-ui, sans-serif",
-            color: "#78716C",
-          }}
-        >
-          Timeline not found
-        </div>
-      ),
-      { width: 1200, height: 630 },
-    );
+    return fallbackImage("Timeline not found");
+  }
+
+  // Never render private timeline content on this unauthenticated endpoint
+  // (link unfurlers fetch it without cookies and cache the result).
+  if (timeline.visibility === "PRIVATE") {
+    return fallbackImage("Significant Hobbies");
   }
 
   const timelineUser = timeline.userId
@@ -51,26 +61,7 @@ export default async function OgImage({
     : null;
 
   if (timelineUser?.username !== username) {
-    return new ImageResponse(
-      (
-        <div
-          style={{
-            background: "#FEFDF8",
-            width: "100%",
-            height: "100%",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            fontSize: 40,
-            fontFamily: "system-ui, sans-serif",
-            color: "#78716C",
-          }}
-        >
-          Timeline not found
-        </div>
-      ),
-      { width: 1200, height: 630 },
-    );
+    return fallbackImage("Timeline not found");
   }
 
   let phases: Phase[] = [];

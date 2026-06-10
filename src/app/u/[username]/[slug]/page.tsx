@@ -41,6 +41,13 @@ export async function generateMetadata({ params }: Props) {
       return { title: "Timeline — SignificantHobbies" };
     }
   }
+  // Don't leak private timeline titles into metadata (unfurlers cache it).
+  if (timeline.visibility === "PRIVATE") {
+    const session = await getServerAuthSession();
+    if (session?.user?.id !== timeline.userId) {
+      return { title: "Timeline — SignificantHobbies" };
+    }
+  }
   return {
     title: timeline.title ? `${timeline.title} — SignificantHobbies` : "Timeline — SignificantHobbies",
     description: timeline.title

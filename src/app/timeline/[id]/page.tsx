@@ -25,9 +25,14 @@ interface Props {
 
 export async function generateMetadata({ params }: Props) {
   const { id } = await params;
-  const timeline = await db.query.timelines.findFirst({
+  let timeline = await db.query.timelines.findFirst({
     where: eq(timelines.id, id),
   });
+  // Don't leak private timeline titles into metadata (unfurlers cache it).
+  if (timeline?.visibility === "PRIVATE") {
+    const session = await getServerAuthSession();
+    if (session?.user?.id !== timeline.userId) timeline = undefined;
+  }
   const title = timeline?.title ? `${timeline.title} — SignificantHobbies` : "Timeline — SignificantHobbies";
   return {
     title,
