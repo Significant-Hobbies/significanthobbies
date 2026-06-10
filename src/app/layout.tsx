@@ -8,6 +8,7 @@ import { Geist } from "next/font/google";
 import { Providers } from "~/components/providers";
 import { Nav } from "~/components/nav";
 import { JsonLd } from "~/components/json-ld";
+import { SiteFooter } from "~/components/site-footer";
 
 const geist = Geist({ subsets: ["latin"], display: "swap" });
 
@@ -65,13 +66,14 @@ export default function RootLayout({
             url: "https://significanthobbies.com",
             description:
               "Map your hobby history across life phases. Discover what rekindled, what persisted, and what to explore next.",
-            sameAs: [],
+            sameAs: ["https://github.com/sarthak-fleet/significanthobbies"],
           }}
         />
         <AnalyticsProvider>
           <Providers>
             <Nav />
             <main>{children}</main>
+            <SiteFooter />
             <SaaSMakerFeedback />
             <SaasMakerAnalytics />
           </Providers>
