@@ -1,0 +1,26 @@
+# Significant Hobbies
+
+> Map your hobby history across life phases. Discover what rekindled, what persisted, and what to explore next — with shareable public journeys.
+
+Next.js on Cloudflare Workers. Google auth for saving timelines; public explore and blog content for discovery.
+
+## Product
+
+- [Home](https://significanthobbies.com/): Landing and value proposition
+- [Explore](https://significanthobbies.com/explore): Community timelines and inspiration
+- [Hobbies](https://significanthobbies.com/hobbies): Hobby taxonomy and category browse
+- [Blog](https://significanthobbies.com/blog): Articles on hobbies and life phases
+- [Start a timeline](https://significanthobbies.com/timeline/new): Create your journey (auth)
+- [Privacy](https://significanthobbies.com/privacy): Privacy policy
+- [Terms](https://significanthobbies.com/terms): Terms of use
+
+## SEO guides
+
+- [What are significant hobbies?](https://significanthobbies.com/what-are-significant-hobbies): Concept explainer
+- [Hobbies for adults](https://significanthobbies.com/hobbies-for-adults): Starter guide
+- [Hobbies to try](https://significanthobbies.com/hobbies-to-try): Curated suggestions
+
+## Optional
+
+- [GitHub](https://github.com/sarthak-fleet/significanthobbies): Source
+- [Foundry](https://sassmaker.com): Fleet context
