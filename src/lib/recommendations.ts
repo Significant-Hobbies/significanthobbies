@@ -10,6 +10,8 @@ export type RecommendedHobby = {
 };
 
 export function getRecommendations(phases: Phase[], limit = 8): RecommendedHobby[] {
+  if (limit <= 0) return [];
+
   // Collect all unique hobbies (case-insensitive)
   const userHobbiesLower = new Set<string>();
   for (const phase of phases) {
