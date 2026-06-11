@@ -1,4 +1,4 @@
-import { desc,eq } from "drizzle-orm";
+import { desc, eq } from "drizzle-orm";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
@@ -7,12 +7,12 @@ import { JsonLd } from "~/components/json-ld";
 import { Badge } from "~/components/ui/badge";
 import { timelines, users } from "~/db/schema";
 import { blogPosts } from "~/lib/blog-posts";
-import { getCategoryForHobby,HOBBY_CATEGORIES } from "~/lib/hobbies";
+import { getCategoryForHobby, HOBBY_CATEGORIES } from "~/lib/hobbies";
 import { getRelatedHobbies } from "~/lib/hobby-affinities";
 import { getResourcesForHobby } from "~/lib/hobby-resources";
 import { getRoadmapForHobby } from "~/lib/hobby-roadmap";
-import { getTimelineUrl } from "~/lib/timeline-url";
 import { safeDecodeURIComponent } from "~/lib/slug";
+import { getTimelineUrl } from "~/lib/timeline-url";
 import type { Phase } from "~/lib/types";
 import { getServerAuthSession } from "~/server/auth";
 import { db } from "~/server/db";
