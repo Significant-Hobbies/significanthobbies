@@ -3,12 +3,14 @@
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
+import { Lumi } from "~/components/lumi";
+
 import {
   SaaSMakerChangelogSection,
   SaaSMakerTestimonialsSection,
 } from "~/components/saasmaker-feedback";
 import { Button } from "~/components/ui/button";
-import { blogPosts } from "~/lib/blog-posts";
+import type { BlogPost } from "~/lib/blog-posts";
 import { getTimelineUrl } from "~/lib/timeline-url";
 import type { Phase } from "~/lib/types";
 
@@ -24,6 +26,7 @@ type DemoTimeline = {
 
 interface LandingClientProps {
   demos: DemoTimeline[];
+  blogPosts: BlogPost[];
 }
 
 /* ─── Constants ──────────────────────────────────────────────────────────────── */
@@ -1011,8 +1014,8 @@ function ExportCTA() {
 
 /* ─── Blog Teaser ─────────────────────────────────────────────────────────────── */
 
-function BlogTeaser() {
-  const teaserPosts = blogPosts.slice(0, 3);
+function BlogTeaser({ posts }: { posts: BlogPost[] }) {
+  const teaserPosts = posts.slice(0, 3);
   const { ref, inView } = useInView(0.1);
 
   return (
@@ -1095,9 +1098,134 @@ function BlogTeaser() {
 }
 
 
+/* ─── Lumi Bucket List Section ────────────────────────────────────────────────── */
+
+const FAMOUS_PREVIEWS = [
+  { name: "Will Smith", emoji: "🎬", slug: "will-smith", done: 7, total: 7 },
+  { name: "Obama", emoji: "🇺🇸", slug: "barack-obama", done: 4, total: 4 },
+  { name: "Serena Williams", emoji: "🎾", slug: "serena-williams", done: 1, total: 5 },
+  { name: "Elon Musk", emoji: "🚀", slug: "elon-musk", done: 0, total: 3 },
+  { name: "Richard Branson", emoji: "🎈", slug: "richard-branson", done: 3, total: 4 },
+  { name: "Mark Zuckerberg", emoji: "💻", slug: "mark-zuckerberg", done: 4, total: 5 },
+];
+
+function LumiBucketListSection() {
+  const { ref, inView } = useInView(0.1);
+
+  return (
+    <section
+      ref={ref}
+      className="relative overflow-hidden"
+      style={{ background: "linear-gradient(180deg, #0c0a09 0%, #1c1917 100%)" }}
+    >
+      {/* Stars */}
+      <div className="pointer-events-none absolute inset-0" aria-hidden>
+        {[[8,12],[85,8],[42,22],[72,6],[18,55],[92,45],[30,78],[65,88],[50,35],[15,92],[80,60]].map(([x,y],i)=>(
+          <span key={i} className="absolute rounded-full bg-white"
+            style={{left:`${x}%`,top:`${y}%`,width:i%3===0?"2px":"1px",height:i%3===0?"2px":"1px",opacity:0.15+i*0.02}}/>
+        ))}
+      </div>
+
+      <div className="relative mx-auto max-w-5xl px-4 py-24 space-y-16">
+        {/* Heading */}
+        <div
+          className="text-center space-y-6"
+          style={inView ? { animation: "fadeInUp 0.6s ease-out both" } : { opacity: 0 }}
+        >
+          <div className="flex justify-center">
+            <div className="relative">
+              <div className="absolute inset-0 rounded-full bg-amber-400/20 blur-3xl scale-[2.5]" />
+              <Lumi size={96} glow float className="relative" />
+            </div>
+          </div>
+          <div className="space-y-3">
+            <p className="text-amber-400 text-sm font-semibold uppercase tracking-widest">Meet Lumi</p>
+            <h2 className="text-4xl sm:text-5xl font-bold text-white leading-tight">
+              Your bucket list,<br />
+              <span className="text-amber-400">guided by light</span>
+            </h2>
+            <p className="text-stone-400 text-lg max-w-xl mx-auto">
+              Browse verified bucket lists from the world&apos;s most remarkable people.
+              Find items that resonate. Build yours — one meaningful goal at a time.
+            </p>
+          </div>
+          <div className="flex flex-wrap gap-3 justify-center">
+            <Link href="/bucket-lists"
+              className="inline-flex items-center gap-2 rounded-full bg-amber-400 px-6 py-3 text-sm font-semibold text-stone-950 hover:bg-amber-300 transition-colors"
+              style={{ boxShadow: "0 0 24px rgba(245,158,11,0.4)" }}>
+              ✨ Browse famous bucket lists
+            </Link>
+            <Link href="/bucket-list-ideas"
+              className="inline-flex items-center gap-2 rounded-full border border-stone-700 px-6 py-3 text-sm font-medium text-stone-300 hover:border-amber-400 hover:text-amber-300 transition-colors">
+              150+ ideas →
+            </Link>
+          </div>
+        </div>
+
+        {/* Famous people cards */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+          {FAMOUS_PREVIEWS.map((p, i) => {
+            const pct = Math.round((p.done / p.total) * 100);
+            const r = 18; const circ = 2 * Math.PI * r;
+            return (
+              <Link
+                key={p.slug}
+                href={`/bucket-lists/${p.slug}`}
+                className="group relative rounded-2xl border border-stone-800 bg-stone-900/80 p-5 hover:border-amber-400/40 hover:bg-stone-900 transition-all duration-200 space-y-3"
+                style={inView ? { animation: `cardReveal 0.5s ${i * 0.08}s ease-out both` } : { opacity: 0 }}
+              >
+                <div className="flex items-start justify-between">
+                  <span className="text-3xl">{p.emoji}</span>
+                  <svg width="44" height="44" viewBox="0 0 44 44" className="-rotate-90 shrink-0">
+                    <circle cx="22" cy="22" r={r} fill="none" stroke="rgba(255,255,255,0.07)" strokeWidth="3.5"/>
+                    <circle cx="22" cy="22" r={r} fill="none" stroke="#f59e0b" strokeWidth="3.5"
+                      strokeLinecap="round" strokeDasharray={circ} strokeDashoffset={circ*(1-pct/100)}/>
+                    <text x="22" y="22" textAnchor="middle" dominantBaseline="middle"
+                      style={{fontSize:"8px",fill:"#a8a29e",fontWeight:600,transform:"rotate(90deg)",transformOrigin:"22px 22px"}}>
+                      {pct}%
+                    </text>
+                  </svg>
+                </div>
+                <div>
+                  <p className="font-semibold text-stone-100 text-sm group-hover:text-amber-300 transition-colors">{p.name}</p>
+                  <p className="text-xs text-stone-500 mt-0.5">{p.done}/{p.total} done</p>
+                </div>
+              </Link>
+            );
+          })}
+        </div>
+
+        {/* Personality + match teaser */}
+        <div className="grid sm:grid-cols-2 gap-4">
+          <div className="rounded-2xl border border-amber-400/20 bg-amber-400/5 p-6 space-y-3">
+            <p className="text-xs font-semibold uppercase tracking-wider text-amber-400">Your archetype</p>
+            <p className="text-2xl font-bold text-white">The World Wanderer</p>
+            <p className="text-stone-400 text-sm">Add 3+ items to discover your bucket list personality — The Thrill Seeker, The Creative Soul, The World Changer, and more.</p>
+            <Link href="/dashboard"
+              className="inline-flex items-center gap-1.5 text-sm font-medium text-amber-400 hover:text-amber-300 transition-colors">
+              Build your list to unlock →
+            </Link>
+          </div>
+          <div className="rounded-2xl border border-stone-700 bg-stone-900/60 p-6 space-y-3">
+            <p className="text-xs font-semibold uppercase tracking-wider text-stone-400">Celebrity match</p>
+            <p className="text-2xl font-bold text-white">You&apos;re most like…</p>
+            <p className="text-stone-400 text-sm">We compare your bucket list categories to 12 famous people and find your closest match based on shared ambitions.</p>
+            <Link href="/bucket-lists"
+              className="inline-flex items-center gap-1.5 text-sm font-medium text-stone-300 hover:text-white transition-colors">
+              See all famous lists →
+            </Link>
+          </div>
+        </div>
+      </div>
+
+      <div className="h-12 bg-gradient-to-b from-stone-900 to-white" />
+    </section>
+  );
+}
+
 /* ─── Root Export ─────────────────────────────────────────────────────────────── */
 
-export function LandingClient({ demos }: LandingClientProps) {
+export function LandingClient({ demos, blogPosts }: LandingClientProps) {
   return (
     <div className="min-h-screen">
       {/* ── Hero ──────────────────────────────────────────────────────────────── */}
@@ -1302,8 +1430,11 @@ export function LandingClient({ demos }: LandingClientProps) {
       {/* ── Export CTA ────────────────────────────────────────────────────────── */}
       <ExportCTA />
 
+      {/* ── Lumi Bucket List ──────────────────────────────────────────────────── */}
+      <LumiBucketListSection />
+
       {/* ── Blog Teaser ───────────────────────────────────────────────────────── */}
-      <BlogTeaser />
+      <BlogTeaser posts={blogPosts} />
 
       <SaaSMakerTestimonialsSection />
       <SaaSMakerChangelogSection />

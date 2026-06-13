@@ -23,6 +23,7 @@ export type FamousBucketList = {
   emoji: string;
   items: FamousBucketItem[];
   quote?: { text: string; attribution?: string };
+  sources?: string[]; // e.g. ["CBS News (2014)", "ABC News interview with George Stephanopoulos"]
 };
 
 export const FAMOUS_BUCKET_LISTS: FamousBucketList[] = [
@@ -85,6 +86,10 @@ export const FAMOUS_BUCKET_LISTS: FamousBucketList[] = [
     quote: {
       text: "The secret to life is to die knowing that you squeezed everything you could out of it.",
     },
+    sources: [
+      "Facebook Watch series 'Will Smith's Bucket List' (2019)",
+      "YouTube – Grand Canyon bungee jump (Sep 25, 2018)",
+    ],
   },
   {
     slug: "barack-obama",
@@ -124,6 +129,10 @@ export const FAMOUS_BUCKET_LISTS: FamousBucketList[] = [
     quote: {
       text: "The best way to not feel hopeless is to get up and do something.",
     },
+    sources: [
+      "CNN Politics – kitesurfing on Necker Island (Feb 2017)",
+      "White House pool report – Stonehenge visit (Sep 2014)",
+    ],
   },
   {
     slug: "richard-branson",
@@ -162,6 +171,11 @@ export const FAMOUS_BUCKET_LISTS: FamousBucketList[] = [
     quote: {
       text: "You don't learn to walk by following rules. You learn by doing and by falling over.",
     },
+    sources: [
+      "Guinness World Records – Atlantic crossing (1987)",
+      "Guinness World Records – Pacific crossing (1991)",
+      "Virgin Galactic press release – space flight (Jul 11, 2021)",
+    ],
   },
   {
     slug: "mark-zuckerberg",
@@ -207,6 +221,11 @@ export const FAMOUS_BUCKET_LISTS: FamousBucketList[] = [
     quote: {
       text: "The biggest risk is not taking any risk. In a world that's changing quickly, the only strategy guaranteed to fail is not taking risks.",
     },
+    sources: [
+      "Inc. – annual personal challenge series (2010–2019)",
+      "Tsinghua University Q&A in Mandarin (Oct 2014)",
+      "FastCompany – Jarvis AI assistant (Dec 2016)",
+    ],
   },
   {
     slug: "oprah-winfrey",
@@ -239,6 +258,10 @@ export const FAMOUS_BUCKET_LISTS: FamousBucketList[] = [
     quote: {
       text: "The biggest adventure you can take is to live the life of your dreams.",
     },
+    sources: [
+      "E! Online – truffle hunting in Florence (Oct 2014)",
+      "Essence – bucket list interview",
+    ],
   },
   {
     slug: "bill-clinton",
@@ -281,6 +304,10 @@ export const FAMOUS_BUCKET_LISTS: FamousBucketList[] = [
     quote: {
       text: "There is nothing wrong with America that cannot be cured with what is right with America.",
     },
+    sources: [
+      "CBS News – bucket list interview (2013)",
+      "ABC News / George Stephanopoulos interview at Clinton Global Initiative (2014)",
+    ],
   },
   {
     slug: "serena-williams",
@@ -323,6 +350,10 @@ export const FAMOUS_BUCKET_LISTS: FamousBucketList[] = [
     quote: {
       text: "Tennis has been my whole life, but I want to have a life where I'm not just tennis.",
     },
+    sources: [
+      "PORTER Magazine – post-retirement interview (2022)",
+      "SportsKeeda – PCT and Yosemite goals",
+    ],
   },
   {
     slug: "elon-musk",
@@ -352,6 +383,10 @@ export const FAMOUS_BUCKET_LISTS: FamousBucketList[] = [
     quote: {
       text: "I would like to die on Mars. Just not on impact.",
     },
+    sources: [
+      "IAC Guadalajara keynote (Sep 2016)",
+      "Satellite 2020 Conference – Mars city goal",
+    ],
   },
   {
     slug: "bill-gates",
@@ -389,6 +424,10 @@ export const FAMOUS_BUCKET_LISTS: FamousBucketList[] = [
     quote: {
       text: "Don't die. (His literal answer when asked what's left on his bucket list — he was only half joking.)",
     },
+    sources: [
+      "Reddit AMA (Feb 2013)",
+      "Benzinga – bucket list interview (Jan 2025)",
+    ],
   },
   {
     slug: "ryan-reynolds",
@@ -413,6 +452,10 @@ export const FAMOUS_BUCKET_LISTS: FamousBucketList[] = [
     quote: {
       text: "I always thought I'd be the older brother. I was born to be the older brother.",
     },
+    sources: [
+      "Broadway World – Broadway bucket list (Jul 2015)",
+      "Fox News Entertainment – Will Ferrell collaboration (2022)",
+    ],
   },
   {
     slug: "shaquille-oneal",
@@ -436,6 +479,10 @@ export const FAMOUS_BUCKET_LISTS: FamousBucketList[] = [
     quote: {
       text: "I've mostly done everything that I've set out to do. Now I just need to get in tip-top shape for these last two.",
     },
+    sources: [
+      "People Magazine – last things on his bucket list",
+      "Daily Caller – Kilimanjaro goal (Sep 2023)",
+    ],
   },
   {
     slug: "dwayne-johnson",
@@ -460,6 +507,10 @@ export const FAMOUS_BUCKET_LISTS: FamousBucketList[] = [
     quote: {
       text: "Success isn't always about greatness. It's about consistency. Consistent hard work gains success.",
     },
+    sources: [
+      "IMDb News – Red One Christmas movie (2024)",
+      "Kelly Clarkson Show – country music dream",
+    ],
   },
 ];
 

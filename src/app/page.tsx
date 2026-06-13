@@ -3,6 +3,8 @@ import { asc,eq } from "drizzle-orm";
 import { timelines, users } from "~/db/schema";
 import { db } from "~/server/db";
 
+import { blogPosts } from "~/lib/blog-posts";
+
 import { LandingClient } from "./_components/landing-client";
 
 // ISR — the demo timelines change rarely (curated public PUBLIC rows), so
@@ -96,5 +98,5 @@ export default async function HomePage() {
     user: t.userName ? { name: t.userName, username: t.userUsername } : null,
   }));
 
-  return <LandingClient demos={demos} />;
+  return <LandingClient demos={demos} blogPosts={blogPosts} />;
 }

@@ -20,9 +20,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const list = getFamousBucketList(slug);
   if (!list) return {};
+  const done = list.items.filter((i) => i.status === "done").length;
   return {
-    title: `${list.name}'s Bucket List — SignificantHobbies`,
-    description: `${list.items.length} verified bucket list items from ${list.name}. ${list.knownFor}.`,
+    title: `${list.name}'s Bucket List (${done} completed) — SignificantHobbies`,
+    description: `${list.items.length} verified bucket list items from ${list.name}. ${done} completed. ${list.knownFor}. Add any item to your own bucket list.`,
+    openGraph: {
+      title: `${list.name}'s Bucket List`,
+      description: `${done} of ${list.items.length} items completed. Browse and add to your own list.`,
+    },
+    alternates: { canonical: `https://significanthobbies.com/bucket-lists/${slug}` },
   };
 }
 
@@ -70,8 +76,26 @@ export default async function FamousBucketListPage({ params }: Props) {
   const circ = 2 * Math.PI * r;
   const offset = circ * (1 - pct / 100);
 
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    "name": `${list.name}'s Bucket List`,
+    "description": list.knownFor,
+    "numberOfItems": list.items.length,
+    "itemListElement": list.items.map((item, i) => ({
+      "@type": "ListItem",
+      "position": i + 1,
+      "name": item.title,
+      "description": item.description,
+    })),
+  };
+
   return (
     <main>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       {/* ── Hero ─────────────────────────────────────────────────── */}
       <section className={`relative overflow-hidden bg-gradient-to-br ${heroGradient} text-white`}>
         {/* Stars */}
@@ -204,6 +228,22 @@ export default async function FamousBucketListPage({ params }: Props) {
             );
           })}
         </ul>
+
+        {/* Sources */}
+        {list.sources && list.sources.length > 0 && (
+          <div className="rounded-xl border border-stone-200 bg-stone-50 px-5 py-4 space-y-2">
+            <p className="text-xs font-semibold uppercase tracking-wider text-stone-400">Sources</p>
+            <ul className="space-y-1">
+              {list.sources.map((s, i) => (
+                <li key={i} className="text-xs text-stone-500 flex items-start gap-2">
+                  <span className="text-stone-300 mt-0.5">·</span>
+                  {s}
+                </li>
+              ))}
+            </ul>
+            <p className="text-xs text-stone-400 italic">Only items with verified public sources are included.</p>
+          </div>
+        )}
 
         {/* Back to all */}
         <div className="flex items-center justify-between pt-6 border-t border-stone-100">
