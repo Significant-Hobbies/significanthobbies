@@ -18,7 +18,7 @@ export function NavLinks({ links }: NavLinksProps) {
         const isActive = pathname === link.href || pathname.startsWith(link.href + "/");
         const isBucketList = link.href === "/bucket-lists";
         return (
-          <Link key={link.href} href={link.href} prefetch={false}>
+          <Link key={link.href} href={link.href}>
             <Button
               variant="ghost"
               size="sm"

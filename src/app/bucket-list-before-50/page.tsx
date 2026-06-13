@@ -113,79 +113,57 @@ const faqSchema = {
 
 export default function BucketListBefore50Page() {
   return (
-    <main>
+    <main className="bg-white">
       <JsonLd data={faqSchema} />
 
       {/* ── Hero ─────────────────────────────────────────────────── */}
-      <section className="relative overflow-hidden bg-stone-950 text-white">
-        <div className="pointer-events-none absolute inset-0" aria-hidden>
-          {[
-            [6, 15], [20, 8], [38, 22], [55, 10], [72, 20], [87, 6],
-            [10, 45], [30, 60], [50, 38], [68, 52], [85, 42], [15, 75],
-            [45, 80], [70, 85], [90, 68],
-          ].map(([x, y], i) => (
-            <span
-              key={i}
-              className="absolute rounded-full bg-white"
-              style={{
-                left: `${x}%`,
-                top: `${y}%`,
-                width: i % 4 === 0 ? "2px" : "1px",
-                height: i % 4 === 0 ? "2px" : "1px",
-                opacity: i % 3 === 0 ? 0.45 : 0.18,
-              }}
-            />
-          ))}
-        </div>
-
-        <div className="relative mx-auto max-w-4xl px-4 py-20 text-center space-y-6">
-          <div className="flex justify-center">
-            <div className="relative">
-              <div className="absolute inset-0 rounded-full bg-amber-400/20 blur-3xl scale-[2]" />
-              <Lumi size={88} glow float className="relative" />
+      <section className="bg-white pt-16 pb-10 px-4">
+        <div className="mx-auto max-w-4xl">
+          <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6 mb-8">
+            <Lumi size={88} glow float className="shrink-0" />
+            <div className="space-y-4 text-center sm:text-left">
+              <p className="text-[#e05533] text-sm font-semibold uppercase tracking-widest">
+                Guided by Lumi · 50 goals worth your best years
+              </p>
+              <h1 className="text-4xl sm:text-5xl font-bold leading-tight text-stone-900 text-balance">
+                50 Things to Do{" "}
+                <span className="text-[#e05533]">Before You Turn 50</span>
+              </h1>
+              <p className="text-stone-500 text-lg max-w-xl">
+                The 40s are peak ambition. Here are 50 goals that reflect depth, legacy, and a life fully inhabited — not just visited.
+              </p>
+              <div className="flex flex-wrap gap-3 justify-center sm:justify-start">
+                <Link
+                  href="/dashboard"
+                  className="inline-flex items-center gap-2 rounded-full bg-[#e05533] px-6 py-3 text-sm font-semibold text-white hover:bg-[#c94420] transition-colors shadow-md"
+                >
+                  Build my bucket list
+                </Link>
+                <Link
+                  href="/bucket-lists"
+                  className="inline-flex items-center gap-2 rounded-full border border-stone-300 px-6 py-3 text-sm font-medium text-stone-600 hover:border-[#e05533] hover:text-[#e05533] transition-colors"
+                >
+                  See famous lists →
+                </Link>
+              </div>
             </div>
           </div>
-          <p className="text-amber-400 text-sm font-semibold uppercase tracking-widest">
-            Guided by Lumi · 50 goals worth your best years
-          </p>
-          <h1 className="text-4xl sm:text-5xl font-bold leading-tight">
-            50 Things to Do<br />
-            <span className="text-amber-400">Before You Turn 50</span>
-          </h1>
-          <p className="text-stone-400 text-lg max-w-xl mx-auto">
-            The 40s are peak ambition. Here are 50 goals that reflect depth, legacy, and a life fully inhabited — not just visited.
-          </p>
-          <div className="flex flex-wrap gap-3 justify-center">
-            <Link
-              href="/dashboard"
-              className="inline-flex items-center gap-2 rounded-full bg-amber-400 px-6 py-3 text-sm font-semibold text-stone-950 hover:bg-amber-300 transition-colors shadow-[0_0_20px_rgba(245,158,11,0.4)]"
-            >
-              Build my bucket list
-            </Link>
-            <Link
-              href="/bucket-lists"
-              className="inline-flex items-center gap-2 rounded-full border border-stone-700 px-6 py-3 text-sm font-medium text-stone-300 hover:border-stone-500 hover:text-white transition-colors"
-            >
-              See famous lists →
-            </Link>
-          </div>
         </div>
-        <div className="h-12 bg-gradient-to-b from-stone-950 to-white" />
       </section>
 
       {/* ── Intro ────────────────────────────────────────────────── */}
       <div className="mx-auto max-w-3xl px-4 py-12 space-y-4">
-        <h2 className="text-2xl font-bold text-stone-900">The 40s are peak ambition</h2>
+        <h2 className="text-2xl font-bold text-stone-900 text-balance">The 40s are peak ambition</h2>
         <p className="text-stone-700 text-base leading-relaxed">
-          Something shifts in your 30s and crystallizes in your 40s: you stop trying to figure out who you are and start deciding who you'll become. The before-50 bucket list isn't about novelty — it's about depth. It's the list of the person who knows enough to choose deliberately.
+          Something shifts in your 30s and crystallizes in your 40s: you stop trying to figure out who you are and start deciding who you&apos;ll become. The before-50 bucket list isn&apos;t about novelty — it&apos;s about depth. It&apos;s the list of the person who knows enough to choose deliberately.
         </p>
         <p className="text-stone-700 text-base leading-relaxed">
-          Will Smith skydived for his 50th birthday and has spoken about using decade milestones as declarations of intent — not retrospectives. The goal isn't to arrive at 50 having sampled everything; it's to arrive having become something. This list is built around that principle.
+          Will Smith skydived for his 50th birthday and has spoken about using decade milestones as declarations of intent — not retrospectives. The goal isn&apos;t to arrive at 50 having sampled everything; it&apos;s to arrive having become something. This list is built around that principle.
         </p>
         <p className="text-stone-600 text-sm">
-          See Will Smith's full bucket list journey:{" "}
-          <Link href="/bucket-lists/will-smith" className="text-amber-600 hover:text-amber-800 font-medium transition-colors">
-            Will Smith's bucket list →
+          See Will Smith&apos;s full bucket list journey:{" "}
+          <Link href="/bucket-lists/will-smith" className="text-[#e05533] hover:text-[#c94420] font-medium transition-colors">
+            Will Smith&apos;s bucket list →
           </Link>
         </p>
       </div>
@@ -196,12 +174,12 @@ export default function BucketListBefore50Page() {
           {ITEMS.map((item, i) => (
             <div
               key={i}
-              className="flex items-start gap-4 rounded-xl border border-amber-100 bg-amber-50/40 px-4 py-4 hover:border-amber-300 hover:bg-amber-50 transition-colors"
+              className="flex items-start gap-4 rounded-xl border border-[#f0a090] bg-[#fff0ec] px-4 py-4 hover:border-[#e05533] hover:shadow-sm transition-all"
             >
               <span className="text-2xl leading-none mt-0.5">{item.emoji}</span>
               <div className="space-y-1 min-w-0">
                 <div className="flex items-start gap-2">
-                  <span className="text-xs font-bold text-amber-600 shrink-0 mt-0.5">
+                  <span className="text-xs font-bold text-[#e05533] shrink-0 mt-0.5">
                     {String(i + 1).padStart(2, "0")}
                   </span>
                   <p className="font-semibold text-stone-900 text-sm leading-snug">{item.title}</p>
@@ -216,7 +194,7 @@ export default function BucketListBefore50Page() {
       {/* ── FAQ ──────────────────────────────────────────────────── */}
       <section className="bg-stone-50 border-t border-stone-200">
         <div className="mx-auto max-w-3xl px-4 py-16 space-y-8">
-          <h2 className="text-2xl font-bold text-stone-900">Frequently asked questions</h2>
+          <h2 className="text-2xl font-bold text-stone-900 text-balance">Frequently asked questions</h2>
           <div className="space-y-6">
             {FAQ_ITEMS.map((item) => (
               <div key={item.q} className="rounded-xl border border-stone-200 bg-white px-6 py-5 space-y-3">
@@ -229,23 +207,23 @@ export default function BucketListBefore50Page() {
       </section>
 
       {/* ── CTA ──────────────────────────────────────────────────── */}
-      <section className="bg-amber-50 border-t border-amber-100">
+      <section className="bg-[#fff0ec] border-t border-[#f0a090]">
         <div className="mx-auto max-w-3xl px-4 py-16 text-center space-y-6">
           <Lumi size={64} glow float className="mx-auto" />
-          <h2 className="text-3xl font-bold text-stone-900">Ready to build yours?</h2>
+          <h2 className="text-3xl font-bold text-stone-900 text-balance">Ready to build yours?</h2>
           <p className="text-stone-600 max-w-md mx-auto">
-            Lumi tracks your goals over time, shows you what you've accomplished, and connects your ambitions to the famous people who share them.
+            Lumi tracks your goals over time, shows you what you&apos;ve accomplished, and connects your ambitions to the famous people who share them.
           </p>
           <div className="flex flex-wrap gap-3 justify-center">
             <Link
               href="/dashboard"
-              className="inline-flex items-center gap-2 rounded-full bg-amber-400 px-6 py-3 text-sm font-semibold text-stone-950 hover:bg-amber-300 transition-colors"
+              className="inline-flex items-center gap-2 rounded-full bg-[#e05533] px-6 py-3 text-sm font-semibold text-white hover:bg-[#c94420] transition-colors shadow-md"
             >
               Build my bucket list
             </Link>
             <Link
               href="/bucket-lists"
-              className="inline-flex items-center gap-2 rounded-full border border-stone-300 bg-white px-6 py-3 text-sm font-medium text-stone-700 hover:border-amber-400 transition-colors"
+              className="inline-flex items-center gap-2 rounded-full border border-stone-300 bg-white px-6 py-3 text-sm font-medium text-stone-700 hover:border-[#e05533] transition-colors"
             >
               Browse famous lists →
             </Link>

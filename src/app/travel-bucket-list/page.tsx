@@ -344,7 +344,7 @@ const REGIONS = [
   { id: "europe", label: "Europe", emoji: "🏰", color: "sky", items: EUROPE },
   { id: "asia", label: "Asia", emoji: "🏯", color: "red", items: ASIA },
   { id: "americas", label: "Americas", emoji: "🗽", color: "emerald", items: AMERICAS },
-  { id: "africa-middle-east", label: "Africa & Middle East", emoji: "🦁", color: "amber", items: AFRICA_MIDDLE_EAST },
+  { id: "africa-middle-east", label: "Africa & Middle East", emoji: "🦁", color: "coral", items: AFRICA_MIDDLE_EAST },
   { id: "oceania-antarctica", label: "Oceania & Antarctica", emoji: "🐧", color: "teal", items: OCEANIA_ANTARCTICA },
 ];
 
@@ -352,7 +352,7 @@ const REGION_STYLES: Record<string, { bg: string; border: string; text: string; 
   sky: { bg: "bg-sky-50", border: "border-sky-200", text: "text-sky-700", badge: "bg-sky-100 text-sky-700 border-sky-200", dot: "bg-sky-400" },
   red: { bg: "bg-red-50", border: "border-red-200", text: "text-red-700", badge: "bg-red-100 text-red-700 border-red-200", dot: "bg-red-400" },
   emerald: { bg: "bg-emerald-50", border: "border-emerald-200", text: "text-emerald-700", badge: "bg-emerald-100 text-emerald-700 border-emerald-200", dot: "bg-emerald-400" },
-  amber: { bg: "bg-amber-50", border: "border-amber-200", text: "text-amber-700", badge: "bg-amber-100 text-amber-700 border-amber-200", dot: "bg-amber-400" },
+  coral: { bg: "bg-[#fff0ec]", border: "border-[#f0a090]", text: "text-[#e05533]", badge: "bg-[#fff0ec] text-[#e05533] border-[#f0a090]", dot: "bg-[#e05533]" },
   teal: { bg: "bg-teal-50", border: "border-teal-200", text: "text-teal-700", badge: "bg-teal-100 text-teal-700 border-teal-200", dot: "bg-teal-400" },
 };
 
@@ -392,64 +392,42 @@ export default function TravelBucketListPage() {
   const totalDestinations = REGIONS.reduce((sum, r) => sum + r.items.length, 0);
 
   return (
-    <main>
+    <main className="bg-white">
       <JsonLd data={faqSchema} />
 
-      {/* ── Hero — sky-blue travel tint ──────────────────────────── */}
-      <section className="relative overflow-hidden bg-sky-950 text-white">
-        <div className="pointer-events-none absolute inset-0" aria-hidden>
-          {[
-            [5, 10], [15, 28], [30, 8], [50, 20], [68, 6], [82, 18],
-            [10, 52], [28, 65], [48, 45], [65, 60], [80, 48], [92, 68],
-            [20, 82], [55, 88], [75, 78],
-          ].map(([x, y], i) => (
-            <span
-              key={i}
-              className="absolute rounded-full bg-white"
-              style={{
-                left: `${x}%`,
-                top: `${y}%`,
-                width: i % 4 === 0 ? "2px" : "1px",
-                height: i % 4 === 0 ? "2px" : "1px",
-                opacity: i % 3 === 0 ? 0.5 : 0.22,
-              }}
-            />
-          ))}
-        </div>
-
-        <div className="relative mx-auto max-w-4xl px-4 py-20 text-center space-y-6">
-          <div className="flex justify-center">
-            <div className="relative">
-              <div className="absolute inset-0 rounded-full bg-sky-400/20 blur-3xl scale-[2]" />
-              <Lumi size={88} glow float className="relative" />
+      {/* ── Hero ─────────────────────────────────────────────────── */}
+      <section className="bg-white pt-16 pb-10 px-4">
+        <div className="mx-auto max-w-4xl">
+          <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6 mb-8">
+            <Lumi size={88} glow float className="shrink-0" />
+            <div className="space-y-4 text-center sm:text-left">
+              <p className="text-[#e05533] text-sm font-semibold uppercase tracking-widest">
+                Guided by Lumi · {totalDestinations} destinations across 5 regions
+              </p>
+              <h1 className="text-4xl sm:text-5xl font-bold leading-tight text-stone-900 text-balance">
+                The Ultimate Travel Bucket List{" "}
+                <span className="text-[#e05533]">(75 Destinations)</span>
+              </h1>
+              <p className="text-stone-500 text-lg max-w-xl">
+                From Stonehenge to the Serengeti to Antarctica — 75 places organized by region, with notes on why each one belongs on every serious list.
+              </p>
+              <div className="flex flex-wrap gap-3 justify-center sm:justify-start">
+                <Link
+                  href="/dashboard"
+                  className="inline-flex items-center gap-2 rounded-full bg-[#e05533] px-6 py-3 text-sm font-semibold text-white hover:bg-[#c94420] transition-colors shadow-md"
+                >
+                  Build my travel list
+                </Link>
+                <Link
+                  href="/bucket-lists"
+                  className="inline-flex items-center gap-2 rounded-full border border-stone-300 px-6 py-3 text-sm font-medium text-stone-600 hover:border-[#e05533] hover:text-[#e05533] transition-colors"
+                >
+                  See famous lists →
+                </Link>
+              </div>
             </div>
           </div>
-          <p className="text-sky-300 text-sm font-semibold uppercase tracking-widest">
-            Guided by Lumi · {totalDestinations} destinations across 5 regions
-          </p>
-          <h1 className="text-4xl sm:text-5xl font-bold leading-tight">
-            The Ultimate Travel<br />
-            <span className="text-sky-300">Bucket List (75 Destinations)</span>
-          </h1>
-          <p className="text-sky-200/70 text-lg max-w-xl mx-auto">
-            From Stonehenge to the Serengeti to Antarctica — 75 places organized by region, with notes on why each one belongs on every serious list.
-          </p>
-          <div className="flex flex-wrap gap-3 justify-center">
-            <Link
-              href="/dashboard"
-              className="inline-flex items-center gap-2 rounded-full bg-sky-400 px-6 py-3 text-sm font-semibold text-sky-950 hover:bg-sky-300 transition-colors shadow-[0_0_20px_rgba(56,189,248,0.4)]"
-            >
-              Build my travel list
-            </Link>
-            <Link
-              href="/bucket-lists"
-              className="inline-flex items-center gap-2 rounded-full border border-sky-700 px-6 py-3 text-sm font-medium text-sky-300 hover:border-sky-500 hover:text-white transition-colors"
-            >
-              See famous lists →
-            </Link>
-          </div>
         </div>
-        <div className="h-12 bg-gradient-to-b from-sky-950 to-white" />
       </section>
 
       {/* ── Region nav ───────────────────────────────────────────── */}
@@ -484,7 +462,7 @@ export default function TravelBucketListPage() {
                   {region.emoji}
                 </div>
                 <div>
-                  <h2 className="text-2xl font-bold text-stone-900">{region.label}</h2>
+                  <h2 className="text-2xl font-bold text-stone-900 text-balance">{region.label}</h2>
                   <p className={`text-sm ${s.text} font-medium`}>{region.items.length} destinations</p>
                 </div>
               </div>
@@ -530,7 +508,7 @@ export default function TravelBucketListPage() {
       {/* ── FAQ ──────────────────────────────────────────────────── */}
       <section className="bg-stone-50 border-t border-stone-200">
         <div className="mx-auto max-w-3xl px-4 py-16 space-y-8">
-          <h2 className="text-2xl font-bold text-stone-900">Frequently asked questions</h2>
+          <h2 className="text-2xl font-bold text-stone-900 text-balance">Frequently asked questions</h2>
           <div className="space-y-6">
             {FAQ_ITEMS.map((item) => (
               <div key={item.q} className="rounded-xl border border-stone-200 bg-white px-6 py-5 space-y-3">
@@ -543,23 +521,23 @@ export default function TravelBucketListPage() {
       </section>
 
       {/* ── CTA ──────────────────────────────────────────────────── */}
-      <section className="bg-amber-50 border-t border-amber-100">
+      <section className="bg-[#fff0ec] border-t border-[#f0a090]">
         <div className="mx-auto max-w-3xl px-4 py-16 text-center space-y-6">
           <Lumi size={64} glow float className="mx-auto" />
-          <h2 className="text-3xl font-bold text-stone-900">Ready to build yours?</h2>
+          <h2 className="text-3xl font-bold text-stone-900 text-balance">Ready to build yours?</h2>
           <p className="text-stone-600 max-w-md mx-auto">
             Lumi tracks your travel bucket list, shows your progress across regions, and matches your ambitions to the famous people who share them.
           </p>
           <div className="flex flex-wrap gap-3 justify-center">
             <Link
               href="/dashboard"
-              className="inline-flex items-center gap-2 rounded-full bg-amber-400 px-6 py-3 text-sm font-semibold text-stone-950 hover:bg-amber-300 transition-colors"
+              className="inline-flex items-center gap-2 rounded-full bg-[#e05533] px-6 py-3 text-sm font-semibold text-white hover:bg-[#c94420] transition-colors shadow-md"
             >
               Build my bucket list
             </Link>
             <Link
               href="/bucket-lists"
-              className="inline-flex items-center gap-2 rounded-full border border-stone-300 bg-white px-6 py-3 text-sm font-medium text-stone-700 hover:border-amber-400 transition-colors"
+              className="inline-flex items-center gap-2 rounded-full border border-stone-300 bg-white px-6 py-3 text-sm font-medium text-stone-700 hover:border-[#e05533] transition-colors"
             >
               Browse famous lists →
             </Link>

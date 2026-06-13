@@ -53,47 +53,51 @@
   --color-brand-600: #059669;
   --color-brand-700: #047857;
   --color-brand-900: #064e3b;
-  /* Lumi colors — amber (bucket list) */
-  --color-lumi: oklch(0.77 0.16 72);
-  --color-lumi-50: oklch(0.98 0.03 90);
-  --color-lumi-100: oklch(0.95 0.07 90);
-  --color-lumi-200: oklch(0.92 0.10 85);
-  --color-lumi-400: oklch(0.82 0.16 75);
-  --color-lumi-500: oklch(0.77 0.16 72);
-  --color-lumi-600: oklch(0.68 0.16 68);
-  --color-lumi-700: oklch(0.57 0.15 65);
+  /* Lumi colors — coral (bucket list accent) */
+  --color-lumi: oklch(0.62 0.20 27);
+  --color-lumi-50: oklch(0.97 0.02 27);
+  --color-lumi-100: oklch(0.94 0.05 27);
+  --color-lumi-200: oklch(0.88 0.10 27);
+  --color-lumi-300: oklch(0.78 0.16 27);
+  --color-lumi-400: oklch(0.70 0.20 27);
+  --color-lumi-500: oklch(0.62 0.20 27);
+  --color-lumi-600: oklch(0.52 0.19 27);
+  --color-lumi-700: oklch(0.43 0.17 27);
+  /* Hero surface — near-black with very slight cool tint */
+  --color-hero: oklch(0.11 0.008 240);
+  --color-hero-surface: oklch(0.15 0.008 240);
 }
 
-/* Warm light palette */
+/* Core palette */
 :root {
   --radius: 0.75rem;
-  /* warm white background */
-  --background: oklch(0.99 0.01 80);
-  --foreground: oklch(0.15 0.02 60);
+  /* Pure white — no warm tint */
+  --background: oklch(1.0 0 0);
+  --foreground: oklch(0.13 0.01 240);
   /* card */
   --card: oklch(1.0 0 0);
-  --card-foreground: oklch(0.15 0.02 60);
+  --card-foreground: oklch(0.13 0.01 240);
   /* popover */
   --popover: oklch(1.0 0 0);
-  --popover-foreground: oklch(0.15 0.02 60);
-  /* emerald primary — slightly darker for light bg contrast */
-  --primary: oklch(0.55 0.17 162);
-  --primary-foreground: oklch(0.99 0 0);
-  /* warm gray secondary */
-  --secondary: oklch(0.94 0.01 80);
-  --secondary-foreground: oklch(0.25 0.02 60);
-  /* muted */
-  --muted: oklch(0.96 0.01 80);
-  --muted-foreground: oklch(0.55 0.02 60);
+  --popover-foreground: oklch(0.13 0.01 240);
+  /* emerald primary */
+  --primary: oklch(0.52 0.16 162);
+  --primary-foreground: oklch(1.0 0 0);
+  /* neutral secondary */
+  --secondary: oklch(0.96 0 0);
+  --secondary-foreground: oklch(0.25 0.01 240);
+  /* muted — ≥4.5:1 on white */
+  --muted: oklch(0.96 0 0);
+  --muted-foreground: oklch(0.45 0.01 240);
   /* accent */
-  --accent: oklch(0.94 0.01 80);
-  --accent-foreground: oklch(0.25 0.02 60);
+  --accent: oklch(0.96 0 0);
+  --accent-foreground: oklch(0.25 0.01 240);
   /* destructive */
-  --destructive: oklch(0.55 0.2 25);
-  /* warm light border */
-  --border: oklch(0.88 0.02 80);
-  --input: oklch(0.88 0.02 80);
-  --ring: oklch(0.55 0.17 162);
+  --destructive: oklch(0.52 0.19 27);
+  /* border */
+  --border: oklch(0.90 0 0);
+  --input: oklch(0.90 0 0);
+  --ring: oklch(0.52 0.16 162);
   /* charts — brighter for light background */
   --chart-1: oklch(0.55 0.17 162);
   --chart-2: oklch(0.55 0.12 185);
@@ -402,8 +406,8 @@
   animation: float2 9s ease-in-out infinite;
 }
 @keyframes lumiGlowPulse {
-  0%, 100% { filter: drop-shadow(0 0 12px oklch(0.77 0.16 72 / 0.5)); }
-  50%       { filter: drop-shadow(0 0 28px oklch(0.77 0.16 72 / 0.8)); }
+  0%, 100% { filter: drop-shadow(0 0 12px oklch(0.62 0.20 27 / 0.55)); }
+  50%       { filter: drop-shadow(0 0 28px oklch(0.62 0.20 27 / 0.85)); }
 }
 .animate-lumi-glow {
   animation: lumiGlowPulse 3s ease-in-out infinite;

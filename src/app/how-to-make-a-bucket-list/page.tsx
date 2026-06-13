@@ -90,71 +90,48 @@ const faqSchema = {
 
 export default function HowToMakeABucketListPage() {
   return (
-    <main>
+    <main className="bg-white">
       <JsonLd data={faqSchema} />
 
       {/* ── Hero ─────────────────────────────────────────────────── */}
-      <section className="relative overflow-hidden bg-stone-950 text-white">
-        {/* Starfield */}
-        <div className="pointer-events-none absolute inset-0" aria-hidden>
-          {[
-            [8, 12], [22, 5], [45, 18], [67, 8], [85, 22], [15, 40],
-            [38, 55], [72, 35], [90, 60], [55, 75], [30, 85], [78, 90],
-            [12, 70], [60, 48], [92, 15],
-          ].map(([x, y], i) => (
-            <span
-              key={i}
-              className="absolute rounded-full bg-white"
-              style={{
-                left: `${x}%`,
-                top: `${y}%`,
-                width: i % 4 === 0 ? "2px" : "1px",
-                height: i % 4 === 0 ? "2px" : "1px",
-                opacity: i % 3 === 0 ? 0.4 : 0.2,
-              }}
-            />
-          ))}
-        </div>
-
-        <div className="relative mx-auto max-w-4xl px-4 py-20 text-center space-y-6">
-          <div className="flex justify-center">
-            <div className="relative">
-              <div className="absolute inset-0 rounded-full bg-amber-400/20 blur-3xl scale-[2]" />
-              <Lumi size={88} glow float className="relative" />
+      <section className="bg-white pt-16 pb-10 px-4">
+        <div className="mx-auto max-w-4xl">
+          <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6 mb-8">
+            <Lumi size={88} glow float className="shrink-0" />
+            <div className="space-y-4 text-center sm:text-left">
+              <p className="text-[#e05533] text-sm font-semibold uppercase tracking-widest">
+                Guided by Lumi · 6 proven steps
+              </p>
+              <h1 className="text-4xl sm:text-5xl font-bold leading-tight text-stone-900 text-balance">
+                How to Make a Bucket List{" "}
+                <span className="text-[#e05533]">(That You&apos;ll Actually Complete)</span>
+              </h1>
+              <p className="text-stone-500 text-lg max-w-xl">
+                Most bucket lists are forgotten within a week. Here&apos;s the system that keeps yours alive — from choosing the right goals to reviewing them every quarter.
+              </p>
+              <div className="flex flex-wrap gap-3 justify-center sm:justify-start">
+                <Link
+                  href="/dashboard"
+                  className="inline-flex items-center gap-2 rounded-full bg-[#e05533] px-6 py-3 text-sm font-semibold text-white hover:bg-[#c94420] transition-colors shadow-md"
+                >
+                  Start my bucket list
+                </Link>
+                <Link
+                  href="/bucket-lists"
+                  className="inline-flex items-center gap-2 rounded-full border border-stone-300 px-6 py-3 text-sm font-medium text-stone-600 hover:border-[#e05533] hover:text-[#e05533] transition-colors"
+                >
+                  See famous lists →
+                </Link>
+              </div>
             </div>
           </div>
-          <p className="text-amber-400 text-sm font-semibold uppercase tracking-widest">
-            Guided by Lumi · 6 proven steps
-          </p>
-          <h1 className="text-4xl sm:text-5xl font-bold leading-tight">
-            How to Make a Bucket List<br />
-            <span className="text-amber-400">(That You'll Actually Complete)</span>
-          </h1>
-          <p className="text-stone-400 text-lg max-w-xl mx-auto">
-            Most bucket lists are forgotten within a week. Here's the system that keeps yours alive — from choosing the right goals to reviewing them every quarter.
-          </p>
-          <div className="flex flex-wrap gap-3 justify-center">
-            <Link
-              href="/dashboard"
-              className="inline-flex items-center gap-2 rounded-full bg-amber-400 px-6 py-3 text-sm font-semibold text-stone-950 hover:bg-amber-300 transition-colors shadow-[0_0_20px_rgba(245,158,11,0.4)]"
-            >
-              Start my bucket list
-            </Link>
-            <Link
-              href="/bucket-lists"
-              className="inline-flex items-center gap-2 rounded-full border border-stone-700 px-6 py-3 text-sm font-medium text-stone-300 hover:border-stone-500 hover:text-white transition-colors"
-            >
-              See famous lists →
-            </Link>
-          </div>
         </div>
-        <div className="h-12 bg-gradient-to-b from-stone-950 to-white" />
       </section>
 
       {/* ── Intro ────────────────────────────────────────────────── */}
       <div className="mx-auto max-w-3xl px-4 py-12">
         <p className="text-stone-700 text-lg leading-relaxed">
-          The average person writes a bucket list twice in their life: once in their 20s, drunk on possibility, and once facing a health scare or milestone birthday. Both times, the list gets forgotten. The problem isn't motivation — it's structure. Here's what actually works.
+          The average person writes a bucket list twice in their life: once in their 20s, drunk on possibility, and once facing a health scare or milestone birthday. Both times, the list gets forgotten. The problem isn&apos;t motivation — it&apos;s structure. Here&apos;s what actually works.
         </p>
       </div>
 
@@ -164,23 +141,23 @@ export default function HowToMakeABucketListPage() {
           <section key={step.number} className="scroll-mt-20">
             <div className="flex gap-5">
               <div className="flex-shrink-0">
-                <div className="h-12 w-12 rounded-full bg-amber-400 flex items-center justify-center">
-                  <span className="text-lg font-bold text-stone-950">{step.number}</span>
+                <div className="h-12 w-12 rounded-full bg-[#e05533] flex items-center justify-center">
+                  <span className="text-lg font-bold text-white">{step.number}</span>
                 </div>
               </div>
               <div className="space-y-4">
-                <h2 className="text-xl sm:text-2xl font-bold text-stone-900 leading-snug">
+                <h2 className="text-xl sm:text-2xl font-bold text-stone-900 leading-snug text-balance">
                   {step.title}
                 </h2>
                 <p className="text-stone-700 text-base leading-relaxed">{step.body}</p>
-                <div className="rounded-xl bg-amber-50 border border-amber-200 px-5 py-4">
-                  <p className="text-sm font-semibold text-amber-800">
+                <div className="rounded-xl bg-[#fff0ec] border border-[#f0a090] px-5 py-4">
+                  <p className="text-sm font-semibold text-[#c94420]">
                     Lumi tip: {step.tip}
                   </p>
                   {step.link && (
                     <Link
                       href={step.link.href}
-                      className="mt-2 inline-flex items-center text-sm font-medium text-amber-700 hover:text-amber-900 transition-colors"
+                      className="mt-2 inline-flex items-center text-sm font-medium text-[#e05533] hover:text-[#c94420] transition-colors"
                     >
                       {step.link.label}
                     </Link>
@@ -195,7 +172,7 @@ export default function HowToMakeABucketListPage() {
       {/* ── FAQ ──────────────────────────────────────────────────── */}
       <section className="bg-stone-50 border-t border-stone-200">
         <div className="mx-auto max-w-3xl px-4 py-16 space-y-8">
-          <h2 className="text-2xl font-bold text-stone-900">Frequently asked questions</h2>
+          <h2 className="text-2xl font-bold text-stone-900 text-balance">Frequently asked questions</h2>
           <div className="space-y-6">
             {FAQ_ITEMS.map((item) => (
               <div key={item.q} className="rounded-xl border border-stone-200 bg-white px-6 py-5 space-y-3">
@@ -208,23 +185,23 @@ export default function HowToMakeABucketListPage() {
       </section>
 
       {/* ── CTA ──────────────────────────────────────────────────── */}
-      <section className="bg-amber-50 border-t border-amber-100">
+      <section className="bg-[#fff0ec] border-t border-[#f0a090]">
         <div className="mx-auto max-w-3xl px-4 py-16 text-center space-y-6">
           <Lumi size={64} glow float className="mx-auto" />
-          <h2 className="text-3xl font-bold text-stone-900">Ready to build yours?</h2>
+          <h2 className="text-3xl font-bold text-stone-900 text-balance">Ready to build yours?</h2>
           <p className="text-stone-600 max-w-md mx-auto">
             Lumi helps you build, track, and review your bucket list — and shows you the famous person whose ambitions look most like yours.
           </p>
           <div className="flex flex-wrap gap-3 justify-center">
             <Link
               href="/dashboard"
-              className="inline-flex items-center gap-2 rounded-full bg-amber-400 px-6 py-3 text-sm font-semibold text-stone-950 hover:bg-amber-300 transition-colors"
+              className="inline-flex items-center gap-2 rounded-full bg-[#e05533] px-6 py-3 text-sm font-semibold text-white hover:bg-[#c94420] transition-colors shadow-md"
             >
               Start my bucket list
             </Link>
             <Link
               href="/bucket-lists"
-              className="inline-flex items-center gap-2 rounded-full border border-stone-300 bg-white px-6 py-3 text-sm font-medium text-stone-700 hover:border-amber-400 transition-colors"
+              className="inline-flex items-center gap-2 rounded-full border border-stone-300 bg-white px-6 py-3 text-sm font-medium text-stone-700 hover:border-[#e05533] transition-colors"
             >
               Browse famous lists →
             </Link>

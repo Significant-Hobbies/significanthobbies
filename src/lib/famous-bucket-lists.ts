@@ -16,6 +16,11 @@ export type FamousBucketItem = {
   completedNote?: string;
 };
 
+export type FamousBucketSource = {
+  label: string; // e.g. "CNN Politics, Feb 2017"
+  url: string;   // actual verified URL
+};
+
 export type FamousBucketList = {
   slug: string;
   name: string;
@@ -23,7 +28,7 @@ export type FamousBucketList = {
   emoji: string;
   items: FamousBucketItem[];
   quote?: { text: string; attribution?: string };
-  sources?: string[]; // e.g. ["CBS News (2014)", "ABC News interview with George Stephanopoulos"]
+  sources?: FamousBucketSource[];
 };
 
 export const FAMOUS_BUCKET_LISTS: FamousBucketList[] = [
@@ -87,8 +92,7 @@ export const FAMOUS_BUCKET_LISTS: FamousBucketList[] = [
       text: "The secret to life is to die knowing that you squeezed everything you could out of it.",
     },
     sources: [
-      "Facebook Watch series 'Will Smith's Bucket List' (2019)",
-      "YouTube – Grand Canyon bungee jump (Sep 25, 2018)",
+      { label: "Variety – Facebook Watch 'Bucket List' series (2019)", url: "https://variety.com/2019/digital/news/will-smith-bucket-list-facebook-watch-1203150965/" },
     ],
   },
   {
@@ -130,8 +134,7 @@ export const FAMOUS_BUCKET_LISTS: FamousBucketList[] = [
       text: "The best way to not feel hopeless is to get up and do something.",
     },
     sources: [
-      "CNN Politics – kitesurfing on Necker Island (Feb 2017)",
-      "White House pool report – Stonehenge visit (Sep 2014)",
+      { label: "CNN Politics – Obama kitesurfing on Necker Island (Feb 2017)", url: "https://www.cnn.com/2017/02/07/politics/barack-obama-kitesurfing-richard-branson/index.html" },
     ],
   },
   {
@@ -172,9 +175,7 @@ export const FAMOUS_BUCKET_LISTS: FamousBucketList[] = [
       text: "You don't learn to walk by following rules. You learn by doing and by falling over.",
     },
     sources: [
-      "Guinness World Records – Atlantic crossing (1987)",
-      "Guinness World Records – Pacific crossing (1991)",
-      "Virgin Galactic press release – space flight (Jul 11, 2021)",
+      { label: "Virgin Galactic – first fully crewed spaceflight (Jul 2021)", url: "https://www.virgingalactic.com/articles/virgin-galactic-completes-first-fully-crewed-spaceflight/" },
     ],
   },
   {
@@ -222,9 +223,7 @@ export const FAMOUS_BUCKET_LISTS: FamousBucketList[] = [
       text: "The biggest risk is not taking any risk. In a world that's changing quickly, the only strategy guaranteed to fail is not taking risks.",
     },
     sources: [
-      "Inc. – annual personal challenge series (2010–2019)",
-      "Tsinghua University Q&A in Mandarin (Oct 2014)",
-      "FastCompany – Jarvis AI assistant (Dec 2016)",
+      { label: "Inc. – How Zuckerberg keeps his personal challenges (2016)", url: "https://www.inc.com/julie-anne-exter/how-mark-zuckerberg-keeps-his-ridiculously-challenging-new-years-resolutions.html" },
     ],
   },
   {
@@ -259,8 +258,7 @@ export const FAMOUS_BUCKET_LISTS: FamousBucketList[] = [
       text: "The biggest adventure you can take is to live the life of your dreams.",
     },
     sources: [
-      "E! Online – truffle hunting in Florence (Oct 2014)",
-      "Essence – bucket list interview",
+      { label: "E! Online – Oprah checks truffle hunting off her bucket list (Oct 2014)", url: "https://www.eonline.com/news/588680/oprah-winfrey-checks-another-item-off-her-bucket-list-truffle-hunting-with-gayle-king-in-italy" },
     ],
   },
   {
@@ -305,8 +303,8 @@ export const FAMOUS_BUCKET_LISTS: FamousBucketList[] = [
       text: "There is nothing wrong with America that cannot be cured with what is right with America.",
     },
     sources: [
-      "CBS News – bucket list interview (2013)",
-      "ABC News / George Stephanopoulos interview at Clinton Global Initiative (2014)",
+      { label: "CBS News – Clinton bucket list: Kilimanjaro and grandkids", url: "https://www.cbsnews.com/news/bill-clintons-bucket-list-seeing-grandkids-and-climbing-kilimanjaro/" },
+      { label: "ABC News – Clinton bucket list includes riding horse in Mongolia", url: "https://abcnews.go.com/Politics/bill-clinton-bucket-list-includes-riding-horse-mongolia/story?id=25707905" },
     ],
   },
   {
@@ -351,8 +349,7 @@ export const FAMOUS_BUCKET_LISTS: FamousBucketList[] = [
       text: "Tennis has been my whole life, but I want to have a life where I'm not just tennis.",
     },
     sources: [
-      "PORTER Magazine – post-retirement interview (2022)",
-      "SportsKeeda – PCT and Yosemite goals",
+      { label: "SportsKeeda – Serena Williams' plans after retirement", url: "https://www.sportskeeda.com/tennis/tennis-chosen-i-loved-choice-now-first-time-entire-life-i-m-choosing-something-serena-williams-plans-ambitions-following-retirement-tennis" },
     ],
   },
   {
@@ -384,8 +381,7 @@ export const FAMOUS_BUCKET_LISTS: FamousBucketList[] = [
       text: "I would like to die on Mars. Just not on impact.",
     },
     sources: [
-      "IAC Guadalajara keynote (Sep 2016)",
-      "Satellite 2020 Conference – Mars city goal",
+      { label: "Futurism – Elon Musk's main goal: get humanity to Mars before he dies", url: "https://futurism.com/the-byte/elon-musk-main-goal-get-humanity-mars-before-die" },
     ],
   },
   {
@@ -425,8 +421,7 @@ export const FAMOUS_BUCKET_LISTS: FamousBucketList[] = [
       text: "Don't die. (His literal answer when asked what's left on his bucket list — he was only half joking.)",
     },
     sources: [
-      "Reddit AMA (Feb 2013)",
-      "Benzinga – bucket list interview (Jan 2025)",
+      { label: "Benzinga – what Bill Gates has left on his bucket list (Jan 2025)", url: "https://www.benzinga.com/personal-finance/25/01/42992135/billionaire-bill-gates-was-asked-whats-left-on-his-bucket-list-he-reveals-theres-only-one-thing-dont-die" },
     ],
   },
   {
@@ -453,8 +448,7 @@ export const FAMOUS_BUCKET_LISTS: FamousBucketList[] = [
       text: "I always thought I'd be the older brother. I was born to be the older brother.",
     },
     sources: [
-      "Broadway World – Broadway bucket list (Jul 2015)",
-      "Fox News Entertainment – Will Ferrell collaboration (2022)",
+      { label: "Broadway World – Ryan Reynolds: Broadway is on the bucket list (Jul 2015)", url: "https://www.broadwayworld.com/article/Ryan-Reynolds-Exchanged-Broadway-for-Parenthood-Broadways-On-the-Bucket-List-20150711" },
     ],
   },
   {
@@ -480,8 +474,7 @@ export const FAMOUS_BUCKET_LISTS: FamousBucketList[] = [
       text: "I've mostly done everything that I've set out to do. Now I just need to get in tip-top shape for these last two.",
     },
     sources: [
-      "People Magazine – last things on his bucket list",
-      "Daily Caller – Kilimanjaro goal (Sep 2023)",
+      { label: "Yahoo Entertainment – Shaq shares last things on his bucket list", url: "https://www.yahoo.com/entertainment/shaquille-oneal-shares-last-things-212049793.html" },
     ],
   },
   {
@@ -508,8 +501,7 @@ export const FAMOUS_BUCKET_LISTS: FamousBucketList[] = [
       text: "Success isn't always about greatness. It's about consistency. Consistent hard work gains success.",
     },
     sources: [
-      "IMDb News – Red One Christmas movie (2024)",
-      "Kelly Clarkson Show – country music dream",
+      { label: "IMDb News – Dwayne Johnson on Red One as a bucket list achievement (2024)", url: "https://m.imdb.com/news/ni64938197" },
     ],
   },
 ];

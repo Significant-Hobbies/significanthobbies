@@ -109,77 +109,55 @@ const faqSchema = {
 
 export default function BucketListBefore30Page() {
   return (
-    <main>
+    <main className="bg-white">
       <JsonLd data={faqSchema} />
 
       {/* ── Hero ─────────────────────────────────────────────────── */}
-      <section className="relative overflow-hidden bg-stone-950 text-white">
-        <div className="pointer-events-none absolute inset-0" aria-hidden>
-          {[
-            [5, 8], [18, 25], [35, 12], [52, 5], [70, 18], [88, 10],
-            [12, 50], [42, 42], [65, 55], [80, 38], [25, 72], [58, 82],
-            [90, 70], [45, 90], [8, 85],
-          ].map(([x, y], i) => (
-            <span
-              key={i}
-              className="absolute rounded-full bg-white"
-              style={{
-                left: `${x}%`,
-                top: `${y}%`,
-                width: i % 5 === 0 ? "2px" : "1px",
-                height: i % 5 === 0 ? "2px" : "1px",
-                opacity: i % 3 === 0 ? 0.45 : 0.2,
-              }}
-            />
-          ))}
-        </div>
-
-        <div className="relative mx-auto max-w-4xl px-4 py-20 text-center space-y-6">
-          <div className="flex justify-center">
-            <div className="relative">
-              <div className="absolute inset-0 rounded-full bg-amber-400/20 blur-3xl scale-[2]" />
-              <Lumi size={88} glow float className="relative" />
+      <section className="bg-white pt-16 pb-10 px-4">
+        <div className="mx-auto max-w-4xl">
+          <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6 mb-8">
+            <Lumi size={88} glow float className="shrink-0" />
+            <div className="space-y-4 text-center sm:text-left">
+              <p className="text-[#e05533] text-sm font-semibold uppercase tracking-widest">
+                Guided by Lumi · 50 experiences
+              </p>
+              <h1 className="text-4xl sm:text-5xl font-bold leading-tight text-stone-900 text-balance">
+                50 Things to Do{" "}
+                <span className="text-[#e05533]">Before You Turn 30</span>
+              </h1>
+              <p className="text-stone-500 text-lg max-w-xl">
+                Your 20s are the most optionful decade you&apos;ll have. Here&apos;s how to use them — from backpacking SE Asia to falling in love to negotiating your first raise.
+              </p>
+              <div className="flex flex-wrap gap-3 justify-center sm:justify-start">
+                <Link
+                  href="/dashboard"
+                  className="inline-flex items-center gap-2 rounded-full bg-[#e05533] px-6 py-3 text-sm font-semibold text-white hover:bg-[#c94420] transition-colors shadow-md"
+                >
+                  Build my bucket list
+                </Link>
+                <Link
+                  href="/bucket-lists"
+                  className="inline-flex items-center gap-2 rounded-full border border-stone-300 px-6 py-3 text-sm font-medium text-stone-600 hover:border-[#e05533] hover:text-[#e05533] transition-colors"
+                >
+                  See famous lists →
+                </Link>
+              </div>
             </div>
           </div>
-          <p className="text-amber-400 text-sm font-semibold uppercase tracking-widest">
-            Guided by Lumi · 50 experiences
-          </p>
-          <h1 className="text-4xl sm:text-5xl font-bold leading-tight">
-            50 Things to Do<br />
-            <span className="text-amber-400">Before You Turn 30</span>
-          </h1>
-          <p className="text-stone-400 text-lg max-w-xl mx-auto">
-            Your 20s are the most optionful decade you'll have. Here's how to use them — from backpacking SE Asia to falling in love to negotiating your first raise.
-          </p>
-          <div className="flex flex-wrap gap-3 justify-center">
-            <Link
-              href="/dashboard"
-              className="inline-flex items-center gap-2 rounded-full bg-amber-400 px-6 py-3 text-sm font-semibold text-stone-950 hover:bg-amber-300 transition-colors shadow-[0_0_20px_rgba(245,158,11,0.4)]"
-            >
-              Build my bucket list
-            </Link>
-            <Link
-              href="/bucket-lists"
-              className="inline-flex items-center gap-2 rounded-full border border-stone-700 px-6 py-3 text-sm font-medium text-stone-300 hover:border-stone-500 hover:text-white transition-colors"
-            >
-              See famous lists →
-            </Link>
-          </div>
         </div>
-        <div className="h-12 bg-gradient-to-b from-stone-950 to-white" />
       </section>
 
       {/* ── Intro ────────────────────────────────────────────────── */}
       <div className="mx-auto max-w-3xl px-4 py-12 space-y-4">
-        <h2 className="text-2xl font-bold text-stone-900">Why your 20s are the best time</h2>
+        <h2 className="text-2xl font-bold text-stone-900 text-balance">Why your 20s are the best time</h2>
         <p className="text-stone-700 text-base leading-relaxed">
-          Your 20s are not a rehearsal. They're the decade when the cost of experimentation is lowest: fewer dependants, more flexibility, a body that recovers fast, and a nervous system still wired for novelty. The experiences you collect now become the reference points you draw on for the rest of your life — the yardsticks for courage, the proof of capability, the foundation of identity.
+          Your 20s are not a rehearsal. They&apos;re the decade when the cost of experimentation is lowest: fewer dependants, more flexibility, a body that recovers fast, and a nervous system still wired for novelty. The experiences you collect now become the reference points you draw on for the rest of your life — the yardsticks for courage, the proof of capability, the foundation of identity.
         </p>
         <p className="text-stone-700 text-base leading-relaxed">
-          This list isn't about ticking boxes. It's about building a self. The travel teaches you adaptability. The creative work teaches you that you have something to say. The career risks teach you that rejection is survivable. The relationships teach you who you are when someone else is watching.
+          This list isn&apos;t about ticking boxes. It&apos;s about building a self. The travel teaches you adaptability. The creative work teaches you that you have something to say. The career risks teach you that rejection is survivable. The relationships teach you who you are when someone else is watching.
         </p>
         <p className="text-stone-600 text-sm">
-          Pick the 5 that call to you most and start there. Don't try to do all 50 — that misses the point.
+          Pick the 5 that call to you most and start there. Don&apos;t try to do all 50 — that misses the point.
         </p>
       </div>
 
@@ -189,12 +167,12 @@ export default function BucketListBefore30Page() {
           {ITEMS.map((item, i) => (
             <div
               key={i}
-              className="flex items-start gap-4 rounded-xl border border-amber-100 bg-amber-50/40 px-4 py-4 hover:border-amber-300 hover:bg-amber-50 transition-colors group"
+              className="flex items-start gap-4 rounded-xl border border-[#f0a090] bg-[#fff0ec] px-4 py-4 hover:border-[#e05533] hover:shadow-sm transition-all group"
             >
               <span className="text-2xl leading-none mt-0.5">{item.emoji}</span>
               <div className="space-y-1 min-w-0">
                 <div className="flex items-start gap-2">
-                  <span className="text-xs font-bold text-amber-600 shrink-0 mt-0.5">
+                  <span className="text-xs font-bold text-[#e05533] shrink-0 mt-0.5">
                     {String(i + 1).padStart(2, "0")}
                   </span>
                   <p className="font-semibold text-stone-900 text-sm leading-snug">{item.title}</p>
@@ -209,7 +187,7 @@ export default function BucketListBefore30Page() {
       {/* ── FAQ ──────────────────────────────────────────────────── */}
       <section className="bg-stone-50 border-t border-stone-200">
         <div className="mx-auto max-w-3xl px-4 py-16 space-y-8">
-          <h2 className="text-2xl font-bold text-stone-900">Frequently asked questions</h2>
+          <h2 className="text-2xl font-bold text-stone-900 text-balance">Frequently asked questions</h2>
           <div className="space-y-6">
             {FAQ_ITEMS.map((item) => (
               <div key={item.q} className="rounded-xl border border-stone-200 bg-white px-6 py-5 space-y-3">
@@ -222,23 +200,23 @@ export default function BucketListBefore30Page() {
       </section>
 
       {/* ── CTA ──────────────────────────────────────────────────── */}
-      <section className="bg-amber-50 border-t border-amber-100">
+      <section className="bg-[#fff0ec] border-t border-[#f0a090]">
         <div className="mx-auto max-w-3xl px-4 py-16 text-center space-y-6">
           <Lumi size={64} glow float className="mx-auto" />
-          <h2 className="text-3xl font-bold text-stone-900">Ready to build yours?</h2>
+          <h2 className="text-3xl font-bold text-stone-900 text-balance">Ready to build yours?</h2>
           <p className="text-stone-600 max-w-md mx-auto">
             Lumi tracks your bucket list, shows your progress over time, and matches you to the famous person whose ambitions look most like yours.
           </p>
           <div className="flex flex-wrap gap-3 justify-center">
             <Link
               href="/dashboard"
-              className="inline-flex items-center gap-2 rounded-full bg-amber-400 px-6 py-3 text-sm font-semibold text-stone-950 hover:bg-amber-300 transition-colors"
+              className="inline-flex items-center gap-2 rounded-full bg-[#e05533] px-6 py-3 text-sm font-semibold text-white hover:bg-[#c94420] transition-colors shadow-md"
             >
               Build my bucket list
             </Link>
             <Link
               href="/bucket-lists"
-              className="inline-flex items-center gap-2 rounded-full border border-stone-300 bg-white px-6 py-3 text-sm font-medium text-stone-700 hover:border-amber-400 transition-colors"
+              className="inline-flex items-center gap-2 rounded-full border border-stone-300 bg-white px-6 py-3 text-sm font-medium text-stone-700 hover:border-[#e05533] transition-colors"
             >
               Browse famous lists →
             </Link>

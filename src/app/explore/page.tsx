@@ -1,3 +1,5 @@
+export const revalidate = 300;
+
 import { count,desc, eq } from "drizzle-orm";
 import Link from "next/link";
 

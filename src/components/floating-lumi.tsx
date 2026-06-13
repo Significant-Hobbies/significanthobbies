@@ -43,8 +43,8 @@ export function FloatingLumi() {
       {/* Expandable panel — slides in above the button on hover */}
       <div
         className="
-          flex flex-col gap-1 rounded-2xl border border-amber-300/40
-          bg-stone-950/95 backdrop-blur-sm shadow-xl
+          flex flex-col gap-1 rounded-2xl border border-[#f0a090]
+          bg-white/95 backdrop-blur-sm shadow-xl
           overflow-hidden
           max-h-0 opacity-0 scale-95 origin-bottom-right
           group-hover:max-h-64 group-hover:opacity-100 group-hover:scale-100
@@ -53,7 +53,7 @@ export function FloatingLumi() {
         "
       >
         <div className="px-4 pt-3 pb-1">
-          <p className="text-xs font-semibold text-amber-400 uppercase tracking-widest">
+          <p className="text-xs font-semibold text-[#e05533] uppercase tracking-widest">
             Quick links
           </p>
         </div>
@@ -61,7 +61,7 @@ export function FloatingLumi() {
           <Link
             key={href}
             href={href}
-            className="mx-2 mb-1 rounded-xl px-3 py-2.5 text-sm font-medium text-stone-200 hover:bg-amber-400/15 hover:text-amber-300 transition-colors"
+            className="mx-2 mb-1 rounded-xl px-3 py-2.5 text-sm font-medium text-stone-700 hover:bg-[#fff0ec] hover:text-[#e05533] transition-colors"
           >
             {label}
           </Link>
@@ -71,14 +71,14 @@ export function FloatingLumi() {
 
       {/* Floating Lumi orb button */}
       <div className="relative flex items-center justify-center">
-        {/* Amber glow ring */}
+        {/* Coral glow ring */}
         <span
-          className="absolute inset-0 rounded-full bg-amber-400/25 blur-md scale-125 animate-pulse-soft"
+          className="absolute inset-0 rounded-full bg-[#e05533]/20 blur-md scale-125 animate-pulse-soft"
           aria-hidden
         />
         <button
           type="button"
-          className="relative flex items-center justify-center rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:ring-offset-2 focus-visible:ring-offset-stone-950"
+          className="relative flex items-center justify-center rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#e05533] focus-visible:ring-offset-2 focus-visible:ring-offset-white"
           aria-label="Open Lumi bucket list guide"
         >
           <Lumi size={48} float glow />
@@ -92,12 +92,12 @@ export function FloatingLumi() {
           className="
             absolute -top-1.5 -right-1.5
             flex h-5 w-5 items-center justify-center
-            rounded-full bg-stone-700 text-stone-300
+            rounded-full bg-stone-200 text-stone-500
             text-[10px] font-bold leading-none
             opacity-0 group-hover:opacity-100
-            hover:bg-stone-600 hover:text-white
+            hover:bg-stone-300 hover:text-stone-700
             transition-opacity duration-200
-            focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-amber-400
+            focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#e05533]
           "
         >
           ×
