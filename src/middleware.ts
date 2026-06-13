@@ -30,18 +30,20 @@ export function middleware(req: NextRequest) {
     return NextResponse.redirect(new URL("/dashboard", req.url));
   }
 
-  // Force CF Edge to cache anon `/`. OpenNext was emitting s-maxage only,
-  // which CF was treating as DYNAMIC; max-age + CDN-Cache-Control is the
-  // combination CF actually honors for HTML.
+  // Cache anon `/` briefly at the edge — long TTLs (we previously had
+  // s-maxage=86400) strand visitors on stale HTML pointing to chunk
+  // hashes from the previous build, which 404 and trip GlobalError. 60s
+  // matches `revalidate` in page.tsx so misses cost one Worker invocation
+  // and recover automatically after a deploy.
   if (pathname === "/") {
     const res = NextResponse.next();
     res.headers.set(
       "Cache-Control",
-      "public, max-age=3600, s-maxage=86400, stale-while-revalidate=604800",
+      "public, max-age=0, s-maxage=60, stale-while-revalidate=300",
     );
     res.headers.set(
       "CDN-Cache-Control",
-      "public, s-maxage=86400, stale-while-revalidate=604800",
+      "public, s-maxage=60, stale-while-revalidate=300",
     );
     return res;
   }

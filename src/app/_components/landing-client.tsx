@@ -86,8 +86,7 @@ const HERO_CARD_PHASES = [
 function HeroDarkCard() {
   return (
     <div
-      className="w-full max-w-sm overflow-hidden rounded-2xl border border-white/10 bg-white/5 backdrop-blur-sm shadow-2xl"
-      style={{ animation: "fadeInUp 0.7s 0.6s ease-out both", opacity: 0 }}
+      className="w-full max-w-sm overflow-hidden rounded-2xl border border-white/10 bg-white/5 backdrop-blur-sm shadow-2xl animate-fade-in-up"
     >
       {/* Card header */}
       <div className="flex items-center justify-between border-b border-white/10 px-4 py-3">
@@ -147,28 +146,18 @@ function Hero() {
           {/* Left: headline + CTAs */}
           <div className="max-w-2xl">
             <h1
-              className="text-5xl font-extrabold tracking-tight text-white sm:text-6xl lg:text-7xl"
-              style={{
-                lineHeight: 1.05,
-                animation: "fadeInUp 0.6s ease-out both",
-                opacity: 0,
-              }}
+              className="text-5xl font-extrabold tracking-tight text-white sm:text-6xl lg:text-7xl animate-fade-in-up"
+              style={{ lineHeight: 1.05 }}
             >
               <span className="block">The hobbies that shaped you.</span>
               <span className="block text-stone-400">The life you still want to live.</span>
             </h1>
 
-            <p
-              className="mt-4 max-w-xl text-lg text-stone-400 sm:text-xl"
-              style={{ animation: "fadeInUp 0.6s 0.2s ease-out both", opacity: 0 }}
-            >
+            <p className="mt-4 max-w-xl text-lg text-stone-400 sm:text-xl animate-fade-in-up">
               Map every hobby from childhood to now. Build the bucket list you&apos;ll actually complete.
             </p>
 
-            <div
-              className="mt-8 flex flex-wrap items-center gap-4"
-              style={{ animation: "fadeInUp 0.6s 0.35s ease-out both", opacity: 0 }}
-            >
+            <div className="mt-8 flex flex-wrap items-center gap-4 animate-fade-in-up">
               <Link href="/timeline/new" prefetch={false}>
                 <button
                   type="button"
@@ -187,10 +176,7 @@ function Hero() {
               </Link>
             </div>
 
-            <p
-              className="mt-4 text-sm text-stone-600"
-              style={{ animation: "fadeInUp 0.6s 0.5s ease-out both", opacity: 0 }}
-            >
+            <p className="mt-4 text-sm text-stone-600 animate-fade-in-up">
               No sign-up required to start
             </p>
           </div>
@@ -263,7 +249,7 @@ function FeatureRow() {
           {/* Large left panel: timeline */}
           <div
             className="lg:col-span-3"
-            style={inView ? { animation: "fadeInUp 0.6s ease-out both" } : { opacity: 0 }}
+            style={inView ? { animation: "fadeInUp 0.6s ease-out both" } : undefined}
           >
             <div className="mb-3">
               <h2 className="text-balance text-2xl font-bold text-stone-900 sm:text-3xl">
@@ -283,7 +269,7 @@ function FeatureRow() {
             {/* Personality panel */}
             <div
               className="flex-1 rounded-2xl border border-stone-100 bg-stone-50 p-6"
-              style={inView ? { animation: "fadeInUp 0.6s 0.12s ease-out both" } : { opacity: 0 }}
+              style={inView ? { animation: "fadeInUp 0.6s 0.12s ease-out both" } : undefined}
             >
               <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-100">
                 <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
@@ -299,7 +285,7 @@ function FeatureRow() {
             {/* Share panel */}
             <div
               className="flex-1 rounded-2xl border border-stone-100 bg-stone-50 p-6"
-              style={inView ? { animation: "fadeInUp 0.6s 0.24s ease-out both" } : { opacity: 0 }}
+              style={inView ? { animation: "fadeInUp 0.6s 0.24s ease-out both" } : undefined}
             >
               <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-100">
                 <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
@@ -345,7 +331,7 @@ function CoralBucketListPanel() {
         {/* Lumi */}
         <div
           className="mb-8 flex justify-center"
-          style={inView ? { animation: "fadeInUp 0.5s ease-out both" } : { opacity: 0 }}
+          style={inView ? { animation: "fadeInUp 0.5s ease-out both" } : undefined}
         >
           <Lumi size={72} onDark />
         </div>
@@ -353,7 +339,7 @@ function CoralBucketListPanel() {
         {/* Headline */}
         <h2
           className="text-balance text-3xl font-bold text-white sm:text-4xl lg:text-5xl"
-          style={inView ? { animation: "fadeInUp 0.6s 0.1s ease-out both" } : { opacity: 0 }}
+          style={inView ? { animation: "fadeInUp 0.6s 0.1s ease-out both" } : undefined}
         >
           What will you do before you die?
         </h2>
@@ -361,7 +347,7 @@ function CoralBucketListPanel() {
         {/* Sub */}
         <p
           className="mx-auto mt-4 max-w-xl text-lg text-white/80"
-          style={inView ? { animation: "fadeInUp 0.6s 0.2s ease-out both" } : { opacity: 0 }}
+          style={inView ? { animation: "fadeInUp 0.6s 0.2s ease-out both" } : undefined}
         >
           Twelve remarkable people wrote theirs down. Browse their bucket lists — then build yours.
         </p>
@@ -369,7 +355,7 @@ function CoralBucketListPanel() {
         {/* Famous person pills */}
         <div
           className="mt-8 flex flex-wrap justify-center gap-2"
-          style={inView ? { animation: "fadeInUp 0.6s 0.3s ease-out both" } : { opacity: 0 }}
+          style={inView ? { animation: "fadeInUp 0.6s 0.3s ease-out both" } : undefined}
         >
           {FAMOUS_PILLS.map((person) => (
             <Link
@@ -386,7 +372,7 @@ function CoralBucketListPanel() {
         {/* CTAs */}
         <div
           className="mt-10 flex flex-wrap justify-center gap-4"
-          style={inView ? { animation: "fadeInUp 0.6s 0.4s ease-out both" } : { opacity: 0 }}
+          style={inView ? { animation: "fadeInUp 0.6s 0.4s ease-out both" } : undefined}
         >
           <Link href="/bucket-lists" prefetch={false}>
             <button
@@ -495,7 +481,7 @@ function HowItWorks() {
         <div
           ref={ref}
           className="mb-14 text-center"
-          style={inView ? { animation: "fadeInUp 0.6s ease-out both" } : { opacity: 0 }}
+          style={inView ? { animation: "fadeInUp 0.6s ease-out both" } : undefined}
         >
           <span className="mb-3 inline-block rounded-full border border-emerald-200 bg-emerald-50 px-4 py-1 text-xs font-semibold uppercase tracking-widest text-emerald-700">
             How it works
@@ -515,7 +501,7 @@ function HowItWorks() {
               <div
                 key={step.num}
                 className="relative"
-                style={inView ? { animation: `fadeInUp 0.6s ${i * 0.2}s ease-out both` } : { opacity: 0 }}
+                style={inView ? { animation: `fadeInUp 0.6s ${i * 0.2}s ease-out both` } : undefined}
               >
                 <div className="relative mx-auto mb-6 flex h-[52px] w-[52px] items-center justify-center rounded-full border-2 border-emerald-300 bg-white text-sm font-bold text-emerald-700 shadow-md">
                   {step.num}
@@ -540,7 +526,7 @@ function HowItWorks() {
               </div>
               <div
                 className="pb-10"
-                style={inView ? { animation: `fadeInUp 0.5s ${i * 0.2}s ease-out both` } : { opacity: 0 }}
+                style={inView ? { animation: `fadeInUp 0.5s ${i * 0.2}s ease-out both` } : undefined}
               >
                 <h3 className="text-balance mb-1 mt-2 font-semibold text-stone-800">{step.title}</h3>
                 <p className="mb-4 text-sm text-stone-500">{step.desc}</p>
@@ -657,7 +643,7 @@ function CommunityGallery({ demos }: { demos: DemoTimeline[] }) {
         <div
           ref={ref}
           className="mb-10 flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-end"
-          style={inView ? { animation: "fadeInUp 0.6s ease-out both" } : { opacity: 0 }}
+          style={inView ? { animation: "fadeInUp 0.6s ease-out both" } : undefined}
         >
           <div>
             <h2 className="text-balance text-2xl font-bold text-stone-900 sm:text-3xl">Real hobby journeys</h2>
@@ -700,7 +686,7 @@ function CommunityGallery({ demos }: { demos: DemoTimeline[] }) {
                 <Link key={t.id} href={getTimelineUrl(t)} prefetch={false}>
                   <div
                     className="group relative overflow-hidden rounded-2xl border border-stone-200 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_8px_32px_rgba(0,0,0,0.08)]"
-                    style={inView ? { animation: `cardReveal 0.6s ${idx * 0.15}s ease-out both` } : { opacity: 0 }}
+                    style={inView ? { animation: `cardReveal 0.6s ${idx * 0.15}s ease-out both` } : undefined}
                   >
                     {/* Top color strip */}
                     <div className="flex h-1.5 overflow-hidden">
@@ -779,7 +765,7 @@ function FinalCTA() {
       <div
         ref={ref}
         className="mx-auto max-w-2xl"
-        style={inView ? { animation: "fadeInUp 0.6s ease-out both" } : { opacity: 0 }}
+        style={inView ? { animation: "fadeInUp 0.6s ease-out both" } : undefined}
       >
         <h2 className="text-balance text-3xl font-bold text-white sm:text-4xl lg:text-5xl">
           Your hobby story is worth telling
@@ -821,7 +807,7 @@ function BlogTeaser({ posts }: { posts: BlogPost[] }) {
       <div className="mx-auto max-w-5xl">
         <div
           className="mb-8 text-center"
-          style={inView ? { animation: "fadeInUp 0.6s ease-out both" } : { opacity: 0 }}
+          style={inView ? { animation: "fadeInUp 0.6s ease-out both" } : undefined}
         >
           <p className="mb-2 text-xs font-semibold uppercase tracking-widest text-emerald-600">
             The Hobby Journal
@@ -846,7 +832,7 @@ function BlogTeaser({ posts }: { posts: BlogPost[] }) {
                 href={`/blog/${post.slug}`}
                 prefetch={false}
                 className="group block"
-                style={inView ? { animation: `cardReveal 0.6s ${idx * 0.12}s ease-out both` } : { opacity: 0 }}
+                style={inView ? { animation: `cardReveal 0.6s ${idx * 0.12}s ease-out both` } : undefined}
               >
                 <div className="flex h-full flex-col overflow-hidden rounded-2xl border border-stone-200 bg-white p-5 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-emerald-300 hover:shadow-[0_8px_32px_rgba(16,185,129,0.10)]">
                   <div className="mb-3 text-3xl transition-transform duration-300 group-hover:scale-110">
@@ -881,7 +867,7 @@ function BlogTeaser({ posts }: { posts: BlogPost[] }) {
 
         <div
           className="mt-6 text-center"
-          style={inView ? { animation: "fadeInUp 0.6s 0.4s ease-out both" } : { opacity: 0 }}
+          style={inView ? { animation: "fadeInUp 0.6s 0.4s ease-out both" } : undefined}
         >
           <Link
             href="/blog"

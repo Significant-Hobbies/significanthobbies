@@ -7,11 +7,11 @@ import { blogPosts } from "~/lib/blog-posts";
 
 import { LandingClient } from "./_components/landing-client";
 
-// ISR — the demo timelines change rarely (curated public PUBLIC rows), so
-// we render this page at build/edge revalidate cadence instead of
-// re-reading Turso on every request. Signed-in redirect lives in
-// middleware.ts now, so this route stays statically renderable.
-export const revalidate = 3600;
+// ISR — keep cache window short so chunk-hash rolls after a deploy don't
+// strand users on stale HTML pointing to 404'd JS bundles. The demo
+// timelines list is cached separately at the CF asset layer below, so
+// dropping this TTL doesn't add DB load.
+export const revalidate = 60;
 
 // Edge cache key for the demo timelines list. Bump the version suffix
 // when the underlying schema or rendering changes so old CF Edge entries

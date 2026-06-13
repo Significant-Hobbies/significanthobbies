@@ -25,20 +25,19 @@ const nextConfig: NextConfig = {
   async headers() {
     return [
       {
-        // CF Edge requires both max-age (browser) and explicit CDN-Cache-Control
-        // to actually cache HTML at edge. revalidate=3600 alone emitted only
-        // s-maxage which CF marked DYNAMIC, costing a full Worker cold-start
-        // per visitor on the demo-timelines homepage.
+        // Keep `/` cache window short — long TTLs strand visitors on stale
+        // HTML pointing to chunk hashes the next deploy invalidated. 60s
+        // matches `revalidate` in page.tsx; misses cost one Worker hit and
+        // recover automatically after a deploy.
         source: "/",
         headers: [
           {
             key: "Cache-Control",
-            value:
-              "public, max-age=3600, s-maxage=86400, stale-while-revalidate=604800",
+            value: "public, max-age=0, s-maxage=60, stale-while-revalidate=300",
           },
           {
             key: "CDN-Cache-Control",
-            value: "public, s-maxage=86400, stale-while-revalidate=604800",
+            value: "public, s-maxage=60, stale-while-revalidate=300",
           },
         ],
       },

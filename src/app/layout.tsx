@@ -58,7 +58,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${geist.className} min-h-screen bg-amber-50 text-stone-900`}>
+      <body className={`${geist.className} min-h-screen bg-white text-stone-900`}>
         <JsonLd
           data={{
             "@context": "https://schema.org",
