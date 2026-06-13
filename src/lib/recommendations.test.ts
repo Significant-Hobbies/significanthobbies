@@ -31,6 +31,11 @@ describe("getRecommendations", () => {
       const results = getRecommendations([], 3);
       expect(results.length).toBe(3);
     });
+
+    it("returns no results when limit is zero", () => {
+      const results = getRecommendations([], 0);
+      expect(results).toEqual([]);
+    });
   });
 
   describe("single hobby", () => {
