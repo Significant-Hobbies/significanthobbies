@@ -98,14 +98,17 @@ const SAMPLE_JOURNEY_PHASES = [
         opacity:0 as painted, so the original fadeInUp animation delayed
         the LCP timestamp by 500ms. We keep the translateY-only motion
         (see landing.css → @keyframes fadeInUpKeep) so the visual feel
-        survives but LCP fires at the first paint frame. */}
+        survives but LCP fires at the first paint frame.
+        Headline rewrite (LANDING_STANDARD §Hero): outcome-led, <10 words,
+        names the artifact (the map) so a non-technical reader knows what
+        they walk away with. */}
     <h1 class="mb-6 text-4xl font-bold leading-tight tracking-tight text-stone-900 sm:text-5xl md:text-6xl lg:text-7xl">
-      <span class="block">What hobbies have</span>
+      <span class="block">Map every hobby</span>
       <span
         class="relative mt-1 block italic text-emerald-600"
         style="animation: fadeInUpKeep 0.4s 0.1s ease-out both;"
       >
-        shaped your life?
+        that shaped you.
         {/* Wavy underline decoration */}
         <svg
           class="absolute -bottom-2 left-0 w-full"
@@ -125,30 +128,28 @@ const SAMPLE_JOURNEY_PHASES = [
       </span>
     </h1>
 
-    {/* Subtext */}
+    {/* Subtext — concrete outcome: a shareable visual of your life in
+        hobbies, in 5 minutes, no account needed. */}
     <p
       class="mx-auto mb-10 max-w-xl text-lg text-stone-500 sm:text-xl"
       style="animation: fadeInUp 0.6s 0.4s ease-out both; opacity: 0;"
     >
-      List your hobbies from when you were a kid to today. See the map of your life. Share it with anyone.
+      List the hobbies from each chapter of your life. Get a shareable card of your whole journey in 5 minutes — no sign-up.
     </p>
 
-    {/* CTA buttons */}
+    {/* Single primary CTA (LANDING_STANDARD §CTA: "One primary CTA.
+        Multiple buttons in the hero create hesitation."). The secondary
+        "See examples" link demotes to a plain text link below so it
+        doesn't compete visually with the primary action. */}
     <div
-      class="flex flex-wrap items-center justify-center gap-4"
+      class="flex items-center justify-center"
       style="animation: fadeInUp 0.6s 0.55s ease-out both; opacity: 0;"
     >
       <a
         href="/timeline/new"
         class="inline-flex h-11 items-center justify-center rounded-md bg-emerald-600 px-8 text-sm font-medium text-white shadow-[0_0_24px_rgba(16,185,129,0.3)] ring-1 ring-emerald-500/30 transition-all duration-200 hover:-translate-y-0.5 hover:bg-emerald-700 hover:shadow-[0_0_36px_rgba(16,185,129,0.45)]"
       >
-        Start your hobby map →
-      </a>
-      <a
-        href="/journeys"
-        class="inline-flex h-11 items-center justify-center rounded-md border border-stone-300 bg-transparent px-8 text-sm font-medium text-stone-600 transition-all duration-200 hover:-translate-y-0.5 hover:text-stone-900"
-      >
-        See examples
+        Build my hobby map →
       </a>
     </div>
 
@@ -156,14 +157,14 @@ const SAMPLE_JOURNEY_PHASES = [
       class="mt-4 text-sm text-stone-400"
       style="animation: fadeInUp 0.6s 0.7s ease-out both; opacity: 0;"
     >
-      No sign-up required to start
+      Free · no sign-up · 5 minutes
     </p>
 
     <p
-      class="mt-2 text-sm text-emerald-600"
+      class="mt-2 text-sm text-stone-500"
       style="animation: fadeInUp 0.6s 0.75s ease-out both; opacity: 0;"
     >
-      <a href="/get-started" class="hover:underline">Or get your username first →</a>
+      <a href="/journeys" class="hover:text-stone-700 hover:underline">See example journeys →</a>
     </p>
 
     {/* Sample journey — concrete proof of what the product does */}
