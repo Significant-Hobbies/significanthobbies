@@ -1,6 +1,7 @@
 "use client";
 
-import { useMemo, useState, useTransition } from "react";
+import Link from "next/link";
+import { useId, useMemo, useRef, useState, useTransition } from "react";
 
 import { Lumi } from "~/components/lumi";
 import {
@@ -35,6 +36,8 @@ export function BucketListSection({ initialItems }: Props) {
   const [items, setItems] = useState<Item[]>(initialItems);
   const [newTitle, setNewTitle] = useState("");
   const [isPending, startTransition] = useTransition();
+  const optimisticIdBase = useId();
+  const optimisticCounter = useRef(0);
 
   const archetype = useMemo(() => getBucketListArchetype(items), [items]);
   const celebrity = useMemo(() => getCelebrityMatch(items), [items]);
@@ -84,8 +87,9 @@ export function BucketListSection({ initialItems }: Props) {
   }
 
   function addItemOptimistically(title: string, category?: string) {
+    optimisticCounter.current += 1;
     const optimistic: Item = {
-      id: `optimistic-${Date.now()}`,
+      id: `optimistic-${optimisticIdBase}-${optimisticCounter.current}`,
       title,
       description: null,
       category: category ?? null,
@@ -131,12 +135,12 @@ export function BucketListSection({ initialItems }: Props) {
             )}
           </div>
         </div>
-        <a
+        <Link
           href="/bucket-lists"
           className="shrink-0 text-sm font-medium text-amber-600 hover:text-amber-700 transition-colors"
         >
           Browse famous lists →
-        </a>
+        </Link>
       </div>
 
       {/* ── Archetype + Celebrity row ────────────────────────────── */}
@@ -253,12 +257,12 @@ export function BucketListSection({ initialItems }: Props) {
               Lumi will help you fill it — browse famous lists or add your own above.
             </p>
           </div>
-          <a
+          <Link
             href="/bucket-lists"
             className="inline-flex items-center gap-2 rounded-full bg-amber-400 px-5 py-2 text-sm font-semibold text-stone-950 hover:bg-amber-300 transition-colors"
           >
             ✨ Browse famous bucket lists
-          </a>
+          </Link>
         </div>
       ) : (
         <ul className="space-y-2">

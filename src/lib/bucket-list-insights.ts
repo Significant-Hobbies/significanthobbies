@@ -1,7 +1,7 @@
 import {
   BUCKET_ITEM_CATEGORIES,
-  FAMOUS_BUCKET_LISTS,
   type BucketItemCategory,
+  FAMOUS_BUCKET_LISTS,
 } from "~/lib/famous-bucket-lists";
 
 // ─── Personality Archetypes ───────────────────────────────────────────────────

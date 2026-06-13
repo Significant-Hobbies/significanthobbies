@@ -1,9 +1,8 @@
 import { asc,eq } from "drizzle-orm";
 
 import { timelines, users } from "~/db/schema";
-import { db } from "~/server/db";
-
 import { blogPosts } from "~/lib/blog-posts";
+import { db } from "~/server/db";
 
 import { LandingClient } from "./_components/landing-client";
 

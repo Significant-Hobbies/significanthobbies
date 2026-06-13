@@ -4,7 +4,6 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
 import { Lumi } from "~/components/lumi";
-
 import {
   SaaSMakerChangelogSection,
   SaaSMakerTestimonialsSection,

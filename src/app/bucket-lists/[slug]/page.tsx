@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { AddToMyListButton } from "~/components/add-to-my-list-button";
@@ -76,12 +77,12 @@ export default async function FamousBucketListPage({ params }: Props) {
       {/* ── Light header ─────────────────────────────────────────────── */}
       <section className="bg-white border-b border-stone-100">
         <div className="mx-auto max-w-3xl px-4 py-10 space-y-6">
-          <a
+          <Link
             href="/bucket-lists"
             className="inline-flex items-center gap-1.5 text-sm text-[#e05533] hover:opacity-80 transition-opacity"
           >
             ← All bucket lists
-          </a>
+          </Link>
 
           <div className="flex items-start gap-6">
             {/* Big emoji */}
@@ -235,13 +236,13 @@ export default async function FamousBucketListPage({ params }: Props) {
 
         {/* Back to all */}
         <div className="flex items-center justify-between pt-6 border-t border-stone-100">
-          <a href="/bucket-lists" className="text-sm text-stone-500 hover:text-[#e05533] transition-colors">
+          <Link href="/bucket-lists" className="text-sm text-stone-500 hover:text-[#e05533] transition-colors">
             ← Browse all famous lists
-          </a>
+          </Link>
           {isLoggedIn && (
-            <a href="/dashboard" className="text-sm font-medium text-[#e05533] hover:text-[#c94420] transition-colors">
+            <Link href="/dashboard" className="text-sm font-medium text-[#e05533] hover:text-[#c94420] transition-colors">
               View my bucket list →
-            </a>
+            </Link>
           )}
         </div>
       </section>
