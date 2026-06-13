@@ -5,6 +5,7 @@ import { type MetadataRoute } from "next";
 
 import { timelines, users } from "~/db/schema";
 import { blogPosts } from "~/lib/blog-posts";
+import { FAMOUS_BUCKET_LISTS } from "~/lib/famous-bucket-lists";
 import { HOBBY_CATEGORIES } from "~/lib/hobbies";
 import { db } from "~/server/db";
 
@@ -74,6 +75,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     lastModified: now,
     changeFrequency: "monthly" as const,
     priority: 0.6,
+  }));
+
+  const bucketListPages = FAMOUS_BUCKET_LISTS.map((l) => ({
+    url: `${baseUrl}/bucket-lists/${l.slug}`,
+    lastModified: now,
+    changeFrequency: "monthly" as const,
+    priority: 0.7,
   }));
 
   return [
@@ -168,6 +176,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: "monthly",
       priority: 0.6,
     },
+    {
+      url: `${baseUrl}/bucket-lists`,
+      lastModified: now,
+      changeFrequency: "monthly",
+      priority: 0.8,
+    },
+    ...bucketListPages,
     ...hobbyPages,
     ...blogPages,
     ...publicTimelineRows.map((t) => ({

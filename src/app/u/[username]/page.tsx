@@ -9,7 +9,8 @@ import { FollowButton } from "~/components/follow-button";
 import { SuggestionsPanel } from "~/components/suggestions-panel";
 import { TimelineCard } from "~/components/timeline-card";
 import { Button } from "~/components/ui/button";
-import { follows, timelines,users } from "~/db/schema";
+import { bucketListItems, follows, timelines,users } from "~/db/schema";
+import { BUCKET_ITEM_CATEGORIES } from "~/lib/famous-bucket-lists";
 import { getCategoryForHobby } from "~/lib/hobbies";
 import type { Phase, TimelineVisibility } from "~/lib/types";
 import { getServerAuthSession } from "~/server/auth";
@@ -100,6 +101,18 @@ export default async function ProfilePage({ params }: Props) {
   // Parse earned badges
   let earnedBadgeIds: string[] = [];
   try { earnedBadgeIds = JSON.parse(user.earnedBadges) as string[]; } catch { /* ignore */ }
+
+  // Public bucket list items for this profile
+  const publicBucketItems = await db
+    .select()
+    .from(bucketListItems)
+    .where(
+      and(
+        eq(bucketListItems.userId, user.id),
+        eq(bucketListItems.visibility, "public"),
+      ),
+    )
+    .orderBy(desc(bucketListItems.createdAt));
 
   // Check if the current user is following this profile
   let isFollowing = false;
@@ -359,6 +372,61 @@ export default async function ProfilePage({ params }: Props) {
                 </Link>
               </div>
             )}
+          </div>
+        )}
+
+        {/* Public bucket list */}
+        {publicBucketItems.length > 0 && (
+          <div className="scroll-reveal scroll-reveal-d3">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-sm font-medium uppercase tracking-wide text-stone-500">
+                Bucket list
+              </h2>
+              {isOwner && (
+                <a href="/dashboard" className="text-xs text-emerald-600 hover:text-emerald-700 transition-colors">
+                  Manage →
+                </a>
+              )}
+            </div>
+            <ul className="space-y-2">
+              {publicBucketItems.map((item) => {
+                const cat = item.category
+                  ? BUCKET_ITEM_CATEGORIES[item.category as keyof typeof BUCKET_ITEM_CATEGORIES]
+                  : null;
+                return (
+                  <li
+                    key={item.id}
+                    className={`flex items-start gap-3 rounded-lg border px-4 py-3 ${
+                      item.status === "done"
+                        ? "border-emerald-200 bg-emerald-50/60"
+                        : "border-stone-200 bg-stone-50"
+                    }`}
+                  >
+                    <span
+                      className={`mt-0.5 h-4.5 w-4.5 shrink-0 rounded-full border-2 flex items-center justify-center text-[9px] font-bold ${
+                        item.status === "done"
+                          ? "border-emerald-500 bg-emerald-500 text-white"
+                          : "border-stone-300"
+                      }`}
+                    >
+                      {item.status === "done" ? "✓" : ""}
+                    </span>
+                    <span
+                      className={`flex-1 text-sm ${
+                        item.status === "done" ? "line-through text-stone-400" : "text-stone-700"
+                      }`}
+                    >
+                      {item.title}
+                    </span>
+                    {cat && (
+                      <span className="text-xs text-stone-400 shrink-0" title={cat.label}>
+                        {cat.emoji}
+                      </span>
+                    )}
+                  </li>
+                );
+              })}
+            </ul>
           </div>
         )}
 

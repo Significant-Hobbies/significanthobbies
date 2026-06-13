@@ -3,11 +3,12 @@ import { Clock,Plus } from "lucide-react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
+import { BucketListSection } from "~/components/bucket-list-section";
 import { TimelineCard } from "~/components/timeline-card";
 import { RecommendationsPanel } from "~/components/timeline-view/recommendations-panel";
 import { RediscoveryNudges } from "~/components/timeline-view/rediscovery-nudges";
 import { Button } from "~/components/ui/button";
-import { timelines } from "~/db/schema";
+import { bucketListItems, timelines } from "~/db/schema";
 import { computePersonality } from "~/lib/personality";
 import { getTimelineUrl } from "~/lib/timeline-url";
 import type { Phase, TimelineVisibility } from "~/lib/types";
@@ -40,11 +41,18 @@ export default async function DashboardPage() {
   const session = await getServerAuthSession();
   if (!session?.user) redirect("/login");
 
-  const rawTimelines = await db
-    .select()
-    .from(timelines)
-    .where(eq(timelines.userId, session.user.id))
-    .orderBy(desc(timelines.updatedAt));
+  const [rawTimelines, rawBucketItems] = await Promise.all([
+    db
+      .select()
+      .from(timelines)
+      .where(eq(timelines.userId, session.user.id))
+      .orderBy(desc(timelines.updatedAt)),
+    db
+      .select()
+      .from(bucketListItems)
+      .where(eq(bucketListItems.userId, session.user.id))
+      .orderBy(desc(bucketListItems.createdAt)),
+  ]);
 
   const currentUser = {
     id: session.user.id,
@@ -173,6 +181,9 @@ export default async function DashboardPage() {
           </div>
         )}
       </div>
+
+      {/* Bucket list */}
+      <BucketListSection initialItems={rawBucketItems} />
 
       {/* Rediscovery nudges */}
       {allPhases.length >= 2 && <RediscoveryNudges phases={allPhases} />}

@@ -18,10 +18,9 @@ import { NavSignOut } from "./nav-sign-out";
 const NAV_LINKS = [
   { href: "/hobbies", label: "Discover" },
   { href: "/find-your-hobby", label: "Quiz" },
-  { href: "/starter-kits", label: "Kits" },
-  { href: "/explore", label: "Explore" },
+  { href: "/bucket-lists", label: "✨ Bucket Lists" },
   { href: "/side-quests", label: "Side Quests" },
-  { href: "/side-quests?tab=circles", label: "Circles" },
+  { href: "/explore", label: "Explore" },
   { href: "/blog", label: "Blog" },
 ];
 

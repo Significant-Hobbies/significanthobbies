@@ -204,6 +204,30 @@ export const follows = sqliteTable(
   ],
 );
 
+export const bucketListItems = sqliteTable(
+  "BucketListItem",
+  {
+    id: text("id").primaryKey().$defaultFn(() => createId()),
+    userId: text("userId")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    title: text("title").notNull(),
+    description: text("description"),
+    category: text("category"),
+    status: text("status").notNull().default("planned"),
+    visibility: text("visibility").notNull().default("private"),
+    sourceSlug: text("sourceSlug"),
+    sourceItemTitle: text("sourceItemTitle"),
+    targetYear: integer("targetYear"),
+    completedAt: integer("completedAt", { mode: "timestamp" }),
+    createdAt: integer("createdAt", { mode: "timestamp" }).notNull().default(sql`(unixepoch())`),
+    updatedAt: integer("updatedAt", { mode: "timestamp" }).notNull().default(sql`(unixepoch())`),
+  },
+  (table) => [
+    index("BucketListItem_userId_idx").on(table.userId),
+  ],
+);
+
 // Simple cuid-like ID generator using nanoid pattern
 function createId(): string {
   const chars = "abcdefghijklmnopqrstuvwxyz0123456789";
