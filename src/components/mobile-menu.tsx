@@ -28,21 +28,29 @@ export function MobileMenu({ links, isLoggedIn }: MobileMenuProps) {
       {open && (
         <div className="absolute left-0 top-14 z-50 w-full border-b border-stone-200 bg-white/95 backdrop-blur-sm">
           <div className="flex flex-col px-4 py-3 gap-1">
-            {links.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                prefetch={false}
-                onClick={() => setOpen(false)}
-                className={`rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${
-                  pathname === link.href
-                    ? "bg-emerald-50 text-emerald-700"
-                    : "text-stone-600 hover:bg-stone-50 hover:text-stone-900"
-                }`}
-              >
-                {link.label}
-              </Link>
-            ))}
+            {links.map((link) => {
+              const isActive = pathname === link.href;
+              const isBucketList = link.href === "/bucket-lists";
+              return (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  prefetch={false}
+                  onClick={() => setOpen(false)}
+                  className={`rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${
+                    isActive
+                      ? isBucketList
+                        ? "bg-amber-50 text-amber-700"
+                        : "bg-emerald-50 text-emerald-700"
+                      : isBucketList
+                        ? "text-stone-600 hover:bg-amber-50 hover:text-amber-700"
+                        : "text-stone-600 hover:bg-stone-50 hover:text-stone-900"
+                  }`}
+                >
+                  {link.label}
+                </Link>
+              );
+            })}
             <Link
               href="/search"
               prefetch={false}

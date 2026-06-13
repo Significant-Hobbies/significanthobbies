@@ -16,12 +16,21 @@ export const metadata: Metadata = {
 };
 
 const CATEGORY_GRADIENTS: Record<string, string> = {
-  travel: "from-sky-400/20 to-sky-600/5",
-  adventure: "from-orange-400/20 to-orange-600/5",
-  creative: "from-purple-400/20 to-purple-600/5",
-  achievement: "from-amber-400/20 to-amber-600/5",
-  social: "from-rose-400/20 to-rose-600/5",
-  humanitarian: "from-emerald-400/20 to-emerald-600/5",
+  travel: "from-sky-500/10 to-sky-700/5",
+  adventure: "from-orange-500/10 to-orange-700/5",
+  creative: "from-purple-500/10 to-purple-700/5",
+  achievement: "from-amber-500/10 to-amber-700/5",
+  social: "from-rose-500/10 to-rose-700/5",
+  humanitarian: "from-emerald-500/10 to-emerald-700/5",
+};
+
+const CATEGORY_BORDER_HOVER: Record<string, string> = {
+  travel: "hover:border-sky-400/50",
+  adventure: "hover:border-orange-400/50",
+  creative: "hover:border-purple-400/50",
+  achievement: "hover:border-amber-400/50",
+  social: "hover:border-rose-400/50",
+  humanitarian: "hover:border-emerald-400/50",
 };
 
 function getDominantCategory(slug: string) {
@@ -34,66 +43,93 @@ function getDominantCategory(slug: string) {
   return Object.entries(counts).sort((a, b) => b[1] - a[1])[0]?.[0] ?? null;
 }
 
+// Computed from source data so it never drifts
+const TOTAL_ITEMS = FAMOUS_BUCKET_LISTS.reduce((sum, p) => sum + p.items.length, 0);
+const TOTAL_PEOPLE = FAMOUS_BUCKET_LISTS.length;
+const TOTAL_CATEGORIES = Object.keys(BUCKET_ITEM_CATEGORIES).length;
+
 export default function BucketListsPage() {
   return (
     <main>
-      {/* ── Hero ─────────────────────────────────────────────────── */}
-      <section className="relative overflow-hidden bg-stone-950 text-white">
+      {/* ── Hero ─────────────────────────────────────────────────────────── */}
+      <section className="relative overflow-hidden bg-stone-950 text-white min-h-[80vh] flex flex-col justify-center">
+
+        {/* Ambient orbs */}
+        <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden>
+          <div className="animate-orb-float absolute left-[10%] top-[15%] h-72 w-72 rounded-full bg-amber-500/8 blur-3xl" />
+          <div className="animate-orb-float absolute right-[8%] bottom-[20%] h-56 w-56 rounded-full bg-amber-400/6 blur-3xl" style={{ animationDelay: "-4s" }} />
+          <div className="animate-orb-float absolute left-[55%] top-[60%] h-40 w-40 rounded-full bg-orange-500/5 blur-2xl" style={{ animationDelay: "-8s" }} />
+        </div>
+
         {/* Star field */}
         <div className="pointer-events-none absolute inset-0" aria-hidden>
-          {[
+          {([
             [12, 8], [85, 15], [35, 25], [65, 10], [20, 45], [78, 30],
             [45, 18], [92, 55], [8, 65], [55, 70], [30, 80], [70, 85],
             [15, 92], [88, 92], [50, 5], [25, 55], [75, 60],
-          ].map(([x, y], i) => (
+            [40, 40], [60, 22], [5, 38], [95, 72],
+          ] as [number, number][]).map(([x, y], i) => (
             <span
               key={i}
               className="absolute rounded-full bg-white"
               style={{
                 left: `${x}%`,
                 top: `${y}%`,
-                width: i % 3 === 0 ? "2px" : "1px",
-                height: i % 3 === 0 ? "2px" : "1px",
-                opacity: 0.3 + (i % 5) * 0.1,
+                width: i % 4 === 0 ? "2px" : "1px",
+                height: i % 4 === 0 ? "2px" : "1px",
+                opacity: 0.2 + (i % 5) * 0.08,
               }}
             />
           ))}
         </div>
 
-        <div className="relative mx-auto max-w-4xl px-4 py-24 text-center space-y-8">
-          {/* Lumi mascot */}
+        <div className="relative mx-auto max-w-4xl px-4 py-28 text-center space-y-10">
+          {/* Lumi with large radial glow */}
           <div className="flex justify-center">
             <div className="relative">
-              <div className="absolute inset-0 rounded-full bg-amber-400/20 blur-3xl scale-[2]" />
-              <Lumi size={108} glow float className="relative" />
+              {/* Radial amber glow behind Lumi */}
+              <div
+                className="absolute inset-0 rounded-full"
+                style={{
+                  background: "radial-gradient(circle, rgba(245,158,11,0.35) 0%, rgba(245,158,11,0.08) 50%, transparent 70%)",
+                  width: "200px",
+                  height: "200px",
+                  transform: "translate(-50%, -50%)",
+                  top: "60%",
+                  left: "50%",
+                  filter: "blur(32px)",
+                }}
+                aria-hidden
+              />
+              <Lumi size={120} glow float className="relative drop-shadow-[0_0_48px_rgba(245,158,11,0.6)]" />
             </div>
           </div>
 
-          <div className="space-y-4">
-            <p className="text-amber-400 text-sm font-semibold uppercase tracking-widest">
+          <div className="space-y-5">
+            <p className="text-amber-400 text-xs font-semibold uppercase tracking-[0.2em]">
               Guided by Lumi
             </p>
-            <h1 className="text-5xl sm:text-6xl font-bold leading-tight">
-              What would you do<br />
-              <span className="text-amber-400">if you knew you</span><br />
-              couldn&apos;t fail?
+            <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold leading-[1.05] tracking-tight">
+              Your bucket list is a{" "}
+              <span className="text-amber-400">love letter</span>
+              <br className="hidden sm:block" /> to your future self.
             </h1>
-            <p className="text-stone-400 text-lg max-w-xl mx-auto">
+            <p className="text-stone-400 text-lg sm:text-xl max-w-2xl mx-auto leading-relaxed">
               The world&apos;s most remarkable people have written theirs down.
               Browse their lists — then build yours.
             </p>
           </div>
 
-          <div className="flex flex-wrap gap-3 justify-center">
+          <div className="flex flex-wrap gap-4 justify-center">
             <Link
               href="/dashboard"
-              className="inline-flex items-center gap-2 rounded-full bg-amber-400 px-6 py-3 text-sm font-semibold text-stone-950 hover:bg-amber-300 transition-colors shadow-[0_0_24px_rgba(245,158,11,0.4)]"
+              className="inline-flex items-center gap-2 rounded-full bg-amber-400 px-8 py-3.5 text-sm font-bold text-stone-950 hover:bg-amber-300 active:scale-95 transition-all duration-150 shadow-[0_0_32px_rgba(245,158,11,0.45)]"
             >
-              ✨ Open my bucket list
+              ✨ Start my list
             </Link>
             <a
               href="#lists"
-              className="inline-flex items-center gap-2 rounded-full border border-stone-700 px-6 py-3 text-sm font-medium text-stone-300 hover:border-stone-500 hover:text-white transition-colors"
+              className="inline-flex items-center gap-2 rounded-full border border-stone-600 px-8 py-3.5 text-sm font-medium text-stone-300 hover:border-amber-400/60 hover:text-amber-300 transition-colors duration-200"
             >
               Browse famous lists ↓
             </a>
@@ -104,7 +140,7 @@ export default function BucketListsPage() {
             {Object.entries(BUCKET_ITEM_CATEGORIES).map(([key, { label, emoji }]) => (
               <span
                 key={key}
-                className="inline-flex items-center gap-1.5 rounded-full border border-stone-800 bg-stone-900/80 px-3 py-1 text-xs text-stone-400"
+                className="inline-flex items-center gap-1.5 rounded-full border border-stone-800 bg-stone-900/80 px-3 py-1 text-xs text-stone-500 backdrop-blur-sm"
               >
                 {emoji} {label}
               </span>
@@ -112,129 +148,166 @@ export default function BucketListsPage() {
           </div>
         </div>
 
-        {/* Fade to white */}
-        <div className="h-16 bg-gradient-to-b from-stone-950 to-white" />
+        {/* Fade to next section */}
+        <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-b from-transparent to-stone-900/60 pointer-events-none" aria-hidden />
       </section>
 
-      {/* ── Person grid ──────────────────────────────────────────── */}
-      <section id="lists" className="mx-auto max-w-5xl px-4 py-16 space-y-10">
-        <div className="text-center space-y-2">
-          <h2 className="text-3xl font-bold text-stone-900">Famous bucket lists</h2>
-          <p className="text-stone-500">Click any person to see their full list — and borrow items for yours.</p>
+      {/* ── Stats bar ────────────────────────────────────────────────────── */}
+      <section className="border-y border-stone-800 bg-stone-950">
+        <div className="mx-auto max-w-4xl px-4 py-5">
+          <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-3">
+            {[
+              { value: TOTAL_PEOPLE, label: "famous people" },
+              { value: TOTAL_ITEMS, label: "verified items" },
+              { value: TOTAL_CATEGORIES, label: "categories" },
+              { value: "100%", label: "free" },
+            ].map(({ value, label }, i) => (
+              <div key={i} className="flex items-center gap-2 text-sm">
+                <span className="text-xl font-bold text-amber-400">{value}</span>
+                <span className="text-stone-500">{label}</span>
+                {i < 3 && (
+                  <span className="hidden sm:inline-block ml-8 text-stone-700 select-none">·</span>
+                )}
+              </div>
+            ))}
+          </div>
         </div>
+      </section>
 
-        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {FAMOUS_BUCKET_LISTS.map((person) => {
-            const done = person.items.filter((i) => i.status === "done").length;
-            const total = person.items.length;
-            const pct = Math.round((done / total) * 100);
-            const dom = getDominantCategory(person.slug);
-            const gradient = dom ? (CATEGORY_GRADIENTS[dom] ?? "") : "";
-            // Circular SVG progress
-            const r = 20;
-            const circ = 2 * Math.PI * r;
-            const offset = circ * (1 - pct / 100);
+      {/* ── Person grid ──────────────────────────────────────────────────── */}
+      <section id="lists" className="bg-stone-950 pb-24 pt-16">
+        <div className="mx-auto max-w-5xl px-4 space-y-10">
+          <div className="text-center space-y-3">
+            <h2 className="text-3xl sm:text-4xl font-bold text-white">Famous bucket lists</h2>
+            <p className="text-stone-500 text-base max-w-md mx-auto">
+              Click any person to see their full list — and borrow items for yours.
+            </p>
+          </div>
 
-            return (
-              <Link
-                key={person.slug}
-                href={`/bucket-lists/${person.slug}`}
-                className={`group relative flex flex-col rounded-2xl border border-stone-200 bg-gradient-to-br ${gradient} bg-white p-6 shadow-sm hover:shadow-lg hover:border-stone-300 hover:-translate-y-0.5 transition-all duration-200 overflow-hidden`}
-              >
-                {/* Subtle pattern */}
-                <div className="pointer-events-none absolute top-0 right-0 h-32 w-32 rounded-bl-full bg-gradient-to-bl from-white/60 to-transparent" />
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {FAMOUS_BUCKET_LISTS.map((person) => {
+              const done = person.items.filter((i) => i.status === "done").length;
+              const total = person.items.length;
+              const pct = Math.round((done / total) * 100);
+              const dom = getDominantCategory(person.slug);
+              const gradient = dom ? (CATEGORY_GRADIENTS[dom] ?? "") : "";
+              const borderHover = dom ? (CATEGORY_BORDER_HOVER[dom] ?? "hover:border-amber-400/50") : "hover:border-amber-400/50";
 
-                <div className="flex items-start justify-between gap-3 mb-4">
-                  <span className="text-4xl">{person.emoji}</span>
-                  {/* Circular progress */}
-                  <svg width="52" height="52" viewBox="0 0 52 52" className="shrink-0 -rotate-90">
-                    <circle cx="26" cy="26" r={r} fill="none" stroke="#e7e5e4" strokeWidth="4" />
-                    <circle
-                      cx="26"
-                      cy="26"
-                      r={r}
-                      fill="none"
-                      stroke="#f59e0b"
-                      strokeWidth="4"
-                      strokeLinecap="round"
-                      strokeDasharray={circ}
-                      strokeDashoffset={offset}
-                      className="transition-all duration-700"
-                    />
-                    <text
-                      x="26"
-                      y="26"
-                      textAnchor="middle"
-                      dominantBaseline="middle"
-                      className="rotate-90 origin-center"
-                      style={{ fontSize: "10px", fill: "#78716c", fontWeight: 600, transform: "rotate(90deg)", transformOrigin: "26px 26px" }}
-                    >
-                      {pct}%
-                    </text>
-                  </svg>
-                </div>
+              // Circular SVG progress ring — 60px
+              const r = 24;
+              const circ = 2 * Math.PI * r;
+              const offset = circ * (1 - pct / 100);
 
-                <h2 className="text-lg font-bold text-stone-900 group-hover:text-amber-700 transition-colors">
-                  {person.name}
-                </h2>
-                <p className="mt-1 text-sm text-stone-500 line-clamp-2 flex-1">
-                  {person.knownFor}
-                </p>
+              return (
+                <Link
+                  key={person.slug}
+                  href={`/bucket-lists/${person.slug}`}
+                  className={`group relative flex flex-col rounded-2xl border border-stone-800 bg-gradient-to-br ${gradient} bg-stone-900 p-6 shadow-sm hover:shadow-[0_4px_32px_rgba(0,0,0,0.4)] ${borderHover} hover:-translate-y-1 transition-all duration-200 overflow-hidden`}
+                >
+                  {/* Corner pattern */}
+                  <div className="pointer-events-none absolute top-0 right-0 h-28 w-28 rounded-bl-full bg-gradient-to-bl from-white/4 to-transparent" aria-hidden />
 
-                {/* Top 2 items preview */}
-                <ul className="mt-4 space-y-1.5">
-                  {person.items.slice(0, 2).map((item, i) => (
-                    <li key={i} className="flex items-center gap-2 text-xs text-stone-600">
-                      <span
-                        className={`h-3 w-3 shrink-0 rounded-full border-2 ${
-                          item.status === "done"
-                            ? "border-amber-400 bg-amber-400"
-                            : "border-stone-300"
-                        }`}
+                  <div className="flex items-start justify-between gap-3 mb-4">
+                    <span className="text-4xl leading-none">{person.emoji}</span>
+                    {/* Circular progress — 60px */}
+                    <svg width="60" height="60" viewBox="0 0 60 60" className="shrink-0 -rotate-90">
+                      <circle cx="30" cy="30" r={r} fill="none" stroke="#292524" strokeWidth="4" />
+                      <circle
+                        cx="30"
+                        cy="30"
+                        r={r}
+                        fill="none"
+                        stroke="#f59e0b"
+                        strokeWidth="4"
+                        strokeLinecap="round"
+                        strokeDasharray={circ}
+                        strokeDashoffset={offset}
+                        className="transition-all duration-700"
                       />
-                      <span className={item.status === "done" ? "line-through text-stone-400" : ""}>
-                        {item.title.length > 48 ? item.title.slice(0, 48) + "…" : item.title}
-                      </span>
-                    </li>
-                  ))}
-                  {total > 2 && (
-                    <li className="text-xs text-stone-400 pl-5">
-                      +{total - 2} more →
-                    </li>
-                  )}
-                </ul>
+                      <text
+                        x="30"
+                        y="30"
+                        textAnchor="middle"
+                        dominantBaseline="middle"
+                        style={{
+                          fontSize: "11px",
+                          fill: "#a8a29e",
+                          fontWeight: 600,
+                          transform: "rotate(90deg)",
+                          transformOrigin: "30px 30px",
+                        }}
+                      >
+                        {pct}%
+                      </text>
+                    </svg>
+                  </div>
 
-                {/* Hover arrow */}
-                <div className="mt-4 text-xs font-medium text-amber-600 opacity-0 group-hover:opacity-100 transition-opacity">
-                  See full list →
-                </div>
-              </Link>
-            );
-          })}
+                  <h2 className="text-lg font-bold text-stone-100 group-hover:text-amber-400 transition-colors leading-snug">
+                    {person.name}
+                  </h2>
+                  <p className="mt-1 text-sm text-stone-500 line-clamp-2 flex-1 leading-relaxed">
+                    {person.knownFor}
+                  </p>
+
+                  {/* Top 2 items preview */}
+                  <ul className="mt-5 space-y-2">
+                    {person.items.slice(0, 2).map((item, i) => (
+                      <li key={i} className="flex items-center gap-2.5 text-sm text-stone-400">
+                        <span
+                          className={`h-3.5 w-3.5 shrink-0 rounded-full border-2 ${
+                            item.status === "done"
+                              ? "border-amber-400 bg-amber-400"
+                              : "border-stone-600"
+                          }`}
+                        />
+                        <span className={item.status === "done" ? "line-through text-stone-600" : ""}>
+                          {item.title.length > 46 ? item.title.slice(0, 46) + "…" : item.title}
+                        </span>
+                      </li>
+                    ))}
+                    {total > 2 && (
+                      <li className="text-xs text-stone-600 pl-6">
+                        +{total - 2} more
+                      </li>
+                    )}
+                  </ul>
+
+                  {/* Hover CTA */}
+                  <div className="mt-5 text-sm font-semibold text-amber-400 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                    View list →
+                  </div>
+                </Link>
+              );
+            })}
+          </div>
         </div>
       </section>
 
-      {/* ── Lumi CTA ─────────────────────────────────────────────── */}
-      <section className="bg-amber-50 border-t border-amber-100">
-        <div className="mx-auto max-w-3xl px-4 py-16 text-center space-y-6">
-          <Lumi size={64} glow className="mx-auto" />
-          <h2 className="text-3xl font-bold text-stone-900">
-            Your turn.
+      {/* ── Bottom CTA ───────────────────────────────────────────────────── */}
+      <section className="relative overflow-hidden bg-amber-400">
+        {/* Subtle grain / texture overlay */}
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-amber-300/60 via-amber-400 to-amber-500/80" aria-hidden />
+        <div className="relative mx-auto max-w-3xl px-4 py-20 text-center space-y-6">
+          <div className="flex justify-center">
+            <Lumi size={80} glow float className="drop-shadow-[0_0_24px_rgba(120,53,15,0.4)]" />
+          </div>
+          <h2 className="text-3xl sm:text-4xl font-bold text-stone-950 leading-tight">
+            Your turn. What do you want to do<br className="hidden sm:block" /> before you die?
           </h2>
-          <p className="text-stone-500 max-w-md mx-auto">
+          <p className="text-amber-900/80 text-base max-w-sm mx-auto">
             Lumi will help you discover what belongs on your list — based on who you are,
             not who everyone else expects you to be.
           </p>
           <div className="flex flex-wrap gap-3 justify-center">
             <Link
               href="/dashboard"
-              className="inline-flex items-center gap-2 rounded-full bg-amber-400 px-6 py-3 text-sm font-semibold text-stone-950 hover:bg-amber-300 transition-colors"
+              className="inline-flex items-center gap-2 rounded-full bg-stone-950 px-7 py-3.5 text-sm font-bold text-amber-400 hover:bg-stone-800 active:scale-95 transition-all duration-150 shadow-lg"
             >
               ✨ Start my bucket list
             </Link>
             <Link
               href="/find-your-hobby"
-              className="inline-flex items-center gap-2 rounded-full border border-stone-300 bg-white px-6 py-3 text-sm font-medium text-stone-700 hover:border-amber-400 transition-colors"
+              className="inline-flex items-center gap-2 rounded-full border-2 border-stone-950/20 bg-amber-300/50 px-7 py-3.5 text-sm font-semibold text-stone-900 hover:bg-amber-300 transition-colors duration-150"
             >
               Take the hobby quiz →
             </Link>

@@ -1223,9 +1223,56 @@ function LumiBucketListSection() {
   );
 }
 
+/* ─── Sample Bucket List Card ────────────────────────────────────────────────── */
+
+const SAMPLE_BUCKET_ITEMS = [
+  { label: "Skydive over New Zealand", done: true },
+  { label: "Learn Mandarin to conversational level", done: true },
+  { label: "Write a novel (even a bad one)", done: false },
+  { label: "Hike the Pacific Crest Trail", done: false },
+];
+
+function SampleBucketListCard() {
+  return (
+    <div
+      className="mt-8 mx-auto w-full max-w-md overflow-hidden rounded-2xl border border-stone-700/60 bg-stone-900 shadow-xl text-left"
+      style={{ animation: "fadeInUp 0.7s 0.85s ease-out both", opacity: 0 }}
+    >
+      <div className="flex items-center justify-between border-b border-stone-800 px-4 py-2.5">
+        <span className="text-xs font-semibold text-stone-300">Sample bucket list</span>
+        <span className="rounded-full bg-amber-400/10 border border-amber-400/30 px-2 py-0.5 text-[10px] font-medium text-amber-400">example</span>
+      </div>
+      <div className="divide-y divide-stone-800">
+        {SAMPLE_BUCKET_ITEMS.map((item) => (
+          <div key={item.label} className="flex items-center gap-3 px-4 py-3">
+            <span
+              aria-hidden="true"
+              className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full border text-[11px] font-bold transition-colors ${
+                item.done
+                  ? "border-amber-400 bg-amber-400 text-stone-950"
+                  : "border-stone-600 bg-transparent text-transparent"
+              }`}
+            >
+              ✓
+            </span>
+            <span className={`text-sm ${item.done ? "text-stone-400 line-through" : "text-stone-200"}`}>
+              {item.label}
+            </span>
+          </div>
+        ))}
+      </div>
+      <div className="px-4 py-2 text-center text-[10px] text-stone-500 bg-stone-950/40">
+        2 done · 2 planned · your list will look different
+      </div>
+    </div>
+  );
+}
+
 /* ─── Root Export ─────────────────────────────────────────────────────────────── */
 
 export function LandingClient({ demos, blogPosts }: LandingClientProps) {
+  const [heroMode, setHeroMode] = useState<"hobby" | "bucket">("hobby");
+
   return (
     <div className="min-h-screen">
       {/* ── Hero ──────────────────────────────────────────────────────────────── */}
@@ -1297,96 +1344,185 @@ export function LandingClient({ demos, blogPosts }: LandingClientProps) {
 
         {/* Hero content */}
         <div className="relative z-10 mx-auto max-w-3xl text-center">
-          {/* Pill badge with shimmer */}
-          <div
-            className="mb-7 inline-flex items-center gap-2 rounded-full border border-emerald-300/70 px-4 py-2 text-sm font-medium text-emerald-700"
-            style={{
-              background: "linear-gradient(90deg, #ecfdf5, #d1fae5, #ecfdf5)",
-              backgroundSize: "300% auto",
-              animation: "badgeShimmer 4s linear infinite",
-            }}
-          >
-            <span className="animate-pulse-soft h-1.5 w-1.5 rounded-full bg-emerald-500" />
-            Map your hobby journey
-            <span className="ml-0.5 text-base">✨</span>
-          </div>
-
-          {/* Headline */}
-          <h1 className="mb-6 text-4xl font-bold leading-tight tracking-tight text-stone-900 sm:text-5xl md:text-6xl lg:text-7xl">
-            <span className="block">
-              What hobbies have
-            </span>
-            <span
-              className="relative mt-1 block italic text-emerald-600"
-              style={{ animation: "fadeInUp 0.4s 0.1s ease-out both", opacity: 0 }}
+          {/* Mode toggle pills */}
+          <div className="mb-7 inline-flex items-center gap-1 rounded-full border border-stone-200 bg-stone-100/80 p-1 backdrop-blur-sm">
+            <button
+              type="button"
+              onClick={() => setHeroMode("hobby")}
+              className={`rounded-full px-4 py-1.5 text-sm font-semibold transition-all duration-200 ${
+                heroMode === "hobby"
+                  ? "bg-emerald-600 text-white shadow-sm"
+                  : "text-stone-500 hover:text-stone-700"
+              }`}
             >
-              shaped your life?
-              {/* Wavy underline decoration */}
-              <svg
-                className="absolute -bottom-2 left-0 w-full"
-                viewBox="0 0 300 12"
-                preserveAspectRatio="none"
-                style={{ height: 10 }}
-              >
-                <path
-                  d="M0,6 C25,0 50,12 75,6 C100,0 125,12 150,6 C175,0 200,12 225,6 C250,0 275,12 300,6"
-                  stroke="#10b981"
-                  strokeWidth="2.5"
-                  fill="none"
-                  strokeLinecap="round"
-                  opacity={0.5}
-                />
-              </svg>
-            </span>
-          </h1>
-
-          {/* Subtext */}
-          <p
-            className="mx-auto mb-10 max-w-xl text-lg text-stone-500 sm:text-xl"
-            style={{ animation: "fadeInUp 0.6s 0.4s ease-out both", opacity: 0 }}
-          >
-            List your hobbies from when you were a kid to today. See the map of your life. Share it with anyone.
-          </p>
-
-          {/* CTA buttons */}
-          <div
-            className="flex flex-wrap items-center justify-center gap-4"
-            style={{ animation: "fadeInUp 0.6s 0.55s ease-out both", opacity: 0 }}
-          >
-            <Link href="/timeline/new" prefetch={false}>
-              <Button
-                size="lg"
-                className="bg-emerald-600 px-8 text-white shadow-[0_0_24px_rgba(16,185,129,0.3)] ring-1 ring-emerald-500/30 transition-all duration-200 hover:-translate-y-0.5 hover:bg-emerald-700 hover:shadow-[0_0_36px_rgba(16,185,129,0.45)]"
-              >
-                Start your hobby map →
-              </Button>
-            </Link>
-            <Link href="/journeys" prefetch={false}>
-              <Button
-                size="lg"
-                variant="outline"
-                className="border-stone-300 px-8 text-stone-600 transition-all duration-200 hover:-translate-y-0.5 hover:text-stone-900"
-              >
-                See examples
-              </Button>
-            </Link>
+              🗺️ Hobby journey
+            </button>
+            <button
+              type="button"
+              onClick={() => setHeroMode("bucket")}
+              className={`rounded-full px-4 py-1.5 text-sm font-semibold transition-all duration-200 ${
+                heroMode === "bucket"
+                  ? "bg-amber-500 text-white shadow-sm"
+                  : "text-stone-500 hover:text-amber-600"
+              }`}
+            >
+              ✨ Bucket list
+            </button>
           </div>
 
-          <p
-            className="mt-4 text-sm text-stone-400"
-            style={{ animation: "fadeInUp 0.6s 0.7s ease-out both", opacity: 0 }}
-          >
-            No sign-up required to start
-          </p>
+          {heroMode === "hobby" ? (
+            <>
+              {/* Headline */}
+              <h1 className="mb-6 text-4xl font-bold leading-tight tracking-tight text-stone-900 sm:text-5xl md:text-6xl lg:text-7xl">
+                <span className="block">
+                  What hobbies have
+                </span>
+                <span
+                  className="relative mt-1 block italic text-emerald-600"
+                  style={{ animation: "fadeInUp 0.4s 0.1s ease-out both", opacity: 0 }}
+                >
+                  shaped your life?
+                  {/* Wavy underline decoration */}
+                  <svg
+                    className="absolute -bottom-2 left-0 w-full"
+                    viewBox="0 0 300 12"
+                    preserveAspectRatio="none"
+                    style={{ height: 10 }}
+                  >
+                    <path
+                      d="M0,6 C25,0 50,12 75,6 C100,0 125,12 150,6 C175,0 200,12 225,6 C250,0 275,12 300,6"
+                      stroke="#10b981"
+                      strokeWidth="2.5"
+                      fill="none"
+                      strokeLinecap="round"
+                      opacity={0.5}
+                    />
+                  </svg>
+                </span>
+              </h1>
 
-          <p className="mt-2 text-sm text-emerald-600" style={{ animation: "fadeInUp 0.6s 0.75s ease-out both", opacity: 0 }}>
-            <Link href="/get-started" prefetch={false} className="hover:underline">
-              Or get your username first →
-            </Link>
-          </p>
+              {/* Subtext */}
+              <p
+                className="mx-auto mb-10 max-w-xl text-lg text-stone-500 sm:text-xl"
+                style={{ animation: "fadeInUp 0.6s 0.4s ease-out both", opacity: 0 }}
+              >
+                List your hobbies from when you were a kid to today. See the map of your life. Share it with anyone.
+              </p>
 
-          {/* Sample journey — concrete proof of what the product does */}
-          <SampleJourneyCard />
+              {/* CTA buttons */}
+              <div
+                className="flex flex-wrap items-center justify-center gap-4"
+                style={{ animation: "fadeInUp 0.6s 0.55s ease-out both", opacity: 0 }}
+              >
+                <Link href="/timeline/new" prefetch={false}>
+                  <Button
+                    size="lg"
+                    className="bg-emerald-600 px-8 text-white shadow-[0_0_24px_rgba(16,185,129,0.3)] ring-1 ring-emerald-500/30 transition-all duration-200 hover:-translate-y-0.5 hover:bg-emerald-700 hover:shadow-[0_0_36px_rgba(16,185,129,0.45)]"
+                  >
+                    Start your hobby map →
+                  </Button>
+                </Link>
+                <Link href="/journeys" prefetch={false}>
+                  <Button
+                    size="lg"
+                    variant="outline"
+                    className="border-stone-300 px-8 text-stone-600 transition-all duration-200 hover:-translate-y-0.5 hover:text-stone-900"
+                  >
+                    See examples
+                  </Button>
+                </Link>
+              </div>
+
+              <p
+                className="mt-4 text-sm text-stone-400"
+                style={{ animation: "fadeInUp 0.6s 0.7s ease-out both", opacity: 0 }}
+              >
+                No sign-up required to start
+              </p>
+
+              <p className="mt-2 text-sm text-emerald-600" style={{ animation: "fadeInUp 0.6s 0.75s ease-out both", opacity: 0 }}>
+                <Link href="/get-started" prefetch={false} className="hover:underline">
+                  Or get your username first →
+                </Link>
+              </p>
+
+              {/* Sample journey — concrete proof of what the product does */}
+              <SampleJourneyCard />
+            </>
+          ) : (
+            <>
+              {/* Bucket list headline */}
+              <h1 className="mb-6 text-4xl font-bold leading-tight tracking-tight text-stone-900 sm:text-5xl md:text-6xl lg:text-7xl">
+                <span className="block">
+                  What will you do
+                </span>
+                <span
+                  className="relative mt-1 block italic text-amber-500"
+                  style={{ animation: "fadeInUp 0.4s 0.1s ease-out both", opacity: 0 }}
+                >
+                  before you die?
+                  {/* Wavy underline decoration */}
+                  <svg
+                    className="absolute -bottom-2 left-0 w-full"
+                    viewBox="0 0 300 12"
+                    preserveAspectRatio="none"
+                    style={{ height: 10 }}
+                  >
+                    <path
+                      d="M0,6 C25,0 50,12 75,6 C100,0 125,12 150,6 C175,0 200,12 225,6 C250,0 275,12 300,6"
+                      stroke="#F59E0B"
+                      strokeWidth="2.5"
+                      fill="none"
+                      strokeLinecap="round"
+                      opacity={0.5}
+                    />
+                  </svg>
+                </span>
+              </h1>
+
+              {/* Subtext */}
+              <p
+                className="mx-auto mb-10 max-w-xl text-lg text-stone-500 sm:text-xl"
+                style={{ animation: "fadeInUp 0.6s 0.4s ease-out both", opacity: 0 }}
+              >
+                Browse bucket lists from the world&apos;s most remarkable people. Find your ambitions. Build your list.
+              </p>
+
+              {/* CTA buttons */}
+              <div
+                className="flex flex-wrap items-center justify-center gap-4"
+                style={{ animation: "fadeInUp 0.6s 0.55s ease-out both", opacity: 0 }}
+              >
+                <Link href="/bucket-lists" prefetch={false}>
+                  <Button
+                    size="lg"
+                    className="bg-amber-500 px-8 text-white shadow-[0_0_24px_rgba(245,158,11,0.3)] ring-1 ring-amber-400/30 transition-all duration-200 hover:-translate-y-0.5 hover:bg-amber-600 hover:shadow-[0_0_36px_rgba(245,158,11,0.45)]"
+                  >
+                    ✨ Browse famous lists →
+                  </Button>
+                </Link>
+                <Link href="/bucket-list-ideas" prefetch={false}>
+                  <Button
+                    size="lg"
+                    variant="outline"
+                    className="border-stone-300 px-8 text-stone-600 transition-all duration-200 hover:-translate-y-0.5 hover:text-stone-900"
+                  >
+                    See 150+ ideas →
+                  </Button>
+                </Link>
+              </div>
+
+              <p
+                className="mt-4 text-sm text-stone-400"
+                style={{ animation: "fadeInUp 0.6s 0.7s ease-out both", opacity: 0 }}
+              >
+                Free to browse — no account needed
+              </p>
+
+              {/* Sample bucket list card */}
+              <SampleBucketListCard />
+            </>
+          )}
         </div>
       </section>
 
