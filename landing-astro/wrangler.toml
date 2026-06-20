@@ -1,0 +1,5 @@
+# Standalone preview only — production overlay copies dist/ into
+# significanthobbies `.open-next/assets/` via astro-landing overlay.
+name = "significanthobbies-landing"
+compatibility_date = "2026-06-04"
+pages_build_output_dir = "dist"

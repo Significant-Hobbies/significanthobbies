@@ -162,4 +162,15 @@ execSync("node_modules/.bin/opennextjs-cloudflare build --skipNextBuild", {
   stdio: "inherit",
 });
 
+// Step 5: Static Astro landing → overlay into OpenNext assets so anon GET /
+// is served from the ASSETS binding (worker.mjs) instead of Next SSR.
+console.log("[cf-build] Step 5: Building landing-astro...");
+execSync("pnpm --filter ./landing-astro build", { cwd: projectDir, stdio: "inherit" });
+
+console.log("[cf-build] Step 6: Overlaying Astro landing into .open-next/assets...");
+execSync("node scripts/run-overlay-astro-landing.mjs --strict", {
+  cwd: projectDir,
+  stdio: "inherit",
+});
+
 console.log("[cf-build] Build complete!");
