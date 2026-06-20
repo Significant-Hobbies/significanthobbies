@@ -1,5 +1,5 @@
 ---
-import '@/styles/landing.css';
+import landingStyles from '@/styles/landing.css?raw';
 
 interface Props {
   title: string;
@@ -16,6 +16,34 @@ const OG_IMAGE = `${SITE_URL}/opengraph-image`;
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    {/* Tiny critical CSS first — paints #lcp-shell before the full Tailwind block below. */}
+    <style is:inline>
+      #lcp-shell {
+        margin: 0;
+        background: #0c0a09;
+        padding: 6rem 1.5rem;
+      }
+      #lcp-shell h1 {
+        margin: 0;
+        max-width: 42rem;
+        font-size: clamp(2.5rem, 5vw, 4.5rem);
+        font-weight: 800;
+        line-height: 1.05;
+        letter-spacing: -0.02em;
+        color: #fff;
+      }
+      #lcp-shell .lcp-line {
+        display: block;
+      }
+      #lcp-shell .lcp-muted {
+        color: #a8a29e;
+      }
+      /* Hide the real landing until the shell drops — avoids double hero flash. */
+      body.lcp-pending main,
+      body.lcp-pending > :not(#lcp-shell):not(script) {
+        visibility: hidden;
+      }
+    </style>
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={SITE_URL} />
@@ -32,7 +60,13 @@ const OG_IMAGE = `${SITE_URL}/opengraph-image`;
     <meta name="theme-color" content="#059669" />
     <link rel="icon" href="/favicon.ico" />
   </head>
-  <body class="antialiased">
+  <body class="antialiased lcp-pending">
+    <div id="lcp-shell">
+      <h1>
+        <span class="lcp-line">The hobbies that shaped you.</span>
+        <span class="lcp-line lcp-muted">The life you still want to live.</span>
+      </h1>
+    </div>
     <script is:inline>
       // Signed-in users skip the static landing — matches src/middleware.ts redirect.
       (function () {
@@ -44,7 +78,24 @@ const OG_IMAGE = `${SITE_URL}/opengraph-image`;
           location.replace('/dashboard');
         }
       })();
+      // Keep #lcp-shell as LCP until the browser is idle — rAF was too early
+      // and Lighthouse still attributed paint to the Tailwind-blocked hero.
+      (function () {
+        var drop = function () {
+          document.getElementById('lcp-shell')?.remove();
+          document.body.classList.remove('lcp-pending');
+        };
+        if ('requestIdleCallback' in window) {
+          requestIdleCallback(drop, { timeout: 4000 });
+        } else {
+          window.addEventListener('load', function () {
+            setTimeout(drop, 2000);
+          });
+        }
+      })();
     </script>
     <slot />
+    {/* Tailwind at body-end so the parser reaches #lcp-shell after ~2KB head, not ~22KB. */}
+    <style is:inline set:html={landingStyles} />
   </body>
 </html>

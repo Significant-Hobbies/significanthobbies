@@ -46,17 +46,45 @@ jobs:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           command: deploy --minify
+      - name: Purge edge cache for landing HTML
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: |
+          zone_id=$(curl -fsS -H "Authorization: Bearer ${CLOUDFLARE_API_TOKEN}" \
+            "https://api.cloudflare.com/client/v4/zones?name=significanthobbies.com" \
+            | node -e "let d='';process.stdin.on('data',c=>d+=c);process.stdin.on('end',()=>{const j=JSON.parse(d);process.stdout.write(j.result?.[0]?.id||'')})")
+          if [ -z "$zone_id" ]; then
+            echo "WARN: could not resolve zone id — skipping purge"
+            exit 0
+          fi
+          curl -fsS -X POST "https://api.cloudflare.com/client/v4/zones/${zone_id}/purge_cache" \
+            -H "Authorization: Bearer ${CLOUDFLARE_API_TOKEN}" \
+            -H "Content-Type: application/json" \
+            --data '{"files":["https://significanthobbies.com/","https://www.significanthobbies.com/"]}'
+          echo "Purged / on significanthobbies.com"
       - name: Smoke check production
         run: |
-          status=$(curl -o /dev/null -s -w "%{http_code}" \
-            --retry 3 --retry-delay 5 --max-time 20 \
-            https://significanthobbies.com/)
-          echo "HTTP status: $status"
-          if [ "$status" = "429" ] || [ "$status" = "1015" ]; then
-            echo "ERROR: Cloudflare rate limiting active ($status) — remove zone-level rule in CF dashboard"
+          html=$(curl -fsS --retry 3 --retry-delay 5 --max-time 20 \
+            -H "Cache-Control: no-cache" https://significanthobbies.com/)
+          status=$?
+          if [ "$status" -ne 0 ]; then
+            echo "ERROR: failed to fetch homepage"
             exit 1
           fi
-          [ "$status" = "200" ] || { echo "ERROR: unexpected status $status"; exit 1; }
+          sections=$(printf '%s' "$html" | grep -o '<section' | wc -l | tr -d ' ')
+          if ! printf '%s' "$html" | grep -q 'location.replace('\''/dashboard'\'')'; then
+            echo "ERROR: stale overlay — expected /dashboard auth redirect in Astro HTML"
+            exit 1
+          fi
+          if [ "$sections" -lt 5 ]; then
+            echo "ERROR: stale overlay — expected full Astro landing (>=5 sections), got ${sections}"
+            exit 1
+          fi
+          if ! printf '%s' "$html" | grep -q 'id="lcp-shell"'; then
+            echo "ERROR: missing LCP shell in overlaid index.html"
+            exit 1
+          fi
+          echo "Overlay OK: ${sections} sections, LCP shell present"
 
   deploy-preview:
     if: github.event_name == 'pull_request'
