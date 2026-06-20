@@ -1,6 +1,6 @@
 # Project Status
 
-Last updated: 2026-06-04
+Last updated: 2026-06-20
 
 ## Current Scope
 
@@ -11,6 +11,7 @@ Significant Hobbies is a hobby timeline and discovery app. It helps users map ho
 - The app deploys to Cloudflare Workers through OpenNext for `significanthobbies.com` and `www.significanthobbies.com`.
 - Turso/Drizzle, better-auth Google, and PostHog are part of the documented architecture.
 - Core routes exist for landing, login, setup, timeline creation/view/edit, public shared timelines, user profiles, hobbies, and an explore surface.
+- Dependency hygiene: removed unused `lighthouse` and `shadcn` devDependencies (maintenance-only; no product scope change).
 - Timeline builder, insights, PNG/JSON export, public profiles, discovery suggestions, guest mode, and hobby directory concepts are documented.
 - Product expansion ideas include a 60-concept hobby taxonomy, recommendations, side quests, XP/badges, SEO pages, comparisons, quizzes, and famous journeys.
 - Current audit residuals are documented.
