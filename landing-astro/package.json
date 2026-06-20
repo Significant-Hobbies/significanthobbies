@@ -3,14 +3,13 @@
   "type": "module",
   "version": "0.1.0",
   "private": true,
-  "description": "Static Astro landing for /. Overlaid into .open-next/assets so anon GET / skips OpenNext SSR.",
+  "description": "Static Astro site for GET /. Overlaid into .open-next/assets; Next.js handles all other routes.",
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview"
   },
   "dependencies": {
-    "@fontsource-variable/geist": "^5.2.9",
     "astro": "^5.18.2"
   },
   "devDependencies": {

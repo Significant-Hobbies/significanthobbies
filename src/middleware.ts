@@ -18,34 +18,10 @@ function getSessionCookie(req: NextRequest) {
 export function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
-  // Signed-in visitors landing on the marketing page are sent straight to
-  // their dashboard, preserving the previous SSR redirect without forcing
-  // `/` to render dynamically. The username check still happens server-side
-  // when /dashboard loads.
-  //
-  // psi-swarm flagged TTFB ≈ 2.32s on the SSR path that did
-  // getServerAuthSession() + a DB read for demo timelines per request.
-  // Moving this hop to middleware lets `/` render as static ISR.
+  // Anon GET `/` is static Astro HTML (landing-astro overlay + run_worker_first).
+  // This hop only runs when a `/` request reaches OpenNext (signed-in fallback).
   if (pathname === "/" && getSessionCookie(req)) {
     return NextResponse.redirect(new URL("/dashboard", req.url));
-  }
-
-  // Cache anon `/` briefly at the edge — long TTLs (we previously had
-  // s-maxage=86400) strand visitors on stale HTML pointing to chunk
-  // hashes from the previous build, which 404 and trip GlobalError. 60s
-  // matches `revalidate` in page.tsx so misses cost one Worker invocation
-  // and recover automatically after a deploy.
-  if (pathname === "/") {
-    const res = NextResponse.next();
-    res.headers.set(
-      "Cache-Control",
-      "public, max-age=0, s-maxage=60, stale-while-revalidate=300",
-    );
-    res.headers.set(
-      "CDN-Cache-Control",
-      "public, s-maxage=60, stale-while-revalidate=300",
-    );
-    return res;
   }
 
   const isProtected = PROTECTED_PREFIXES.some(

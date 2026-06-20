@@ -34,11 +34,14 @@ const OG_IMAGE = `${SITE_URL}/opengraph-image`;
   </head>
   <body class="antialiased">
     <script is:inline>
-      // Signed-in users skip the static hero — middleware would redirect on SSR.
+      // Signed-in users skip the static landing — matches src/middleware.ts redirect.
       (function () {
         var c = document.cookie;
-        if (c.indexOf('session_token') !== -1 || c.indexOf('session-token') !== -1) {
-          location.replace('/library');
+        if (
+          c.indexOf('better-auth.session_token') !== -1 ||
+          c.indexOf('__Secure-better-auth.session_token') !== -1
+        ) {
+          location.replace('/dashboard');
         }
       })();
     </script>

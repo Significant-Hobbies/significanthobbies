@@ -8,7 +8,7 @@ Significant Hobbies is a hobby timeline and discovery app. It helps users map ho
 
 **Users:** Signed-in users via Google OAuth; guest timeline builders with auto-save; visitors browsing public journeys and hobby directory.
 
-**Constraints:** Deployed on Cloudflare Workers at `significanthobbies.com`; Astro landing overlay for fleet perf (desktop LCP was 2.43s p75 on OpenNext SSR `/` before overlay). Single primary discovery UX not yet chosen.
+**Constraints:** Deployed on Cloudflare Workers at `significanthobbies.com`; **Astro owns `GET /`** (static overlay + `run_worker_first` bypass); Next.js handles all app/SEO/API routes. Single primary discovery UX not yet chosen.
 
 **IN scope:** Timeline builder, public sharing, hobby directory/SEO pages, discovery tools, Turso persistence, Astro anon `/` overlay, PR preview env.
 
@@ -54,7 +54,7 @@ Build pipeline (`scripts/cf-build.mjs`): Next build → patch sparse pnpm store 
 
 ## Timeline
 
-- **2026-06-20 — Astro landing overlay shipped:** Anon GET `/` served from ASSETS binding via overlaid static hero (fleet perf push; desktop LCP was 2.43s p75 on OpenNext SSR `/` before overlay).
+- **2026-06-20 — Hybrid Astro `/`:** Full static landing in `landing-astro/` (hero + below-fold sections); overlaid into `.open-next/assets`; Worker skips invocation on `GET /`; Next `page.tsx` is auth-only fallback; demo timelines moved to `GET /api/demo-timelines`.
 - **Platform hardening:** Custom `cf-build.mjs` fixes OpenNext + pnpm monorepo sparse-store resolution; PR preview environment without prod route conflicts; dependency hygiene (removed unused `lighthouse` devDependency).
 
 ## Products

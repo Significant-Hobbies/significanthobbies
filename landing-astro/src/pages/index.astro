@@ -1,4 +1,9 @@
 ---
+import BucketListPanel from '@/components/BucketListPanel.astro';
+import CommunitySamples from '@/components/CommunitySamples.astro';
+import FeatureRow from '@/components/FeatureRow.astro';
+import FinalCta from '@/components/FinalCta.astro';
+import HowItWorks from '@/components/HowItWorks.astro';
 import Layout from '@/layouts/Layout.astro';
 
 const TITLE = 'SignificantHobbies — Your Hobby Journey';
@@ -100,4 +105,10 @@ const phases = [
       style="background: radial-gradient(ellipse 80% 50% at 30% 40%, oklch(0.20 0.05 162 / 0.3), transparent);"
     />
   </section>
+
+  <FeatureRow />
+  <BucketListPanel />
+  <HowItWorks />
+  <CommunitySamples />
+  <FinalCta />
 </Layout>

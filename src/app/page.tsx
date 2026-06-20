@@ -1,101 +1,23 @@
-import { asc,eq } from "drizzle-orm";
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 
-import { timelines, users } from "~/db/schema";
-import { blogPosts } from "~/lib/blog-posts";
-import { db } from "~/server/db";
-
-import { LandingClient } from "./_components/landing-client";
-
-// ISR — keep cache window short so chunk-hash rolls after a deploy don't
-// strand users on stale HTML pointing to 404'd JS bundles. The demo
-// timelines list is cached separately at the CF asset layer below, so
-// dropping this TTL doesn't add DB load.
-export const revalidate = 60;
-
-// Edge cache key for the demo timelines list. Bump the version suffix
-// when the underlying schema or rendering changes so old CF Edge entries
-// are invalidated naturally.
-const DEMO_TIMELINES_CACHE_URL =
-  "https://internal-cache/demo-timelines:v1";
-const DEMO_TIMELINES_TTL_SECONDS = 3600;
-
-type DemoTimelineRow = {
-  id: string;
-  title: string | null;
-  slug: string | null;
-  phases: string;
-  userName: string | null;
-  userUsername: string | null;
-};
-
-async function getDemoTimelines(): Promise<DemoTimelineRow[]> {
-  // Wrap the Turso read in caches.default so warm CF Edge requests skip
-  // the DB round-trip (~500ms → ~50ms). ISR (revalidate above) handles
-  // the Next.js fetch cache layer; this wrapper guards the Worker layer.
-  // Guarded with try/catch + a globalThis check so `next build` (Node,
-  // no Workers runtime) doesn't crash.
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const cache = (globalThis as any).caches?.default as Cache | undefined;
-
-  if (cache) {
-    try {
-      const cached = await cache.match(DEMO_TIMELINES_CACHE_URL);
-      if (cached) {
-        return (await cached.json()) as DemoTimelineRow[];
-      }
-    } catch {
-      // Cache read failure — fall through to DB.
-    }
-  }
-
-  let rows: DemoTimelineRow[] = [];
-  try {
-    rows = await db
-      .select({
-        id: timelines.id,
-        title: timelines.title,
-        slug: timelines.slug,
-        phases: timelines.phases,
-        userName: users.name,
-        userUsername: users.username,
-      })
-      .from(timelines)
-      .leftJoin(users, eq(timelines.userId, users.id))
-      .where(eq(timelines.visibility, "PUBLIC"))
-      .orderBy(asc(timelines.createdAt))
-      .limit(3);
-  } catch {
-    return [];
-  }
-
-  if (cache) {
-    try {
-      const response = new Response(JSON.stringify(rows), {
-        headers: {
-          "Content-Type": "application/json",
-          "Cache-Control": `public, max-age=${DEMO_TIMELINES_TTL_SECONDS}, s-maxage=${DEMO_TIMELINES_TTL_SECONDS}`,
-        },
-      });
-      // Server-component fire-and-forget — no ctx.waitUntil available.
-      void cache.put(DEMO_TIMELINES_CACHE_URL, response);
-    } catch {
-      // Cache put failure is non-fatal — request continues.
-    }
-  }
-
-  return rows;
-}
-
+/**
+ * Astro owns anon GET `/` in production:
+ * - `landing-astro/` builds static HTML overlaid into `.open-next/assets/index.html`
+ * - `wrangler.toml` sets `run_worker_first = ["/*", "!/"]` so `/` skips the Worker
+ *
+ * This Next route is only a fallback when a signed-in request reaches OpenNext
+ * (e.g. preview without overlay, or a cache miss on the assets binding).
+ */
 export default async function HomePage() {
-  const rawDemos = await getDemoTimelines();
+  const cookieStore = await cookies();
+  const session =
+    cookieStore.get("better-auth.session_token") ??
+    cookieStore.get("__Secure-better-auth.session_token");
 
-  const demos = rawDemos.map((t) => ({
-    id: t.id,
-    title: t.title,
-    slug: t.slug,
-    phases: t.phases,
-    user: t.userName ? { name: t.userName, username: t.userUsername } : null,
-  }));
+  if (session) {
+    redirect("/dashboard");
+  }
 
-  return <LandingClient demos={demos} blogPosts={blogPosts} />;
+  redirect("/timeline/new");
 }

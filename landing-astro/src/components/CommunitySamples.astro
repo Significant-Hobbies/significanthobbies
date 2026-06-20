@@ -1,0 +1,75 @@
+---
+const samples = [
+  {
+    title: "Alex's Journey",
+    username: 'alex',
+    phases: 3,
+    hobbies: ['LEGO', 'Swimming', 'Photography', 'Guitar', 'Hiking', 'Cooking'],
+  },
+  {
+    title: "Jamie's Creative Path",
+    username: 'jamie',
+    phases: 3,
+    hobbies: ['Sketching', 'Piano', 'Oil Painting', 'Pottery', 'Digital Art'],
+  },
+  {
+    title: "Morgan's Adventure Log",
+    username: 'morgan',
+    phases: 3,
+    hobbies: ['Football', 'Chess', 'Yoga', 'Trail Running', 'Meditation'],
+  },
+];
+
+const colors = ['#10b981', '#F59E0B', '#3B82F6', '#EC4899', '#8B5CF6'];
+---
+
+<section class="bg-stone-50 px-6 py-24 lg:px-12">
+  <div class="mx-auto max-w-5xl">
+    <div class="mb-10 flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-end">
+      <div>
+        <h2 class="text-2xl font-bold text-stone-900 sm:text-3xl">Real hobby journeys</h2>
+        <p class="mt-1 text-stone-500">Examples while the community grows — build and share yours.</p>
+      </div>
+      <a href="/hobbies" class="text-sm font-semibold text-emerald-600 no-underline hover:text-emerald-700">
+        Explore all →
+      </a>
+    </div>
+
+    <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+      {
+        samples.map((sample) => (
+          <div class="relative overflow-hidden rounded-2xl border border-stone-200 bg-white shadow-sm">
+            <div class="absolute right-3 top-3 rounded-full bg-stone-100 px-2 py-0.5 text-[9px] font-semibold uppercase tracking-wider text-stone-400">
+              Sample
+            </div>
+            <div class="flex h-1.5 overflow-hidden">
+              {Array.from({ length: sample.phases }).map((_, pi) => (
+                <div class="flex-1" style={`background: ${colors[pi % colors.length]}`} />
+              ))}
+            </div>
+            <div class="p-5">
+              <h3 class="mb-0.5 font-semibold text-stone-800">{sample.title}</h3>
+              <p class="mb-3 text-xs text-stone-400">@{sample.username}</p>
+              <div class="flex flex-wrap gap-1">
+                {sample.hobbies.slice(0, 6).map((h) => (
+                  <span class="rounded-full border border-stone-100 bg-stone-50 px-2 py-0.5 text-[10px] text-stone-500">
+                    {h}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </div>
+        ))
+      }
+    </div>
+
+    <div class="mt-8 text-center">
+      <a
+        href="/timeline/new"
+        class="inline-flex rounded-full bg-emerald-600 px-5 py-2.5 text-sm font-semibold text-white no-underline hover:bg-emerald-700"
+      >
+        Build and share yours →
+      </a>
+    </div>
+  </div>
+</section>

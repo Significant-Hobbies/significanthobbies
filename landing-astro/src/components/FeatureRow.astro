@@ -1,0 +1,78 @@
+---
+const journeyPhases = [
+  { label: 'Childhood', color: '#10b981', bg: '#D1FAE5', hobbies: ['lego', 'swimming', 'chess', 'drawing'] },
+  { label: 'Teen Years', color: '#F59E0B', bg: '#FEF3C7', hobbies: ['guitar', 'skateboarding', 'video games'] },
+  { label: 'College', color: '#3B82F6', bg: '#DBEAFE', hobbies: ['hiking', 'photography', 'coding'] },
+  { label: 'Now', color: '#8B5CF6', bg: '#EDE9FE', hobbies: ['running', 'cooking', 'pottery'] },
+];
+---
+
+<section class="bg-white px-6 py-24 lg:px-12">
+  <div class="mx-auto max-w-6xl">
+    <div class="grid grid-cols-1 gap-6 lg:grid-cols-5">
+      <div class="lg:col-span-3">
+        <h2 class="text-2xl font-bold text-stone-900 sm:text-3xl">
+          Every hobby you&apos;ve ever had, mapped across your life
+        </h2>
+        <p class="mt-2 text-stone-500">
+          Build life phases — childhood, teen years, college, career — and tag every interest you remember,
+          even the ones you only tried once.
+        </p>
+        <div class="mt-6 overflow-hidden rounded-2xl border border-stone-100 bg-stone-50 shadow-sm">
+          <div class="border-b border-stone-100 px-5 py-3 text-xs font-semibold uppercase tracking-wider text-stone-400">
+            Your hobby timeline
+          </div>
+          {
+            journeyPhases.map((phase) => (
+              <div
+                class="flex items-start gap-3 border-b border-stone-50 px-5 py-3.5 last:border-0"
+                style={`background: ${phase.bg}55`}
+              >
+                <div class="flex min-w-[80px] items-center gap-1.5 pt-0.5">
+                  <div class="h-2 w-2 shrink-0 rounded-full" style={`background: ${phase.color}`} />
+                  <span class="text-[11px] font-semibold" style={`color: ${phase.color}`}>
+                    {phase.label}
+                  </span>
+                </div>
+                <div class="flex flex-wrap gap-1">
+                  {phase.hobbies.map((h) => (
+                    <span
+                      class="rounded-full border px-2 py-0.5 text-[11px] font-medium"
+                      style={`background: ${phase.bg}; border-color: ${phase.color}50; color: ${phase.color}`}
+                    >
+                      {h}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            ))
+          }
+          <div class="px-5 py-3 text-center text-[10px] text-stone-400">
+            4 phases · 13 hobbies · your story will look different
+          </div>
+        </div>
+      </div>
+
+      <div class="flex flex-col gap-6 lg:col-span-2">
+        <div class="flex-1 rounded-2xl border border-stone-100 bg-stone-50 p-6">
+          <div class="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-100 text-lg">
+            ✦
+          </div>
+          <h3 class="text-base font-bold text-stone-900">Discover your hobby archetype</h3>
+          <p class="mt-2 text-sm leading-relaxed text-stone-500">
+            See what stuck across decades, what you rekindled, and the personality archetype your interests reveal.
+          </p>
+        </div>
+        <div class="flex-1 rounded-2xl border border-stone-100 bg-stone-50 p-6">
+          <div class="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-100 text-lg">
+            ↗
+          </div>
+          <h3 class="text-base font-bold text-stone-900">Share a beautiful identity card</h3>
+          <p class="mt-2 text-sm leading-relaxed text-stone-500">
+            Export your whole hobby journey as a stunning card — ready to share anywhere.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
