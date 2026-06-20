@@ -1,0 +1,103 @@
+---
+import Layout from '@/layouts/Layout.astro';
+
+const TITLE = 'SignificantHobbies — Your Hobby Journey';
+const DESCRIPTION =
+  'Map your hobby history across life phases. Discover what rekindled, what persisted, and what to explore next.';
+
+const phases = [
+  { label: 'Childhood', color: '#10b981', hobbies: ['LEGO', 'swimming', 'chess'] },
+  { label: 'Teens', color: '#F59E0B', hobbies: ['guitar', 'skateboarding'] },
+  { label: 'College', color: '#3B82F6', hobbies: ['hiking', 'photography'] },
+  { label: 'Now', color: '#8B5CF6', hobbies: ['running', 'pottery'] },
+];
+---
+
+<Layout title={TITLE} description={DESCRIPTION}>
+  <section
+    class="relative flex min-h-svh flex-col justify-center overflow-hidden bg-stone-950 px-6 py-24 lg:px-12"
+  >
+    <div
+      class="pointer-events-none absolute inset-0"
+      aria-hidden="true"
+      style="background: radial-gradient(ellipse 80% 50% at 30% 40%, oklch(0.20 0.05 162 / 0.3), transparent);"
+    />
+
+    <div class="relative z-10 mx-auto w-full max-w-6xl">
+      <div class="grid grid-cols-1 items-center gap-12 lg:grid-cols-2">
+        <div class="max-w-2xl">
+          <h1
+            class="text-5xl font-extrabold tracking-tight text-white sm:text-6xl lg:text-7xl"
+            style="line-height: 1.05;"
+          >
+            <span class="block">The hobbies that shaped you.</span>
+            <span class="block text-stone-400">The life you still want to live.</span>
+          </h1>
+
+          <p class="mt-4 max-w-xl text-lg text-stone-400 sm:text-xl">
+            Map every hobby from childhood to now. Build the bucket list you&apos;ll actually complete.
+          </p>
+
+          <div class="mt-8 flex flex-wrap items-center gap-4">
+            <a
+              href="/timeline/new"
+              class="rounded-full bg-emerald-500 px-7 py-3 text-sm font-semibold text-white no-underline transition-colors hover:bg-emerald-400"
+            >
+              Start your hobby map →
+            </a>
+            <a
+              href="/bucket-lists"
+              class="rounded-full border border-stone-600 px-7 py-3 text-sm font-semibold text-stone-300 no-underline transition-colors hover:border-[#e05533] hover:text-white"
+            >
+              Build your bucket list →
+            </a>
+          </div>
+
+          <p class="mt-4 text-sm text-stone-600">No sign-up required to start</p>
+        </div>
+
+        <div class="hidden lg:flex lg:justify-end">
+          <div
+            class="w-full max-w-sm overflow-hidden rounded-2xl border border-white/10 bg-white/5 shadow-2xl backdrop-blur-sm"
+          >
+            <div class="flex items-center justify-between border-b border-white/10 px-4 py-3">
+              <span class="text-xs font-semibold text-white/70">Sam&apos;s hobby journey</span>
+              <span
+                class="rounded-full border border-emerald-500/40 bg-emerald-500/10 px-2 py-0.5 text-[10px] font-medium text-emerald-400"
+                >example</span
+              >
+            </div>
+            {
+              phases.map((phase) => (
+                <div class="flex items-start gap-3 border-b border-white/5 px-4 py-3 last:border-0">
+                  <div class="flex min-w-[72px] items-center gap-1.5 pt-0.5">
+                    <div
+                      class="h-1.5 w-1.5 shrink-0 rounded-full"
+                      style={`background: ${phase.color}`}
+                    />
+                    <span class="text-[11px] font-semibold" style={`color: ${phase.color}`}>
+                      {phase.label}
+                    </span>
+                  </div>
+                  <div class="flex flex-wrap gap-1">
+                    {phase.hobbies.map((h) => (
+                      <span
+                        class="rounded-full border px-2 py-0.5 text-[11px] font-medium text-white/80"
+                        style={`border-color: ${phase.color}40; background: ${phase.color}14;`}
+                      >
+                        {h}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              ))
+            }
+            <div class="px-4 py-2 text-center text-[10px] text-white/30">
+              4 phases · 10 hobbies tracked
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</Layout>

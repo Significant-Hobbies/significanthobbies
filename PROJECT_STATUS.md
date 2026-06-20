@@ -8,6 +8,7 @@ Significant Hobbies is a hobby timeline and discovery app. It helps users map ho
 
 ## Done
 
+- **Astro landing overlay (2026-06-20):** `landing-astro/` static hero for anon GET `/`, copied into `.open-next/assets/` during `cf:build` so `worker.mjs` serves it from the ASSETS binding (fleet perf push — was 2.43s desktop LCP p75 on OpenNext SSR `/`).
 - The app deploys to Cloudflare Workers through OpenNext for `significanthobbies.com` and `www.significanthobbies.com`.
 - Turso/Drizzle, better-auth Google, and PostHog are part of the documented architecture.
 - Core routes exist for landing, login, setup, timeline creation/view/edit, public shared timelines, user profiles, hobbies, and an explore surface.
