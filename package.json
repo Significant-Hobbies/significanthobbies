@@ -13,6 +13,9 @@
     "deploy": "pnpm validate:env:deploy && pnpm cf:build && wrangler deploy --minify",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
+    "format": "biome format --write .",
+    "format:check": "biome format .",
+    "check": "biome check .",
     "test": "vitest run",
     "test:watch": "vitest",
     "db:push": "drizzle-kit push",
@@ -61,10 +64,9 @@
     "@axe-core/playwright": "^4.11.2",
     "@opennextjs/cloudflare": "1.19.4",
     "@playwright/test": "1.59.1",
-    "@saas-maker/eslint-config": "^1.0.7",
-    "@saas-maker/prettier-config": "^1.0.0",
-    "@saas-maker/test-config": "^0.1.0",
-    "@saas-maker/tsconfig": "^1.0.0",
+    "@biomejs/biome": "2.5.0",
+    "eslint-config-prettier": "10.1.8",
+    "eslint-plugin-simple-import-sort": "13.0.0",
     "@tailwindcss/postcss": "4",
     "@testing-library/jest-dom": "6.9.1",
     "@testing-library/react": "16.3.2",
@@ -88,6 +90,5 @@
     "typescript": "6.0.3",
     "vitest": "4.1.5",
     "wrangler": "4.85.0"
-  },
-  "prettier": "@saas-maker/prettier-config"
+  }
 }
