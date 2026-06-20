@@ -168,7 +168,7 @@ console.log("[cf-build] Step 5: Building landing-astro...");
 execSync("pnpm --filter ./landing-astro build", { cwd: projectDir, stdio: "inherit" });
 
 console.log("[cf-build] Step 6: Overlaying Astro landing into .open-next/assets...");
-execSync("node_modules/.bin/astro-landing overlay --strict", {
+execSync("node scripts/run-overlay-astro-landing.mjs --strict", {
   cwd: projectDir,
   stdio: "inherit",
 });
