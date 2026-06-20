@@ -8,7 +8,6 @@ import { Nav } from "~/components/nav";
 import { AnalyticsProvider } from "~/components/posthog-provider";
 import { Providers } from "~/components/providers";
 import { SaaSMakerFeedback } from "~/components/saasmaker-feedback";
-import { SaasMakerAnalytics } from "~/components/SaasMakerAnalytics";
 import { SiteFooter } from "~/components/site-footer";
 
 const geist = Geist({ subsets: ["latin"], display: "swap" });
@@ -76,7 +75,6 @@ export default function RootLayout({
             <main>{children}</main>
             <SiteFooter />
             <SaaSMakerFeedback />
-            <SaasMakerAnalytics />
           </Providers>
         </AnalyticsProvider>
       </body>

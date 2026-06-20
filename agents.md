@@ -74,7 +74,7 @@ pnpm db:seed          # tsx prisma/seed.ts (hobby catalog seed)
 - **Guest mode**: timeline builder works without sign-in (URL state). Sign-in required for persistence.
 - **Public profiles** at `/u/[username]`.
 - **SEO-first**: many routes are static/ISR pages targeting hobby keywords. Full sitemap at `src/app/sitemap.ts`.
-- **SaaS Maker**: feedback, testimonials, changelog-widget, analytics all live.
+- **SaaS Maker**: feedback, testimonials, changelog-widget live. (SaaS Maker analytics removed — PostHog is the analytics path.)
 - Pre-push hook runs lint.
 
 <!-- FLEET-GUIDANCE:START -->

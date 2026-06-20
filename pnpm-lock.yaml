@@ -56,9 +56,6 @@ importers:
       '@saas-maker/feedback':
         specifier: ^0.2.1
         version: 0.2.1(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
-      '@saas-maker/sdk':
-        specifier: ^0.3.1
-        version: 0.3.1
       '@saas-maker/testimonials':
         specifier: ^0.2.1
         version: 0.2.1(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
@@ -3072,9 +3069,6 @@ packages:
 
   '@saas-maker/prettier-config@1.0.0':
     resolution: {integrity: sha512-SIEj/4cwEOGnWj6aQzvIQh+BuHZ3DWo4YVYtplgpCIgP9IW01h+x+8Lh648L9boRfGwBDsJq5D0oHly7Ckmjqg==}
-
-  '@saas-maker/sdk@0.3.1':
-    resolution: {integrity: sha512-RhIoYC4Is7HQ2aymJryyT/Nl9mXJ47MyzcfejYnplkU7yXR6bVz5KJkNKV5IdKQsNGxGus5j9DbMJvUjpSaU/Q==}
 
   '@saas-maker/test-config@0.1.0':
     resolution: {integrity: sha512-Ds64cdEsXLwnP8ljenQhVzisI34MUjYQNJyF6JeTIc7R3vr7bG6YVVt0eLL0YqyQ0uc2ndKMBXxul5VHlckR7A==}
@@ -10382,8 +10376,6 @@ snapshots:
       react-dom: 19.2.5(react@19.2.5)
 
   '@saas-maker/prettier-config@1.0.0': {}
-
-  '@saas-maker/sdk@0.3.1': {}
 
   '@saas-maker/test-config@0.1.0(@axe-core/playwright@4.11.2(playwright-core@1.59.1))(@playwright/test@1.59.1)(vitest@4.1.5)':
     optionalDependencies:
