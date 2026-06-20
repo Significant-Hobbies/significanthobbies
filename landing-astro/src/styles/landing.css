@@ -5,7 +5,8 @@
 }
 
 :root {
-  --font-geist-sans: 'Geist Variable', system-ui, -apple-system, sans-serif;
+  /* System stack on LCP path — Geist woff2 fetch was ~300ms+ render delay. */
+  --font-geist-sans: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 }
 
 body {
