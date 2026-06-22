@@ -240,18 +240,21 @@ export async function toggleLike(
     });
   }
 
-  const [result] = await db
-    .select({ count: count() })
-    .from(likes)
-    .where(eq(likes.timelineId, timelineId));
+  // Recount likes (reflects the toggle above) and load the timeline owner for
+  // revalidation — independent reads, so run them concurrently.
+  const [[result], tl] = await Promise.all([
+    db
+      .select({ count: count() })
+      .from(likes)
+      .where(eq(likes.timelineId, timelineId)),
+    db.query.timelines.findFirst({
+      where: eq(timelines.id, timelineId),
+      columns: { slug: true, userId: true },
+    }),
+  ]);
 
   const likeCount = result?.count ?? 0;
   revalidatePath(`/timeline/${timelineId}`);
-
-  const tl = await db.query.timelines.findFirst({
-    where: eq(timelines.id, timelineId),
-    columns: { slug: true, userId: true },
-  });
   if (tl?.slug && tl.userId) {
     const tlUser = await db.query.users.findFirst({
       where: eq(users.id, tl.userId),
@@ -276,17 +279,20 @@ export async function addComment(timelineId: string, body: string) {
     .values({ userId: session.user.id, timelineId, body: trimmed })
     .returning();
 
-  // Fetch the user info to return with the comment
-  const commentUser = await db.query.users.findFirst({
-    where: eq(users.id, session.user.id),
-    columns: { name: true, username: true, image: true },
-  });
+  // Fetch the comment author info to return, and the timeline owner info for
+  // revalidation — independent reads, so run them concurrently.
+  const [commentUser, tl] = await Promise.all([
+    db.query.users.findFirst({
+      where: eq(users.id, session.user.id),
+      columns: { name: true, username: true, image: true },
+    }),
+    db.query.timelines.findFirst({
+      where: eq(timelines.id, timelineId),
+      columns: { slug: true, userId: true },
+    }),
+  ]);
 
   revalidatePath(`/timeline/${timelineId}`);
-  const tl = await db.query.timelines.findFirst({
-    where: eq(timelines.id, timelineId),
-    columns: { slug: true, userId: true },
-  });
   if (tl?.slug && tl.userId) {
     const tlUser = await db.query.users.findFirst({
       where: eq(users.id, tl.userId),
