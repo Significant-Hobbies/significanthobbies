@@ -1,6 +1,6 @@
 export const revalidate = 300;
 
-import { count,desc, eq } from "drizzle-orm";
+import { count,desc, eq, inArray } from "drizzle-orm";
 import Link from "next/link";
 
 import { likes, timelines, users } from "~/db/schema";
@@ -37,17 +37,18 @@ export default async function ExplorePage() {
     .orderBy(desc(timelines.updatedAt))
     .limit(100);
 
-  // Get like counts for these timelines
+  // Get like counts for these timelines — single GROUP BY query instead of
+  // one COUNT(*) per timeline (N+1 → 1).
   const timelineIds = rawTimelines.map((t) => t.id);
   const likeCounts: Record<string, number> = {};
   if (timelineIds.length > 0) {
-    for (const t of rawTimelines) {
-      const [result] = await db
-        .select({ count: count() })
-        .from(likes)
-        .where(eq(likes.timelineId, t.id));
-      likeCounts[t.id] = result?.count ?? 0;
-    }
+    const likeCountRows = await db
+      .select({ timelineId: likes.timelineId, count: count() })
+      .from(likes)
+      .where(inArray(likes.timelineId, timelineIds))
+      .groupBy(likes.timelineId);
+    for (const lc of likeCountRows) likeCounts[lc.timelineId] = lc.count;
+    // timelines with no likes default to 0
   }
 
   const timelineList: (TimelineData & { likeCount: number })[] = rawTimelines.map((raw) => {

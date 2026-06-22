@@ -145,6 +145,7 @@ export const timelines = sqliteTable(
   (table) => [
     index("Timeline_userId_idx").on(table.userId),
     index("Timeline_slug_idx").on(table.slug),
+    index("Timeline_visibility_idx").on(table.visibility),
   ],
 );
 
