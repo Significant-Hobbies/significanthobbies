@@ -1,4 +1,4 @@
-import { asc,eq } from "drizzle-orm";
+import { asc,eq, inArray } from "drizzle-orm";
 import { ArrowLeft, Pencil, User } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -133,15 +133,16 @@ export default async function TimelineBySlugPage({ params }: Props) {
     .where(eq(commentsTable.timelineId, raw.id))
     .orderBy(asc(commentsTable.createdAt));
 
-  // Fetch comment users
+  // Fetch comment users — single inArray query instead of one findFirst per
+  // user (N+1 → 1).
   const commentUserIds = [...new Set(commentRows.map((c) => c.userId))];
-  const commentUsersMap: Record<string, { name: string | null; username: string | null; image: string | null }> = {};
-  for (const uid of commentUserIds) {
-    const u = await db.query.users.findFirst({
-      where: eq(users.id, uid),
-      columns: { name: true, username: true, image: true },
+  const commentUsersMap: Record<string, { id: string; name: string | null; username: string | null; image: string | null }> = {};
+  if (commentUserIds.length > 0) {
+    const commentUsers = await db.query.users.findMany({
+      where: inArray(users.id, commentUserIds),
+      columns: { id: true, name: true, username: true, image: true },
     });
-    if (u) commentUsersMap[uid] = u;
+    for (const u of commentUsers) commentUsersMap[u.id] = u;
   }
 
   const ownCommentIds = new Set(

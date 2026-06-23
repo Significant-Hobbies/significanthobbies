@@ -28,6 +28,8 @@ function slugToHobby(slug: string): string {
     .join(" ");
 }
 
+export const revalidate = 3600; // 1 hour ISR
+
 export async function generateStaticParams() {
   return HOBBY_CATEGORIES.flatMap((c) =>
     c.hobbies.map((h) => ({

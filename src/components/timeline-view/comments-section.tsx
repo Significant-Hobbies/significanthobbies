@@ -1,6 +1,7 @@
 "use client";
 
 import { Trash2 } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
@@ -44,9 +45,11 @@ function timeAgo(date: Date): string {
 function Avatar({ user }: { user: Comment["user"] }) {
   if (user.image) {
     return (
-      <img
+      <Image
         src={user.image}
         alt={user.name ?? "User"}
+        width={32}
+        height={32}
         className="h-8 w-8 rounded-full object-cover shrink-0 border border-stone-200"
       />
     );
