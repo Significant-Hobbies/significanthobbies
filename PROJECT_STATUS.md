@@ -43,10 +43,10 @@ Significant Hobbies is a hobby timeline and discovery app. It helps users map ho
 | `pnpm cf:build` | `scripts/cf-build.mjs` + populateCache |
 | `pnpm validate:env:deploy` / `pnpm deploy` | validate + cf:build + wrangler deploy --minify |
 | `pnpm preview` | opennextjs-cloudflare preview |
-| `pnpm typecheck` / `pnpm test` / `pnpm test:e2e` / `pnpm test:e2e:ui` | TS + vitest + playwright |
+| `pnpm typecheck` / `pnpm test` / `pnpm test:coverage` / `pnpm test:e2e` / `pnpm test:e2e:ui` | TS + vitest (v8 coverage thresholds on core `src/lib` modules) + playwright |
 | `pnpm lint` / `pnpm check` | lint + biome check |
 
-CI: `.github/workflows/deploy.yml` — auto-deploy on `main`, preview on PR.
+CI: `.github/workflows/deploy.yml` — auto-deploy on `main`, preview on PR. `.github/workflows/ci.yml` — lint + typecheck + `test:coverage` (v8 thresholds on core `src/lib` modules).
 
 **Entrypoints:** `worker.mjs` · Next.js App Router handlers · `scripts/cf-build.mjs` · `landing-astro/`.
 

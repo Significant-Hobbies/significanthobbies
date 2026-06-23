@@ -34,4 +34,4 @@ jobs:
         run: |
           pnpm --if-present run lint
           pnpm --if-present run typecheck
-          pnpm --if-present run test
+          pnpm --if-present run test:coverage

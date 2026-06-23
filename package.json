@@ -17,6 +17,7 @@
     "format:check": "biome format .",
     "check": "biome check .",
     "test": "vitest run",
+    "test:coverage": "vitest run --coverage",
     "test:watch": "vitest",
     "db:push": "drizzle-kit push",
     "db:studio": "drizzle-kit studio",
