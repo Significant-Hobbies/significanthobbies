@@ -1,5 +1,5 @@
-import { cookies } from "next/headers";
-import { redirect } from "next/navigation";
+import { cookies } from 'next/headers';
+import { redirect } from 'next/navigation';
 
 /**
  * Astro owns anon GET `/` in production:
@@ -12,12 +12,12 @@ import { redirect } from "next/navigation";
 export default async function HomePage() {
   const cookieStore = await cookies();
   const session =
-    cookieStore.get("better-auth.session_token") ??
-    cookieStore.get("__Secure-better-auth.session_token");
+    cookieStore.get('better-auth.session_token') ??
+    cookieStore.get('__Secure-better-auth.session_token');
 
   if (session) {
-    redirect("/dashboard");
+    redirect('/dashboard');
   }
 
-  redirect("/timeline/new");
+  redirect('/timeline/new');
 }

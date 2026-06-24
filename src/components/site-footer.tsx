@@ -1,19 +1,20 @@
-import Link from "next/link";
+import Link from 'next/link';
 
 /** Shared legal + fleet footer for all SignificantHobbies routes. */
 export function SiteFooter() {
   return (
-    <footer
-      className="border-t border-stone-200/60 px-4 py-8"
-      style={{ background: "#FAFAFA" }}
-    >
+    <footer className="border-t border-stone-200/60 px-4 py-8" style={{ background: '#FAFAFA' }}>
       <div className="mx-auto flex max-w-5xl flex-col items-center justify-between gap-4 sm:flex-row">
         <div className="flex items-center gap-2">
           <span className="text-lg font-bold text-emerald-600">SH</span>
           <span className="text-sm font-semibold text-stone-700">SignificantHobbies</span>
         </div>
         <div className="flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm text-stone-400">
-          <Link href="/timeline/new" prefetch={false} className="transition-colors hover:text-stone-700">
+          <Link
+            href="/timeline/new"
+            prefetch={false}
+            className="transition-colors hover:text-stone-700"
+          >
             Start
           </Link>
           <Link href="/hobbies" prefetch={false} className="transition-colors hover:text-stone-700">
@@ -38,7 +39,7 @@ export function SiteFooter() {
             <a href="https://sarthakagrawal.dev" className="hover:text-stone-600">
               Sarthak
             </a>
-            {" · "}
+            {' · '}
             <a href="https://sassmaker.com" className="hover:text-stone-600">
               Foundry
             </a>

@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import { useCallback,useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from 'react';
 
-import { SIDE_QUESTS } from "~/lib/side-quests";
+import { SIDE_QUESTS } from '~/lib/side-quests';
 
-const STORAGE_KEY = "sh-side-quests";
+const STORAGE_KEY = 'sh-side-quests';
 
 type QuestProgress = {
   completed: string[];
@@ -13,13 +13,13 @@ type QuestProgress = {
 };
 
 function readStorage(): QuestProgress {
-  if (typeof window === "undefined") return { completed: [], earnedBadges: [], startedAt: "" };
+  if (typeof window === 'undefined') return { completed: [], earnedBadges: [], startedAt: '' };
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return { completed: [], earnedBadges: [], startedAt: "" };
+    if (!raw) return { completed: [], earnedBadges: [], startedAt: '' };
     return JSON.parse(raw) as QuestProgress;
   } catch {
-    return { completed: [], earnedBadges: [], startedAt: "" };
+    return { completed: [], earnedBadges: [], startedAt: '' };
   }
 }
 
@@ -39,29 +39,33 @@ function evaluateQuestBadges(completedQuestIds: string[]): string[] {
   const categoriesWithCompletions = Object.keys(categoryCounts);
 
   // Quest progression badges
-  if (count >= 1) earned.push("first-steps");
-  if (count >= 5) earned.push("curious-cat");
-  if (count >= 10) earned.push("adventurer");
-  if (count >= 50) earned.push("quest-master");
-  if (categoriesWithCompletions.length >= 6) earned.push("renaissance-soul");
+  if (count >= 1) earned.push('first-steps');
+  if (count >= 5) earned.push('curious-cat');
+  if (count >= 10) earned.push('adventurer');
+  if (count >= 50) earned.push('quest-master');
+  if (categoriesWithCompletions.length >= 6) earned.push('renaissance-soul');
 
   // Category mastery badges (3+ in a category)
-  if ((categoryCounts.sensory ?? 0) >= 3) earned.push("sensor");
-  if ((categoryCounts.creative ?? 0) >= 3) earned.push("maker");
-  if ((categoryCounts.culinary ?? 0) >= 3) earned.push("chefs-kiss");
-  if ((categoryCounts.social ?? 0) >= 3) earned.push("people-person");
-  if ((categoryCounts.exploration ?? 0) >= 3) earned.push("wanderer");
-  if ((categoryCounts.mindful ?? 0) >= 3) earned.push("zen-master");
+  if ((categoryCounts.sensory ?? 0) >= 3) earned.push('sensor');
+  if ((categoryCounts.creative ?? 0) >= 3) earned.push('maker');
+  if ((categoryCounts.culinary ?? 0) >= 3) earned.push('chefs-kiss');
+  if ((categoryCounts.social ?? 0) >= 3) earned.push('people-person');
+  if ((categoryCounts.exploration ?? 0) >= 3) earned.push('wanderer');
+  if ((categoryCounts.mindful ?? 0) >= 3) earned.push('zen-master');
 
   // Specific quest badges
-  if (completedQuestIds.includes("sq-03")) earned.push("night-owl");   // stargazing
-  if (completedQuestIds.includes("sq-44")) earned.push("unplugged");   // social media detox
+  if (completedQuestIds.includes('sq-03')) earned.push('night-owl'); // stargazing
+  if (completedQuestIds.includes('sq-44')) earned.push('unplugged'); // social media detox
 
   return earned;
 }
 
 export function useQuestProgress() {
-  const [progress, setProgress] = useState<QuestProgress>({ completed: [], earnedBadges: [], startedAt: "" });
+  const [progress, setProgress] = useState<QuestProgress>({
+    completed: [],
+    earnedBadges: [],
+    startedAt: '',
+  });
   const [newBadges, setNewBadges] = useState<string[]>([]);
 
   useEffect(() => {
@@ -106,7 +110,7 @@ export function useQuestProgress() {
 
   const isCompleted = useCallback(
     (questId: string) => progress.completed.includes(questId),
-    [progress.completed],
+    [progress.completed]
   );
 
   return {

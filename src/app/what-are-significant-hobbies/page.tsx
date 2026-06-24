@@ -1,104 +1,104 @@
-import type { Metadata } from "next";
-import Link from "next/link";
+import type { Metadata } from 'next';
+import Link from 'next/link';
 
-import { JsonLd } from "~/components/json-ld";
+import { JsonLd } from '~/components/json-ld';
 
 export const metadata: Metadata = {
-  title: "What Are Significant Hobbies? — SignificantHobbies",
+  title: 'What Are Significant Hobbies? — SignificantHobbies',
   description:
-    "Significant hobbies are the interests that shape who you are across life phases. Learn how to map your hobby journey, discover your hobby personality, and find what to try next.",
+    'Significant hobbies are the interests that shape who you are across life phases. Learn how to map your hobby journey, discover your hobby personality, and find what to try next.',
   openGraph: {
-    title: "What Are Significant Hobbies?",
-    description: "The interests that shape who you are across life phases.",
+    title: 'What Are Significant Hobbies?',
+    description: 'The interests that shape who you are across life phases.',
   },
 };
 
 const ARCHETYPES = [
   {
-    name: "Renaissance Explorer",
-    emoji: "🗺️",
+    name: 'Renaissance Explorer',
+    emoji: '🗺️',
     description:
-      "You collect experiences. Wide-ranging curiosity defines you — always trying something new, rarely staying in one lane. Your breadth is your superpower.",
+      'You collect experiences. Wide-ranging curiosity defines you — always trying something new, rarely staying in one lane. Your breadth is your superpower.',
   },
   {
-    name: "Deep Specialist",
-    emoji: "🎯",
+    name: 'Deep Specialist',
+    emoji: '🎯',
     description:
-      "You go deep, not wide. One or two pursuits occupy years of your life. Mastery is the goal. You are the person people turn to.",
+      'You go deep, not wide. One or two pursuits occupy years of your life. Mastery is the goal. You are the person people turn to.',
   },
   {
-    name: "Creative Soul",
-    emoji: "🎨",
+    name: 'Creative Soul',
+    emoji: '🎨',
     description:
       "Making things is how you think. Whether it's writing, painting, music, or code — your hobbies produce something that wasn't there before.",
   },
   {
-    name: "Action Hero",
-    emoji: "⚡",
+    name: 'Action Hero',
+    emoji: '⚡',
     description:
-      "Your body is the instrument. Climbing, running, martial arts, cycling — you need movement, challenge, and physical feedback to feel alive.",
+      'Your body is the instrument. Climbing, running, martial arts, cycling — you need movement, challenge, and physical feedback to feel alive.',
   },
   {
-    name: "Social Connector",
-    emoji: "🤝",
+    name: 'Social Connector',
+    emoji: '🤝',
     description:
-      "Hobbies are how you build relationships. Team sports, board games, group classes — you pursue interests that bring people together.",
+      'Hobbies are how you build relationships. Team sports, board games, group classes — you pursue interests that bring people together.',
   },
   {
-    name: "Mindful Observer",
-    emoji: "🌿",
+    name: 'Mindful Observer',
+    emoji: '🌿',
     description:
-      "Presence over pace. Gardening, birdwatching, journaling, meditation — you seek stillness and a deeper relationship with the world around you.",
+      'Presence over pace. Gardening, birdwatching, journaling, meditation — you seek stillness and a deeper relationship with the world around you.',
   },
   {
-    name: "Builder & Maker",
-    emoji: "🔧",
+    name: 'Builder & Maker',
+    emoji: '🔧',
     description:
       "If something can be built, repaired, or optimized, you're interested. Woodworking, electronics, cooking, homebrewing — tangible results satisfy you.",
   },
   {
-    name: "Curious Scholar",
-    emoji: "📚",
+    name: 'Curious Scholar',
+    emoji: '📚',
     description:
-      "Learning is the hobby. History, philosophy, languages, science — your interests are intellectual and you never stop adding to your mental library.",
+      'Learning is the hobby. History, philosophy, languages, science — your interests are intellectual and you never stop adding to your mental library.',
   },
 ];
 
 const HOBBY_TYPES = [
   {
-    label: "Creative",
-    emoji: "🎨",
-    examples: "Writing, painting, photography, music, ceramics",
-    description: "Making something that expresses who you are.",
-    href: "/hobbies",
+    label: 'Creative',
+    emoji: '🎨',
+    examples: 'Writing, painting, photography, music, ceramics',
+    description: 'Making something that expresses who you are.',
+    href: '/hobbies',
   },
   {
-    label: "Physical",
-    emoji: "🏃",
-    examples: "Running, climbing, yoga, martial arts, cycling",
-    description: "Activities where your body is the instrument of growth.",
-    href: "/hobbies",
+    label: 'Physical',
+    emoji: '🏃',
+    examples: 'Running, climbing, yoga, martial arts, cycling',
+    description: 'Activities where your body is the instrument of growth.',
+    href: '/hobbies',
   },
   {
-    label: "Intellectual",
-    emoji: "🧠",
-    examples: "Chess, languages, history, coding, philosophy",
-    description: "Hobbies that expand how you think and what you know.",
-    href: "/hobbies",
+    label: 'Intellectual',
+    emoji: '🧠',
+    examples: 'Chess, languages, history, coding, philosophy',
+    description: 'Hobbies that expand how you think and what you know.',
+    href: '/hobbies',
   },
   {
-    label: "Social",
-    emoji: "🎭",
-    examples: "Team sports, tabletop games, improv, volunteering",
-    description: "Interests that deepen through doing them with others.",
-    href: "/hobbies",
+    label: 'Social',
+    emoji: '🎭',
+    examples: 'Team sports, tabletop games, improv, volunteering',
+    description: 'Interests that deepen through doing them with others.',
+    href: '/hobbies',
   },
   {
-    label: "Making",
-    emoji: "🔨",
-    examples: "Woodworking, cooking, electronics, homebrewing",
-    description: "The satisfaction of producing something tangible.",
-    href: "/hobbies",
+    label: 'Making',
+    emoji: '🔨',
+    examples: 'Woodworking, cooking, electronics, homebrewing',
+    description: 'The satisfaction of producing something tangible.',
+    href: '/hobbies',
   },
 ];
 
@@ -107,61 +107,63 @@ export default function WhatAreSignificantHobbiesPage() {
     <>
       <JsonLd
         data={{
-          "@context": "https://schema.org",
-          "@type": "Article",
-          headline: "What Are Significant Hobbies?",
+          '@context': 'https://schema.org',
+          '@type': 'Article',
+          headline: 'What Are Significant Hobbies?',
           description:
-            "Significant hobbies are the interests that shape who you are across life phases.",
-          author: { "@type": "Organization", name: "SignificantHobbies" },
-          publisher: { "@type": "Organization", name: "SignificantHobbies" },
+            'Significant hobbies are the interests that shape who you are across life phases.',
+          author: { '@type': 'Organization', name: 'SignificantHobbies' },
+          publisher: { '@type': 'Organization', name: 'SignificantHobbies' },
         }}
       />
-      <JsonLd data={{
-        "@context": "https://schema.org",
-        "@type": "FAQPage",
-        "mainEntity": [
-          {
-            "@type": "Question",
-            "name": "What are significant hobbies?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "Significant hobbies are interests that shaped who you became — not just things you do, but pursuits that connect to your identity, relationships, and personal growth across life phases."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "How do I find my hobby personality?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "Build a hobby timeline mapping your interests across life phases (childhood, teens, college, career, now). SignificantHobbies analyzes your pattern and assigns one of 8 archetypes like Renaissance Explorer, Creative Soul, or Action Hero."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "How many hobbies should I have?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "Research suggests a balanced 'hobby stack' of 4 types: one creative (Make), one physical (Move), one intellectual (Think), and one social (Connect). You don't need dozens — 3-5 active hobbies is healthy."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "Is it too late to start a new hobby?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "Never. Julia Child didn't cook until 36. Vera Wang started fashion at 40. Grandma Moses began painting at 78. Age gives you advantages: patience, resources, and knowing what you actually enjoy."
-            }
-          }
-        ]
-      }} />
+      <JsonLd
+        data={{
+          '@context': 'https://schema.org',
+          '@type': 'FAQPage',
+          mainEntity: [
+            {
+              '@type': 'Question',
+              name: 'What are significant hobbies?',
+              acceptedAnswer: {
+                '@type': 'Answer',
+                text: 'Significant hobbies are interests that shaped who you became — not just things you do, but pursuits that connect to your identity, relationships, and personal growth across life phases.',
+              },
+            },
+            {
+              '@type': 'Question',
+              name: 'How do I find my hobby personality?',
+              acceptedAnswer: {
+                '@type': 'Answer',
+                text: 'Build a hobby timeline mapping your interests across life phases (childhood, teens, college, career, now). SignificantHobbies analyzes your pattern and assigns one of 8 archetypes like Renaissance Explorer, Creative Soul, or Action Hero.',
+              },
+            },
+            {
+              '@type': 'Question',
+              name: 'How many hobbies should I have?',
+              acceptedAnswer: {
+                '@type': 'Answer',
+                text: "Research suggests a balanced 'hobby stack' of 4 types: one creative (Make), one physical (Move), one intellectual (Think), and one social (Connect). You don't need dozens — 3-5 active hobbies is healthy.",
+              },
+            },
+            {
+              '@type': 'Question',
+              name: 'Is it too late to start a new hobby?',
+              acceptedAnswer: {
+                '@type': 'Answer',
+                text: "Never. Julia Child didn't cook until 36. Vera Wang started fashion at 40. Grandma Moses began painting at 78. Age gives you advantages: patience, resources, and knowing what you actually enjoy.",
+              },
+            },
+          ],
+        }}
+      />
 
-      <div className="min-h-screen" style={{ background: "#FAFAFA" }}>
+      <div className="min-h-screen" style={{ background: '#FAFAFA' }}>
         {/* Hero */}
         <section
           className="relative overflow-hidden px-4 py-20 sm:py-28"
           style={{
             background:
-              "linear-gradient(160deg, #F5F5F4 0%, #ECFDF5 40%, #FAFAF9 70%, #F5F5F4 100%)",
+              'linear-gradient(160deg, #F5F5F4 0%, #ECFDF5 40%, #FAFAF9 70%, #F5F5F4 100%)',
           }}
         >
           <div className="pointer-events-none absolute inset-0">
@@ -170,10 +172,9 @@ export default function WhatAreSignificantHobbiesPage() {
               style={{
                 width: 600,
                 height: 600,
-                top: "-25%",
-                right: "-10%",
-                background:
-                  "radial-gradient(circle, rgba(16,185,129,0.07) 0%, transparent 70%)",
+                top: '-25%',
+                right: '-10%',
+                background: 'radial-gradient(circle, rgba(16,185,129,0.07) 0%, transparent 70%)',
               }}
             />
             <div
@@ -181,10 +182,9 @@ export default function WhatAreSignificantHobbiesPage() {
               style={{
                 width: 400,
                 height: 400,
-                bottom: "-20%",
-                left: "5%",
-                background:
-                  "radial-gradient(circle, rgba(245,158,11,0.06) 0%, transparent 70%)",
+                bottom: '-20%',
+                left: '5%',
+                background: 'radial-gradient(circle, rgba(245,158,11,0.06) 0%, transparent 70%)',
               }}
             />
           </div>
@@ -200,10 +200,10 @@ export default function WhatAreSignificantHobbiesPage() {
             </h1>
 
             <p className="mx-auto max-w-2xl text-lg leading-relaxed text-stone-600 sm:text-xl">
-              A significant hobby isn&apos;t just something you do on weekends. It&apos;s an interest
-              that shaped who you became — the guitar phase in high school that taught you discipline,
-              the running habit that carried you through your 30s, the cooking that became your love
-              language.
+              A significant hobby isn&apos;t just something you do on weekends. It&apos;s an
+              interest that shaped who you became — the guitar phase in high school that taught you
+              discipline, the running habit that carried you through your 30s, the cooking that
+              became your love language.
             </p>
 
             <div className="mt-10 flex flex-wrap justify-center gap-4">
@@ -235,8 +235,8 @@ export default function WhatAreSignificantHobbiesPage() {
               <p>
                 Most of us have tried dozens of hobbies. Some lasted a week. Some became a part of
                 our identity for years. The difference between a fleeting interest and a significant
-                hobby isn&apos;t how much time you log — it&apos;s how deeply the pursuit weaves into
-                who you are.
+                hobby isn&apos;t how much time you log — it&apos;s how deeply the pursuit weaves
+                into who you are.
               </p>
               <p>
                 Significant hobbies tend to share a few qualities: they challenge you at the right
@@ -248,15 +248,18 @@ export default function WhatAreSignificantHobbiesPage() {
                 Psychologists have long studied the role of leisure in identity formation. When
                 researchers ask people to describe themselves, hobbies and interests feature
                 prominently. We are, in part, what we choose to spend our discretionary time on.
-                This is the foundation of what we call your{" "}
+                This is the foundation of what we call your{' '}
                 <strong className="text-stone-800">hobby personality</strong> — the pattern of
                 interests across your life that reveals something true about who you are.
               </p>
               <p>
-                Browse the{" "}
-                <Link href="/hobbies" className="font-medium text-emerald-600 hover:text-emerald-700 underline underline-offset-2">
+                Browse the{' '}
+                <Link
+                  href="/hobbies"
+                  className="font-medium text-emerald-600 hover:text-emerald-700 underline underline-offset-2"
+                >
                   hobby directory
-                </Link>{" "}
+                </Link>{' '}
                 to discover hundreds of pursuits organized by category, and see which ones resonate
                 with the person you&apos;re becoming.
               </p>
@@ -272,23 +275,23 @@ export default function WhatAreSignificantHobbiesPage() {
             </h2>
             <div className="space-y-4 text-base leading-relaxed text-stone-600 sm:text-lg">
               <p>
-                There&apos;s real psychology behind why certain hobbies stick while others fade. Three
-                mechanisms stand out:
+                There&apos;s real psychology behind why certain hobbies stick while others fade.
+                Three mechanisms stand out:
               </p>
             </div>
 
             <div className="mt-8 space-y-6">
               {[
                 {
-                  title: "Flow state (Csikszentmihalyi)",
-                  body: "The psychologist Mihaly Csikszentmihalyi identified \"flow\" — a state of deep absorption where challenge and skill are perfectly matched. Hobbies that put you in flow are hobbies you return to. They're hard enough to be interesting but not so hard they feel impossible. This is why rock climbing holds people for decades while easy puzzles get abandoned.",
+                  title: 'Flow state (Csikszentmihalyi)',
+                  body: 'The psychologist Mihaly Csikszentmihalyi identified "flow" — a state of deep absorption where challenge and skill are perfectly matched. Hobbies that put you in flow are hobbies you return to. They\'re hard enough to be interesting but not so hard they feel impossible. This is why rock climbing holds people for decades while easy puzzles get abandoned.',
                 },
                 {
-                  title: "Identity formation",
+                  title: 'Identity formation',
                   body: "We become what we practice. A person who paints isn't just someone who paints — they start to see the world like a painter. A runner develops not just fitness but resilience, solitude tolerance, and a relationship with early mornings. Significant hobbies reshape cognition, habits, and self-concept over time.",
                 },
                 {
-                  title: "Social connection",
+                  title: 'Social connection',
                   body: "Shared hobbies create unusually strong bonds. The people you climb with, play music with, or run with know a version of you that most people don't — the version that shows up for hard things. Research on friendship consistently finds that shared activity, not shared history, is what actually sustains relationships.",
                 },
               ].map(({ title, body }) => (
@@ -303,10 +306,13 @@ export default function WhatAreSignificantHobbiesPage() {
             </div>
 
             <p className="mt-6 text-sm text-stone-500">
-              Want to go deeper?{" "}
-              <Link href="/blog" className="font-medium text-emerald-600 hover:text-emerald-700 underline underline-offset-2">
+              Want to go deeper?{' '}
+              <Link
+                href="/blog"
+                className="font-medium text-emerald-600 hover:text-emerald-700 underline underline-offset-2"
+              >
                 Read the blog
-              </Link>{" "}
+              </Link>{' '}
               for long-form essays on the psychology of hobbies, identity, and leisure.
             </p>
           </section>
@@ -321,13 +327,13 @@ export default function WhatAreSignificantHobbiesPage() {
             <div className="space-y-4 text-base leading-relaxed text-stone-600 sm:text-lg">
               <p>
                 One of the most revealing exercises you can do is build a hobby timeline — a visual
-                map of the interests you&apos;ve held across your life. Not just the ones you have now,
-                but the ones you&apos;ve had, dropped, rekindled, or abandoned.
+                map of the interests you&apos;ve held across your life. Not just the ones you have
+                now, but the ones you&apos;ve had, dropped, rekindled, or abandoned.
               </p>
               <p>
-                The timeline moves through life phases: childhood, teenage years, college, early career,
-                and wherever you are now. When you lay it all out, patterns emerge that are hard to
-                see from inside any single chapter.
+                The timeline moves through life phases: childhood, teenage years, college, early
+                career, and wherever you are now. When you lay it all out, patterns emerge that are
+                hard to see from inside any single chapter.
               </p>
             </div>
 
@@ -340,24 +346,26 @@ export default function WhatAreSignificantHobbiesPage() {
               <div className="divide-y divide-stone-50">
                 {[
                   {
-                    phase: "Childhood",
-                    insight: "Interests formed before external pressure — often your most authentic ones",
+                    phase: 'Childhood',
+                    insight:
+                      'Interests formed before external pressure — often your most authentic ones',
                   },
                   {
-                    phase: "Teens",
-                    insight: "Hobbies tied to identity formation and social belonging",
+                    phase: 'Teens',
+                    insight: 'Hobbies tied to identity formation and social belonging',
                   },
                   {
-                    phase: "College",
-                    insight: "The widest experimental window — many pivots, some that stuck",
+                    phase: 'College',
+                    insight: 'The widest experimental window — many pivots, some that stuck',
                   },
                   {
-                    phase: "Career",
-                    insight: "Hobbies as counterweight to work — what you needed vs. what you chose",
+                    phase: 'Career',
+                    insight:
+                      'Hobbies as counterweight to work — what you needed vs. what you chose',
                   },
                   {
-                    phase: "Now",
-                    insight: "What has survived? What came back? What are you building toward?",
+                    phase: 'Now',
+                    insight: 'What has survived? What came back? What are you building toward?',
                   },
                 ].map(({ phase, insight }) => (
                   <div key={phase} className="flex items-start gap-4 px-6 py-4">
@@ -396,9 +404,10 @@ export default function WhatAreSignificantHobbiesPage() {
             </h2>
             <div className="space-y-4 text-base leading-relaxed text-stone-600 sm:text-lg">
               <p>
-                The hobbies you&apos;ve held — not just the ones you have now, but all of them — reveal a
-                consistent pattern. We call this your hobby personality. It&apos;s the archetype that
-                shows up across your interests, regardless of how different they seem on the surface.
+                The hobbies you&apos;ve held — not just the ones you have now, but all of them —
+                reveal a consistent pattern. We call this your hobby personality. It&apos;s the
+                archetype that shows up across your interests, regardless of how different they seem
+                on the surface.
               </p>
               <p>
                 SignificantHobbies identifies eight archetypes. Most people are a blend of two or
@@ -422,7 +431,7 @@ export default function WhatAreSignificantHobbiesPage() {
             </div>
 
             <p className="mt-6 text-sm text-stone-500">
-              Your archetype is calculated from your timeline.{" "}
+              Your archetype is calculated from your timeline.{' '}
               <Link
                 href="/timeline/new"
                 className="font-medium text-emerald-600 hover:text-emerald-700 underline underline-offset-2"
@@ -477,28 +486,28 @@ export default function WhatAreSignificantHobbiesPage() {
             </h2>
             <div className="space-y-4 text-base leading-relaxed text-stone-600 sm:text-lg">
               <p>
-                The hardest part isn&apos;t sticking to a hobby — it&apos;s knowing which one to try. Most
-                people cycle through the same familiar categories rather than genuinely exploring.
-                Here are three approaches that actually work.
+                The hardest part isn&apos;t sticking to a hobby — it&apos;s knowing which one to
+                try. Most people cycle through the same familiar categories rather than genuinely
+                exploring. Here are three approaches that actually work.
               </p>
             </div>
 
             <div className="mt-8 space-y-5">
               {[
                 {
-                  number: "01",
-                  title: "The 20-hour rule",
-                  body: "You can&apos;t evaluate a hobby in one session. The first few hours of any pursuit are defined by awkwardness and the gap between what you imagine and what you can actually do. Commit to 20 hours before deciding if something is for you. Most hobbies only reveal themselves after you&apos;re past the initial frustration.",
+                  number: '01',
+                  title: 'The 20-hour rule',
+                  body: 'You can&apos;t evaluate a hobby in one session. The first few hours of any pursuit are defined by awkwardness and the gap between what you imagine and what you can actually do. Commit to 20 hours before deciding if something is for you. Most hobbies only reveal themselves after you&apos;re past the initial frustration.',
                 },
                 {
-                  number: "02",
-                  title: "Try the opposite of what you usually do",
-                  body: "If you&apos;re always in your head (reading, coding, strategy games), try something physical or craft-based. If you&apos;re always physical, try something slow and contemplative. Our unexplored quadrants often contain the most growth — because we tend to avoid what we&apos;re not immediately good at.",
+                  number: '02',
+                  title: 'Try the opposite of what you usually do',
+                  body: 'If you&apos;re always in your head (reading, coding, strategy games), try something physical or craft-based. If you&apos;re always physical, try something slow and contemplative. Our unexplored quadrants often contain the most growth — because we tend to avoid what we&apos;re not immediately good at.',
                 },
                 {
-                  number: "03",
-                  title: "Look at what you loved as a kid",
-                  body: "Before external expectations shaped your interests, you gravitated toward things naturally. If you were always building things, drawing, or making up stories — that signal is still relevant. Many adults who return to childhood interests find they weren&apos;t abandoning them; they were just waiting.",
+                  number: '03',
+                  title: 'Look at what you loved as a kid',
+                  body: 'Before external expectations shaped your interests, you gravitated toward things naturally. If you were always building things, drawing, or making up stories — that signal is still relevant. Many adults who return to childhood interests find they weren&apos;t abandoning them; they were just waiting.',
                 },
               ].map(({ number, title, body }) => (
                 <div
@@ -519,8 +528,8 @@ export default function WhatAreSignificantHobbiesPage() {
 
             <div className="mt-8">
               <p className="mb-3 text-base text-stone-600">
-                See what the community is exploring right now — filter by category, sort by trending,
-                and get inspired by what others have picked up recently.
+                See what the community is exploring right now — filter by category, sort by
+                trending, and get inspired by what others have picked up recently.
               </p>
               <Link
                 href="/explore"
@@ -548,59 +557,57 @@ export default function WhatAreSignificantHobbiesPage() {
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               {[
                 {
-                  href: "/timeline/new",
-                  label: "Build your timeline",
-                  description: "Map your hobby history across every life phase",
+                  href: '/timeline/new',
+                  label: 'Build your timeline',
+                  description: 'Map your hobby history across every life phase',
                   accent: true,
-                  emoji: "📅",
+                  emoji: '📅',
                 },
                 {
-                  href: "/explore",
-                  label: "Explore timelines",
-                  description: "See how others have mapped their hobby journeys",
+                  href: '/explore',
+                  label: 'Explore timelines',
+                  description: 'See how others have mapped their hobby journeys',
                   accent: false,
-                  emoji: "🔍",
+                  emoji: '🔍',
                 },
                 {
-                  href: "/hobbies",
-                  label: "Browse the hobby directory",
-                  description: "Hundreds of hobbies organized by category",
+                  href: '/hobbies',
+                  label: 'Browse the hobby directory',
+                  description: 'Hundreds of hobbies organized by category',
                   accent: false,
-                  emoji: "📋",
+                  emoji: '📋',
                 },
                 {
-                  href: "/blog",
-                  label: "Read the journal",
-                  description: "Essays on hobbies, identity, and living curiously",
+                  href: '/blog',
+                  label: 'Read the journal',
+                  description: 'Essays on hobbies, identity, and living curiously',
                   accent: false,
-                  emoji: "✍️",
+                  emoji: '✍️',
                 },
                 {
-                  href: "/side-quests",
-                  label: "Try side quests",
-                  description: "Structured challenges to push you into new hobbies",
+                  href: '/side-quests',
+                  label: 'Try side quests',
+                  description: 'Structured challenges to push you into new hobbies',
                   accent: false,
-                  emoji: "⚔️",
+                  emoji: '⚔️',
                 },
               ].map(({ href, label, description, accent, emoji }) => (
                 <Link key={href} href={href} className="group block">
                   <div
                     className={`flex h-full items-start gap-4 rounded-2xl border p-6 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md ${
                       accent
-                        ? "border-emerald-200 bg-emerald-600 text-white hover:bg-emerald-700"
-                        : "border-stone-100 bg-white hover:border-emerald-200"
+                        ? 'border-emerald-200 bg-emerald-600 text-white hover:bg-emerald-700'
+                        : 'border-stone-100 bg-white hover:border-emerald-200'
                     }`}
                   >
                     <span className="text-2xl">{emoji}</span>
                     <div>
-                      <p
-                        className={`mb-1 font-bold ${accent ? "text-white" : "text-stone-900"}`}
-                      >
+                      <p className={`mb-1 font-bold ${accent ? 'text-white' : 'text-stone-900'}`}>
                         {label}
                       </p>
                       <p
                         className={`text-sm leading-relaxed ${
-                          accent ? "text-emerald-100" : "text-stone-500"
+                          accent ? 'text-emerald-100' : 'text-stone-500'
                         }`}
                       >
                         {description}

@@ -1,27 +1,27 @@
-import type { Metadata } from "next";
-import Link from "next/link";
+import type { Metadata } from 'next';
+import Link from 'next/link';
 
-import { Lumi } from "~/components/lumi";
-import { BUCKET_ITEM_CATEGORIES, FAMOUS_BUCKET_LISTS } from "~/lib/famous-bucket-lists";
+import { Lumi } from '~/components/lumi';
+import { BUCKET_ITEM_CATEGORIES, FAMOUS_BUCKET_LISTS } from '~/lib/famous-bucket-lists';
 
 export const metadata: Metadata = {
-  title: "Bucket Lists — SignificantHobbies",
+  title: 'Bucket Lists — SignificantHobbies',
   description:
-    "Explore the bucket lists of presidents, athletes, billionaires, and icons. Find the life you want to live.",
+    'Explore the bucket lists of presidents, athletes, billionaires, and icons. Find the life you want to live.',
   openGraph: {
     title: "What do the world's most remarkable people want to do before they die?",
     description:
-      "Browse verified bucket lists from Will Smith, Obama, Serena Williams, Elon Musk and more. Find your next great ambition.",
+      'Browse verified bucket lists from Will Smith, Obama, Serena Williams, Elon Musk and more. Find your next great ambition.',
   },
 };
 
 const CATEGORY_BORDER_HOVER: Record<string, string> = {
-  travel: "hover:border-sky-300",
-  adventure: "hover:border-orange-300",
-  creative: "hover:border-purple-300",
-  achievement: "hover:border-[#f0a090]",
-  social: "hover:border-rose-300",
-  humanitarian: "hover:border-emerald-300",
+  travel: 'hover:border-sky-300',
+  adventure: 'hover:border-orange-300',
+  creative: 'hover:border-purple-300',
+  achievement: 'hover:border-[#f0a090]',
+  social: 'hover:border-rose-300',
+  humanitarian: 'hover:border-emerald-300',
 };
 
 function getDominantCategory(slug: string) {
@@ -56,13 +56,12 @@ export default function BucketListsPage() {
                 Guided by Lumi
               </p>
               <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold leading-[1.08] tracking-tight text-stone-900 text-balance">
-                Your bucket list is a{" "}
-                <span className="text-[#e05533]">love letter</span>{" "}
-                to your future self.
+                Your bucket list is a <span className="text-[#e05533]">love letter</span> to your
+                future self.
               </h1>
               <p className="text-stone-500 text-lg max-w-xl leading-relaxed">
-                The world&apos;s most remarkable people have written theirs down.
-                Browse their lists — then build yours.
+                The world&apos;s most remarkable people have written theirs down. Browse their lists
+                — then build yours.
               </p>
               <div className="flex flex-wrap gap-4 justify-center sm:justify-start">
                 <Link
@@ -100,10 +99,10 @@ export default function BucketListsPage() {
         <div className="mx-auto max-w-4xl px-4 py-5">
           <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-3">
             {[
-              { value: TOTAL_PEOPLE, label: "famous people" },
-              { value: TOTAL_ITEMS, label: "verified items" },
-              { value: TOTAL_CATEGORIES, label: "categories" },
-              { value: "100%", label: "free" },
+              { value: TOTAL_PEOPLE, label: 'famous people' },
+              { value: TOTAL_ITEMS, label: 'verified items' },
+              { value: TOTAL_CATEGORIES, label: 'categories' },
+              { value: '100%', label: 'free' },
             ].map(({ value, label }, i) => (
               <div key={i} className="flex items-center gap-2 text-sm">
                 <span className="text-xl font-bold text-[#e05533]">{value}</span>
@@ -121,7 +120,9 @@ export default function BucketListsPage() {
       <section id="lists" className="bg-white pb-24 pt-16">
         <div className="mx-auto max-w-5xl px-4 space-y-10">
           <div className="text-center space-y-3">
-            <h2 className="text-3xl sm:text-4xl font-bold text-stone-900 text-balance">Famous bucket lists</h2>
+            <h2 className="text-3xl sm:text-4xl font-bold text-stone-900 text-balance">
+              Famous bucket lists
+            </h2>
             <p className="text-stone-500 text-base max-w-md mx-auto">
               Click any person to see their full list — and borrow items for yours.
             </p>
@@ -129,11 +130,13 @@ export default function BucketListsPage() {
 
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {FAMOUS_BUCKET_LISTS.map((person) => {
-              const done = person.items.filter((i) => i.status === "done").length;
+              const done = person.items.filter((i) => i.status === 'done').length;
               const total = person.items.length;
               const pct = Math.round((done / total) * 100);
               const dom = getDominantCategory(person.slug);
-              const borderHover = dom ? (CATEGORY_BORDER_HOVER[dom] ?? "hover:border-[#f0a090]") : "hover:border-[#f0a090]";
+              const borderHover = dom
+                ? (CATEGORY_BORDER_HOVER[dom] ?? 'hover:border-[#f0a090]')
+                : 'hover:border-[#f0a090]';
 
               // Circular SVG progress ring — 60px
               const r = 24;
@@ -169,11 +172,11 @@ export default function BucketListsPage() {
                         textAnchor="middle"
                         dominantBaseline="middle"
                         style={{
-                          fontSize: "11px",
-                          fill: "#78716c",
+                          fontSize: '11px',
+                          fill: '#78716c',
                           fontWeight: 600,
-                          transform: "rotate(90deg)",
-                          transformOrigin: "30px 30px",
+                          transform: 'rotate(90deg)',
+                          transformOrigin: '30px 30px',
                         }}
                       >
                         {pct}%
@@ -194,20 +197,20 @@ export default function BucketListsPage() {
                       <li key={i} className="flex items-center gap-2.5 text-sm text-stone-500">
                         <span
                           className={`h-3.5 w-3.5 shrink-0 rounded-full border-2 ${
-                            item.status === "done"
-                              ? "border-[#e05533] bg-[#e05533]"
-                              : "border-stone-300"
+                            item.status === 'done'
+                              ? 'border-[#e05533] bg-[#e05533]'
+                              : 'border-stone-300'
                           }`}
                         />
-                        <span className={item.status === "done" ? "line-through text-stone-500" : ""}>
-                          {item.title.length > 46 ? item.title.slice(0, 46) + "…" : item.title}
+                        <span
+                          className={item.status === 'done' ? 'line-through text-stone-500' : ''}
+                        >
+                          {item.title.length > 46 ? `${item.title.slice(0, 46)}…` : item.title}
                         </span>
                       </li>
                     ))}
                     {total > 2 && (
-                      <li className="text-xs text-stone-500 pl-6">
-                        +{total - 2} more
-                      </li>
+                      <li className="text-xs text-stone-500 pl-6">+{total - 2} more</li>
                     )}
                   </ul>
 
@@ -229,11 +232,12 @@ export default function BucketListsPage() {
             <Lumi size={80} glow float onDark />
           </div>
           <h2 className="text-3xl sm:text-4xl font-bold text-white leading-tight text-balance">
-            Your turn. What do you want to do<br className="hidden sm:block" /> before you die?
+            Your turn. What do you want to do
+            <br className="hidden sm:block" /> before you die?
           </h2>
           <p className="text-white/80 text-base max-w-sm mx-auto">
-            Lumi will help you discover what belongs on your list — based on who you are,
-            not who everyone else expects you to be.
+            Lumi will help you discover what belongs on your list — based on who you are, not who
+            everyone else expects you to be.
           </p>
           <div className="flex flex-wrap gap-3 justify-center">
             <Link

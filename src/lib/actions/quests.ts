@@ -1,25 +1,25 @@
-"use server";
+'use server';
 
-import { eq } from "drizzle-orm";
-import { revalidatePath } from "next/cache";
+import { eq } from 'drizzle-orm';
+import { revalidatePath } from 'next/cache';
 
-import { users } from "~/db/schema";
-import { evaluateBadges } from "~/lib/badges";
-import { parseStringArray } from "~/lib/utils";
-import { getServerAuthSession } from "~/server/auth";
-import { db } from "~/server/db";
+import { users } from '~/db/schema';
+import { evaluateBadges } from '~/lib/badges';
+import { parseStringArray } from '~/lib/utils';
+import { getServerAuthSession } from '~/server/auth';
+import { db } from '~/server/db';
 
 export async function completeQuest(
-  questId: string,
+  questId: string
 ): Promise<{ success: boolean; newBadges?: string[] }> {
   const session = await getServerAuthSession();
-  if (!session?.user?.id) throw new Error("Not authenticated");
+  if (!session?.user?.id) throw new Error('Not authenticated');
 
   const user = await db.query.users.findFirst({
     where: eq(users.id, session.user.id),
     columns: { completedQuests: true, earnedBadges: true, username: true },
   });
-  if (!user) throw new Error("User not found");
+  if (!user) throw new Error('User not found');
 
   const completedQuests = parseStringArray(user.completedQuests);
   const earnedBadges = parseStringArray(user.earnedBadges);
@@ -47,22 +47,20 @@ export async function completeQuest(
   if (user.username) {
     revalidatePath(`/u/${user.username}`);
   }
-  revalidatePath("/side-quests");
+  revalidatePath('/side-quests');
 
   return { success: true, newBadges };
 }
 
-export async function uncompleteQuest(
-  questId: string,
-): Promise<{ success: boolean }> {
+export async function uncompleteQuest(questId: string): Promise<{ success: boolean }> {
   const session = await getServerAuthSession();
-  if (!session?.user?.id) throw new Error("Not authenticated");
+  if (!session?.user?.id) throw new Error('Not authenticated');
 
   const user = await db.query.users.findFirst({
     where: eq(users.id, session.user.id),
     columns: { completedQuests: true, earnedBadges: true, username: true },
   });
-  if (!user) throw new Error("User not found");
+  if (!user) throw new Error('User not found');
 
   const completedQuests = parseStringArray(user.completedQuests);
 
@@ -83,7 +81,7 @@ export async function uncompleteQuest(
   if (user.username) {
     revalidatePath(`/u/${user.username}`);
   }
-  revalidatePath("/side-quests");
+  revalidatePath('/side-quests');
 
   return { success: true };
 }

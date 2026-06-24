@@ -1,10 +1,10 @@
-import type { Metadata } from "next";
-import Link from "next/link";
+import type { Metadata } from 'next';
+import Link from 'next/link';
 
 export const metadata: Metadata = {
-  title: "Hobby Tools — SignificantHobbies",
+  title: 'Hobby Tools — SignificantHobbies',
   description:
-    "Free tools to help you discover, plan, and commit to hobbies. Hobby quiz, time calculator, hobby comparison, and more.",
+    'Free tools to help you discover, plan, and commit to hobbies. Hobby quiz, time calculator, hobby comparison, and more.',
 };
 
 interface Tool {
@@ -17,59 +17,58 @@ interface Tool {
 
 const TOOLS: Tool[] = [
   {
-    emoji: "🎯",
-    title: "Hobby Finder Quiz",
+    emoji: '🎯',
+    title: 'Hobby Finder Quiz',
     description:
-      "Answer 5 questions and get personalized hobby recommendations matched to your personality, schedule, and interests.",
-    href: "/find-your-hobby",
-    badge: "Popular",
+      'Answer 5 questions and get personalized hobby recommendations matched to your personality, schedule, and interests.',
+    href: '/find-your-hobby',
+    badge: 'Popular',
   },
   {
-    emoji: "⏱️",
-    title: "Time Calculator",
+    emoji: '⏱️',
+    title: 'Time Calculator',
     description:
       "Find out how much free time you actually have for hobbies each week — and discover hidden hours you didn't know existed.",
-    href: "/tools/time-calculator",
-    badge: "New",
+    href: '/tools/time-calculator',
+    badge: 'New',
   },
   {
-    emoji: "⚖️",
-    title: "Hobby Comparison",
+    emoji: '⚖️',
+    title: 'Hobby Comparison',
     description:
-      "Compare two hobbies side by side on cost, time commitment, skill curve, and more to find the right fit.",
-    href: "/compare",
+      'Compare two hobbies side by side on cost, time commitment, skill curve, and more to find the right fit.',
+    href: '/compare',
   },
   {
-    emoji: "🧰",
-    title: "Starter Kits",
+    emoji: '🧰',
+    title: 'Starter Kits',
     description:
-      "Run a first hobby experiment with nearby materials, a small budget, and a clear signal for whether to keep going.",
-    href: "/starter-kits",
+      'Run a first hobby experiment with nearby materials, a small budget, and a clear signal for whether to keep going.',
+    href: '/starter-kits',
   },
   {
-    emoji: "💰",
-    title: "Cost Calculator",
+    emoji: '💰',
+    title: 'Cost Calculator',
     description:
-      "Add equipment, lessons, subscriptions and supplies — see the honest year-one and steady-state cost before you commit.",
-    href: "/tools/cost-calculator",
-    badge: "New",
+      'Add equipment, lessons, subscriptions and supplies — see the honest year-one and steady-state cost before you commit.',
+    href: '/tools/cost-calculator',
+    badge: 'New',
   },
 ];
 
 const BADGE_STYLES: Record<string, string> = {
-  Popular: "bg-emerald-50 text-emerald-700 border-emerald-200",
-  New: "bg-amber-50 text-amber-700 border-amber-200",
+  Popular: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+  New: 'bg-amber-50 text-amber-700 border-amber-200',
 };
 
 export default function ToolsPage() {
   return (
-    <div className="min-h-screen" style={{ background: "#FAFAFA" }}>
+    <div className="min-h-screen" style={{ background: '#FAFAFA' }}>
       {/* Hero */}
       <section
         className="relative overflow-hidden px-4 py-16 sm:py-24"
         style={{
-          background:
-            "linear-gradient(160deg, #ECFDF5 0%, #F5F5F4 50%, #ECFDF5 100%)",
+          background: 'linear-gradient(160deg, #ECFDF5 0%, #F5F5F4 50%, #ECFDF5 100%)',
         }}
       >
         <div className="relative mx-auto max-w-3xl text-center">
@@ -81,8 +80,7 @@ export default function ToolsPage() {
             Hobby Tools
           </h1>
           <p className="mx-auto max-w-xl text-lg text-stone-500">
-            Practical tools to help you discover, plan, and commit to hobbies
-            that actually stick.
+            Practical tools to help you discover, plan, and commit to hobbies that actually stick.
           </p>
         </div>
       </section>
@@ -104,7 +102,7 @@ export default function ToolsPage() {
                 {tool.badge && (
                   <div className="mb-4 self-start">
                     <span
-                      className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold ${BADGE_STYLES[tool.badge] ?? "bg-stone-50 text-stone-600 border-stone-200"}`}
+                      className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold ${BADGE_STYLES[tool.badge] ?? 'bg-stone-50 text-stone-600 border-stone-200'}`}
                     >
                       {tool.badge}
                     </span>
@@ -120,9 +118,7 @@ export default function ToolsPage() {
                 <h2 className="mb-2 text-lg font-bold text-stone-900 transition-colors group-hover:text-emerald-700">
                   {tool.title}
                 </h2>
-                <p className="flex-1 text-sm leading-relaxed text-stone-500">
-                  {tool.description}
-                </p>
+                <p className="flex-1 text-sm leading-relaxed text-stone-500">{tool.description}</p>
 
                 {/* CTA */}
                 <div className="mt-5 flex items-center gap-1 text-sm font-semibold text-emerald-600 transition-all duration-200 group-hover:gap-2">

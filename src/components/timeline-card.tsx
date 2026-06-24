@@ -1,9 +1,9 @@
-import { Globe, Heart,Link as LinkIcon, Lock } from "lucide-react";
-import Link from "next/link";
+import { Globe, Heart, Link as LinkIcon, Lock } from 'lucide-react';
+import Link from 'next/link';
 
-import { Badge } from "~/components/ui/badge";
-import { getTimelineUrl } from "~/lib/timeline-url";
-import type { TimelineData } from "~/lib/types";
+import { Badge } from '~/components/ui/badge';
+import { getTimelineUrl } from '~/lib/timeline-url';
+import type { TimelineData } from '~/lib/types';
 
 interface Props {
   timeline: TimelineData;
@@ -19,9 +19,8 @@ const VISIBILITY_ICONS = {
 
 export function TimelineCard({ timeline, showVisibility = false, likeCount }: Props) {
   const { phases } = timeline;
-  const totalHobbies = new Set(
-    phases.flatMap((p) => p.hobbies.map((h) => h.name.toLowerCase())),
-  ).size;
+  const totalHobbies = new Set(phases.flatMap((p) => p.hobbies.map((h) => h.name.toLowerCase())))
+    .size;
 
   const VisIcon = VISIBILITY_ICONS[timeline.visibility];
 
@@ -31,11 +30,9 @@ export function TimelineCard({ timeline, showVisibility = false, likeCount }: Pr
         {/* Title row */}
         <div className="mb-3 flex items-start justify-between gap-2">
           <h3 className="font-medium text-stone-800 group-hover:text-emerald-600 transition-colors leading-tight">
-            {timeline.title ?? "Hobby Timeline"}
+            {timeline.title ?? 'Hobby Timeline'}
           </h3>
-          {showVisibility && (
-            <VisIcon className="h-3.5 w-3.5 text-stone-400 shrink-0 mt-0.5" />
-          )}
+          {showVisibility && <VisIcon className="h-3.5 w-3.5 text-stone-400 shrink-0 mt-0.5" />}
         </div>
 
         {/* Phase badges */}
@@ -50,10 +47,7 @@ export function TimelineCard({ timeline, showVisibility = false, likeCount }: Pr
             </Badge>
           ))}
           {phases.length > 4 && (
-            <Badge
-              variant="outline"
-              className="border-stone-200 text-xs text-stone-400 py-0"
-            >
+            <Badge variant="outline" className="border-stone-200 text-xs text-stone-400 py-0">
               +{phases.length - 4}
             </Badge>
           )}

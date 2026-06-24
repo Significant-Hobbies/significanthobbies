@@ -1,24 +1,24 @@
-import { asc,eq, inArray } from "drizzle-orm";
-import { ArrowLeft, Pencil, User } from "lucide-react";
-import Link from "next/link";
-import { notFound } from "next/navigation";
+import { asc, eq, inArray } from 'drizzle-orm';
+import { ArrowLeft, Pencil, User } from 'lucide-react';
+import Link from 'next/link';
+import { notFound } from 'next/navigation';
 
-import { CommentsSectionWithOwn } from "~/components/timeline-view/comments-section";
-import { ExportButton } from "~/components/timeline-view/export-button";
-import { InsightsPanel } from "~/components/timeline-view/insights-panel";
-import { LikeButton } from "~/components/timeline-view/like-button";
-import { PersonalityCard } from "~/components/timeline-view/personality-card";
-import { PhaseSwimlane } from "~/components/timeline-view/phase-swimlane";
-import { RecommendationsPanel } from "~/components/timeline-view/recommendations-panel";
-import { RediscoveryNudges } from "~/components/timeline-view/rediscovery-nudges";
-import { VersionHistory } from "~/components/timeline-view/version-history";
-import { VisibilityToggle } from "~/components/timeline-view/visibility-toggle";
-import { Badge } from "~/components/ui/badge";
-import { Button } from "~/components/ui/button";
-import { comments as commentsTable, likes as likesTable, timelines, users } from "~/db/schema";
-import type { Phase, TimelineData, TimelinePin, TimelineVisibility } from "~/lib/types";
-import { getServerAuthSession } from "~/server/auth";
-import { db } from "~/server/db";
+import { CommentsSectionWithOwn } from '~/components/timeline-view/comments-section';
+import { ExportButton } from '~/components/timeline-view/export-button';
+import { InsightsPanel } from '~/components/timeline-view/insights-panel';
+import { LikeButton } from '~/components/timeline-view/like-button';
+import { PersonalityCard } from '~/components/timeline-view/personality-card';
+import { PhaseSwimlane } from '~/components/timeline-view/phase-swimlane';
+import { RecommendationsPanel } from '~/components/timeline-view/recommendations-panel';
+import { RediscoveryNudges } from '~/components/timeline-view/rediscovery-nudges';
+import { VersionHistory } from '~/components/timeline-view/version-history';
+import { VisibilityToggle } from '~/components/timeline-view/visibility-toggle';
+import { Badge } from '~/components/ui/badge';
+import { Button } from '~/components/ui/button';
+import { comments as commentsTable, likes as likesTable, timelines, users } from '~/db/schema';
+import type { Phase, TimelineData, TimelinePin, TimelineVisibility } from '~/lib/types';
+import { getServerAuthSession } from '~/server/auth';
+import { db } from '~/server/db';
 
 interface Props {
   params: Promise<{ username: string; slug: string }>;
@@ -30,7 +30,7 @@ export async function generateMetadata({ params }: Props) {
     where: eq(timelines.slug, slug),
   });
   if (!timeline) {
-    return { title: "Timeline — SignificantHobbies" };
+    return { title: 'Timeline — SignificantHobbies' };
   }
   // Verify the user matches
   if (timeline.userId) {
@@ -39,18 +39,20 @@ export async function generateMetadata({ params }: Props) {
       columns: { username: true },
     });
     if (timelineUser?.username !== username) {
-      return { title: "Timeline — SignificantHobbies" };
+      return { title: 'Timeline — SignificantHobbies' };
     }
   }
   // Don't leak private timeline titles into metadata (unfurlers cache it).
-  if (timeline.visibility === "PRIVATE") {
+  if (timeline.visibility === 'PRIVATE') {
     const session = await getServerAuthSession();
     if (session?.user?.id !== timeline.userId) {
-      return { title: "Timeline — SignificantHobbies" };
+      return { title: 'Timeline — SignificantHobbies' };
     }
   }
   return {
-    title: timeline.title ? `${timeline.title} — SignificantHobbies` : "Timeline — SignificantHobbies",
+    title: timeline.title
+      ? `${timeline.title} — SignificantHobbies`
+      : 'Timeline — SignificantHobbies',
     description: timeline.title
       ? `${timeline.title} — a hobby timeline by @${username} on SignificantHobbies.`
       : `A hobby timeline by @${username} on SignificantHobbies.`,
@@ -78,17 +80,23 @@ export default async function TimelineBySlugPage({ params }: Props) {
   if (timelineUser?.username !== username) notFound();
 
   const isOwner = session?.user?.id === raw.userId;
-  const isVisible = raw.visibility !== "PRIVATE" || isOwner;
+  const isVisible = raw.visibility !== 'PRIVATE' || isOwner;
 
   if (!isVisible) notFound();
 
   let phases: Phase[] = [];
   try {
     phases = JSON.parse(raw.phases) as Phase[];
-  } catch { /* ignore */ }
+  } catch {
+    /* ignore */
+  }
 
   let pins: TimelinePin[] = [];
-  try { pins = JSON.parse(raw.pins) as TimelinePin[]; } catch { /* ignore */ }
+  try {
+    pins = JSON.parse(raw.pins) as TimelinePin[];
+  } catch {
+    /* ignore */
+  }
 
   let versions: { date: string; phases: Phase[] }[] = [];
   try {
@@ -97,7 +105,9 @@ export default async function TimelineBySlugPage({ params }: Props) {
       date: v.date,
       phases: JSON.parse(v.phases) as Phase[],
     }));
-  } catch { /* ignore */ }
+  } catch {
+    /* ignore */
+  }
 
   const timeline: TimelineData = {
     id: raw.id,
@@ -136,7 +146,10 @@ export default async function TimelineBySlugPage({ params }: Props) {
   // Fetch comment users — single inArray query instead of one findFirst per
   // user (N+1 → 1).
   const commentUserIds = [...new Set(commentRows.map((c) => c.userId))];
-  const commentUsersMap: Record<string, { id: string; name: string | null; username: string | null; image: string | null }> = {};
+  const commentUsersMap: Record<
+    string,
+    { id: string; name: string | null; username: string | null; image: string | null }
+  > = {};
   if (commentUserIds.length > 0) {
     const commentUsers = await db.query.users.findMany({
       where: inArray(users.id, commentUserIds),
@@ -146,9 +159,7 @@ export default async function TimelineBySlugPage({ params }: Props) {
   }
 
   const ownCommentIds = new Set(
-    currentUserId
-      ? commentRows.filter((c) => c.userId === currentUserId).map((c) => c.id)
-      : [],
+    currentUserId ? commentRows.filter((c) => c.userId === currentUserId).map((c) => c.id) : []
   );
 
   const commentList = commentRows.map((c) => ({
@@ -166,8 +177,7 @@ export default async function TimelineBySlugPage({ params }: Props) {
           href={`/u/${username}`}
           className="inline-flex items-center gap-1.5 text-sm text-stone-500 hover:text-stone-700 transition-colors"
         >
-          <ArrowLeft className="h-3.5 w-3.5" />
-          @{username}
+          <ArrowLeft className="h-3.5 w-3.5" />@{username}
         </Link>
       </div>
 
@@ -175,28 +185,21 @@ export default async function TimelineBySlugPage({ params }: Props) {
       <div className="mb-8 flex items-start justify-between gap-4 flex-wrap">
         <div>
           <h1 className="text-2xl font-bold text-stone-900">
-            {timeline.title ?? "Hobby Timeline"}
+            {timeline.title ?? 'Hobby Timeline'}
           </h1>
           {timelineUser && (
             <Link
               href={`/u/${username}`}
               className="mt-1 inline-flex items-center gap-1.5 text-sm text-stone-500 hover:text-stone-700"
             >
-              <User className="h-3.5 w-3.5" />
-              @{username}
+              <User className="h-3.5 w-3.5" />@{username}
             </Link>
           )}
           <div className="mt-2 flex items-center gap-2">
-            <Badge
-              variant="outline"
-              className="border-stone-200 text-xs text-stone-500"
-            >
+            <Badge variant="outline" className="border-stone-200 text-xs text-stone-500">
               {phases.length} phases
             </Badge>
-            <Badge
-              variant="outline"
-              className="border-stone-200 text-xs text-stone-500"
-            >
+            <Badge variant="outline" className="border-stone-200 text-xs text-stone-500">
               {new Set(phases.flatMap((p) => p.hobbies.map((h) => h.name))).size} hobbies
             </Badge>
           </div>
@@ -208,17 +211,10 @@ export default async function TimelineBySlugPage({ params }: Props) {
             initialCount={likeCount}
             isAuthenticated={!!currentUserId}
           />
-          {isOwner && (
-            <VisibilityToggle
-              timelineId={timeline.id}
-              current={timeline.visibility}
-            />
-          )}
+          {isOwner && <VisibilityToggle timelineId={timeline.id} current={timeline.visibility} />}
           <ExportButton timeline={timeline} />
           {currentUserId && !isOwner && session?.user?.username && timelineUser?.username && (
-            <Link
-              href={`/compare-journeys?a=${session.user.username}&b=${timelineUser.username}`}
-            >
+            <Link href={`/compare-journeys?a=${session.user.username}&b=${timelineUser.username}`}>
               <Button
                 variant="outline"
                 size="sm"

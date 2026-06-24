@@ -1,10 +1,10 @@
-import { asc, eq } from "drizzle-orm";
-import { NextResponse } from "next/server";
+import { asc, eq } from 'drizzle-orm';
+import { NextResponse } from 'next/server';
 
-import { timelines, users } from "~/db/schema";
-import { db } from "~/server/db";
+import { timelines, users } from '~/db/schema';
+import { db } from '~/server/db';
 
-const DEMO_TIMELINES_CACHE_URL = "https://internal-cache/demo-timelines:v1";
+const DEMO_TIMELINES_CACHE_URL = 'https://internal-cache/demo-timelines:v1';
 const DEMO_TIMELINES_TTL_SECONDS = 3600;
 
 export async function GET() {
@@ -43,7 +43,7 @@ export async function GET() {
       })
       .from(timelines)
       .leftJoin(users, eq(timelines.userId, users.id))
-      .where(eq(timelines.visibility, "PUBLIC"))
+      .where(eq(timelines.visibility, 'PUBLIC'))
       .orderBy(asc(timelines.createdAt))
       .limit(3);
   } catch {
@@ -60,7 +60,7 @@ export async function GET() {
 
   const response = NextResponse.json(body, {
     headers: {
-      "Cache-Control": `public, max-age=${DEMO_TIMELINES_TTL_SECONDS}, s-maxage=${DEMO_TIMELINES_TTL_SECONDS}`,
+      'Cache-Control': `public, max-age=${DEMO_TIMELINES_TTL_SECONDS}, s-maxage=${DEMO_TIMELINES_TTL_SECONDS}`,
     },
   });
 

@@ -1,27 +1,27 @@
-import Link from "next/link";
+import Link from 'next/link';
 
-import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
-import { Button } from "~/components/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from '~/components/ui/avatar';
+import { Button } from '~/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "~/components/ui/dropdown-menu";
-import { getServerAuthSession } from "~/server/auth";
+} from '~/components/ui/dropdown-menu';
+import { getServerAuthSession } from '~/server/auth';
 
-import { MobileMenu } from "./mobile-menu";
-import { NavLinks } from "./nav-links";
-import { NavSignOut } from "./nav-sign-out";
+import { MobileMenu } from './mobile-menu';
+import { NavLinks } from './nav-links';
+import { NavSignOut } from './nav-sign-out';
 
 const NAV_LINKS = [
-  { href: "/hobbies", label: "Discover" },
-  { href: "/find-your-hobby", label: "Quiz" },
-  { href: "/bucket-lists", label: "✨ Bucket Lists" },
-  { href: "/side-quests", label: "Side Quests" },
-  { href: "/explore", label: "Explore" },
-  { href: "/blog", label: "Blog" },
+  { href: '/hobbies', label: 'Discover' },
+  { href: '/find-your-hobby', label: 'Quiz' },
+  { href: '/bucket-lists', label: '✨ Bucket Lists' },
+  { href: '/side-quests', label: 'Side Quests' },
+  { href: '/explore', label: 'Explore' },
+  { href: '/blog', label: 'Blog' },
 ];
 
 export async function Nav() {
@@ -45,19 +45,12 @@ export async function Nav() {
           {session?.user ? (
             <>
               <Link href="/dashboard" prefetch={false}>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="text-stone-500 hover:text-stone-700"
-                >
+                <Button variant="ghost" size="sm" className="text-stone-500 hover:text-stone-700">
                   Dashboard
                 </Button>
               </Link>
               <Link href="/timeline/new" prefetch={false}>
-                <Button
-                  size="sm"
-                  className="bg-emerald-600 hover:bg-emerald-700 text-white"
-                >
+                <Button size="sm" className="bg-emerald-600 hover:bg-emerald-700 text-white">
                   New Timeline
                 </Button>
               </Link>
@@ -65,17 +58,14 @@ export async function Nav() {
                 <DropdownMenuTrigger asChild>
                   <button className="rounded-full focus:outline-none focus:ring-2 focus:ring-emerald-500">
                     <Avatar className="h-8 w-8">
-                      <AvatarImage src={session.user.image ?? ""} />
+                      <AvatarImage src={session.user.image ?? ''} />
                       <AvatarFallback className="bg-emerald-100 text-emerald-700 text-sm">
-                        {session.user.name?.[0] ?? "U"}
+                        {session.user.name?.[0] ?? 'U'}
                       </AvatarFallback>
                     </Avatar>
                   </button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent
-                  align="end"
-                  className="w-48 border-stone-200 bg-white"
-                >
+                <DropdownMenuContent align="end" className="w-48 border-stone-200 bg-white">
                   {session.user.username ? (
                     <DropdownMenuItem asChild>
                       <Link href={`/u/${session.user.username}`} prefetch={false}>
@@ -90,7 +80,9 @@ export async function Nav() {
                     </DropdownMenuItem>
                   )}
                   <DropdownMenuItem asChild>
-                    <Link href="/dashboard" prefetch={false}>Dashboard</Link>
+                    <Link href="/dashboard" prefetch={false}>
+                      Dashboard
+                    </Link>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator className="bg-stone-200" />
                   <NavSignOut />
@@ -117,17 +109,14 @@ export async function Nav() {
               <DropdownMenuTrigger asChild>
                 <button className="rounded-full focus:outline-none focus:ring-2 focus:ring-emerald-500">
                   <Avatar className="h-8 w-8">
-                    <AvatarImage src={session.user.image ?? ""} />
+                    <AvatarImage src={session.user.image ?? ''} />
                     <AvatarFallback className="bg-emerald-100 text-emerald-700 text-sm">
-                      {session.user.name?.[0] ?? "U"}
+                      {session.user.name?.[0] ?? 'U'}
                     </AvatarFallback>
                   </Avatar>
                 </button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent
-                align="end"
-                className="w-48 border-stone-200 bg-white"
-              >
+              <DropdownMenuContent align="end" className="w-48 border-stone-200 bg-white">
                 {session.user.username ? (
                   <DropdownMenuItem asChild>
                     <Link href={`/u/${session.user.username}`} prefetch={false}>
@@ -142,17 +131,16 @@ export async function Nav() {
                   </DropdownMenuItem>
                 )}
                 <DropdownMenuItem asChild>
-                  <Link href="/dashboard" prefetch={false}>Dashboard</Link>
+                  <Link href="/dashboard" prefetch={false}>
+                    Dashboard
+                  </Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator className="bg-stone-200" />
                 <NavSignOut />
               </DropdownMenuContent>
             </DropdownMenu>
           )}
-          <MobileMenu
-            links={NAV_LINKS}
-            isLoggedIn={!!session?.user}
-          />
+          <MobileMenu links={NAV_LINKS} isLoggedIn={!!session?.user} />
         </div>
       </div>
     </nav>

@@ -1,55 +1,55 @@
-"use client";
+'use client';
 
-import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import Link from 'next/link';
+import { useEffect, useRef, useState } from 'react';
 
-import { EmailCapture } from "~/components/email-capture";
+import { EmailCapture } from '~/components/email-capture';
 
-type CheckState = "idle" | "checking" | "available" | "taken" | "invalid";
+type CheckState = 'idle' | 'checking' | 'available' | 'taken' | 'invalid';
 
 const EXAMPLE_PROFILES = [
-  { handle: "stevejobs", display: "significanthobbies.com/u/stevejobs" },
-  { handle: "alberteinstein", display: "significanthobbies.com/u/alberteinstein" },
-  { handle: "richardfeynman", display: "significanthobbies.com/u/richardfeynman" },
+  { handle: 'stevejobs', display: 'significanthobbies.com/u/stevejobs' },
+  { handle: 'alberteinstein', display: 'significanthobbies.com/u/alberteinstein' },
+  { handle: 'richardfeynman', display: 'significanthobbies.com/u/richardfeynman' },
 ];
 
 const BENEFITS = [
   {
-    icon: "🔗",
-    title: "Shareable URL",
-    desc: "Your own significanthobbies.com/u/yourname",
+    icon: '🔗',
+    title: 'Shareable URL',
+    desc: 'Your own significanthobbies.com/u/yourname',
   },
   {
-    icon: "🎭",
-    title: "Hobby personality",
-    desc: "Discover your archetype",
+    icon: '🎭',
+    title: 'Hobby personality',
+    desc: 'Discover your archetype',
   },
   {
-    icon: "🗺️",
-    title: "Hobby timeline",
-    desc: "Map your journey across life phases",
+    icon: '🗺️',
+    title: 'Hobby timeline',
+    desc: 'Map your journey across life phases',
   },
 ];
 
 function validateUsername(value: string): string | null {
-  if (value.length < 3) return "At least 3 characters required";
-  if (value.length > 20) return "Maximum 20 characters";
-  if (!/^[a-z0-9-]+$/.test(value)) return "Only lowercase letters, numbers, and hyphens";
+  if (value.length < 3) return 'At least 3 characters required';
+  if (value.length > 20) return 'Maximum 20 characters';
+  if (!/^[a-z0-9-]+$/.test(value)) return 'Only lowercase letters, numbers, and hyphens';
   return null;
 }
 
 export function GetStartedClient() {
-  const [input, setInput] = useState("");
-  const [state, setState] = useState<CheckState>("idle");
+  const [input, setInput] = useState('');
+  const [state, setState] = useState<CheckState>('idle');
   const [validationError, setValidationError] = useState<string | null>(null);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const raw = e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, "");
+    const raw = e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '');
     setInput(raw);
 
     if (!raw) {
-      setState("idle");
+      setState('idle');
       setValidationError(null);
       if (debounceRef.current) clearTimeout(debounceRef.current);
       return;
@@ -57,14 +57,14 @@ export function GetStartedClient() {
 
     const err = validateUsername(raw);
     if (err) {
-      setState("invalid");
+      setState('invalid');
       setValidationError(err);
       if (debounceRef.current) clearTimeout(debounceRef.current);
       return;
     }
 
     setValidationError(null);
-    setState("checking");
+    setState('checking');
 
     if (debounceRef.current) clearTimeout(debounceRef.current);
     debounceRef.current = setTimeout(async () => {
@@ -72,15 +72,15 @@ export function GetStartedClient() {
         const res = await fetch(`/api/check-username?username=${encodeURIComponent(raw)}`);
         const data = (await res.json()) as { available: boolean; reason: string | null };
         if (data.available) {
-          setState("available");
-        } else if (data.reason === "taken") {
-          setState("taken");
+          setState('available');
+        } else if (data.reason === 'taken') {
+          setState('taken');
         } else {
-          setState("invalid");
-          setValidationError("Invalid username");
+          setState('invalid');
+          setValidationError('Invalid username');
         }
       } catch {
-        setState("idle");
+        setState('idle');
       }
     }, 500);
   }
@@ -127,19 +127,13 @@ export function GetStartedClient() {
 
           {/* Status feedback */}
           <div className="mt-4 min-h-[4rem]">
-            {state === "idle" && (
-              <p className="text-sm text-stone-400">
-                Start typing to check availability
-              </p>
+            {state === 'idle' && (
+              <p className="text-sm text-stone-400">Start typing to check availability</p>
             )}
 
-            {state === "checking" && (
+            {state === 'checking' && (
               <div className="flex items-center gap-2 text-sm text-stone-400">
-                <svg
-                  className="h-4 w-4 animate-spin"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                >
+                <svg className="h-4 w-4 animate-spin" fill="none" viewBox="0 0 24 24">
                   <circle
                     className="opacity-25"
                     cx="12"
@@ -158,10 +152,16 @@ export function GetStartedClient() {
               </div>
             )}
 
-            {state === "available" && (
+            {state === 'available' && (
               <div>
                 <div className="flex items-center gap-2 text-emerald-600">
-                  <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                  <svg
+                    className="h-5 w-5"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth={2.5}
+                  >
                     <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                   </svg>
                   <span className="font-semibold">This username is yours for the taking!</span>
@@ -171,17 +171,33 @@ export function GetStartedClient() {
                   className="mt-3 inline-flex items-center gap-2 rounded-xl bg-emerald-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-emerald-700 transition-colors"
                 >
                   Sign up with Google
-                  <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                  <svg
+                    className="h-4 w-4"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth={2}
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M17 8l4 4m0 0l-4 4m4-4H3"
+                    />
                   </svg>
                 </Link>
               </div>
             )}
 
-            {state === "taken" && (
+            {state === 'taken' && (
               <div>
                 <div className="flex items-center gap-2 text-red-500">
-                  <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                  <svg
+                    className="h-5 w-5"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth={2.5}
+                  >
                     <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                   </svg>
                   <span className="font-semibold">Already taken</span>
@@ -195,10 +211,20 @@ export function GetStartedClient() {
               </div>
             )}
 
-            {state === "invalid" && validationError && (
+            {state === 'invalid' && validationError && (
               <div className="flex items-start gap-2 text-amber-600">
-                <svg className="mt-0.5 h-4 w-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
+                <svg
+                  className="mt-0.5 h-4 w-4 shrink-0"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"
+                  />
                 </svg>
                 <span className="text-sm">{validationError}</span>
               </div>
@@ -234,10 +260,7 @@ export function GetStartedClient() {
         </p>
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
           {BENEFITS.map(({ icon, title, desc }) => (
-            <div
-              key={title}
-              className="rounded-xl border border-stone-200 bg-white p-4 shadow-sm"
-            >
+            <div key={title} className="rounded-xl border border-stone-200 bg-white p-4 shadow-sm">
               <div className="mb-2 text-2xl">{icon}</div>
               <p className="font-semibold text-stone-900 text-sm">{title}</p>
               <p className="mt-1 text-xs text-stone-500">{desc}</p>

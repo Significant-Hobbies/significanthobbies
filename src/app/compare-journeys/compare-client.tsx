@@ -1,12 +1,12 @@
-"use client";
+'use client';
 
-import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 
-import { Button } from "~/components/ui/button";
-import { Input } from "~/components/ui/input";
-import { computePersonality } from "~/lib/personality";
-import type { Phase } from "~/lib/types";
+import { Button } from '~/components/ui/button';
+import { Input } from '~/components/ui/input';
+import { computePersonality } from '~/lib/personality';
+import type { Phase } from '~/lib/types';
 
 interface UserData {
   username: string;
@@ -20,15 +20,7 @@ interface Props {
   paramB: string | null;
 }
 
-function StatRow({
-  label,
-  a,
-  b,
-}: {
-  label: string;
-  a: string | number;
-  b: string | number;
-}) {
+function StatRow({ label, a, b }: { label: string; a: string | number; b: string | number }) {
   return (
     <div className="grid grid-cols-3 items-center gap-2 py-2.5 border-b border-stone-100 last:border-0">
       <div className="text-sm font-semibold text-stone-800 text-center">{a}</div>
@@ -40,14 +32,14 @@ function StatRow({
 
 export function CompareJourneysClient({ userA, userB, paramA, paramB }: Props) {
   const router = useRouter();
-  const [inputA, setInputA] = useState(paramA ?? "");
-  const [inputB, setInputB] = useState(paramB ?? "");
+  const [inputA, setInputA] = useState(paramA ?? '');
+  const [inputB, setInputB] = useState(paramB ?? '');
   const [copied, setCopied] = useState(false);
 
   const handleCompare = (e: React.FormEvent) => {
     e.preventDefault();
-    const a = inputA.trim().replace(/^@/, "");
-    const b = inputB.trim().replace(/^@/, "");
+    const a = inputA.trim().replace(/^@/, '');
+    const b = inputB.trim().replace(/^@/, '');
     if (a && b) {
       router.push(`/compare-journeys?a=${encodeURIComponent(a)}&b=${encodeURIComponent(b)}`);
     }
@@ -66,7 +58,8 @@ export function CompareJourneysClient({ userA, userB, paramA, paramB }: Props) {
         <div className="text-center">
           <h2 className="text-2xl font-bold text-stone-900">Compare hobby journeys</h2>
           <p className="mt-2 text-stone-500 max-w-md">
-            Enter two usernames to see shared hobbies, unique paths, and combined personality archetype.
+            Enter two usernames to see shared hobbies, unique paths, and combined personality
+            archetype.
           </p>
         </div>
         <form onSubmit={handleCompare} className="flex flex-col sm:flex-row gap-3 w-full max-w-md">
@@ -102,12 +95,20 @@ export function CompareJourneysClient({ userA, userB, paramA, paramB }: Props) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[40vh] gap-4 text-center">
         <p className="text-stone-500">
-          {notFoundA && <span>User <strong>@{paramA}</strong> not found. </span>}
-          {notFoundB && <span>User <strong>@{paramB}</strong> not found. </span>}
+          {notFoundA && (
+            <span>
+              User <strong>@{paramA}</strong> not found.{' '}
+            </span>
+          )}
+          {notFoundB && (
+            <span>
+              User <strong>@{paramB}</strong> not found.{' '}
+            </span>
+          )}
         </p>
         <Button
           variant="outline"
-          onClick={() => router.push("/compare-journeys")}
+          onClick={() => router.push('/compare-journeys')}
           className="border-stone-300 text-stone-600 hover:text-stone-900"
         >
           Try again
@@ -130,14 +131,20 @@ export function CompareJourneysClient({ userA, userB, paramA, paramB }: Props) {
   const seenA = new Set<string>();
   for (const h of hobbiesADisplay) {
     const key = h.toLowerCase();
-    if (!seenA.has(key)) { seenA.add(key); uniqueA.push(h); }
+    if (!seenA.has(key)) {
+      seenA.add(key);
+      uniqueA.push(h);
+    }
   }
 
   const uniqueB: string[] = [];
   const seenB = new Set<string>();
   for (const h of hobbiesBDisplay) {
     const key = h.toLowerCase();
-    if (!seenB.has(key)) { seenB.add(key); uniqueB.push(h); }
+    if (!seenB.has(key)) {
+      seenB.add(key);
+      uniqueB.push(h);
+    }
   }
 
   const shared: string[] = [];
@@ -183,7 +190,7 @@ export function CompareJourneysClient({ userA, userB, paramA, paramB }: Props) {
           onClick={handleShare}
           className="border-stone-300 text-stone-600 hover:text-stone-900"
         >
-          {copied ? "Copied!" : "Share this comparison"}
+          {copied ? 'Copied!' : 'Share this comparison'}
         </Button>
       </div>
 
@@ -261,7 +268,9 @@ export function CompareJourneysClient({ userA, userB, paramA, paramB }: Props) {
       {/* Stats comparison */}
       <div className="rounded-xl border border-stone-200 bg-white p-6">
         <div className="grid grid-cols-3 mb-3">
-          <div className="text-sm font-semibold text-emerald-700 text-center">@{userA?.username}</div>
+          <div className="text-sm font-semibold text-emerald-700 text-center">
+            @{userA?.username}
+          </div>
           <div className="text-xs text-stone-400 text-center uppercase tracking-wide">Stat</div>
           <div className="text-sm font-semibold text-stone-700 text-center">@{userB?.username}</div>
         </div>
@@ -300,7 +309,7 @@ export function CompareJourneysClient({ userA, userB, paramA, paramB }: Props) {
         <Button
           variant="outline"
           size="sm"
-          onClick={() => router.push("/compare-journeys")}
+          onClick={() => router.push('/compare-journeys')}
           className="border-stone-300 text-stone-500 hover:text-stone-800"
         >
           Compare different users

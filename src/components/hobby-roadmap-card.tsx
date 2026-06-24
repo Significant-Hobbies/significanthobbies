@@ -1,20 +1,20 @@
-"use client";
+'use client';
 
-import Link from "next/link";
-import { useEffect, useState } from "react";
+import Link from 'next/link';
+import { useEffect, useState } from 'react';
 
-import type { HobbyRoadmap, RoadmapStep } from "~/lib/hobby-roadmap";
+import type { HobbyRoadmap, RoadmapStep } from '~/lib/hobby-roadmap';
 
 type SavedProgress = {
-  completed: Record<RoadmapStep["id"], boolean>;
+  completed: Record<RoadmapStep['id'], boolean>;
   notes: string;
   updatedAt: string;
 };
 
 const EMPTY_PROGRESS: SavedProgress = {
   completed: { today: false, week: false, month: false, quarter: false },
-  notes: "",
-  updatedAt: "",
+  notes: '',
+  updatedAt: '',
 };
 
 function storageKey(hobby: string) {
@@ -22,15 +22,15 @@ function storageKey(hobby: string) {
 }
 
 function readProgress(hobby: string): SavedProgress {
-  if (typeof window === "undefined") return EMPTY_PROGRESS;
+  if (typeof window === 'undefined') return EMPTY_PROGRESS;
   try {
     const raw = localStorage.getItem(storageKey(hobby));
     if (!raw) return EMPTY_PROGRESS;
     const parsed = JSON.parse(raw) as Partial<SavedProgress>;
     return {
       completed: { ...EMPTY_PROGRESS.completed, ...(parsed.completed ?? {}) },
-      notes: parsed.notes ?? "",
-      updatedAt: parsed.updatedAt ?? "",
+      notes: parsed.notes ?? '',
+      updatedAt: parsed.updatedAt ?? '',
     };
   } catch {
     return EMPTY_PROGRESS;
@@ -54,7 +54,7 @@ export function HobbyRoadmapCard({ roadmap }: { roadmap: HobbyRoadmap }) {
     setHydrated(true);
   }, [roadmap.hobby]);
 
-  function toggleStep(stepId: RoadmapStep["id"]) {
+  function toggleStep(stepId: RoadmapStep['id']) {
     const next: SavedProgress = {
       ...progress,
       completed: { ...progress.completed, [stepId]: !progress.completed[stepId] },
@@ -86,7 +86,8 @@ export function HobbyRoadmapCard({ roadmap }: { roadmap: HobbyRoadmap }) {
             Your {roadmap.hobby.toLowerCase()} roadmap
           </h2>
           <p className="text-xs text-stone-500">
-            A concrete path from today to three months in. Check off as you go — progress saves on this device.
+            A concrete path from today to three months in. Check off as you go — progress saves on
+            this device.
           </p>
         </div>
         <span className="text-xs font-medium text-emerald-700">
@@ -102,8 +103,8 @@ export function HobbyRoadmapCard({ roadmap }: { roadmap: HobbyRoadmap }) {
               <label
                 className={`flex cursor-pointer items-start gap-3 rounded-xl border bg-white p-4 transition-colors ${
                   isDone
-                    ? "border-emerald-300 bg-emerald-50"
-                    : "border-stone-200 hover:border-emerald-300"
+                    ? 'border-emerald-300 bg-emerald-50'
+                    : 'border-stone-200 hover:border-emerald-300'
                 }`}
               >
                 <input
@@ -122,7 +123,7 @@ export function HobbyRoadmapCard({ roadmap }: { roadmap: HobbyRoadmap }) {
                   </div>
                   <p
                     className={`mt-1 text-sm font-semibold ${
-                      isDone ? "text-stone-500 line-through" : "text-stone-900"
+                      isDone ? 'text-stone-500 line-through' : 'text-stone-900'
                     }`}
                   >
                     {step.goal}
@@ -158,12 +159,12 @@ export function HobbyRoadmapCard({ roadmap }: { roadmap: HobbyRoadmap }) {
           href="/timeline/new"
           className="rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-emerald-700"
         >
-          {allDone ? "Log it in a timeline →" : "Track this in a timeline →"}
+          {allDone ? 'Log it in a timeline →' : 'Track this in a timeline →'}
         </Link>
         <p className="text-xs text-stone-500">
           {allDone
             ? "You've worked through the whole roadmap. Time to make it part of your story."
-            : "Notes and check-offs stay on this device until you save a timeline."}
+            : 'Notes and check-offs stay on this device until you save a timeline.'}
         </p>
       </div>
     </div>

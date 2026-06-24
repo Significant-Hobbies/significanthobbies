@@ -1,39 +1,40 @@
-import Link from "next/link";
+import Link from 'next/link';
 
-import { Badge } from "~/components/ui/badge";
-import { HOBBY_CATEGORIES } from "~/lib/hobbies";
+import { Badge } from '~/components/ui/badge';
+import { HOBBY_CATEGORIES } from '~/lib/hobbies';
 
 export const metadata = {
-  title: "Hobby Directory — SignificantHobbies",
-  description: "Browse 110+ hobbies across 10 categories. Find your next passion — from creative arts and music to outdoor adventures and making.",
+  title: 'Hobby Directory — SignificantHobbies',
+  description:
+    'Browse 110+ hobbies across 10 categories. Find your next passion — from creative arts and music to outdoor adventures and making.',
 };
 
 // Left-border accent colors cycling through hues per category index
 const CATEGORY_BORDER_COLORS = [
-  "border-l-emerald-500",
-  "border-l-blue-500",
-  "border-l-purple-500",
-  "border-l-orange-500",
-  "border-l-pink-500",
-  "border-l-teal-500",
-  "border-l-amber-500",
-  "border-l-violet-500",
-  "border-l-sky-500",
-  "border-l-rose-500",
+  'border-l-emerald-500',
+  'border-l-blue-500',
+  'border-l-purple-500',
+  'border-l-orange-500',
+  'border-l-pink-500',
+  'border-l-teal-500',
+  'border-l-amber-500',
+  'border-l-violet-500',
+  'border-l-sky-500',
+  'border-l-rose-500',
 ];
 
 // Full-border colors for category card grid
 const CATEGORY_CARD_BORDER_COLORS = [
-  "border-emerald-400",
-  "border-blue-400",
-  "border-purple-400",
-  "border-orange-400",
-  "border-pink-400",
-  "border-teal-400",
-  "border-amber-400",
-  "border-violet-400",
-  "border-sky-400",
-  "border-rose-400",
+  'border-emerald-400',
+  'border-blue-400',
+  'border-purple-400',
+  'border-orange-400',
+  'border-pink-400',
+  'border-teal-400',
+  'border-amber-400',
+  'border-violet-400',
+  'border-sky-400',
+  'border-rose-400',
 ];
 
 export default function HobbiesPage() {
@@ -64,11 +65,14 @@ export default function HobbiesPage() {
         </h2>
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-5">
           {HOBBY_CATEGORIES.map((category, idx) => {
-            const catSlug = category.name.toLowerCase().replace(/\s+/g, "-");
-            const cardBorderColor = CATEGORY_CARD_BORDER_COLORS[idx % CATEGORY_CARD_BORDER_COLORS.length];
+            const catSlug = category.name.toLowerCase().replace(/\s+/g, '-');
+            const cardBorderColor =
+              CATEGORY_CARD_BORDER_COLORS[idx % CATEGORY_CARD_BORDER_COLORS.length];
             return (
               <Link key={category.name} href={`/hobbies/category/${catSlug}`}>
-                <div className={`group rounded-xl border-2 ${cardBorderColor} bg-white p-3 text-center transition-all hover:shadow-sm cursor-pointer`}>
+                <div
+                  className={`group rounded-xl border-2 ${cardBorderColor} bg-white p-3 text-center transition-all hover:shadow-sm cursor-pointer`}
+                >
                   <span className="text-2xl block mb-1">{category.emoji}</span>
                   <span className="text-xs font-medium text-stone-700 group-hover:text-emerald-600 transition-colors">
                     {category.name}
@@ -86,12 +90,9 @@ export default function HobbiesPage() {
       <div className="space-y-10">
         {HOBBY_CATEGORIES.map((category, idx) => {
           const borderColor = CATEGORY_BORDER_COLORS[idx % CATEGORY_BORDER_COLORS.length];
-          const catSlug = category.name.toLowerCase().replace(/\s+/g, "-");
+          const catSlug = category.name.toLowerCase().replace(/\s+/g, '-');
           return (
-            <div
-              key={category.name}
-              className={`scroll-reveal border-l-2 pl-5 ${borderColor}`}
-            >
+            <div key={category.name} className={`scroll-reveal border-l-2 pl-5 ${borderColor}`}>
               <div className="mb-4 flex items-center gap-2">
                 <span className="text-2xl">{category.emoji}</span>
                 <Link href={`/hobbies/category/${catSlug}`}>
@@ -99,10 +100,7 @@ export default function HobbiesPage() {
                     {category.name}
                   </h2>
                 </Link>
-                <Badge
-                  variant="outline"
-                  className="border-stone-200 text-xs text-stone-400"
-                >
+                <Badge variant="outline" className="border-stone-200 text-xs text-stone-400">
                   {category.hobbies.length}
                 </Badge>
               </div>
@@ -110,7 +108,7 @@ export default function HobbiesPage() {
                 {category.hobbies.map((hobby) => (
                   <Link
                     key={hobby}
-                    href={`/hobbies/${encodeURIComponent(hobby.toLowerCase().replace(/\s+/g, "-"))}`}
+                    href={`/hobbies/${encodeURIComponent(hobby.toLowerCase().replace(/\s+/g, '-'))}`}
                     title={`${category.emoji} ${category.name}`}
                   >
                     <span className="inline-block rounded-full border border-stone-200 bg-white px-4 py-1.5 text-sm text-stone-600 transition-colors hover:border-emerald-400 hover:text-emerald-600 cursor-pointer">
@@ -127,8 +125,13 @@ export default function HobbiesPage() {
       {/* Famous Hobby Journeys link */}
       <div className="mt-12 rounded-xl border border-stone-200 bg-emerald-50 p-6 text-center">
         <h2 className="text-lg font-bold text-stone-900 mb-2">Famous Hobby Journeys</h2>
-        <p className="text-sm text-stone-600 mb-4">See how remarkable people&apos;s hobbies shaped who they became.</p>
-        <Link href="/journeys" className="text-sm font-semibold text-emerald-600 hover:text-emerald-700">
+        <p className="text-sm text-stone-600 mb-4">
+          See how remarkable people&apos;s hobbies shaped who they became.
+        </p>
+        <Link
+          href="/journeys"
+          className="text-sm font-semibold text-emerald-600 hover:text-emerald-700"
+        >
           Explore journeys →
         </Link>
       </div>

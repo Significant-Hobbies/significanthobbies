@@ -1,15 +1,15 @@
-import { desc, eq } from "drizzle-orm";
-import Link from "next/link";
+import { desc, eq } from 'drizzle-orm';
+import Link from 'next/link';
 
-import { timelines, users } from "~/db/schema";
-import { db } from "~/server/db";
+import { timelines, users } from '~/db/schema';
+import { db } from '~/server/db';
 
 export const metadata = {
-  title: "Recent timelines — Significant Hobbies",
-  description: "Newest public timelines, newest first. Discover what people are mapping.",
+  title: 'Recent timelines — Significant Hobbies',
+  description: 'Newest public timelines, newest first. Discover what people are mapping.',
 };
 
-export const dynamic = "force-dynamic";
+export const dynamic = 'force-dynamic';
 
 interface Phase {
   id?: string;
@@ -38,7 +38,7 @@ export default async function RecentTimelinesPage() {
     })
     .from(timelines)
     .leftJoin(users, eq(timelines.userId, users.id))
-    .where(eq(timelines.visibility, "PUBLIC"))
+    .where(eq(timelines.visibility, 'PUBLIC'))
     .orderBy(desc(timelines.updatedAt))
     .limit(40);
 
@@ -51,20 +51,21 @@ export default async function RecentTimelinesPage() {
         Recent public timelines
       </h1>
       <p className="mt-2 text-sm text-stone-500">
-        Newest first. Browse how other people have mapped their hobby
-        phases.
+        Newest first. Browse how other people have mapped their hobby phases.
       </p>
 
       {rows.length === 0 ? (
         <p className="mt-8 text-sm text-stone-500">
-          No public timelines yet — be the first to flip yours public from
-          the timeline editor.
+          No public timelines yet — be the first to flip yours public from the timeline editor.
         </p>
       ) : (
         <ol className="mt-6 divide-y divide-stone-200">
           {rows.map((t) => {
             const phases = parsePhases(t.phases);
-            const labels = phases.map((p) => p.label).filter(Boolean).slice(0, 4);
+            const labels = phases
+              .map((p) => p.label)
+              .filter(Boolean)
+              .slice(0, 4);
             return (
               <li key={t.id} className="flex items-baseline gap-4 py-3 text-sm">
                 <div className="flex-1 min-w-0">
@@ -72,7 +73,7 @@ export default async function RecentTimelinesPage() {
                     href={t.slug ? `/timeline/${t.slug}` : `/timeline/${t.id}`}
                     className="block truncate text-base font-medium text-stone-900 hover:underline"
                   >
-                    {t.title?.trim() || "Untitled timeline"}
+                    {t.title?.trim() || 'Untitled timeline'}
                   </Link>
                   {t.username && (
                     <Link
@@ -84,7 +85,7 @@ export default async function RecentTimelinesPage() {
                   )}
                   {labels.length > 0 && (
                     <p className="mt-1 text-xs text-stone-500">
-                      {labels.join(" · ")}
+                      {labels.join(' · ')}
                       {phases.length > labels.length && ` (+${phases.length - labels.length})`}
                     </p>
                   )}

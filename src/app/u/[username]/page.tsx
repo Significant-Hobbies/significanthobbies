@@ -1,20 +1,20 @@
-import { and, count,desc, eq } from "drizzle-orm";
-import { ExternalLink, Pencil,Plus } from "lucide-react";
-import Image from "next/image";
-import Link from "next/link";
-import { notFound } from "next/navigation";
+import { and, count, desc, eq } from 'drizzle-orm';
+import { ExternalLink, Pencil, Plus } from 'lucide-react';
+import Image from 'next/image';
+import Link from 'next/link';
+import { notFound } from 'next/navigation';
 
-import { BadgeCollection } from "~/components/badge-collection";
-import { FollowButton } from "~/components/follow-button";
-import { SuggestionsPanel } from "~/components/suggestions-panel";
-import { TimelineCard } from "~/components/timeline-card";
-import { Button } from "~/components/ui/button";
-import { bucketListItems, follows, timelines,users } from "~/db/schema";
-import { BUCKET_ITEM_CATEGORIES } from "~/lib/famous-bucket-lists";
-import { getCategoryForHobby } from "~/lib/hobbies";
-import type { Phase, TimelineVisibility } from "~/lib/types";
-import { getServerAuthSession } from "~/server/auth";
-import { db } from "~/server/db";
+import { BadgeCollection } from '~/components/badge-collection';
+import { FollowButton } from '~/components/follow-button';
+import { SuggestionsPanel } from '~/components/suggestions-panel';
+import { TimelineCard } from '~/components/timeline-card';
+import { Button } from '~/components/ui/button';
+import { bucketListItems, follows, timelines, users } from '~/db/schema';
+import { BUCKET_ITEM_CATEGORIES } from '~/lib/famous-bucket-lists';
+import { getCategoryForHobby } from '~/lib/hobbies';
+import type { Phase, TimelineVisibility } from '~/lib/types';
+import { getServerAuthSession } from '~/server/auth';
+import { db } from '~/server/db';
 
 interface Props {
   params: Promise<{ username: string }>;
@@ -29,16 +29,16 @@ export async function generateMetadata({ params }: Props) {
 }
 
 const CATEGORY_BADGE_COLORS: Record<string, string> = {
-  Creative: "border-purple-300 bg-purple-50 text-purple-700",
-  Music: "border-pink-300 bg-pink-50 text-pink-700",
-  Physical: "border-orange-300 bg-orange-50 text-orange-700",
-  Intellectual: "border-blue-300 bg-blue-50 text-blue-700",
-  Gaming: "border-violet-300 bg-violet-50 text-violet-700",
-  Outdoor: "border-emerald-300 bg-emerald-50 text-emerald-700",
-  Culinary: "border-yellow-300 bg-yellow-50 text-yellow-700",
-  Collecting: "border-stone-300 bg-stone-100 text-stone-600",
-  Making: "border-amber-300 bg-amber-50 text-amber-700",
-  Social: "border-teal-300 bg-teal-50 text-teal-700",
+  Creative: 'border-purple-300 bg-purple-50 text-purple-700',
+  Music: 'border-pink-300 bg-pink-50 text-pink-700',
+  Physical: 'border-orange-300 bg-orange-50 text-orange-700',
+  Intellectual: 'border-blue-300 bg-blue-50 text-blue-700',
+  Gaming: 'border-violet-300 bg-violet-50 text-violet-700',
+  Outdoor: 'border-emerald-300 bg-emerald-50 text-emerald-700',
+  Culinary: 'border-yellow-300 bg-yellow-50 text-yellow-700',
+  Collecting: 'border-stone-300 bg-stone-100 text-stone-600',
+  Making: 'border-amber-300 bg-amber-50 text-amber-700',
+  Social: 'border-teal-300 bg-teal-50 text-teal-700',
 };
 
 export default async function ProfilePage({ params }: Props) {
@@ -78,50 +78,38 @@ export default async function ProfilePage({ params }: Props) {
 
   // Get timelines - public for visitors, all for owner. UNLISTED means
   // "anyone with the link" — it must never be listed on the public profile.
-  let ownTimelines;
-  if (isOwner) {
-    ownTimelines = await db
-      .select()
-      .from(timelines)
-      .where(eq(timelines.userId, user.id))
-      .orderBy(desc(timelines.updatedAt));
-  } else {
-    ownTimelines = await db
-      .select()
-      .from(timelines)
-      .where(
-        and(
-          eq(timelines.userId, user.id),
-          eq(timelines.visibility, "PUBLIC"),
-        ),
-      )
-      .orderBy(desc(timelines.updatedAt));
-  }
+  const ownTimelines = isOwner
+    ? await db
+        .select()
+        .from(timelines)
+        .where(eq(timelines.userId, user.id))
+        .orderBy(desc(timelines.updatedAt))
+    : await db
+        .select()
+        .from(timelines)
+        .where(and(eq(timelines.userId, user.id), eq(timelines.visibility, 'PUBLIC')))
+        .orderBy(desc(timelines.updatedAt));
 
   // Parse earned badges
   let earnedBadgeIds: string[] = [];
-  try { earnedBadgeIds = JSON.parse(user.earnedBadges) as string[]; } catch { /* ignore */ }
+  try {
+    earnedBadgeIds = JSON.parse(user.earnedBadges) as string[];
+  } catch {
+    /* ignore */
+  }
 
   // Public bucket list items for this profile
   const publicBucketItems = await db
     .select()
     .from(bucketListItems)
-    .where(
-      and(
-        eq(bucketListItems.userId, user.id),
-        eq(bucketListItems.visibility, "public"),
-      ),
-    )
+    .where(and(eq(bucketListItems.userId, user.id), eq(bucketListItems.visibility, 'public')))
     .orderBy(desc(bucketListItems.createdAt));
 
   // Check if the current user is following this profile
   let isFollowing = false;
   if (session?.user?.id && !isOwner) {
     const followRecord = await db.query.follows.findFirst({
-      where: and(
-        eq(follows.followerId, session.user.id),
-        eq(follows.followingId, user.id),
-      ),
+      where: and(eq(follows.followerId, session.user.id), eq(follows.followingId, user.id)),
     });
     isFollowing = !!followRecord;
   }
@@ -130,7 +118,9 @@ export default async function ProfilePage({ params }: Props) {
     let phases: Phase[] = [];
     try {
       phases = JSON.parse(t.phases) as Phase[];
-    } catch { /* ignore */ }
+    } catch {
+      /* ignore */
+    }
     return {
       id: t.id,
       title: t.title,
@@ -168,11 +158,17 @@ export default async function ProfilePage({ params }: Props) {
       {/* Profile header */}
       <div className="scroll-reveal mb-8 flex items-start gap-5 flex-wrap">
         {/* Avatar with optional owner glow */}
-        <div className={isOwner ? "rounded-full p-0.5 bg-gradient-to-br from-emerald-400/40 via-emerald-600/20 to-transparent ring-2 ring-emerald-400/30 shadow-[0_0_18px_2px_rgba(16,185,129,0.15)]" : ""}>
+        <div
+          className={
+            isOwner
+              ? 'rounded-full p-0.5 bg-gradient-to-br from-emerald-400/40 via-emerald-600/20 to-transparent ring-2 ring-emerald-400/30 shadow-[0_0_18px_2px_rgba(16,185,129,0.15)]'
+              : ''
+          }
+        >
           {user.image ? (
             <Image
               src={user.image}
-              alt={user.name ?? "Avatar"}
+              alt={user.name ?? 'Avatar'}
               width={72}
               height={72}
               className="rounded-full border-2 border-stone-200"
@@ -186,9 +182,7 @@ export default async function ProfilePage({ params }: Props) {
 
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 flex-wrap">
-            <h1 className="text-2xl font-bold text-stone-900">
-              {user.name ?? username}
-            </h1>
+            <h1 className="text-2xl font-bold text-stone-900">{user.name ?? username}</h1>
             {isOwner && (
               <Link
                 href="/settings"
@@ -217,7 +211,7 @@ export default async function ProfilePage({ params }: Props) {
               className="mt-1.5 inline-flex items-center gap-1 text-xs text-emerald-600 hover:text-emerald-700 hover:underline transition-colors"
             >
               <ExternalLink className="h-3 w-3" />
-              {user.website.replace(/^https?:\/\//, "")}
+              {user.website.replace(/^https?:\/\//, '')}
             </a>
           )}
 
@@ -225,19 +219,21 @@ export default async function ProfilePage({ params }: Props) {
           <div className="mt-3 flex flex-wrap gap-2">
             <span className="inline-flex items-center gap-1.5 rounded-full border border-stone-200 bg-stone-50 px-3 py-1 text-xs text-stone-700">
               <span className="text-emerald-600 font-semibold">{timelineList.length}</span>
-              <span className="text-stone-500">timeline{timelineList.length !== 1 ? "s" : ""}</span>
+              <span className="text-stone-500">timeline{timelineList.length !== 1 ? 's' : ''}</span>
             </span>
             <span className="inline-flex items-center gap-1.5 rounded-full border border-stone-200 bg-stone-50 px-3 py-1 text-xs text-stone-700">
               <span className="text-emerald-600 font-semibold">{allHobbies.length}</span>
-              <span className="text-stone-500">unique hobbie{allHobbies.length !== 1 ? "s" : ""}</span>
+              <span className="text-stone-500">
+                unique hobbie{allHobbies.length !== 1 ? 's' : ''}
+              </span>
             </span>
             <span className="inline-flex items-center gap-1.5 rounded-full border border-stone-200 bg-stone-50 px-3 py-1 text-xs text-stone-700">
               <span className="text-emerald-600 font-semibold">{totalPhases}</span>
-              <span className="text-stone-500">phase{totalPhases !== 1 ? "s" : ""}</span>
+              <span className="text-stone-500">phase{totalPhases !== 1 ? 's' : ''}</span>
             </span>
             <span className="inline-flex items-center gap-1.5 rounded-full border border-stone-200 bg-stone-50 px-3 py-1 text-xs text-stone-700">
               <span className="text-emerald-600 font-semibold">{followerCount}</span>
-              <span className="text-stone-500">follower{followerCount !== 1 ? "s" : ""}</span>
+              <span className="text-stone-500">follower{followerCount !== 1 ? 's' : ''}</span>
             </span>
             <span className="inline-flex items-center gap-1.5 rounded-full border border-stone-200 bg-stone-50 px-3 py-1 text-xs text-stone-700">
               <span className="text-emerald-600 font-semibold">{followingCount}</span>
@@ -267,8 +263,8 @@ export default async function ProfilePage({ params }: Props) {
                 Follow
               </Link>
               <span className="ml-3 text-sm text-stone-500">
-                <span className="font-semibold text-stone-700">{followerCount}</span>{" "}
-                {followerCount === 1 ? "follower" : "followers"}
+                <span className="font-semibold text-stone-700">{followerCount}</span>{' '}
+                {followerCount === 1 ? 'follower' : 'followers'}
               </span>
             </div>
           )}
@@ -295,12 +291,13 @@ export default async function ProfilePage({ params }: Props) {
               {top10Hobbies.map((hobbyName) => {
                 const cat = getCategoryForHobby(hobbyName);
                 const colorClass = cat
-                  ? (CATEGORY_BADGE_COLORS[cat.name] ?? "border-stone-200 bg-stone-50 text-stone-600")
-                  : "border-stone-200 bg-stone-50 text-stone-600";
+                  ? (CATEGORY_BADGE_COLORS[cat.name] ??
+                    'border-stone-200 bg-stone-50 text-stone-600')
+                  : 'border-stone-200 bg-stone-50 text-stone-600';
                 return (
                   <Link
                     key={hobbyName}
-                    href={`/hobbies/${encodeURIComponent(hobbyName.toLowerCase().replace(/\s+/g, "-"))}`}
+                    href={`/hobbies/${encodeURIComponent(hobbyName.toLowerCase().replace(/\s+/g, '-'))}`}
                     className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-medium transition-colors hover:ring-1 hover:ring-emerald-300 ${colorClass}`}
                   >
                     {cat && <span>{cat.emoji}</span>}
@@ -318,7 +315,11 @@ export default async function ProfilePage({ params }: Props) {
             <BadgeCollection earnedBadgeIds={earnedBadgeIds} />
             {isOwner && earnedBadgeIds.length === 0 && (
               <p className="mt-2 text-xs text-stone-400">
-                Complete <a href="/side-quests" className="text-emerald-600 hover:underline">side quests</a> to earn badges!
+                Complete{' '}
+                <a href="/side-quests" className="text-emerald-600 hover:underline">
+                  side quests
+                </a>{' '}
+                to earn badges!
               </p>
             )}
           </div>
@@ -332,22 +333,20 @@ export default async function ProfilePage({ params }: Props) {
             </h2>
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               {timelineList.map((t) => (
-                <TimelineCard
-                  key={t.id}
-                  timeline={t}
-                  showVisibility={isOwner}
-                />
+                <TimelineCard key={t.id} timeline={t} showVisibility={isOwner} />
               ))}
             </div>
           </div>
         ) : (
           <div className="rounded-xl border border-stone-200 bg-stone-50 p-10 text-center">
             <p className="text-stone-600 font-medium">
-              {isOwner ? "You haven't built a timeline yet." : `@${username} hasn't shared a timeline yet.`}
+              {isOwner
+                ? "You haven't built a timeline yet."
+                : `@${username} hasn't shared a timeline yet.`}
             </p>
             <p className="mt-1 text-sm text-stone-400">
               {isOwner
-                ? "Map the hobbies that shaped each chapter of your life."
+                ? 'Map the hobbies that shaped each chapter of your life.'
                 : "Check back later, or explore other people's hobby journeys in the meantime."}
             </p>
             {isOwner ? (
@@ -383,7 +382,10 @@ export default async function ProfilePage({ params }: Props) {
                 Bucket list
               </h2>
               {isOwner && (
-                <a href="/dashboard" className="text-xs text-emerald-600 hover:text-emerald-700 transition-colors">
+                <a
+                  href="/dashboard"
+                  className="text-xs text-emerald-600 hover:text-emerald-700 transition-colors"
+                >
                   Manage →
                 </a>
               )}
@@ -397,23 +399,23 @@ export default async function ProfilePage({ params }: Props) {
                   <li
                     key={item.id}
                     className={`flex items-start gap-3 rounded-lg border px-4 py-3 ${
-                      item.status === "done"
-                        ? "border-emerald-200 bg-emerald-50/60"
-                        : "border-stone-200 bg-stone-50"
+                      item.status === 'done'
+                        ? 'border-emerald-200 bg-emerald-50/60'
+                        : 'border-stone-200 bg-stone-50'
                     }`}
                   >
                     <span
                       className={`mt-0.5 h-4.5 w-4.5 shrink-0 rounded-full border-2 flex items-center justify-center text-[9px] font-bold ${
-                        item.status === "done"
-                          ? "border-emerald-500 bg-emerald-500 text-white"
-                          : "border-stone-300"
+                        item.status === 'done'
+                          ? 'border-emerald-500 bg-emerald-500 text-white'
+                          : 'border-stone-300'
                       }`}
                     >
-                      {item.status === "done" ? "✓" : ""}
+                      {item.status === 'done' ? '✓' : ''}
                     </span>
                     <span
                       className={`flex-1 text-sm ${
-                        item.status === "done" ? "line-through text-stone-400" : "text-stone-700"
+                        item.status === 'done' ? 'line-through text-stone-400' : 'text-stone-700'
                       }`}
                     >
                       {item.title}
@@ -431,9 +433,7 @@ export default async function ProfilePage({ params }: Props) {
         )}
 
         {/* Suggestions */}
-        {isOwner && allHobbies.length > 0 && (
-          <SuggestionsPanel existingHobbies={allHobbies} />
-        )}
+        {isOwner && allHobbies.length > 0 && <SuggestionsPanel existingHobbies={allHobbies} />}
       </div>
     </div>
   );

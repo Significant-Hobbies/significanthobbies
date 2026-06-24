@@ -1,16 +1,16 @@
-"use client";
+'use client';
 
-import { type ReactNode,useEffect, useRef, useState } from "react";
+import { type ReactNode, useEffect, useRef, useState } from 'react';
 
 type Animation =
-  | "fade-up"
-  | "fade-down"
-  | "fade-left"
-  | "fade-right"
-  | "scale-up"
-  | "blur-in"
-  | "slide-up"
-  | "flip-up";
+  | 'fade-up'
+  | 'fade-down'
+  | 'fade-left'
+  | 'fade-right'
+  | 'scale-up'
+  | 'blur-in'
+  | 'slide-up'
+  | 'flip-up';
 
 interface ScrollRevealProps {
   children: ReactNode;
@@ -24,47 +24,47 @@ interface ScrollRevealProps {
 }
 
 const ANIMATION_STYLES: Record<Animation, { from: string; to: string }> = {
-  "fade-up": {
-    from: "opacity-0 translate-y-8",
-    to: "opacity-100 translate-y-0",
+  'fade-up': {
+    from: 'opacity-0 translate-y-8',
+    to: 'opacity-100 translate-y-0',
   },
-  "fade-down": {
-    from: "opacity-0 -translate-y-8",
-    to: "opacity-100 translate-y-0",
+  'fade-down': {
+    from: 'opacity-0 -translate-y-8',
+    to: 'opacity-100 translate-y-0',
   },
-  "fade-left": {
-    from: "opacity-0 translate-x-8",
-    to: "opacity-100 translate-x-0",
+  'fade-left': {
+    from: 'opacity-0 translate-x-8',
+    to: 'opacity-100 translate-x-0',
   },
-  "fade-right": {
-    from: "opacity-0 -translate-x-8",
-    to: "opacity-100 translate-x-0",
+  'fade-right': {
+    from: 'opacity-0 -translate-x-8',
+    to: 'opacity-100 translate-x-0',
   },
-  "scale-up": {
-    from: "opacity-0 scale-95",
-    to: "opacity-100 scale-100",
+  'scale-up': {
+    from: 'opacity-0 scale-95',
+    to: 'opacity-100 scale-100',
   },
-  "blur-in": {
-    from: "opacity-0 blur-sm scale-[0.97]",
-    to: "opacity-100 blur-0 scale-100",
+  'blur-in': {
+    from: 'opacity-0 blur-sm scale-[0.97]',
+    to: 'opacity-100 blur-0 scale-100',
   },
-  "slide-up": {
-    from: "opacity-0 translate-y-12",
-    to: "opacity-100 translate-y-0",
+  'slide-up': {
+    from: 'opacity-0 translate-y-12',
+    to: 'opacity-100 translate-y-0',
   },
-  "flip-up": {
-    from: "opacity-0 translate-y-6 [transform:perspective(800px)_rotateX(8deg)]",
-    to: "opacity-100 translate-y-0 [transform:perspective(800px)_rotateX(0deg)]",
+  'flip-up': {
+    from: 'opacity-0 translate-y-6 [transform:perspective(800px)_rotateX(8deg)]',
+    to: 'opacity-100 translate-y-0 [transform:perspective(800px)_rotateX(0deg)]',
   },
 };
 
 export function ScrollReveal({
   children,
-  animation = "fade-up",
+  animation = 'fade-up',
   delay = 0,
   duration = 600,
   threshold = 0.15,
-  className = "",
+  className = '',
   once = true,
 }: ScrollRevealProps) {
   const ref = useRef<HTMLDivElement>(null);
@@ -83,7 +83,7 @@ export function ScrollReveal({
           setVisible(false);
         }
       },
-      { threshold, rootMargin: "0px 0px -40px 0px" }
+      { threshold, rootMargin: '0px 0px -40px 0px' }
     );
     obs.observe(el);
     return () => obs.disconnect();
@@ -108,11 +108,11 @@ export function ScrollReveal({
 /** Wraps an array of items with staggered scroll reveals */
 export function ScrollRevealGroup({
   children,
-  animation = "fade-up",
+  animation = 'fade-up',
   stagger = 80,
   duration = 500,
   threshold = 0.1,
-  className = "",
+  className = '',
 }: {
   children: ReactNode[];
   animation?: Animation;
@@ -134,7 +134,7 @@ export function ScrollRevealGroup({
           obs.disconnect();
         }
       },
-      { threshold, rootMargin: "0px 0px -30px 0px" }
+      { threshold, rootMargin: '0px 0px -30px 0px' }
     );
     obs.observe(el);
     return () => obs.disconnect();

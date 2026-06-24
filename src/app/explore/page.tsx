@@ -1,18 +1,19 @@
 export const revalidate = 300;
 
-import { count,desc, eq, inArray } from "drizzle-orm";
-import Link from "next/link";
+import { count, desc, eq, inArray } from 'drizzle-orm';
+import Link from 'next/link';
 
-import { likes, timelines, users } from "~/db/schema";
-import { getCategoryForHobby } from "~/lib/hobbies";
-import type { Phase, TimelineData, TimelineVisibility } from "~/lib/types";
-import { db } from "~/server/db";
+import { likes, timelines, users } from '~/db/schema';
+import { getCategoryForHobby } from '~/lib/hobbies';
+import type { Phase, TimelineData, TimelineVisibility } from '~/lib/types';
+import { db } from '~/server/db';
 
-import { ExploreClient } from "./explore-client";
+import { ExploreClient } from './explore-client';
 
 export const metadata = {
-  title: "Explore Hobby Timelines — SignificantHobbies",
-  description: "Discover how people spend their time across life phases. Browse community hobby timelines, trending interests, and inspiring journeys.",
+  title: 'Explore Hobby Timelines — SignificantHobbies',
+  description:
+    'Discover how people spend their time across life phases. Browse community hobby timelines, trending interests, and inspiring journeys.',
 };
 
 export default async function ExplorePage() {
@@ -33,7 +34,7 @@ export default async function ExplorePage() {
     })
     .from(timelines)
     .leftJoin(users, eq(timelines.userId, users.id))
-    .where(eq(timelines.visibility, "PUBLIC"))
+    .where(eq(timelines.visibility, 'PUBLIC'))
     .orderBy(desc(timelines.updatedAt))
     .limit(100);
 
@@ -55,7 +56,9 @@ export default async function ExplorePage() {
     let phases: Phase[] = [];
     try {
       phases = JSON.parse(raw.phases) as Phase[];
-    } catch { /* ignore */ }
+    } catch {
+      /* ignore */
+    }
     return {
       id: raw.id,
       title: raw.title,
@@ -88,7 +91,7 @@ export default async function ExplorePage() {
   const trendingHobbies = Object.entries(hobbyCount)
     .sort((a, b) => b[1] - a[1])
     .slice(0, 8)
-    .map(([name, count]) => ({ name, count, emoji: getCategoryForHobby(name)?.emoji ?? "✨" }));
+    .map(([name, count]) => ({ name, count, emoji: getCategoryForHobby(name)?.emoji ?? '✨' }));
   const totalPhases = timelineList.reduce((sum, timeline) => sum + timeline.phases.length, 0);
   const totalUniqueHobbies = Object.keys(hobbyCount).length;
   const totalLikes = timelineList.reduce((sum, timeline) => sum + timeline.likeCount, 0);
@@ -120,7 +123,7 @@ export default async function ExplorePage() {
             {trendingHobbies.map(({ name, count, emoji }) => (
               <Link
                 key={name}
-                href={`/hobbies/${encodeURIComponent(name.toLowerCase().replace(/\s+/g, "-"))}`}
+                href={`/hobbies/${encodeURIComponent(name.toLowerCase().replace(/\s+/g, '-'))}`}
                 prefetch={false}
                 className="inline-flex items-center gap-1 rounded-full border border-stone-200 bg-stone-50 px-3 py-1 text-xs text-stone-600 hover:border-emerald-400 hover:text-emerald-600 transition-colors"
               >

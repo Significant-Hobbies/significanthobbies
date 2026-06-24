@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import { useRouter } from "next/navigation";
-import { useState, useTransition } from "react";
+import { useRouter } from 'next/navigation';
+import { useState, useTransition } from 'react';
 
-import { updateProfile } from "~/lib/actions/user";
+import { updateProfile } from '~/lib/actions/user';
 
 interface ProfileFormProps {
   initialName: string;
@@ -36,7 +36,7 @@ export function ProfileForm({
 
     // Client-side validation
     if (website.trim() && !/^https?:\/\/.+/.test(website.trim())) {
-      setError("Website must start with http:// or https://");
+      setError('Website must start with http:// or https://');
       return;
     }
 
@@ -53,7 +53,7 @@ export function ProfileForm({
           router.push(`/u/${username}`);
         }
       } catch (err) {
-        setError(err instanceof Error ? err.message : "Something went wrong");
+        setError(err instanceof Error ? err.message : 'Something went wrong');
       }
     });
   }
@@ -76,10 +76,7 @@ export function ProfileForm({
 
       {/* Display name */}
       <div>
-        <label
-          htmlFor="name"
-          className="mb-1.5 block text-sm font-medium text-stone-700"
-        >
+        <label htmlFor="name" className="mb-1.5 block text-sm font-medium text-stone-700">
           Display name
         </label>
         <input
@@ -95,10 +92,7 @@ export function ProfileForm({
 
       {/* Bio */}
       <div>
-        <label
-          htmlFor="bio"
-          className="mb-1.5 block text-sm font-medium text-stone-700"
-        >
+        <label htmlFor="bio" className="mb-1.5 block text-sm font-medium text-stone-700">
           Bio
         </label>
         <textarea
@@ -111,9 +105,9 @@ export function ProfileForm({
         />
         <p
           className={[
-            "mt-1 text-right text-xs",
-            bioLength >= BIO_MAX ? "text-red-500 font-medium" : "text-stone-400",
-          ].join(" ")}
+            'mt-1 text-right text-xs',
+            bioLength >= BIO_MAX ? 'text-red-500 font-medium' : 'text-stone-400',
+          ].join(' ')}
         >
           {bioLength} / {BIO_MAX}
         </p>
@@ -121,24 +115,19 @@ export function ProfileForm({
 
       {/* Website */}
       <div>
-        <label
-          htmlFor="website"
-          className="mb-1.5 block text-sm font-medium text-stone-700"
-        >
+        <label htmlFor="website" className="mb-1.5 block text-sm font-medium text-stone-700">
           Website
         </label>
         <div className="flex items-center rounded-lg border border-stone-300 bg-stone-50 px-3.5 py-2 transition focus-within:border-emerald-400 focus-within:bg-white focus-within:ring-2 focus-within:ring-emerald-100">
-          <span className="mr-1 select-none text-sm text-stone-400">
-            https://
-          </span>
+          <span className="mr-1 select-none text-sm text-stone-400">https://</span>
           <input
             id="website"
             type="text"
-            value={website.replace(/^https?:\/\//, "")}
+            value={website.replace(/^https?:\/\//, '')}
             onChange={(e) => {
               const val = e.target.value;
-              if (val === "") {
-                setWebsite("");
+              if (val === '') {
+                setWebsite('');
               } else {
                 setWebsite(`https://${val}`);
               }
@@ -147,9 +136,7 @@ export function ProfileForm({
             className="flex-1 bg-transparent text-sm text-stone-900 placeholder-stone-400 outline-none"
           />
         </div>
-        <p className="mt-1 text-xs text-stone-400">
-          Include https:// — e.g. https://yoursite.com
-        </p>
+        <p className="mt-1 text-xs text-stone-400">Include https:// — e.g. https://yoursite.com</p>
       </div>
 
       {/* Submit */}
@@ -159,7 +146,7 @@ export function ProfileForm({
           disabled={isPending}
           className="w-full rounded-lg bg-emerald-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-emerald-700 disabled:opacity-60 cursor-pointer disabled:cursor-not-allowed"
         >
-          {isPending ? "Saving..." : "Save changes"}
+          {isPending ? 'Saving...' : 'Save changes'}
         </button>
       </div>
     </form>

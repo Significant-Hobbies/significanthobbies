@@ -1,8 +1,8 @@
-import type { Metadata } from "next";
-import Link from "next/link";
-import { notFound } from "next/navigation";
+import type { Metadata } from 'next';
+import Link from 'next/link';
+import { notFound } from 'next/navigation';
 
-import { FAMOUS_JOURNEYS } from "~/lib/famous-journeys";
+import { FAMOUS_JOURNEYS } from '~/lib/famous-journeys';
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -17,8 +17,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const person = FAMOUS_JOURNEYS.find((p) => p.slug === slug);
   if (!person) return {};
 
-  const firstPhaseLabel = person.phases[0]?.label ?? "early life";
-  const lastPhaseLabel = person.phases[person.phases.length - 1]?.label ?? "peak career";
+  const firstPhaseLabel = person.phases[0]?.label ?? 'early life';
+  const lastPhaseLabel = person.phases[person.phases.length - 1]?.label ?? 'peak career';
 
   return {
     title: `${person.name}'s Hobbies — SignificantHobbies`,
@@ -28,12 +28,42 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 // Phase color palette — cycling through visually distinct hues
 const PHASE_COLORS = [
-  { bg: "bg-emerald-50", border: "border-emerald-300", label: "text-emerald-700", pill: "bg-emerald-100 text-emerald-800" },
-  { bg: "bg-blue-50", border: "border-blue-300", label: "text-blue-700", pill: "bg-blue-100 text-blue-800" },
-  { bg: "bg-violet-50", border: "border-violet-300", label: "text-violet-700", pill: "bg-violet-100 text-violet-800" },
-  { bg: "bg-amber-50", border: "border-amber-300", label: "text-amber-700", pill: "bg-amber-100 text-amber-800" },
-  { bg: "bg-rose-50", border: "border-rose-300", label: "text-rose-700", pill: "bg-rose-100 text-rose-800" },
-  { bg: "bg-teal-50", border: "border-teal-300", label: "text-teal-700", pill: "bg-teal-100 text-teal-800" },
+  {
+    bg: 'bg-emerald-50',
+    border: 'border-emerald-300',
+    label: 'text-emerald-700',
+    pill: 'bg-emerald-100 text-emerald-800',
+  },
+  {
+    bg: 'bg-blue-50',
+    border: 'border-blue-300',
+    label: 'text-blue-700',
+    pill: 'bg-blue-100 text-blue-800',
+  },
+  {
+    bg: 'bg-violet-50',
+    border: 'border-violet-300',
+    label: 'text-violet-700',
+    pill: 'bg-violet-100 text-violet-800',
+  },
+  {
+    bg: 'bg-amber-50',
+    border: 'border-amber-300',
+    label: 'text-amber-700',
+    pill: 'bg-amber-100 text-amber-800',
+  },
+  {
+    bg: 'bg-rose-50',
+    border: 'border-rose-300',
+    label: 'text-rose-700',
+    pill: 'bg-rose-100 text-rose-800',
+  },
+  {
+    bg: 'bg-teal-50',
+    border: 'border-teal-300',
+    label: 'text-teal-700',
+    pill: 'bg-teal-100 text-teal-800',
+  },
 ];
 
 export default async function JourneyDetailPage({ params }: Props) {
@@ -45,27 +75,27 @@ export default async function JourneyDetailPage({ params }: Props) {
   const prevPerson = idx > 0 ? FAMOUS_JOURNEYS[idx - 1] : null;
   const nextPerson = idx < FAMOUS_JOURNEYS.length - 1 ? FAMOUS_JOURNEYS[idx + 1] : null;
 
-  const firstPhaseLabel = person.phases[0]?.label ?? "early life";
-  const lastPhaseLabel = person.phases[person.phases.length - 1]?.label ?? "peak career";
+  const firstPhaseLabel = person.phases[0]?.label ?? 'early life';
+  const lastPhaseLabel = person.phases[person.phases.length - 1]?.label ?? 'peak career';
 
   // JSON-LD Article schema
   const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "Article",
+    '@context': 'https://schema.org',
+    '@type': 'Article',
     headline: `${person.name}'s Hobby Journey`,
     description: `Explore ${person.name}'s hobby journey — from ${firstPhaseLabel} to ${lastPhaseLabel}. See how their hobbies shaped who they became.`,
     url: `https://significanthobbies.com/journeys/${person.slug}`,
     author: {
-      "@type": "Organization",
-      name: "SignificantHobbies",
+      '@type': 'Organization',
+      name: 'SignificantHobbies',
     },
     publisher: {
-      "@type": "Organization",
-      name: "SignificantHobbies",
-      url: "https://significanthobbies.com",
+      '@type': 'Organization',
+      name: 'SignificantHobbies',
+      url: 'https://significanthobbies.com',
     },
     about: {
-      "@type": "Person",
+      '@type': 'Person',
       name: person.name,
       description: person.knownFor,
     },

@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import { Copy, Plus, Users } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { Copy, Plus, Users } from 'lucide-react';
+import { useEffect, useMemo, useState } from 'react';
 
 import {
   buildCirclePlan,
@@ -9,13 +9,13 @@ import {
   createDefaultCircle,
   type HobbyCircle,
   normalizeMemberList,
-} from "~/lib/accountability-circles";
-import { QUEST_CATEGORIES, type QuestCategory } from "~/lib/side-quests";
+} from '~/lib/accountability-circles';
+import { QUEST_CATEGORIES, type QuestCategory } from '~/lib/side-quests';
 
-const STORAGE_KEY = "sh-hobby-circles";
+const STORAGE_KEY = 'sh-hobby-circles';
 
 function readCircles(): HobbyCircle[] {
-  if (typeof window === "undefined") return [];
+  if (typeof window === 'undefined') return [];
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return [];
@@ -29,8 +29,8 @@ function writeCircles(circles: HobbyCircle[]) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(circles));
 }
 
-function focusLabel(focus: HobbyCircle["focus"]): string {
-  if (focus === "balanced") return "Balanced";
+function focusLabel(focus: HobbyCircle['focus']): string {
+  if (focus === 'balanced') return 'Balanced';
   return QUEST_CATEGORIES.find((category) => category.id === focus)?.label ?? focus;
 }
 
@@ -49,15 +49,13 @@ export function AccountabilityCircles({ completedQuestIds }: { completedQuestIds
 
   const selectedCircle = circles.find((circle) => circle.id === selectedId) ?? circles[0];
   const selectedPlan = useMemo(
-    () => selectedCircle ? buildCirclePlan(selectedCircle, completedQuestIds) : null,
-    [completedQuestIds, selectedCircle],
+    () => (selectedCircle ? buildCirclePlan(selectedCircle, completedQuestIds) : null),
+    [completedQuestIds, selectedCircle]
   );
 
   function updateCircle(id: string, updates: Partial<HobbyCircle>) {
     setCircles((current) => {
-      const next = current.map((circle) =>
-        circle.id === id ? { ...circle, ...updates } : circle,
-      );
+      const next = current.map((circle) => (circle.id === id ? { ...circle, ...updates } : circle));
       writeCircles(next);
       return next;
     });
@@ -114,13 +112,14 @@ export function AccountabilityCircles({ completedQuestIds }: { completedQuestIds
               onClick={() => setSelectedId(circle.id)}
               className={`w-full rounded-xl border px-3 py-2 text-left transition-all ${
                 selectedCircle.id === circle.id
-                  ? "border-emerald-300 bg-emerald-50"
-                  : "border-stone-200 hover:border-stone-300"
+                  ? 'border-emerald-300 bg-emerald-50'
+                  : 'border-stone-200 hover:border-stone-300'
               }`}
             >
               <div className="font-medium text-stone-800">{circle.name}</div>
               <div className="mt-0.5 text-xs text-stone-500">
-                {focusLabel(circle.focus)} · {circle.members.length} member{circle.members.length === 1 ? "" : "s"}
+                {focusLabel(circle.focus)} · {circle.members.length} member
+                {circle.members.length === 1 ? '' : 's'}
               </div>
             </button>
           ))}
@@ -144,7 +143,7 @@ export function AccountabilityCircles({ completedQuestIds }: { completedQuestIds
                 value={selectedCircle.focus}
                 onChange={(event) =>
                   updateCircle(selectedCircle.id, {
-                    focus: event.target.value as QuestCategory | "balanced",
+                    focus: event.target.value as QuestCategory | 'balanced',
                   })
                 }
                 className="w-full rounded-xl border border-stone-200 px-3 py-2 text-sm outline-none focus:border-emerald-400"
@@ -176,7 +175,7 @@ export function AccountabilityCircles({ completedQuestIds }: { completedQuestIds
             <label className="space-y-1.5">
               <span className="text-sm font-medium text-stone-600">Members</span>
               <textarea
-                value={selectedCircle.members.join(", ")}
+                value={selectedCircle.members.join(', ')}
                 onChange={(event) =>
                   updateCircle(selectedCircle.id, {
                     members: normalizeMemberList(event.target.value),
@@ -194,7 +193,8 @@ export function AccountabilityCircles({ completedQuestIds }: { completedQuestIds
             <div>
               <h2 className="text-lg font-bold text-stone-900">Accountability round</h2>
               <p className="text-sm text-stone-500">
-                {selectedPlan.completedCount}/{selectedPlan.totalCount} done · {selectedPlan.completionPct}% complete
+                {selectedPlan.completedCount}/{selectedPlan.totalCount} done ·{' '}
+                {selectedPlan.completionPct}% complete
               </p>
             </div>
             <button
@@ -203,7 +203,7 @@ export function AccountabilityCircles({ completedQuestIds }: { completedQuestIds
               className="inline-flex items-center gap-1.5 rounded-full border border-stone-200 bg-white px-4 py-2 text-sm font-medium text-stone-600 transition-all hover:border-emerald-300 hover:text-emerald-700"
             >
               <Copy className="h-4 w-4" />
-              {copied ? "Copied" : "Copy check-in"}
+              {copied ? 'Copied' : 'Copy check-in'}
             </button>
           </div>
 
@@ -216,8 +216,8 @@ export function AccountabilityCircles({ completedQuestIds }: { completedQuestIds
                   href={`/side-quests?q=${quest.id}`}
                   className={`rounded-xl border p-4 transition-all hover:-translate-y-0.5 ${
                     done
-                      ? "border-emerald-200 bg-emerald-50"
-                      : "border-stone-200 bg-stone-50 hover:border-emerald-300"
+                      ? 'border-emerald-200 bg-emerald-50'
+                      : 'border-stone-200 bg-stone-50 hover:border-emerald-300'
                   }`}
                 >
                   <div className="text-3xl">{quest.emoji}</div>
@@ -225,7 +225,7 @@ export function AccountabilityCircles({ completedQuestIds }: { completedQuestIds
                   <p className="mt-1 line-clamp-3 text-sm text-stone-500">{quest.description}</p>
                   <div className="mt-3 flex items-center justify-between text-xs text-stone-400">
                     <span>{quest.timeEstimate}</span>
-                    <span>{done ? "Done" : "Open"}</span>
+                    <span>{done ? 'Done' : 'Open'}</span>
                   </div>
                 </a>
               );

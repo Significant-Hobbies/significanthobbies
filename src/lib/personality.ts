@@ -1,5 +1,5 @@
-import { getCategoryForHobby, HOBBY_CATEGORIES } from "./hobbies";
-import type { Phase } from "./types";
+import { getCategoryForHobby, HOBBY_CATEGORIES } from './hobbies';
+import type { Phase } from './types';
 
 export type Archetype = {
   name: string;
@@ -16,49 +16,54 @@ export type PersonalityResult = {
 
 const ARCHETYPES: Record<string, Archetype> = {
   blankCanvas: {
-    name: "Blank Canvas",
-    emoji: "🎭",
-    description: "Your journey is just beginning — every path is open to you.",
+    name: 'Blank Canvas',
+    emoji: '🎭',
+    description: 'Your journey is just beginning — every path is open to you.',
   },
   renaissanceExplorer: {
-    name: "Renaissance Explorer",
-    emoji: "🌍",
-    description: "You roam across many worlds, sampling widely and leaving no stone unturned.",
+    name: 'Renaissance Explorer',
+    emoji: '🌍',
+    description: 'You roam across many worlds, sampling widely and leaving no stone unturned.',
   },
   deepSpecialist: {
-    name: "Deep Specialist",
-    emoji: "🔬",
-    description: "You go deep rather than wide, mastering your chosen domain with dedication.",
+    name: 'Deep Specialist',
+    emoji: '🔬',
+    description: 'You go deep rather than wide, mastering your chosen domain with dedication.',
   },
   creativeSoul: {
-    name: "Creative Soul",
-    emoji: "🎨",
-    description: "You express yourself through creativity and music, bringing art into everyday life.",
+    name: 'Creative Soul',
+    emoji: '🎨',
+    description:
+      'You express yourself through creativity and music, bringing art into everyday life.',
   },
   actionHero: {
-    name: "Action Hero",
-    emoji: "⚡",
-    description: "You live in your body — outdoors, active, and always seeking the next physical challenge.",
+    name: 'Action Hero',
+    emoji: '⚡',
+    description:
+      'You live in your body — outdoors, active, and always seeking the next physical challenge.',
   },
   mindBuilder: {
-    name: "Mind Builder",
-    emoji: "🧠",
-    description: "You feed your intellect with games, ideas, and the joy of learning.",
+    name: 'Mind Builder',
+    emoji: '🧠',
+    description: 'You feed your intellect with games, ideas, and the joy of learning.',
   },
   socialButterfly: {
-    name: "Social Butterfly",
-    emoji: "🦋",
-    description: "You thrive through connection — gathering, hosting, and sharing experiences with others.",
+    name: 'Social Butterfly',
+    emoji: '🦋',
+    description:
+      'You thrive through connection — gathering, hosting, and sharing experiences with others.',
   },
   maker: {
-    name: "Maker",
-    emoji: "🔧",
-    description: "You build and collect with purpose, finding satisfaction in creating tangible things.",
+    name: 'Maker',
+    emoji: '🔧',
+    description:
+      'You build and collect with purpose, finding satisfaction in creating tangible things.',
   },
   balancedExplorer: {
-    name: "Balanced Explorer",
-    emoji: "⚖️",
-    description: "You maintain a healthy mix of interests, exploring several areas without overcommitting to any one.",
+    name: 'Balanced Explorer',
+    emoji: '⚖️',
+    description:
+      'You maintain a healthy mix of interests, exploring several areas without overcommitting to any one.',
   },
 };
 
@@ -68,7 +73,7 @@ function buildCategoryCounts(phases: Phase[]): Map<string, number> {
   for (const phase of phases) {
     for (const entry of phase.hobbies) {
       const cat = getCategoryForHobby(entry.name);
-      const key = cat?.name ?? "Other";
+      const key = cat?.name ?? 'Other';
       counts.set(key, (counts.get(key) ?? 0) + 1);
     }
   }
@@ -96,7 +101,7 @@ function buildUniqueCategoryCounts(phases: Phase[]): Map<string, number> {
       if (seen.has(key)) continue;
       seen.add(key);
       const cat = getCategoryForHobby(entry.name);
-      const catName = cat?.name ?? "Other";
+      const catName = cat?.name ?? 'Other';
       counts.set(catName, (counts.get(catName) ?? 0) + 1);
     }
   }
@@ -106,7 +111,7 @@ function buildUniqueCategoryCounts(phases: Phase[]): Map<string, number> {
 function computeArchetype(
   phases: Phase[],
   categoryCounts: Map<string, number>,
-  totalHobbies: number,
+  totalHobbies: number
 ): Archetype {
   if (phases.length === 0 || totalHobbies === 0) {
     return ARCHETYPES.blankCanvas!;
@@ -121,14 +126,13 @@ function computeArchetype(
 
   // Check dominant category groups (50%+) before Deep Specialist
   // so that e.g. "Creative Soul" wins over "Deep Specialist" when a thematic group dominates
-  const get = (names: string[]) =>
-    names.reduce((s, n) => s + (categoryCounts.get(n) ?? 0), 0);
+  const get = (names: string[]) => names.reduce((s, n) => s + (categoryCounts.get(n) ?? 0), 0);
 
-  const creativeCount = get(["Creative", "Music"]);
-  const physicalCount = get(["Physical", "Outdoor"]);
-  const intellectualCount = get(["Intellectual", "Gaming"]);
-  const socialCount = get(["Social", "Culinary"]);
-  const makerCount = get(["Making", "Collecting"]);
+  const creativeCount = get(['Creative', 'Music']);
+  const physicalCount = get(['Physical', 'Outdoor']);
+  const intellectualCount = get(['Intellectual', 'Gaming']);
+  const socialCount = get(['Social', 'Culinary']);
+  const makerCount = get(['Making', 'Collecting']);
 
   const threshold = totalHobbies * 0.5;
 
@@ -153,7 +157,7 @@ function computeArchetype(
 
 function computeCategoryBreakdown(
   categoryCounts: Map<string, number>,
-  totalHobbies: number,
+  totalHobbies: number
 ): Record<string, number> {
   if (totalHobbies === 0) return {};
   const breakdown: Record<string, number> = {};
@@ -172,7 +176,7 @@ function computeCategoryBreakdown(
   return breakdown;
 }
 
-function computeTraits(phases: Phase[]): PersonalityResult["traits"] {
+function computeTraits(phases: Phase[]): PersonalityResult['traits'] {
   const totalCategories = HOBBY_CATEGORIES.length; // 10
 
   const unique = uniqueHobbies(phases);
@@ -198,7 +202,7 @@ function computeTraits(phases: Phase[]): PersonalityResult["traits"] {
     const threshold = phases.length * 0.5;
     for (const hobby of unique) {
       const presenceCount = phases.filter((p) =>
-        p.hobbies.some((h) => h.name.toLowerCase() === hobby),
+        p.hobbies.some((h) => h.name.toLowerCase() === hobby)
       ).length;
       if (presenceCount >= threshold) consistentCount++;
     }
@@ -219,7 +223,7 @@ function dominantCategoryForPhase(phase: Phase): string | null {
   const counts = new Map<string, number>();
   for (const entry of phase.hobbies) {
     const cat = getCategoryForHobby(entry.name);
-    const key = cat?.name ?? "Other";
+    const key = cat?.name ?? 'Other';
     counts.set(key, (counts.get(key) ?? 0) + 1);
   }
   if (counts.size === 0) return null;
@@ -228,11 +232,9 @@ function dominantCategoryForPhase(phase: Phase): string | null {
 
 function computeNarrative(phases: Phase[]): string {
   const sorted = [...phases].sort((a, b) => a.order - b.order);
-  const dominants = sorted
-    .map((p) => dominantCategoryForPhase(p))
-    .filter(Boolean) as string[];
+  const dominants = sorted.map((p) => dominantCategoryForPhase(p)).filter(Boolean) as string[];
 
-  if (dominants.length === 0) return "Your hobby journey is waiting to be written.";
+  if (dominants.length === 0) return 'Your hobby journey is waiting to be written.';
   if (dominants.length === 1) return `Your journey is rooted in ${dominants[0]} pursuits.`;
 
   // Deduplicate consecutive same categories to highlight actual transitions
@@ -250,7 +252,7 @@ function computeNarrative(phases: Phase[]): string {
     return `Started with ${transitions[0]} pursuits and shifted into ${transitions[1]} territory.`;
   }
 
-  const middle = transitions.slice(1, -1).join(", then ");
+  const middle = transitions.slice(1, -1).join(', then ');
   return `Started with ${transitions[0]} pursuits, explored ${middle} interests, and settled into ${transitions[transitions.length - 1]} territory.`;
 }
 

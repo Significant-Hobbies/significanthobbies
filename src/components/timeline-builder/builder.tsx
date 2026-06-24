@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import {
   closestCenter,
@@ -9,27 +9,27 @@ import {
   TouchSensor,
   useSensor,
   useSensors,
-} from "@dnd-kit/core";
+} from '@dnd-kit/core';
 import {
   arrayMove,
   SortableContext,
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
-} from "@dnd-kit/sortable";
-import { Loader2,Plus, Save } from "lucide-react";
-import { nanoid } from "nanoid";
-import { useRouter } from "next/navigation";
-import { useEffect, useState, useTransition } from "react";
-import { toast } from "sonner";
+} from '@dnd-kit/sortable';
+import { Loader2, Plus, Save } from 'lucide-react';
+import { nanoid } from 'nanoid';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState, useTransition } from 'react';
+import { toast } from 'sonner';
 
-import { Button } from "~/components/ui/button";
-import { Input } from "~/components/ui/input";
-import { saveTimeline, updateTimeline } from "~/lib/actions/timeline";
-import { captureError } from "~/lib/foundry-monitoring";
-import { TIMELINE_TEMPLATES, type TimelineTemplate } from "~/lib/templates";
-import type { Phase, TimelineData } from "~/lib/types";
+import { Button } from '~/components/ui/button';
+import { Input } from '~/components/ui/input';
+import { saveTimeline, updateTimeline } from '~/lib/actions/timeline';
+import { captureError } from '~/lib/foundry-monitoring';
+import { TIMELINE_TEMPLATES, type TimelineTemplate } from '~/lib/templates';
+import type { Phase, TimelineData } from '~/lib/types';
 
-import { PhaseCard } from "./phase-card";
+import { PhaseCard } from './phase-card';
 
 interface Props {
   existing?: TimelineData;
@@ -38,7 +38,7 @@ interface Props {
 function makePhase(order: number): Phase {
   return {
     id: nanoid(),
-    label: "",
+    label: '',
     hobbies: [],
     order,
   };
@@ -79,9 +79,7 @@ function TemplatePicker({ onPick }: { onPick: (template: TimelineTemplate) => vo
             <h3 className="mb-1 text-sm font-semibold text-stone-800 group-hover:text-emerald-700 transition-colors leading-tight">
               {template.name}
             </h3>
-            <p className="mb-3 text-xs text-stone-500 leading-snug">
-              {template.description}
-            </p>
+            <p className="mb-3 text-xs text-stone-500 leading-snug">{template.description}</p>
             {template.phases.length > 0 ? (
               <span className="inline-flex items-center rounded-full bg-stone-100 px-2 py-0.5 text-xs text-stone-500 group-hover:bg-emerald-100 group-hover:text-emerald-600 transition-colors">
                 {template.phases.length} phases
@@ -100,11 +98,9 @@ function TemplatePicker({ onPick }: { onPick: (template: TimelineTemplate) => vo
 
 export function TimelineBuilder({ existing }: Props) {
   const router = useRouter();
-  const [title, setTitle] = useState(existing?.title ?? "");
+  const [title, setTitle] = useState(existing?.title ?? '');
   const [phases, setPhases] = useState<Phase[]>(
-    existing?.phases?.length
-      ? existing.phases
-      : [makePhase(0)],
+    existing?.phases?.length ? existing.phases : [makePhase(0)]
   );
   const [isPending, startTransition] = useTransition();
   // Show template picker only for new timelines (no existing prop)
@@ -122,7 +118,7 @@ export function TimelineBuilder({ existing }: Props) {
     }),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
-    }),
+    })
   );
 
   const draftKey = existing ? `timeline-draft-${existing.id}` : null;
@@ -135,7 +131,7 @@ export function TimelineBuilder({ existing }: Props) {
       const raw = localStorage.getItem(draftKey);
       if (!raw) return;
       const draft = JSON.parse(raw) as { title?: string; phases?: Phase[] };
-      if (typeof draft.title === "string") setTitle(draft.title);
+      if (typeof draft.title === 'string') setTitle(draft.title);
       if (Array.isArray(draft.phases) && draft.phases.length > 0) {
         setPhases(draft.phases);
       }
@@ -181,44 +177,41 @@ export function TimelineBuilder({ existing }: Props) {
   }
 
   function deletePhase(id: string) {
-    setPhases((prev) =>
-      prev.filter((p) => p.id !== id).map((p, i) => ({ ...p, order: i })),
-    );
+    setPhases((prev) => prev.filter((p) => p.id !== id).map((p, i) => ({ ...p, order: i })));
   }
 
   function handleSave() {
     const emptyPhases = phases.filter((p) => !p.label.trim());
     if (emptyPhases.length > 0) {
-      toast.error("All phases need a name");
+      toast.error('All phases need a name');
       return;
     }
 
     startTransition(async () => {
       try {
-        let result;
-        if (existing) {
-          result = await updateTimeline(existing.id, { title: title || undefined, phases });
-        } else {
-          result = await saveTimeline({ title: title || undefined, phases });
-        }
+        const result = existing
+          ? await updateTimeline(existing.id, { title: title || undefined, phases })
+          : await saveTimeline({ title: title || undefined, phases });
         if (draftKey) {
-          try { localStorage.removeItem(draftKey); } catch {}
+          try {
+            localStorage.removeItem(draftKey);
+          } catch {}
         }
-        toast.success(existing ? "Timeline updated" : "Timeline saved!");
+        toast.success(existing ? 'Timeline updated' : 'Timeline saved!');
         // Redirect to timeline — username lookup happens via server redirect from /timeline/[id]
         router.push(`/timeline/${result.id}`);
       } catch (err) {
-        const msg = err instanceof Error ? err.message : "Failed to save";
-        if (msg === "Not authenticated") {
-          toast.error("Sign in to save your timeline");
-          router.push("/login");
+        const msg = err instanceof Error ? err.message : 'Failed to save';
+        if (msg === 'Not authenticated') {
+          toast.error('Sign in to save your timeline');
+          router.push('/login');
         } else {
           // Don't leak a raw server error to users; the draft is kept in
           // localStorage so nothing is lost — they can retry.
-          console.error("Timeline save failed", err);
-          captureError(err, { scope: "timeline-builder", source: "save" });
+          console.error('Timeline save failed', err);
+          captureError(err, { scope: 'timeline-builder', source: 'save' });
           toast.error(
-            "Couldn't save your timeline — your changes are kept here, try again in a moment.",
+            "Couldn't save your timeline — your changes are kept here, try again in a moment."
           );
         }
       }
@@ -250,9 +243,7 @@ export function TimelineBuilder({ existing }: Props) {
       <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5">
         <span
           className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
-            allEmpty
-              ? "bg-stone-100 text-stone-500"
-              : "bg-emerald-100 text-emerald-700"
+            allEmpty ? 'bg-stone-100 text-stone-500' : 'bg-emerald-100 text-emerald-700'
           }`}
         >
           {phasesWithHobbies}/{totalPhases} phases have hobbies
@@ -274,15 +265,8 @@ export function TimelineBuilder({ existing }: Props) {
       </div>
 
       {/* Phases */}
-      <DndContext
-        sensors={sensors}
-        collisionDetection={closestCenter}
-        onDragEnd={handleDragEnd}
-      >
-        <SortableContext
-          items={phases.map((p) => p.id)}
-          strategy={verticalListSortingStrategy}
-        >
+      <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+        <SortableContext items={phases.map((p) => p.id)} strategy={verticalListSortingStrategy}>
           <div className="space-y-3">
             {phases.map((phase, index) => (
               <div key={phase.id}>
@@ -296,7 +280,7 @@ export function TimelineBuilder({ existing }: Props) {
                   <p
                     className="mt-1.5 text-center text-xs text-stone-400"
                     style={{
-                      animation: "fadeOut 0.5s ease 3s forwards",
+                      animation: 'fadeOut 0.5s ease 3s forwards',
                     }}
                   >
                     Drag to reorder
@@ -330,7 +314,7 @@ export function TimelineBuilder({ existing }: Props) {
           ) : (
             <Save className="mr-2 h-4 w-4" />
           )}
-          {existing ? "Update timeline" : "Save timeline"}
+          {existing ? 'Update timeline' : 'Save timeline'}
         </Button>
       </div>
     </div>

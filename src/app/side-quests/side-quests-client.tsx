@@ -1,12 +1,12 @@
-"use client";
+'use client';
 
-import Link from "next/link";
-import { useSearchParams } from "next/navigation";
-import { Suspense,useCallback, useEffect, useMemo, useState } from "react";
+import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
+import { Suspense, useCallback, useEffect, useMemo, useState } from 'react';
 
-import { AccountabilityCircles } from "~/components/accountability-circles";
-import { useQuestProgress } from "~/hooks/use-quest-progress";
-import { getBadgeById } from "~/lib/badges";
+import { AccountabilityCircles } from '~/components/accountability-circles';
+import { useQuestProgress } from '~/hooks/use-quest-progress';
+import { getBadgeById } from '~/lib/badges';
 import {
   filterQuests,
   getQuestById,
@@ -15,43 +15,40 @@ import {
   type QuestFilters,
   SIDE_QUESTS,
   type SideQuest,
-} from "~/lib/side-quests";
+} from '~/lib/side-quests';
 
 // ── Category color mapping ──────────────────────────────────────
 
-const CATEGORY_COLORS: Record<
-  QuestCategory,
-  { border: string; bg: string; text: string }
-> = {
+const CATEGORY_COLORS: Record<QuestCategory, { border: string; bg: string; text: string }> = {
   sensory: {
-    border: "border-emerald-200",
-    bg: "bg-emerald-50",
-    text: "text-emerald-700",
+    border: 'border-emerald-200',
+    bg: 'bg-emerald-50',
+    text: 'text-emerald-700',
   },
   creative: {
-    border: "border-purple-200",
-    bg: "bg-purple-50",
-    text: "text-purple-700",
+    border: 'border-purple-200',
+    bg: 'bg-purple-50',
+    text: 'text-purple-700',
   },
   culinary: {
-    border: "border-amber-200",
-    bg: "bg-amber-50",
-    text: "text-amber-700",
+    border: 'border-amber-200',
+    bg: 'bg-amber-50',
+    text: 'text-amber-700',
   },
   social: {
-    border: "border-blue-200",
-    bg: "bg-blue-50",
-    text: "text-blue-700",
+    border: 'border-blue-200',
+    bg: 'bg-blue-50',
+    text: 'text-blue-700',
   },
   exploration: {
-    border: "border-teal-200",
-    bg: "bg-teal-50",
-    text: "text-teal-700",
+    border: 'border-teal-200',
+    bg: 'bg-teal-50',
+    text: 'text-teal-700',
   },
   mindful: {
-    border: "border-violet-200",
-    bg: "bg-violet-50",
-    text: "text-violet-700",
+    border: 'border-violet-200',
+    bg: 'bg-violet-50',
+    text: 'text-violet-700',
   },
 };
 
@@ -61,7 +58,7 @@ const DIFFICULTY_DOTS: Record<string, number> = {
   hard: 3,
 };
 
-type Tab = "random" | "pick" | "board" | "circles";
+type Tab = 'random' | 'pick' | 'board' | 'circles';
 
 // ── Sub-components ──────────────────────────────────────────────
 
@@ -85,7 +82,7 @@ function DifficultyDots({ difficulty }: { difficulty: string }) {
         <span
           key={i}
           className={`inline-block h-1.5 w-1.5 rounded-full ${
-            i < count ? "bg-stone-500" : "bg-stone-200"
+            i < count ? 'bg-stone-500' : 'bg-stone-200'
           }`}
         />
       ))}
@@ -126,14 +123,10 @@ function QuestCard({
       <div className="mb-5 text-center text-6xl">{quest.emoji}</div>
 
       {/* Title */}
-      <h2 className="mb-3 text-center text-2xl font-bold text-stone-900">
-        {quest.title}
-      </h2>
+      <h2 className="mb-3 text-center text-2xl font-bold text-stone-900">{quest.title}</h2>
 
       {/* Description */}
-      <p className="mb-5 text-center leading-relaxed text-stone-600">
-        {quest.description}
-      </p>
+      <p className="mb-5 text-center leading-relaxed text-stone-600">{quest.description}</p>
 
       {/* Pills row */}
       <div className="mb-5 flex flex-wrap items-center justify-center gap-2">
@@ -189,7 +182,7 @@ function QuestCard({
             onClick={onRollAgain}
             className="inline-flex items-center gap-1.5 rounded-full border border-stone-200 bg-white px-5 py-2.5 text-sm font-medium text-stone-700 transition-all hover:border-emerald-300 hover:text-emerald-700"
           >
-            {rollLabel ?? "Roll Again"} &#127922;
+            {rollLabel ?? 'Roll Again'} &#127922;
           </button>
         )}
 
@@ -199,7 +192,7 @@ function QuestCard({
             onClick={handleShare}
             className="inline-flex items-center gap-1.5 rounded-full border border-stone-200 bg-white px-4 py-2.5 text-sm font-medium text-stone-600 transition-all hover:border-stone-300 hover:bg-stone-50"
           >
-            {copied ? "Copied!" : "Share"}
+            {copied ? 'Copied!' : 'Share'}
           </button>
         )}
       </div>
@@ -225,13 +218,11 @@ function FilterPills<T extends string>({
         <button
           key={opt.value}
           type="button"
-          onClick={() =>
-            onSelect(selected === opt.value ? undefined : opt.value)
-          }
+          onClick={() => onSelect(selected === opt.value ? undefined : opt.value)}
           className={`rounded-full px-3.5 py-1.5 text-sm font-medium transition-all ${
             selected === opt.value
-              ? "bg-emerald-600 text-white shadow-sm"
-              : "border border-stone-200 bg-white text-stone-600 hover:border-emerald-300 hover:text-emerald-700"
+              ? 'bg-emerald-600 text-white shadow-sm'
+              : 'border border-stone-200 bg-white text-stone-600 hover:border-emerald-300 hover:text-emerald-700'
           }`}
         >
           {opt.label}
@@ -241,13 +232,7 @@ function FilterPills<T extends string>({
   );
 }
 
-function ProgressBar({
-  completed,
-  total,
-}: {
-  completed: number;
-  total: number;
-}) {
+function ProgressBar({ completed, total }: { completed: number; total: number }) {
   const pct = total > 0 ? Math.round((completed / total) * 100) : 0;
   return (
     <div className="mb-8">
@@ -267,13 +252,7 @@ function ProgressBar({
   );
 }
 
-function BadgeToast({
-  badgeIds,
-  onDismiss,
-}: {
-  badgeIds: string[];
-  onDismiss: () => void;
-}) {
+function BadgeToast({ badgeIds, onDismiss }: { badgeIds: string[]; onDismiss: () => void }) {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
@@ -308,9 +287,7 @@ function BadgeToast({
               setTimeout(onDismiss, 300);
             }}
             className={`flex items-center gap-3 rounded-xl border border-amber-300 bg-amber-50 p-4 shadow-lg transition-all duration-300 ${
-              visible
-                ? "translate-y-0 opacity-100"
-                : "translate-y-4 opacity-0"
+              visible ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'
             }`}
           >
             <span className="text-3xl">{badge.emoji}</span>
@@ -339,16 +316,14 @@ function SideQuestsInner() {
     completed,
   } = useQuestProgress();
 
-  const [activeTab, setActiveTab] = useState<Tab>("random");
-  const [currentQuest, setCurrentQuest] = useState<SideQuest | null>(
-    () => SIDE_QUESTS[0] ?? null,
-  );
+  const [activeTab, setActiveTab] = useState<Tab>('random');
+  const [currentQuest, setCurrentQuest] = useState<SideQuest | null>(() => SIDE_QUESTS[0] ?? null);
   const [isShuffling, setIsShuffling] = useState(false);
 
   // Help Me Pick filters
-  const [vibe, setVibe] = useState<QuestFilters["vibe"]>("either");
-  const [energy, setEnergy] = useState<QuestFilters["energy"]>(undefined);
-  const [time, setTime] = useState<QuestFilters["time"]>(undefined);
+  const [vibe, setVibe] = useState<QuestFilters['vibe']>('either');
+  const [energy, setEnergy] = useState<QuestFilters['energy']>(undefined);
+  const [time, setTime] = useState<QuestFilters['time']>(undefined);
   const [pickedQuest, setPickedQuest] = useState<SideQuest | null>(null);
 
   // Quest Board expanded cards
@@ -359,17 +334,17 @@ function SideQuestsInner() {
 
   // Initialize
   useEffect(() => {
-    const tabParam = searchParams.get("tab");
-    if (tabParam === "circles") {
-      setActiveTab("circles");
+    const tabParam = searchParams.get('tab');
+    if (tabParam === 'circles') {
+      setActiveTab('circles');
     }
 
-    const qParam = searchParams.get("q");
+    const qParam = searchParams.get('q');
     if (qParam) {
       const quest = getQuestById(qParam);
       if (quest) {
         setCurrentQuest(quest);
-        setActiveTab("random");
+        setActiveTab('random');
         return;
       }
     }
@@ -379,17 +354,15 @@ function SideQuestsInner() {
 
   // Check save prompt dismissal
   useEffect(() => {
-    const dismissed = localStorage.getItem("sh-save-prompt-dismissed");
-    setSavePromptDismissed(dismissed === "true");
+    const dismissed = localStorage.getItem('sh-save-prompt-dismissed');
+    setSavePromptDismissed(dismissed === 'true');
   }, []);
 
   const rollAgain = useCallback(() => {
     setIsShuffling(true);
     let count = 0;
     const interval = setInterval(() => {
-      setCurrentQuest(
-        SIDE_QUESTS[Math.floor(Math.random() * SIDE_QUESTS.length)]
-      );
+      setCurrentQuest(SIDE_QUESTS[Math.floor(Math.random() * SIDE_QUESTS.length)]);
       count++;
       if (count >= 4) {
         clearInterval(interval);
@@ -405,17 +378,13 @@ function SideQuestsInner() {
 
   const pickFromFiltered = useCallback(() => {
     if (filteredQuests.length === 0) return;
-    setPickedQuest(
-      filteredQuests[Math.floor(Math.random() * filteredQuests.length)]
-    );
+    setPickedQuest(filteredQuests[Math.floor(Math.random() * filteredQuests.length)]);
   }, [filteredQuests]);
 
   // Auto-pick when filters change
   useEffect(() => {
     if (filteredQuests.length > 0) {
-      setPickedQuest(
-        filteredQuests[Math.floor(Math.random() * filteredQuests.length)]
-      );
+      setPickedQuest(filteredQuests[Math.floor(Math.random() * filteredQuests.length)]);
     } else {
       setPickedQuest(null);
     }
@@ -432,27 +401,25 @@ function SideQuestsInner() {
 
   const dismissSavePrompt = useCallback(() => {
     setSavePromptDismissed(true);
-    localStorage.setItem("sh-save-prompt-dismissed", "true");
+    localStorage.setItem('sh-save-prompt-dismissed', 'true');
   }, []);
 
-  const showSavePrompt =
-    completedCount >= 3 && !savePromptDismissed;
+  const showSavePrompt = completedCount >= 3 && !savePromptDismissed;
 
   const TABS: { id: Tab; label: string }[] = [
-    { id: "random", label: "\u{1F3B2} Random" },
-    { id: "pick", label: "\u{1F3AF} Help Me Pick" },
-    { id: "board", label: "\u{1F4CB} Quest Board" },
-    { id: "circles", label: "\u{1F91D} Circles" },
+    { id: 'random', label: '\u{1F3B2} Random' },
+    { id: 'pick', label: '\u{1F3AF} Help Me Pick' },
+    { id: 'board', label: '\u{1F4CB} Quest Board' },
+    { id: 'circles', label: '\u{1F91D} Circles' },
   ];
 
   return (
-    <div className="min-h-screen" style={{ background: "#FAFAFA" }}>
+    <div className="min-h-screen" style={{ background: '#FAFAFA' }}>
       {/* Hero */}
       <section
         className="relative overflow-hidden px-4 py-20 sm:py-28"
         style={{
-          background:
-            "linear-gradient(160deg, #F5F5F4 0%, #ECFDF5 40%, #FAFAF9 70%, #F5F5F4 100%)",
+          background: 'linear-gradient(160deg, #F5F5F4 0%, #ECFDF5 40%, #FAFAF9 70%, #F5F5F4 100%)',
         }}
       >
         <div className="pointer-events-none absolute inset-0">
@@ -461,10 +428,9 @@ function SideQuestsInner() {
             style={{
               width: 500,
               height: 500,
-              top: "-20%",
-              right: "-5%",
-              background:
-                "radial-gradient(circle, rgba(16,185,129,0.08) 0%, transparent 70%)",
+              top: '-20%',
+              right: '-5%',
+              background: 'radial-gradient(circle, rgba(16,185,129,0.08) 0%, transparent 70%)',
             }}
           />
           <div
@@ -472,10 +438,9 @@ function SideQuestsInner() {
             style={{
               width: 400,
               height: 400,
-              bottom: "-15%",
-              left: "10%",
-              background:
-                "radial-gradient(circle, rgba(245,158,11,0.07) 0%, transparent 70%)",
+              bottom: '-15%',
+              left: '10%',
+              background: 'radial-gradient(circle, rgba(245,158,11,0.07) 0%, transparent 70%)',
             }}
           />
         </div>
@@ -491,8 +456,7 @@ function SideQuestsInner() {
           </h1>
 
           <p className="mx-auto max-w-xl text-lg text-stone-500 sm:text-xl">
-            Roll a random quest, get a personalized pick, or take on the full
-            board.
+            Roll a random quest, get a personalized pick, or take on the full board.
           </p>
 
           <div className="mt-8 flex justify-center gap-1.5">
@@ -516,9 +480,7 @@ function SideQuestsInner() {
               type="button"
               onClick={() => setActiveTab(tab.id)}
               className={`relative px-5 py-3.5 text-sm font-medium transition-all ${
-                activeTab === tab.id
-                  ? "text-emerald-700"
-                  : "text-stone-500 hover:text-stone-700"
+                activeTab === tab.id ? 'text-emerald-700' : 'text-stone-500 hover:text-stone-700'
               }`}
             >
               <span>{tab.label}</span>
@@ -534,11 +496,11 @@ function SideQuestsInner() {
       <section className="px-4 py-10">
         <div className="mx-auto max-w-5xl">
           {/* Mode A: Random */}
-          {activeTab === "random" && currentQuest && (
+          {activeTab === 'random' && currentQuest && (
             <div className="flex justify-center">
               <div
                 className={`transition-all duration-150 ${
-                  isShuffling ? "scale-95 opacity-70" : "scale-100 opacity-100"
+                  isShuffling ? 'scale-95 opacity-70' : 'scale-100 opacity-100'
                 }`}
               >
                 <QuestCard
@@ -554,25 +516,25 @@ function SideQuestsInner() {
           )}
 
           {/* Mode B: Help Me Pick */}
-          {activeTab === "pick" && (
+          {activeTab === 'pick' && (
             <div>
               <div className="mx-auto mb-8 max-w-lg space-y-4 rounded-2xl border border-stone-200 bg-white p-6 shadow-sm">
                 <FilterPills
                   label="Vibe"
                   options={[
-                    { label: "Solo", value: "solo" as const },
-                    { label: "Social", value: "social" as const },
-                    { label: "Either", value: "either" as const },
+                    { label: 'Solo', value: 'solo' as const },
+                    { label: 'Social', value: 'social' as const },
+                    { label: 'Either', value: 'either' as const },
                   ]}
                   selected={vibe}
-                  onSelect={(v) => setVibe(v ?? "either")}
+                  onSelect={(v) => setVibe(v ?? 'either')}
                 />
                 <FilterPills
                   label="Energy"
                   options={[
-                    { label: "Chill", value: "chill" as const },
-                    { label: "Active", value: "active" as const },
-                    { label: "Creative", value: "creative" as const },
+                    { label: 'Chill', value: 'chill' as const },
+                    { label: 'Active', value: 'active' as const },
+                    { label: 'Creative', value: 'creative' as const },
                   ]}
                   selected={energy}
                   onSelect={setEnergy}
@@ -580,10 +542,10 @@ function SideQuestsInner() {
                 <FilterPills
                   label="Time"
                   options={[
-                    { label: "15 min", value: "15 min" as const },
-                    { label: "30 min", value: "30 min" as const },
-                    { label: "1 hour", value: "1 hour" as const },
-                    { label: "Half day", value: "half day" as const },
+                    { label: '15 min', value: '15 min' as const },
+                    { label: '30 min', value: '30 min' as const },
+                    { label: '1 hour', value: '1 hour' as const },
+                    { label: 'Half day', value: 'half day' as const },
                   ]}
                   selected={time}
                   onSelect={setTime}
@@ -612,19 +574,16 @@ function SideQuestsInner() {
           )}
 
           {/* Mode C: Quest Board */}
-          {activeTab === "board" && (
+          {activeTab === 'board' && (
             <div>
-              <ProgressBar
-                completed={completedCount}
-                total={SIDE_QUESTS.length}
-              />
+              <ProgressBar completed={completedCount} total={SIDE_QUESTS.length} />
 
               {/* Save prompt */}
               {showSavePrompt && (
                 <div className="mb-8 flex items-center justify-between rounded-xl border border-amber-200 bg-amber-50 px-5 py-3">
                   <p className="text-sm text-stone-700">
-                    <span className="mr-1">&#128190;</span> Save your progress
-                    — sign in to keep your quests across devices.{" "}
+                    <span className="mr-1">&#128190;</span> Save your progress — sign in to keep
+                    your quests across devices.{' '}
                     <Link
                       href="/login"
                       className="font-semibold text-emerald-600 hover:text-emerald-700"
@@ -645,20 +604,14 @@ function SideQuestsInner() {
 
               {/* Categories */}
               {QUEST_CATEGORIES.map((cat) => {
-                const quests = SIDE_QUESTS.filter(
-                  (q) => q.category === cat.id
-                );
-                const catCompleted = quests.filter((q) =>
-                  completed.includes(q.id)
-                ).length;
+                const quests = SIDE_QUESTS.filter((q) => q.category === cat.id);
+                const catCompleted = quests.filter((q) => completed.includes(q.id)).length;
 
                 return (
                   <div key={cat.id} className="mb-10">
                     <div className="mb-4 flex items-center gap-2">
                       <span className="text-xl">{cat.emoji}</span>
-                      <h3 className="text-lg font-bold text-stone-900">
-                        {cat.label}
-                      </h3>
+                      <h3 className="text-lg font-bold text-stone-900">{cat.label}</h3>
                       <span className="text-sm text-stone-400">
                         {catCompleted}/{quests.length} completed
                       </span>
@@ -673,9 +626,7 @@ function SideQuestsInner() {
                           <div
                             key={quest.id}
                             className={`rounded-xl border bg-white transition-all ${
-                              done
-                                ? "border-emerald-200 bg-emerald-50/30"
-                                : "border-stone-200"
+                              done ? 'border-emerald-200 bg-emerald-50/30' : 'border-stone-200'
                             }`}
                           >
                             <div className="flex items-start gap-3 p-4">
@@ -684,28 +635,19 @@ function SideQuestsInner() {
                                 type="button"
                                 onClick={(e) => {
                                   e.stopPropagation();
-                                  done
-                                    ? uncompleteQuest(quest.id)
-                                    : completeQuest(quest.id);
+                                  done ? uncompleteQuest(quest.id) : completeQuest(quest.id);
                                 }}
                                 className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded transition-all ${
                                   done
-                                    ? "bg-emerald-500 text-white"
-                                    : "border-2 border-stone-300 hover:border-emerald-400"
+                                    ? 'bg-emerald-500 text-white'
+                                    : 'border-2 border-stone-300 hover:border-emerald-400'
                                 }`}
                                 aria-label={
-                                  done
-                                    ? `Uncomplete ${quest.title}`
-                                    : `Complete ${quest.title}`
+                                  done ? `Uncomplete ${quest.title}` : `Complete ${quest.title}`
                                 }
                               >
                                 {done && (
-                                  <svg
-                                    width="12"
-                                    height="12"
-                                    viewBox="0 0 12 12"
-                                    fill="none"
-                                  >
+                                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
                                     <path
                                       d="M2 6L5 9L10 3"
                                       stroke="currentColor"
@@ -724,21 +666,15 @@ function SideQuestsInner() {
                                 className="flex-1 text-left"
                               >
                                 <div className="flex items-center gap-2">
-                                  <span className="text-lg">
-                                    {quest.emoji}
-                                  </span>
+                                  <span className="text-lg">{quest.emoji}</span>
                                   <span
                                     className={`font-medium ${
-                                      done
-                                        ? "text-stone-400 line-through"
-                                        : "text-stone-800"
+                                      done ? 'text-stone-400 line-through' : 'text-stone-800'
                                     }`}
                                   >
                                     {quest.title}
                                   </span>
-                                  <DifficultyDots
-                                    difficulty={quest.difficulty}
-                                  />
+                                  <DifficultyDots difficulty={quest.difficulty} />
                                 </div>
                               </button>
                             </div>
@@ -781,9 +717,7 @@ function SideQuestsInner() {
             </div>
           )}
 
-          {activeTab === "circles" && (
-            <AccountabilityCircles completedQuestIds={completed} />
-          )}
+          {activeTab === 'circles' && <AccountabilityCircles completedQuestIds={completed} />}
         </div>
       </section>
 
@@ -801,7 +735,7 @@ export function SideQuestsClient() {
       fallback={
         <div
           className="flex min-h-screen items-center justify-center"
-          style={{ background: "#FAFAFA" }}
+          style={{ background: '#FAFAFA' }}
         >
           <div className="text-stone-400">Loading quests...</div>
         </div>

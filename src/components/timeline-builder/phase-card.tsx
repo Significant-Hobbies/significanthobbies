@@ -1,29 +1,29 @@
-"use client";
+'use client';
 
-import { useSortable } from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
-import { ChevronDown, ChevronUp, GripVertical, Trash2 } from "lucide-react";
-import { useState } from "react";
+import { useSortable } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
+import { ChevronDown, ChevronUp, GripVertical, Trash2 } from 'lucide-react';
+import { useState } from 'react';
 
-import { Button } from "~/components/ui/button";
-import { Input } from "~/components/ui/input";
-import { Label } from "~/components/ui/label";
-import type { Phase } from "~/lib/types";
+import { Button } from '~/components/ui/button';
+import { Input } from '~/components/ui/input';
+import { Label } from '~/components/ui/label';
+import type { Phase } from '~/lib/types';
 
-import { HobbyInput } from "./hobby-input";
+import { HobbyInput } from './hobby-input';
 
 const MILESTONE_PROMPTS: Array<{ pattern: RegExp; prompt: string }> = [
   {
     pattern: /child|kid|young|early|elementary|primary|grade school/i,
-    prompt: "Think back: outdoor games, sports, drawing, collecting, building, make-believe…",
+    prompt: 'Think back: outdoor games, sports, drawing, collecting, building, make-believe…',
   },
   {
     pattern: /school|high school|teen|secondary|middle school|college|uni|student/i,
-    prompt: "Think back: clubs, team sports, music, art, gaming, social activities…",
+    prompt: 'Think back: clubs, team sports, music, art, gaming, social activities…',
   },
   {
     pattern: /work|career|adult|professional|office|job/i,
-    prompt: "Think about: weekend activities, fitness routines, creative outlets, travel…",
+    prompt: 'Think about: weekend activities, fitness routines, creative outlets, travel…',
   },
   {
     pattern: /now|current|today|present|lately|recent/i,
@@ -49,14 +49,9 @@ interface Props {
 export function PhaseCard({ phase, onChange, onDelete, isOnly }: Props) {
   const [open, setOpen] = useState(true);
 
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-    isDragging,
-  } = useSortable({ id: phase.id });
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+    id: phase.id,
+  });
 
   const hasHobbies = phase.hobbies.length > 0;
   const dotColor = `hsl(${phase.order * 40 + 160}, 70%, 45%)`;
@@ -77,9 +72,7 @@ export function PhaseCard({ phase, onChange, onDelete, isOnly }: Props) {
       ref={setNodeRef}
       style={style}
       className={`rounded-xl border bg-white ${
-        hasHobbies
-          ? "border-l-2 border-l-emerald-500 border-stone-200"
-          : "border-stone-200"
+        hasHobbies ? 'border-l-2 border-l-emerald-500 border-stone-200' : 'border-stone-200'
       }`}
     >
       {/* Header */}
@@ -95,10 +88,7 @@ export function PhaseCard({ phase, onChange, onDelete, isOnly }: Props) {
         </button>
 
         {/* Colored dot */}
-        <span
-          className="h-2 w-2 shrink-0 rounded-full"
-          style={{ backgroundColor: dotColor }}
-        />
+        <span className="h-2 w-2 shrink-0 rounded-full" style={{ backgroundColor: dotColor }} />
 
         <Input
           value={phase.label}
@@ -126,13 +116,9 @@ export function PhaseCard({ phase, onChange, onDelete, isOnly }: Props) {
             size="icon"
             className="h-11 w-11 text-stone-400 hover:text-stone-700"
             onClick={() => setOpen((v) => !v)}
-            aria-label={open ? "Collapse phase" : "Expand phase"}
+            aria-label={open ? 'Collapse phase' : 'Expand phase'}
           >
-            {open ? (
-              <ChevronUp className="h-4 w-4" />
-            ) : (
-              <ChevronDown className="h-4 w-4" />
-            )}
+            {open ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
           </Button>
         </div>
       </div>
@@ -146,7 +132,7 @@ export function PhaseCard({ phase, onChange, onDelete, isOnly }: Props) {
             <div className="flex items-center gap-1.5">
               <Input
                 type="number"
-                value={phase.ageStart ?? ""}
+                value={phase.ageStart ?? ''}
                 onChange={(e) =>
                   update({
                     ageStart: e.target.value ? Number(e.target.value) : undefined,
@@ -158,7 +144,7 @@ export function PhaseCard({ phase, onChange, onDelete, isOnly }: Props) {
               <span className="text-stone-400 text-xs">–</span>
               <Input
                 type="number"
-                value={phase.ageEnd ?? ""}
+                value={phase.ageEnd ?? ''}
                 onChange={(e) =>
                   update({
                     ageEnd: e.target.value ? Number(e.target.value) : undefined,
@@ -173,18 +159,13 @@ export function PhaseCard({ phase, onChange, onDelete, isOnly }: Props) {
           {/* Hobbies */}
           <div className="space-y-1.5">
             <Label className="text-xs text-stone-500">
-              Hobbies{" "}
-              <span className={hasHobbies ? "text-emerald-600" : "text-stone-400"}>
+              Hobbies{' '}
+              <span className={hasHobbies ? 'text-emerald-600' : 'text-stone-400'}>
                 ({phase.hobbies.length})
               </span>
             </Label>
-            {milestonePrompt && (
-              <p className="text-xs text-stone-400 italic">{milestonePrompt}</p>
-            )}
-            <HobbyInput
-              hobbies={phase.hobbies}
-              onChange={(hobbies) => update({ hobbies })}
-            />
+            {milestonePrompt && <p className="text-xs text-stone-400 italic">{milestonePrompt}</p>}
+            <HobbyInput hobbies={phase.hobbies} onChange={(hobbies) => update({ hobbies })} />
           </div>
         </div>
       )}

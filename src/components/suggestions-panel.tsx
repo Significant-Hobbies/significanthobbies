@@ -1,4 +1,4 @@
-import { getCategoryForHobby, getSuggestedHobbies, HOBBY_CATEGORIES } from "~/lib/hobbies";
+import { getCategoryForHobby, getSuggestedHobbies, HOBBY_CATEGORIES } from '~/lib/hobbies';
 
 interface Props {
   existingHobbies: string[];
@@ -23,7 +23,7 @@ export function SuggestionsPanel({ existingHobbies }: Props) {
 
   const headerText = topCategory
     ? `Based on your ${topCategory.emoji} ${topCategory.name} interests`
-    : "Expand your horizons";
+    : 'Expand your horizons';
 
   // Group suggestions by category
   const grouped: Array<{ name: string; emoji: string; hobbies: string[] }> = [];
@@ -33,11 +33,11 @@ export function SuggestionsPanel({ existingHobbies }: Props) {
     const cat = getCategoryForHobby(hobby);
     if (!cat) {
       // Uncategorized fallback
-      const existing = grouped.find((g) => g.name === "Other");
+      const existing = grouped.find((g) => g.name === 'Other');
       if (existing) {
         existing.hobbies.push(hobby);
       } else {
-        grouped.push({ name: "Other", emoji: "✨", hobbies: [hobby] });
+        grouped.push({ name: 'Other', emoji: '✨', hobbies: [hobby] });
       }
       continue;
     }
@@ -51,9 +51,7 @@ export function SuggestionsPanel({ existingHobbies }: Props) {
 
   return (
     <div className="rounded-xl border border-stone-200 bg-stone-50 p-5">
-      <h2 className="mb-4 text-sm font-medium text-stone-700">
-        {headerText}
-      </h2>
+      <h2 className="mb-4 text-sm font-medium text-stone-700">{headerText}</h2>
       <div className="space-y-4">
         {grouped.map((group) => (
           <div key={group.name}>

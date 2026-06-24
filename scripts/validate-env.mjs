@@ -1,10 +1,10 @@
-import { spawnSync } from "node:child_process";
+import { spawnSync } from 'node:child_process';
 
 const REQUIRED_WORKER_SECRETS = [
-  "BETTER_AUTH_SECRET",
-  "DATABASE_URL",
-  "GOOGLE_CLIENT_ID",
-  "GOOGLE_CLIENT_SECRET",
+  'BETTER_AUTH_SECRET',
+  'DATABASE_URL',
+  'GOOGLE_CLIENT_ID',
+  'GOOGLE_CLIENT_SECRET',
 ];
 
 function parseSecretNames(stdout) {
@@ -29,11 +29,9 @@ function fail(message) {
 }
 
 function validateDeploySecrets() {
-  const result = spawnSync(
-    "pnpm",
-    ["exec", "wrangler", "secret", "list", "--format", "json"],
-    { encoding: "utf8" },
-  );
+  const result = spawnSync('pnpm', ['exec', 'wrangler', 'secret', 'list', '--format', 'json'], {
+    encoding: 'utf8',
+  });
 
   if (result.status !== 0) {
     fail(`Unable to list Cloudflare Worker secrets.\n${result.stderr || result.stdout}`);
@@ -43,15 +41,15 @@ function validateDeploySecrets() {
   const missing = REQUIRED_WORKER_SECRETS.filter((name) => !present.has(name));
 
   if (missing.length > 0) {
-    fail(`Missing Cloudflare Worker secrets: ${missing.join(", ")}`);
+    fail(`Missing Cloudflare Worker secrets: ${missing.join(', ')}`);
   }
 }
 
-const mode = process.argv[2] ?? "deploy";
+const mode = process.argv[2] ?? 'deploy';
 
-if (mode !== "deploy") {
+if (mode !== 'deploy') {
   fail(`Unknown validation mode: ${mode}`);
 }
 
 validateDeploySecrets();
-console.log("[env] Cloudflare deploy secrets are configured.");
+console.log('[env] Cloudflare deploy secrets are configured.');

@@ -1,38 +1,38 @@
-"use client";
-import { useState } from "react";
+'use client';
+import { useState } from 'react';
 
-import { Button } from "~/components/ui/button";
-import { Input } from "~/components/ui/input";
+import { Button } from '~/components/ui/button';
+import { Input } from '~/components/ui/input';
 
 interface Props {
   source?: string;
 }
 
 export function EmailCapture({ source }: Props) {
-  const [email, setEmail] = useState("");
-  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const [email, setEmail] = useState('');
+  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!email.trim()) return;
-    setStatus("loading");
+    setStatus('loading');
     try {
-      const res = await fetch("/api/subscribe", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
+      const res = await fetch('/api/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: email.trim(), source }),
       });
       if (res.ok) {
-        setStatus("success");
+        setStatus('success');
       } else {
-        setStatus("error");
+        setStatus('error');
       }
     } catch {
-      setStatus("error");
+      setStatus('error');
     }
   }
 
-  if (status === "success") {
+  if (status === 'success') {
     return (
       <p className="text-sm font-medium text-emerald-600">
         You&apos;re in! Check your inbox for a welcome note.
@@ -52,10 +52,10 @@ export function EmailCapture({ source }: Props) {
       />
       <Button
         type="submit"
-        disabled={status === "loading"}
+        disabled={status === 'loading'}
         className="bg-emerald-600 text-white hover:bg-emerald-700 shrink-0"
       >
-        {status === "loading" ? "..." : "Subscribe"}
+        {status === 'loading' ? '...' : 'Subscribe'}
       </Button>
     </form>
   );

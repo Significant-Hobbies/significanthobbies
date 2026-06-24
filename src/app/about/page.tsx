@@ -1,10 +1,10 @@
-import type { Metadata } from "next";
-import Link from "next/link";
+import type { Metadata } from 'next';
+import Link from 'next/link';
 
 export const metadata: Metadata = {
-  title: "About — Significant Hobbies",
+  title: 'About — Significant Hobbies',
   description:
-    "Significant Hobbies turns your hobby history into a shareable timeline. Quiz-based recommendations, gamified discovery, and a public profile.",
+    'Significant Hobbies turns your hobby history into a shareable timeline. Quiz-based recommendations, gamified discovery, and a public profile.',
 };
 
 export default function AboutPage() {
@@ -13,13 +13,10 @@ export default function AboutPage() {
       <Link href="/" className="text-xs text-stone-500 hover:underline">
         ← Significant Hobbies
       </Link>
-      <h1 className="mt-3 text-3xl font-bold tracking-tight text-stone-900">
-        About
-      </h1>
+      <h1 className="mt-3 text-3xl font-bold tracking-tight text-stone-900">About</h1>
       <p className="mt-4 text-sm leading-6 text-stone-700">
-        Some hobbies make you. Some you make. Significant Hobbies is a
-        place to map that history — phase by phase — and find the next
-        thing worth being bad at.
+        Some hobbies make you. Some you make. Significant Hobbies is a place to map that history —
+        phase by phase — and find the next thing worth being bad at.
       </p>
 
       <section className="mt-8 space-y-3 text-sm leading-6">
@@ -28,39 +25,29 @@ export default function AboutPage() {
         </h2>
         <ul className="list-disc space-y-1 pl-5 marker:text-stone-400">
           <li>
-            Build a timeline of your hobby phases — childhood
-            experiments through current obsessions.
+            Build a timeline of your hobby phases — childhood experiments through current
+            obsessions.
           </li>
           <li>
-            Take the quiz to surface hobbies that match your personality
-            instead of trending feeds.
+            Take the quiz to surface hobbies that match your personality instead of trending feeds.
+          </li>
+          <li>Earn badges and complete side-quests when you actually go do the thing.</li>
+          <li>
+            Share a public profile at{' '}
+            <code className="rounded bg-stone-100 px-1.5 py-0.5 text-xs">/u/username</code>.
           </li>
           <li>
-            Earn badges and complete side-quests when you actually go
-            do the thing.
-          </li>
-          <li>
-            Share a public profile at{" "}
-            <code className="rounded bg-stone-100 px-1.5 py-0.5 text-xs">
-              /u/username
-            </code>
-            .
-          </li>
-          <li>
-            Browse famous people&apos;s hobby journeys to see how
-            interests compound over a life.
+            Browse famous people&apos;s hobby journeys to see how interests compound over a life.
           </li>
         </ul>
       </section>
 
       <section className="mt-8 space-y-3 text-sm leading-6">
-        <h2 className="text-xs font-medium uppercase tracking-wide text-stone-500">
-          Why bother
-        </h2>
+        <h2 className="text-xs font-medium uppercase tracking-wide text-stone-500">Why bother</h2>
         <p className="text-stone-700">
-          The reps on a thing you actually care about beat the dopamine
-          loop of feeds. Most people can&apos;t even list their hobbies
-          — the timeline is forcing function to remember, then choose.
+          The reps on a thing you actually care about beat the dopamine loop of feeds. Most people
+          can&apos;t even list their hobbies — the timeline is forcing function to remember, then
+          choose.
         </p>
       </section>
     </main>

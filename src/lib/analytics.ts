@@ -19,16 +19,17 @@
  * API. The server path uses a plain `fetch` rather than importing
  * `posthog-node`, which keeps the Node-only module out of the client bundle.
  */
-import posthog from "posthog-js";
+import posthog from 'posthog-js';
 
-const PROJECT = "significanthobbies" as const;
+const PROJECT = 'significanthobbies' as const;
 
 // Shared PostHog project for the whole fleet.
-const POSTHOG_KEY = process.env['NEXT_PUBLIC_POSTHOG_KEY'] ?? "phc_qgiAarw4Co4pw9fz3Fxj4UJaHmqzFetqs4JrXhGc35Nd";
-const POSTHOG_HOST = "https://us.i.posthog.com";
+const POSTHOG_KEY =
+  process.env.NEXT_PUBLIC_POSTHOG_KEY ?? 'phc_qgiAarw4Co4pw9fz3Fxj4UJaHmqzFetqs4JrXhGc35Nd';
+const POSTHOG_HOST = 'https://us.i.posthog.com';
 
 /** The product-specific action behind a `core_action` event. */
-export type CoreAction = "timeline_saved" | "timeline_exported";
+export type CoreAction = 'timeline_saved' | 'timeline_exported';
 
 interface AnalyticsEventMap {
   /** First session after an account is created. */
@@ -41,15 +42,11 @@ interface AnalyticsEventMap {
   returned: { project_id: typeof PROJECT };
 }
 
-function emitServer(
-  event: string,
-  props: Record<string, unknown>,
-  distinctId?: string,
-) {
+function emitServer(event: string, props: Record<string, unknown>, distinctId?: string) {
   // Fire-and-forget: analytics must never block or break a server action.
   void fetch(`${POSTHOG_HOST}/i/v0/e/`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       api_key: POSTHOG_KEY,
       event,
@@ -64,11 +61,11 @@ function emitServer(
 export function trackEvent(
   event: string,
   properties: Record<string, unknown> = {},
-  distinctId?: string,
+  distinctId?: string
 ): void {
   const payload = { project_id: PROJECT, ...properties };
   try {
-    if (typeof window === "undefined") {
+    if (typeof window === 'undefined') {
       emitServer(event, payload, distinctId);
     } else {
       posthog.capture(event, payload);
@@ -80,15 +77,15 @@ export function trackEvent(
 
 function emit<K extends keyof AnalyticsEventMap>(
   event: K,
-  props: Omit<AnalyticsEventMap[K], "project_id">,
-  distinctId?: string,
+  props: Omit<AnalyticsEventMap[K], 'project_id'>,
+  distinctId?: string
 ): void {
   trackEvent(event, props, distinctId);
 }
 
 /** Fire once, on the first session after an account is created. */
 export function trackSignup(): void {
-  emit("signup", {});
+  emit('signup', {});
 }
 
 /**
@@ -97,15 +94,15 @@ export function trackSignup(): void {
  * event attaches to the right user.
  */
 export function trackActivated(distinctId?: string): void {
-  emit("activated", {}, distinctId);
+  emit('activated', {}, distinctId);
 }
 
 /** Fire on each completion of the core product action. */
 export function trackCoreAction(action: CoreAction, distinctId?: string): void {
-  emit("core_action", { action }, distinctId);
+  emit('core_action', { action }, distinctId);
 }
 
 /** Fire on session start for a user who has prior activity. */
 export function trackReturned(): void {
-  emit("returned", {});
+  emit('returned', {});
 }

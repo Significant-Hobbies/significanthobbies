@@ -15,13 +15,13 @@ export type Phase = {
   order: number;
 };
 
-export type TimelineVisibility = "PRIVATE" | "UNLISTED" | "PUBLIC";
+export type TimelineVisibility = 'PRIVATE' | 'UNLISTED' | 'PUBLIC';
 
 export type TimelinePin = {
   id: string;
   label: string;
   emoji: string;
-  date: string;        // "2026-03" month-level
+  date: string; // "2026-03" month-level
   questId?: string;
   relatedHobby?: string;
 };

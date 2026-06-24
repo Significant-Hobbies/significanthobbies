@@ -1,23 +1,19 @@
-import { betterAuth } from "better-auth";
-import { drizzleAdapter } from "better-auth/adapters/drizzle";
+import { betterAuth } from 'better-auth';
+import { drizzleAdapter } from 'better-auth/adapters/drizzle';
 
-import { account, session, user, verification } from "~/db/schema";
-import { db } from "~/server/db";
+import { account, session, user, verification } from '~/db/schema';
+import { db } from '~/server/db';
 
 const canUseLocalAuthSecret =
-  process.env.NODE_ENV !== "production" ||
-  process.env.npm_lifecycle_event === "build" ||
-  process.env.NEXT_PHASE === "phase-production-build";
+  process.env.NODE_ENV !== 'production' ||
+  process.env.npm_lifecycle_event === 'build' ||
+  process.env.NEXT_PHASE === 'phase-production-build';
 
 const authSecret =
   process.env.BETTER_AUTH_SECRET?.trim() ||
-  (canUseLocalAuthSecret
-    ? "significant-hobbies-local-development-secret-32-chars"
-    : undefined);
+  (canUseLocalAuthSecret ? 'significant-hobbies-local-development-secret-32-chars' : undefined);
 
-const baseURL =
-  process.env.BETTER_AUTH_URL?.trim() ||
-  "https://significanthobbies.com";
+const baseURL = process.env.BETTER_AUTH_URL?.trim() || 'https://significanthobbies.com';
 const googleClientId = process.env.GOOGLE_CLIENT_ID?.trim();
 const googleClientSecret = process.env.GOOGLE_CLIENT_SECRET?.trim();
 
@@ -25,7 +21,7 @@ export const auth = betterAuth({
   secret: authSecret,
   baseURL,
   database: drizzleAdapter(db, {
-    provider: "sqlite",
+    provider: 'sqlite',
     schema: { user, session, account, verification },
   }),
   socialProviders:

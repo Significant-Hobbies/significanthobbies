@@ -1,10 +1,10 @@
-import { eq } from "drizzle-orm";
-import { headers } from "next/headers";
-import { cache } from "react";
+import { eq } from 'drizzle-orm';
+import { headers } from 'next/headers';
+import { cache } from 'react';
 
-import { users } from "~/db/schema";
-import { auth } from "~/lib/auth";
-import { db } from "~/server/db";
+import { users } from '~/db/schema';
+import { auth } from '~/lib/auth';
+import { db } from '~/server/db';
 
 export { auth };
 
@@ -39,5 +39,5 @@ export const getServerAuthSession = cache(
         username: dbUser?.username ?? null,
       },
     };
-  },
+  }
 );

@@ -1,12 +1,12 @@
-"use client";
+'use client';
 
-import { X } from "lucide-react";
-import { type KeyboardEvent,useState } from "react";
+import { X } from 'lucide-react';
+import { type KeyboardEvent, useState } from 'react';
 
-import { Badge } from "~/components/ui/badge";
-import { Button } from "~/components/ui/button";
-import { Input } from "~/components/ui/input";
-import type { HobbyEntry } from "~/lib/types";
+import { Badge } from '~/components/ui/badge';
+import { Button } from '~/components/ui/button';
+import { Input } from '~/components/ui/input';
+import type { HobbyEntry } from '~/lib/types';
 
 interface Props {
   hobbies: HobbyEntry[];
@@ -14,11 +14,11 @@ interface Props {
 }
 
 export function HobbyInput({ hobbies, onChange }: Props) {
-  const [input, setInput] = useState("");
+  const [input, setInput] = useState('');
 
   function addHobbies(raw: string) {
     const names = raw
-      .split(",")
+      .split(',')
       .map((s) => s.trim())
       .filter(Boolean);
     const existing = new Set(hobbies.map((h) => h.name.toLowerCase()));
@@ -26,11 +26,11 @@ export function HobbyInput({ hobbies, onChange }: Props) {
       .filter((name) => !existing.has(name.toLowerCase()))
       .map((name) => ({ name }));
     if (newHobbies.length) onChange([...hobbies, ...newHobbies]);
-    setInput("");
+    setInput('');
   }
 
   function handleKeyDown(e: KeyboardEvent<HTMLInputElement>) {
-    if (e.key === "Enter" || e.key === ",") {
+    if (e.key === 'Enter' || e.key === ',') {
       e.preventDefault();
       addHobbies(input);
     }

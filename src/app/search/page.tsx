@@ -1,15 +1,15 @@
-import { count,desc, eq, like, or } from "drizzle-orm";
-import Link from "next/link";
+import { count, desc, eq, like, or } from 'drizzle-orm';
+import Link from 'next/link';
 
-import { timelines, users } from "~/db/schema";
-import { HOBBY_CATEGORIES } from "~/lib/hobbies";
-import { getTimelineUrl } from "~/lib/timeline-url";
-import type { Phase, TimelineVisibility } from "~/lib/types";
-import { db } from "~/server/db";
+import { timelines, users } from '~/db/schema';
+import { HOBBY_CATEGORIES } from '~/lib/hobbies';
+import { getTimelineUrl } from '~/lib/timeline-url';
+import type { Phase, TimelineVisibility } from '~/lib/types';
+import { db } from '~/server/db';
 
-import { SearchPageClient } from "./search-client";
+import { SearchPageClient } from './search-client';
 
-export const metadata = { title: "Search — SignificantHobbies" };
+export const metadata = { title: 'Search — SignificantHobbies' };
 
 interface Props {
   searchParams: Promise<{ q?: string }>;
@@ -21,7 +21,7 @@ export default async function SearchPage({ searchParams }: Props) {
   const { q } = await searchParams;
   // Cap to bound SQLite LIKE work and protect against pathological queries
   // pasted into the URL bar.
-  const query = (q ?? "").trim().slice(0, MAX_QUERY_LENGTH);
+  const query = (q ?? '').trim().slice(0, MAX_QUERY_LENGTH);
 
   if (!query) {
     return (
@@ -34,9 +34,7 @@ export default async function SearchPage({ searchParams }: Props) {
         <div className="mt-12 flex flex-col items-center justify-center rounded-2xl border border-stone-200 bg-stone-50 py-20 text-center">
           <span className="mb-4 text-4xl">🔍</span>
           <p className="text-stone-600 font-medium">Start typing to search</p>
-          <p className="mt-1 text-sm text-stone-400">
-            Search for timelines, usernames, or hobbies
-          </p>
+          <p className="mt-1 text-sm text-stone-400">Search for timelines, usernames, or hobbies</p>
         </div>
       </div>
     );
@@ -46,8 +44,8 @@ export default async function SearchPage({ searchParams }: Props) {
   // Strip LIKE wildcards so `%foo` doesn't match every username. Drizzle's
   // like() doesn't pass through an ESCAPE clause, so escaping with backslash
   // is a no-op in SQLite — removal is the safe move.
-  const safeLower = lower.replace(/[%_]/g, "");
-  const safeQuery = query.replace(/[%_]/g, "");
+  const safeLower = lower.replace(/[%_]/g, '');
+  const safeQuery = query.replace(/[%_]/g, '');
 
   // --- Timelines ---
   const rawTimelines = await db
@@ -66,20 +64,20 @@ export default async function SearchPage({ searchParams }: Props) {
     })
     .from(timelines)
     .leftJoin(users, eq(timelines.userId, users.id))
-    .where(eq(timelines.visibility, "PUBLIC"))
+    .where(eq(timelines.visibility, 'PUBLIC'))
     .orderBy(desc(timelines.updatedAt))
     .limit(100);
 
   // Filter by title containing query (SQLite like is case-insensitive by default for ASCII)
-  const filteredTimelines = rawTimelines.filter(
-    (t) => t.title && t.title.toLowerCase().includes(lower),
-  );
+  const filteredTimelines = rawTimelines.filter((t) => t.title?.toLowerCase().includes(lower));
 
   const timelineResults = filteredTimelines.slice(0, 20).map((raw) => {
     let phases: Phase[] = [];
     try {
       phases = JSON.parse(raw.phases) as Phase[];
-    } catch { /* ignore */ }
+    } catch {
+      /* ignore */
+    }
     return {
       id: raw.id,
       title: raw.title,
@@ -103,12 +101,7 @@ export default async function SearchPage({ searchParams }: Props) {
       image: users.image,
     })
     .from(users)
-    .where(
-      or(
-        like(users.username, `%${safeLower}%`),
-        like(users.name, `%${safeQuery}%`),
-      ),
-    )
+    .where(or(like(users.username, `%${safeLower}%`), like(users.name, `%${safeQuery}%`)))
     .limit(20);
 
   // Get timeline counts for each user
@@ -119,14 +112,14 @@ export default async function SearchPage({ searchParams }: Props) {
         .from(timelines)
         .where(eq(timelines.userId, u.id));
       return { ...u, _count: { timelines: result?.count ?? 0 } };
-    }),
+    })
   );
 
   // --- Hobbies (from static list) ---
   const matchingHobbies = HOBBY_CATEGORIES.flatMap((cat) =>
     cat.hobbies
       .filter((h) => h.toLowerCase().includes(lower))
-      .map((h) => ({ hobby: h, category: cat.name, emoji: cat.emoji })),
+      .map((h) => ({ hobby: h, category: cat.name, emoji: cat.emoji }))
   ).slice(0, 20);
 
   return (
@@ -152,7 +145,7 @@ export default async function SearchPage({ searchParams }: Props) {
             <div className="space-y-2">
               {timelineResults.map((t) => {
                 const totalHobbies = new Set(
-                  t.phases.flatMap((p) => p.hobbies.map((h) => h.name.toLowerCase())),
+                  t.phases.flatMap((p) => p.hobbies.map((h) => h.name.toLowerCase()))
                 ).size;
                 const username = t.user?.username ?? t.user?.name;
                 return (
@@ -160,11 +153,9 @@ export default async function SearchPage({ searchParams }: Props) {
                     <div className="group flex items-center justify-between rounded-xl border border-stone-200 bg-white px-4 py-3.5 transition-all hover:border-emerald-400 hover:bg-stone-50">
                       <div>
                         <p className="font-medium text-stone-800 group-hover:text-emerald-600 transition-colors">
-                          {t.title ?? "Hobby Timeline"}
+                          {t.title ?? 'Hobby Timeline'}
                         </p>
-                        {username && (
-                          <p className="mt-0.5 text-xs text-stone-400">@{username}</p>
-                        )}
+                        {username && <p className="mt-0.5 text-xs text-stone-400">@{username}</p>}
                       </div>
                       <p className="shrink-0 pl-4 text-xs text-stone-400">
                         {t.phases.length} phases &middot; {totalHobbies} hobbies
@@ -192,25 +183,20 @@ export default async function SearchPage({ searchParams }: Props) {
           {userWithCounts.length > 0 ? (
             <div className="space-y-2">
               {userWithCounts.map((user) => (
-                <Link
-                  key={user.id}
-                  href={user.username ? `/u/${user.username}` : "#"}
-                >
+                <Link key={user.id} href={user.username ? `/u/${user.username}` : '#'}>
                   <div className="group flex items-center gap-3 rounded-xl border border-stone-200 bg-white px-4 py-3 transition-all hover:border-emerald-400 hover:bg-stone-50">
                     {/* Avatar */}
                     <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-stone-100 text-sm font-semibold text-stone-500 border border-stone-200">
-                      {(user.name ?? user.username ?? "?").charAt(0).toUpperCase()}
+                      {(user.name ?? user.username ?? '?').charAt(0).toUpperCase()}
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="font-medium text-stone-800 group-hover:text-emerald-600 transition-colors truncate">
                         {user.name ?? user.username}
                       </p>
-                      {user.username && (
-                        <p className="text-xs text-stone-400">@{user.username}</p>
-                      )}
+                      {user.username && <p className="text-xs text-stone-400">@{user.username}</p>}
                     </div>
                     <p className="shrink-0 text-xs text-stone-400">
-                      {user._count.timelines} timeline{user._count.timelines !== 1 ? "s" : ""}
+                      {user._count.timelines} timeline{user._count.timelines !== 1 ? 's' : ''}
                     </p>
                   </div>
                 </Link>
@@ -236,7 +222,7 @@ export default async function SearchPage({ searchParams }: Props) {
               {matchingHobbies.map(({ hobby, category, emoji }) => (
                 <Link
                   key={hobby}
-                  href={`/hobbies/${encodeURIComponent(hobby.toLowerCase().replace(/\s+/g, "-"))}`}
+                  href={`/hobbies/${encodeURIComponent(hobby.toLowerCase().replace(/\s+/g, '-'))}`}
                 >
                   <span className="inline-flex items-center gap-1.5 rounded-full border border-stone-200 bg-white px-3.5 py-1.5 text-sm text-stone-600 transition-colors hover:border-emerald-400 hover:text-emerald-600">
                     <span>{emoji}</span>

@@ -1,9 +1,9 @@
-import type { Metadata } from "next";
+import type { Metadata } from 'next';
 
-import { CompareClient } from "./compare-client";
+import { CompareClient } from './compare-client';
 
 export const metadata: Metadata = {
-  title: "Compare Hobbies Side by Side — SignificantHobbies",
+  title: 'Compare Hobbies Side by Side — SignificantHobbies',
   description:
     "Can't decide between two hobbies? Compare them on cost, time commitment, social level, difficulty, and more. Make an informed choice about your next hobby.",
 };

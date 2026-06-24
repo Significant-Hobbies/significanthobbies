@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import Link from "next/link";
-import { useEffect } from "react";
+import Link from 'next/link';
+import { useEffect } from 'react';
 
-import { captureError } from "~/lib/foundry-monitoring";
+import { captureError } from '~/lib/foundry-monitoring';
 
 export default function TimelineError({
   error,
@@ -14,18 +14,15 @@ export default function TimelineError({
 }) {
   useEffect(() => {
     console.error(error);
-    captureError(error, { scope: "timeline-builder", digest: error.digest });
+    captureError(error, { scope: 'timeline-builder', digest: error.digest });
   }, [error]);
 
   return (
     <div className="flex min-h-[60vh] items-center justify-center p-8">
       <div className="text-center max-w-md">
-        <h2 className="text-xl font-bold mb-3 text-stone-900">
-          Couldn&apos;t load the timeline
-        </h2>
+        <h2 className="text-xl font-bold mb-3 text-stone-900">Couldn&apos;t load the timeline</h2>
         <p className="text-sm text-stone-600 mb-6">
-          Something went wrong while loading this timeline. Any saved work is
-          safe — try again.
+          Something went wrong while loading this timeline. Any saved work is safe — try again.
         </p>
         <div className="flex gap-3 justify-center">
           <button
@@ -42,9 +39,7 @@ export default function TimelineError({
           </Link>
         </div>
         {error.digest ? (
-          <p className="mt-6 text-xs text-stone-400">
-            Reference: {error.digest}
-          </p>
+          <p className="mt-6 text-xs text-stone-400">Reference: {error.digest}</p>
         ) : null}
       </div>
     </div>

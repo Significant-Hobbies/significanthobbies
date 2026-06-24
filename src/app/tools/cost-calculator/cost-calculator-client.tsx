@@ -1,44 +1,44 @@
-"use client";
+'use client';
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from 'react';
 
-const STORAGE_KEY = "sh-cost-calculator-v1";
+const STORAGE_KEY = 'sh-cost-calculator-v1';
 
 interface LineItem {
   id: string;
   label: string;
   amount: number;
-  cadence: "once" | "monthly" | "yearly";
+  cadence: 'once' | 'monthly' | 'yearly';
 }
 
 const SEED_ITEMS: LineItem[] = [
-  { id: "1", label: "Starter kit", amount: 200, cadence: "once" },
-  { id: "2", label: "Lessons / classes", amount: 80, cadence: "monthly" },
-  { id: "3", label: "Consumables / supplies", amount: 25, cadence: "monthly" },
-  { id: "4", label: "Annual subscription / membership", amount: 120, cadence: "yearly" },
+  { id: '1', label: 'Starter kit', amount: 200, cadence: 'once' },
+  { id: '2', label: 'Lessons / classes', amount: 80, cadence: 'monthly' },
+  { id: '3', label: 'Consumables / supplies', amount: 25, cadence: 'monthly' },
+  { id: '4', label: 'Annual subscription / membership', amount: 120, cadence: 'yearly' },
 ];
 
 const PRESETS: Record<string, LineItem[]> = {
   Photography: [
-    { id: "p1", label: "Camera body", amount: 900, cadence: "once" },
-    { id: "p2", label: "Lens", amount: 400, cadence: "once" },
-    { id: "p3", label: "Editing software (yearly)", amount: 120, cadence: "yearly" },
-    { id: "p4", label: "Prints / paper", amount: 15, cadence: "monthly" },
+    { id: 'p1', label: 'Camera body', amount: 900, cadence: 'once' },
+    { id: 'p2', label: 'Lens', amount: 400, cadence: 'once' },
+    { id: 'p3', label: 'Editing software (yearly)', amount: 120, cadence: 'yearly' },
+    { id: 'p4', label: 'Prints / paper', amount: 15, cadence: 'monthly' },
   ],
-  "Rock climbing": [
-    { id: "rc1", label: "Shoes + harness", amount: 220, cadence: "once" },
-    { id: "rc2", label: "Gym membership", amount: 85, cadence: "monthly" },
-    { id: "rc3", label: "Outdoor trip / gear", amount: 200, cadence: "yearly" },
+  'Rock climbing': [
+    { id: 'rc1', label: 'Shoes + harness', amount: 220, cadence: 'once' },
+    { id: 'rc2', label: 'Gym membership', amount: 85, cadence: 'monthly' },
+    { id: 'rc3', label: 'Outdoor trip / gear', amount: 200, cadence: 'yearly' },
   ],
   Painting: [
-    { id: "pt1", label: "Paint + brushes starter kit", amount: 120, cadence: "once" },
-    { id: "pt2", label: "Canvases / surfaces", amount: 20, cadence: "monthly" },
-    { id: "pt3", label: "Class / workshop", amount: 200, cadence: "yearly" },
+    { id: 'pt1', label: 'Paint + brushes starter kit', amount: 120, cadence: 'once' },
+    { id: 'pt2', label: 'Canvases / surfaces', amount: 20, cadence: 'monthly' },
+    { id: 'pt3', label: 'Class / workshop', amount: 200, cadence: 'yearly' },
   ],
-  "Home cooking": [
-    { id: "hc1", label: "Cookware upgrade", amount: 300, cadence: "once" },
-    { id: "hc2", label: "Specialty ingredients", amount: 40, cadence: "monthly" },
-    { id: "hc3", label: "Cookbook / class", amount: 60, cadence: "yearly" },
+  'Home cooking': [
+    { id: 'hc1', label: 'Cookware upgrade', amount: 300, cadence: 'once' },
+    { id: 'hc2', label: 'Specialty ingredients', amount: 40, cadence: 'monthly' },
+    { id: 'hc3', label: 'Cookbook / class', amount: 60, cadence: 'yearly' },
   ],
 };
 
@@ -56,9 +56,9 @@ function annualize(items: LineItem[]): {
   let annual = 0;
   for (const it of items) {
     const amt = Number.isFinite(it.amount) ? it.amount : 0;
-    if (it.cadence === "once") oneTime += amt;
-    else if (it.cadence === "monthly") annual += amt * 12;
-    else if (it.cadence === "yearly") annual += amt;
+    if (it.cadence === 'once') oneTime += amt;
+    else if (it.cadence === 'monthly') annual += amt * 12;
+    else if (it.cadence === 'yearly') annual += amt;
   }
   return {
     oneTime,
@@ -69,12 +69,16 @@ function annualize(items: LineItem[]): {
 }
 
 function fmt(n: number): string {
-  return n.toLocaleString("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 });
+  return n.toLocaleString('en-US', {
+    style: 'currency',
+    currency: 'USD',
+    maximumFractionDigits: 0,
+  });
 }
 
 export default function CostCalculatorClient() {
   const [items, setItems] = useState<LineItem[]>(SEED_ITEMS);
-  const [hobbyName, setHobbyName] = useState("My hobby");
+  const [hobbyName, setHobbyName] = useState('My hobby');
 
   useEffect(() => {
     try {
@@ -83,8 +87,8 @@ export default function CostCalculatorClient() {
       const parsed = JSON.parse(raw);
       // eslint-disable-next-line react-hooks/set-state-in-effect
       if (Array.isArray(parsed.items)) setItems(parsed.items);
-       
-      if (typeof parsed.hobbyName === "string") setHobbyName(parsed.hobbyName);
+
+      if (typeof parsed.hobbyName === 'string') setHobbyName(parsed.hobbyName);
     } catch {
       /* ignore corrupt state */
     }
@@ -99,14 +103,12 @@ export default function CostCalculatorClient() {
   function addItem() {
     setItems((prev) => [
       ...prev,
-      { id: uid(), label: "New line item", amount: 0, cadence: "monthly" },
+      { id: uid(), label: 'New line item', amount: 0, cadence: 'monthly' },
     ]);
   }
 
   function updateItem(id: string, patch: Partial<LineItem>) {
-    setItems((prev) =>
-      prev.map((it) => (it.id === id ? { ...it, ...patch } : it)),
-    );
+    setItems((prev) => prev.map((it) => (it.id === id ? { ...it, ...patch } : it)));
   }
 
   function removeItem(id: string) {
@@ -115,9 +117,7 @@ export default function CostCalculatorClient() {
 
   function loadPreset(name: string) {
     setHobbyName(name);
-    setItems(
-      PRESETS[name].map((it) => ({ ...it, id: uid() })),
-    );
+    setItems(PRESETS[name].map((it) => ({ ...it, id: uid() })));
   }
 
   return (
@@ -129,8 +129,8 @@ export default function CostCalculatorClient() {
         Hobby cost calculator
       </h1>
       <p className="mt-2 text-stone-500">
-        Add every cost in one place — equipment, lessons, subscriptions, supplies — and
-        see the honest year-one and steady-state numbers before you commit.
+        Add every cost in one place — equipment, lessons, subscriptions, supplies — and see the
+        honest year-one and steady-state numbers before you commit.
       </p>
 
       <div className="mt-6 flex flex-wrap items-center gap-2 text-xs">
@@ -174,9 +174,7 @@ export default function CostCalculatorClient() {
                 type="number"
                 inputMode="decimal"
                 value={Number.isFinite(it.amount) ? it.amount : 0}
-                onChange={(e) =>
-                  updateItem(it.id, { amount: Number(e.target.value) || 0 })
-                }
+                onChange={(e) => updateItem(it.id, { amount: Number(e.target.value) || 0 })}
                 className="col-span-6 rounded-md border border-stone-200 bg-white px-2 py-1.5 text-sm sm:col-span-3"
                 min={0}
                 step={5}
@@ -184,7 +182,7 @@ export default function CostCalculatorClient() {
               <select
                 value={it.cadence}
                 onChange={(e) =>
-                  updateItem(it.id, { cadence: e.target.value as LineItem["cadence"] })
+                  updateItem(it.id, { cadence: e.target.value as LineItem['cadence'] })
                 }
                 className="col-span-4 rounded-md border border-stone-200 bg-white px-2 py-1.5 text-sm sm:col-span-3"
               >
@@ -221,12 +219,12 @@ export default function CostCalculatorClient() {
       </div>
 
       <p className="mt-4 text-xs text-stone-500">
-        Numbers stay in your browser — nothing is uploaded.{" "}
+        Numbers stay in your browser — nothing is uploaded.{' '}
         <button
           type="button"
           onClick={() => {
             setItems(SEED_ITEMS);
-            setHobbyName("My hobby");
+            setHobbyName('My hobby');
           }}
           className="underline hover:text-stone-700"
         >
@@ -251,9 +249,7 @@ function Stat({
   return (
     <div
       className={`rounded-xl border p-4 ${
-        emphasize
-          ? "border-emerald-300 bg-emerald-50"
-          : "border-stone-200 bg-white"
+        emphasize ? 'border-emerald-300 bg-emerald-50' : 'border-stone-200 bg-white'
       }`}
     >
       <div className="text-[10px] font-semibold uppercase tracking-wider text-stone-500">
@@ -261,14 +257,12 @@ function Stat({
       </div>
       <div
         className={`mt-1 text-2xl font-bold tabular-nums ${
-          emphasize ? "text-emerald-700" : "text-stone-900"
+          emphasize ? 'text-emerald-700' : 'text-stone-900'
         }`}
       >
         {value}
       </div>
-      {hint && (
-        <div className="mt-1 text-[11px] text-stone-500">{hint}</div>
-      )}
+      {hint && <div className="mt-1 text-[11px] text-stone-500">{hint}</div>}
     </div>
   );
 }

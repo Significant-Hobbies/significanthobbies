@@ -1,21 +1,21 @@
-import { desc, eq } from "drizzle-orm";
-import Link from "next/link";
-import { notFound } from "next/navigation";
+import { desc, eq } from 'drizzle-orm';
+import Link from 'next/link';
+import { notFound } from 'next/navigation';
 
-import { HobbyRoadmapCard } from "~/components/hobby-roadmap-card";
-import { JsonLd } from "~/components/json-ld";
-import { Badge } from "~/components/ui/badge";
-import { timelines, users } from "~/db/schema";
-import { blogPosts } from "~/lib/blog-posts";
-import { getCategoryForHobby, HOBBY_CATEGORIES } from "~/lib/hobbies";
-import { getRelatedHobbies } from "~/lib/hobby-affinities";
-import { getResourcesForHobby } from "~/lib/hobby-resources";
-import { getRoadmapForHobby } from "~/lib/hobby-roadmap";
-import { safeDecodeURIComponent } from "~/lib/slug";
-import { getTimelineUrl } from "~/lib/timeline-url";
-import type { Phase } from "~/lib/types";
-import { getServerAuthSession } from "~/server/auth";
-import { db } from "~/server/db";
+import { HobbyRoadmapCard } from '~/components/hobby-roadmap-card';
+import { JsonLd } from '~/components/json-ld';
+import { Badge } from '~/components/ui/badge';
+import { timelines, users } from '~/db/schema';
+import { blogPosts } from '~/lib/blog-posts';
+import { getCategoryForHobby, HOBBY_CATEGORIES } from '~/lib/hobbies';
+import { getRelatedHobbies } from '~/lib/hobby-affinities';
+import { getResourcesForHobby } from '~/lib/hobby-resources';
+import { getRoadmapForHobby } from '~/lib/hobby-roadmap';
+import { safeDecodeURIComponent } from '~/lib/slug';
+import { getTimelineUrl } from '~/lib/timeline-url';
+import type { Phase } from '~/lib/types';
+import { getServerAuthSession } from '~/server/auth';
+import { db } from '~/server/db';
 
 interface Props {
   params: Promise<{ hobby: string }>;
@@ -23,9 +23,9 @@ interface Props {
 
 function slugToHobby(slug: string): string {
   return slug
-    .split("-")
+    .split('-')
     .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
-    .join(" ");
+    .join(' ');
 }
 
 export const revalidate = 3600; // 1 hour ISR
@@ -33,8 +33,8 @@ export const revalidate = 3600; // 1 hour ISR
 export async function generateStaticParams() {
   return HOBBY_CATEGORIES.flatMap((c) =>
     c.hobbies.map((h) => ({
-      hobby: h.toLowerCase().replace(/\s+/g, "-"),
-    })),
+      hobby: h.toLowerCase().replace(/\s+/g, '-'),
+    }))
   );
 }
 
@@ -74,7 +74,7 @@ export default async function HobbyDetailPage({ params }: Props) {
     })
     .from(timelines)
     .leftJoin(users, eq(timelines.userId, users.id))
-    .where(eq(timelines.visibility, "PUBLIC"))
+    .where(eq(timelines.visibility, 'PUBLIC'))
     .orderBy(desc(timelines.updatedAt))
     .limit(50);
 
@@ -82,7 +82,7 @@ export default async function HobbyDetailPage({ params }: Props) {
     try {
       const phases = JSON.parse(t.phases) as Phase[];
       return phases.some((p) =>
-        p.hobbies.some((h) => h.name.toLowerCase() === hobbyName.toLowerCase()),
+        p.hobbies.some((h) => h.name.toLowerCase() === hobbyName.toLowerCase())
       );
     } catch {
       return false;
@@ -91,38 +91,40 @@ export default async function HobbyDetailPage({ params }: Props) {
 
   const popularityCount = matchingTimelines.length;
 
-  const otherHobbies = category.hobbies.filter(
-    (h) => h.toLowerCase() !== hobbyName.toLowerCase(),
-  );
+  const otherHobbies = category.hobbies.filter((h) => h.toLowerCase() !== hobbyName.toLowerCase());
 
   const resources = getResourcesForHobby(hobbyName);
   const roadmap = getRoadmapForHobby(hobbyName);
   const crossCategoryHobbies = getRelatedHobbies(hobbyName);
 
-  const relatedPosts = blogPosts.filter((post) => {
-    const search = hobbyName.toLowerCase();
-    return post.title.toLowerCase().includes(search) ||
-           post.excerpt.toLowerCase().includes(search) ||
-           post.content.some((block) =>
-             block.type === "paragraph" && block.text.toLowerCase().includes(search)
-           );
-  }).slice(0, 2);
+  const relatedPosts = blogPosts
+    .filter((post) => {
+      const search = hobbyName.toLowerCase();
+      return (
+        post.title.toLowerCase().includes(search) ||
+        post.excerpt.toLowerCase().includes(search) ||
+        post.content.some(
+          (block) => block.type === 'paragraph' && block.text.toLowerCase().includes(search)
+        )
+      );
+    })
+    .slice(0, 2);
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-12">
       <JsonLd
         data={{
-          "@context": "https://schema.org",
-          "@type": "BreadcrumbList",
+          '@context': 'https://schema.org',
+          '@type': 'BreadcrumbList',
           itemListElement: [
             {
-              "@type": "ListItem",
+              '@type': 'ListItem',
               position: 1,
-              name: "Hobbies",
-              item: "https://significanthobbies.com/hobbies",
+              name: 'Hobbies',
+              item: 'https://significanthobbies.com/hobbies',
             },
             {
-              "@type": "ListItem",
+              '@type': 'ListItem',
               position: 2,
               name: hobbyName,
               item: `https://significanthobbies.com/hobbies/${hobbySlug}`,
@@ -147,10 +149,7 @@ export default async function HobbyDetailPage({ params }: Props) {
 
       {/* Header */}
       <div className="mb-2">
-        <Link
-          href="/hobbies"
-          className="text-sm text-stone-500 hover:text-stone-700"
-        >
+        <Link href="/hobbies" className="text-sm text-stone-500 hover:text-stone-700">
           ← All hobbies
         </Link>
       </div>
@@ -167,18 +166,21 @@ export default async function HobbyDetailPage({ params }: Props) {
         <div className="rounded-xl border border-stone-200 bg-white px-5 py-3 flex items-center gap-3">
           <span className="text-2xl font-bold text-emerald-600">{popularityCount}</span>
           <span className="text-sm text-stone-600">
-            {popularityCount === 1
-              ? "public timeline features this hobby"
-              : popularityCount === 0
-              ? (
-                <span>
-                  public timelines yet —{" "}
-                  <Link href="/timeline/new" className="text-emerald-600 hover:text-emerald-700 transition-colors">
-                    be the first!
-                  </Link>
-                </span>
-              )
-              : "public timelines feature this hobby"}
+            {popularityCount === 1 ? (
+              'public timeline features this hobby'
+            ) : popularityCount === 0 ? (
+              <span>
+                public timelines yet —{' '}
+                <Link
+                  href="/timeline/new"
+                  className="text-emerald-600 hover:text-emerald-700 transition-colors"
+                >
+                  be the first!
+                </Link>
+              </span>
+            ) : (
+              'public timelines feature this hobby'
+            )}
           </span>
         </div>
       </div>
@@ -202,31 +204,35 @@ export default async function HobbyDetailPage({ params }: Props) {
                 target="_blank"
                 rel="noopener noreferrer"
                 className={`group flex items-center gap-4 rounded-xl border border-stone-200 bg-white transition-all hover:border-emerald-400 hover:shadow-sm ${
-                  i === 0 ? "p-5" : "px-5 py-3"
+                  i === 0 ? 'p-5' : 'px-5 py-3'
                 }`}
               >
-                <span className={i === 0 ? "text-3xl" : "text-xl"}>{r.icon}</span>
+                <span className={i === 0 ? 'text-3xl' : 'text-xl'}>{r.icon}</span>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
-                    <span className={`font-semibold text-stone-800 group-hover:text-emerald-600 transition-colors ${i === 0 ? "text-base" : "text-sm"}`}>
+                    <span
+                      className={`font-semibold text-stone-800 group-hover:text-emerald-600 transition-colors ${i === 0 ? 'text-base' : 'text-sm'}`}
+                    >
                       {r.name}
                     </span>
-                    {r.type === "own" && (
+                    {r.type === 'own' && (
                       <span className="rounded-full bg-emerald-50 border border-emerald-200 px-2 py-0.5 text-[10px] font-medium text-emerald-700">
                         by SignificantHobbies
                       </span>
                     )}
-                    {r.type === "sponsored" && (
+                    {r.type === 'sponsored' && (
                       <span className="rounded-full bg-amber-50 border border-amber-200 px-2 py-0.5 text-[10px] font-medium text-amber-700">
                         sponsored
                       </span>
                     )}
                   </div>
-                  <p className={`text-stone-500 ${i === 0 ? "text-sm mt-0.5" : "text-xs"}`}>
+                  <p className={`text-stone-500 ${i === 0 ? 'text-sm mt-0.5' : 'text-xs'}`}>
                     {r.description}
                   </p>
                 </div>
-                <span className="text-stone-300 group-hover:text-emerald-500 transition-colors text-sm">↗</span>
+                <span className="text-stone-300 group-hover:text-emerald-500 transition-colors text-sm">
+                  ↗
+                </span>
               </a>
             ))}
           </div>
@@ -270,15 +276,23 @@ export default async function HobbyDetailPage({ params }: Props) {
               let phases: Phase[] = [];
               try {
                 phases = JSON.parse(t.phases) as Phase[];
-              } catch { /* ignore */ }
-              const totalHobbies = new Set(
-                phases.flatMap((p) => p.hobbies.map((h) => h.name)),
-              ).size;
+              } catch {
+                /* ignore */
+              }
+              const totalHobbies = new Set(phases.flatMap((p) => p.hobbies.map((h) => h.name)))
+                .size;
               return (
-                <Link key={t.id} href={getTimelineUrl({ id: t.id, slug: t.slug, user: t.userUsername ? { username: t.userUsername } : null })}>
+                <Link
+                  key={t.id}
+                  href={getTimelineUrl({
+                    id: t.id,
+                    slug: t.slug,
+                    user: t.userUsername ? { username: t.userUsername } : null,
+                  })}
+                >
                   <div className="group rounded-xl border border-stone-200 bg-white p-4 transition-colors hover:border-emerald-400">
                     <h3 className="font-medium text-stone-800 group-hover:text-emerald-600 transition-colors">
-                      {t.title ?? "Hobby Timeline"}
+                      {t.title ?? 'Hobby Timeline'}
                     </h3>
                     {t.userName && (
                       <p className="text-xs text-stone-500 mt-0.5">
@@ -295,9 +309,7 @@ export default async function HobbyDetailPage({ params }: Props) {
           </div>
         ) : (
           <div className="rounded-xl border border-stone-200 bg-stone-50 p-8 text-center">
-            <p className="text-stone-500">
-              No public timelines feature {hobbyName} yet.
-            </p>
+            <p className="text-stone-500">No public timelines feature {hobbyName} yet.</p>
             <Link href="/timeline/new">
               <button className="mt-3 text-sm text-emerald-600 hover:text-emerald-700">
                 Be the first →
@@ -317,7 +329,7 @@ export default async function HobbyDetailPage({ params }: Props) {
             {otherHobbies.map((h) => (
               <Link
                 key={h}
-                href={`/hobbies/${encodeURIComponent(h.toLowerCase().replace(/\s+/g, "-"))}`}
+                href={`/hobbies/${encodeURIComponent(h.toLowerCase().replace(/\s+/g, '-'))}`}
               >
                 <Badge
                   variant="outline"
@@ -338,12 +350,13 @@ export default async function HobbyDetailPage({ params }: Props) {
             You might also like
           </h2>
           <p className="mb-4 text-xs text-stone-400">
-            Hobbies people pair with {hobbyName.toLowerCase()}, often from a completely different direction.
+            Hobbies people pair with {hobbyName.toLowerCase()}, often from a completely different
+            direction.
           </p>
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
             {crossCategoryHobbies.map((affinity) => {
               const affinityCategory = getCategoryForHobby(affinity.name);
-              const slug = affinity.name.toLowerCase().replace(/\s+/g, "-");
+              const slug = affinity.name.toLowerCase().replace(/\s+/g, '-');
               return (
                 <Link
                   key={affinity.name}
@@ -351,7 +364,7 @@ export default async function HobbyDetailPage({ params }: Props) {
                   className="group block rounded-xl border border-stone-200 bg-white p-4 transition-colors hover:border-emerald-400"
                 >
                   <div className="flex items-center gap-2 mb-1">
-                    <span className="text-lg">{affinityCategory?.emoji ?? "🎯"}</span>
+                    <span className="text-lg">{affinityCategory?.emoji ?? '🎯'}</span>
                     <span className="font-semibold text-stone-800 text-sm group-hover:text-emerald-600 transition-colors">
                       {affinity.name}
                     </span>

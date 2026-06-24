@@ -1,4 +1,4 @@
-import { resolve } from 'path';
+import { resolve } from 'node:path';
 import { defineConfig } from 'vitest/config';
 
 // Plain Vitest config (formerly @saas-maker/test-config/vitest factory).

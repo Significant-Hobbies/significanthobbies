@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import { Search } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { useCallback,useState } from "react";
+import { Search } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { useCallback, useState } from 'react';
 
-import { Input } from "~/components/ui/input";
+import { Input } from '~/components/ui/input';
 
 interface Props {
   initialQuery: string;
@@ -21,10 +21,10 @@ export function SearchPageClient({ initialQuery }: Props) {
       if (v.trim()) {
         router.push(`/search?q=${encodeURIComponent(v.trim())}`);
       } else {
-        router.push("/search");
+        router.push('/search');
       }
     },
-    [router],
+    [router]
   );
 
   return (

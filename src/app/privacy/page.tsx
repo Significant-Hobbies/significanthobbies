@@ -1,8 +1,8 @@
-import type { Metadata } from "next";
-import Link from "next/link";
+import type { Metadata } from 'next';
+import Link from 'next/link';
 
 export const metadata: Metadata = {
-  title: "Privacy — Significant Hobbies",
+  title: 'Privacy — Significant Hobbies',
   description: "Short and clear: what we store, what we don't, and how to delete.",
 };
 
@@ -31,15 +31,15 @@ export default function PrivacyPage() {
 
       <h2 className="mt-8 text-base font-semibold text-stone-900">Public profiles</h2>
       <p className="mt-2">
-        Each timeline has its own visibility setting (public / unlisted
-        / private). Public timelines and your <code>/u/username</code>
+        Each timeline has its own visibility setting (public / unlisted / private). Public timelines
+        and your <code>/u/username</code>
         profile are indexable.
       </p>
 
       <h2 className="mt-8 text-base font-semibold text-stone-900">Deletion</h2>
       <p className="mt-2">
-        Delete individual timelines from the dashboard, or contact the
-        maintainer to remove your account entirely.
+        Delete individual timelines from the dashboard, or contact the maintainer to remove your
+        account entirely.
       </p>
     </main>
   );

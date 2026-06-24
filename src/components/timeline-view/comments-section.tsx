@@ -1,12 +1,12 @@
-"use client";
+'use client';
 
-import { Trash2 } from "lucide-react";
-import Image from "next/image";
-import Link from "next/link";
-import { useState, useTransition } from "react";
-import { toast } from "sonner";
+import { Trash2 } from 'lucide-react';
+import Image from 'next/image';
+import Link from 'next/link';
+import { useState, useTransition } from 'react';
+import { toast } from 'sonner';
 
-import { addComment, deleteComment } from "~/lib/actions/timeline";
+import { addComment, deleteComment } from '~/lib/actions/timeline';
 
 type Comment = {
   id: string;
@@ -30,7 +30,7 @@ function timeAgo(date: Date): string {
   const now = Date.now();
   const diff = now - new Date(date).getTime();
   const seconds = Math.floor(diff / 1000);
-  if (seconds < 60) return "just now";
+  if (seconds < 60) return 'just now';
   const minutes = Math.floor(seconds / 60);
   if (minutes < 60) return `${minutes}m ago`;
   const hours = Math.floor(minutes / 60);
@@ -42,19 +42,19 @@ function timeAgo(date: Date): string {
   return `${Math.floor(months / 12)}y ago`;
 }
 
-function Avatar({ user }: { user: Comment["user"] }) {
+function Avatar({ user }: { user: Comment['user'] }) {
   if (user.image) {
     return (
       <Image
         src={user.image}
-        alt={user.name ?? "User"}
+        alt={user.name ?? 'User'}
         width={32}
         height={32}
         className="h-8 w-8 rounded-full object-cover shrink-0 border border-stone-200"
       />
     );
   }
-  const initial = (user.name ?? user.username ?? "?")[0]?.toUpperCase() ?? "?";
+  const initial = (user.name ?? user.username ?? '?')[0]?.toUpperCase() ?? '?';
   return (
     <div className="h-8 w-8 rounded-full bg-stone-200 flex items-center justify-center shrink-0 text-xs font-semibold text-stone-600 border border-stone-200">
       {initial}
@@ -69,7 +69,7 @@ export function CommentsSectionWithOwn({
   ownCommentIds,
 }: Props) {
   const [comments, setComments] = useState<Comment[]>(initialComments);
-  const [body, setBody] = useState("");
+  const [body, setBody] = useState('');
   const [isPosting, startPostTransition] = useTransition();
   const [deletingId, setDeletingId] = useState<string | null>(null);
   // Track ids of comments posted in this session as own
@@ -99,9 +99,9 @@ export function CommentsSectionWithOwn({
           },
         ]);
         setLocalOwnIds((prev) => new Set([...prev, created.id]));
-        setBody("");
+        setBody('');
       } catch {
-        toast.error("Failed to post comment");
+        toast.error('Failed to post comment');
       }
     });
   }
@@ -112,7 +112,7 @@ export function CommentsSectionWithOwn({
       await deleteComment(commentId);
       setComments((prev) => prev.filter((c) => c.id !== commentId));
     } catch {
-      toast.error("Failed to delete comment");
+      toast.error('Failed to delete comment');
     } finally {
       setDeletingId(null);
     }
@@ -120,9 +120,7 @@ export function CommentsSectionWithOwn({
 
   return (
     <div className="rounded-xl border border-stone-200 bg-white p-6">
-      <h2 className="mb-4 text-base font-semibold text-stone-800">
-        Comments ({comments.length})
-      </h2>
+      <h2 className="mb-4 text-base font-semibold text-stone-800">Comments ({comments.length})</h2>
 
       {/* Comment form */}
       {isAuthenticated ? (
@@ -136,10 +134,7 @@ export function CommentsSectionWithOwn({
           />
           <div className="mt-1.5 flex items-center justify-between">
             <span
-              className={[
-                "text-xs",
-                remaining < 20 ? "text-rose-500" : "text-stone-400",
-              ].join(" ")}
+              className={['text-xs', remaining < 20 ? 'text-rose-500' : 'text-stone-400'].join(' ')}
             >
               {remaining} left
             </span>
@@ -148,27 +143,22 @@ export function CommentsSectionWithOwn({
               disabled={isPosting || !body.trim()}
               className="rounded-lg bg-emerald-600 px-4 py-1.5 text-sm font-medium text-white transition-colors hover:bg-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {isPosting ? "Posting..." : "Post"}
+              {isPosting ? 'Posting...' : 'Post'}
             </button>
           </div>
         </div>
       ) : (
         <div className="mb-6 rounded-lg border border-stone-100 bg-stone-50 px-4 py-3 text-sm text-stone-500">
-          <Link
-            href="/api/auth/signin"
-            className="text-emerald-600 hover:underline font-medium"
-          >
+          <Link href="/api/auth/signin" className="text-emerald-600 hover:underline font-medium">
             Sign in
-          </Link>{" "}
+          </Link>{' '}
           to join the conversation
         </div>
       )}
 
       {/* Comments list */}
       {comments.length === 0 ? (
-        <p className="text-center text-sm text-stone-400 py-6">
-          Be the first to comment
-        </p>
+        <p className="text-center text-sm text-stone-400 py-6">Be the first to comment</p>
       ) : (
         <ul className="space-y-4">
           {comments.map((comment) => (
@@ -177,20 +167,14 @@ export function CommentsSectionWithOwn({
               <div className="flex-1 min-w-0">
                 <div className="flex items-baseline gap-2 flex-wrap">
                   <span className="text-sm font-medium text-stone-800">
-                    {comment.user.name ?? comment.user.username ?? "Anonymous"}
+                    {comment.user.name ?? comment.user.username ?? 'Anonymous'}
                   </span>
                   {comment.user.username && (
-                    <span className="text-xs text-stone-400">
-                      @{comment.user.username}
-                    </span>
+                    <span className="text-xs text-stone-400">@{comment.user.username}</span>
                   )}
-                  <span className="text-xs text-stone-400">
-                    {timeAgo(comment.createdAt)}
-                  </span>
+                  <span className="text-xs text-stone-400">{timeAgo(comment.createdAt)}</span>
                 </div>
-                <p className="mt-0.5 text-sm text-stone-700 break-words">
-                  {comment.body}
-                </p>
+                <p className="mt-0.5 text-sm text-stone-700 break-words">{comment.body}</p>
               </div>
               {isOwn(comment.id) && (
                 <button

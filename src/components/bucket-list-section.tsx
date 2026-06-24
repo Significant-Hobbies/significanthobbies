@@ -1,21 +1,21 @@
-"use client";
+'use client';
 
-import Link from "next/link";
-import { useId, useMemo, useRef, useState, useTransition } from "react";
+import Link from 'next/link';
+import { useId, useMemo, useRef, useState, useTransition } from 'react';
 
-import { Lumi } from "~/components/lumi";
+import { Lumi } from '~/components/lumi';
 import {
   addBucketListItem,
   removeBucketListItem,
   updateBucketListItemStatus,
   updateBucketListItemVisibility,
-} from "~/lib/actions/bucket-list";
+} from '~/lib/actions/bucket-list';
 import {
   getBucketListArchetype,
   getBucketListSuggestions,
   getCelebrityMatch,
-} from "~/lib/bucket-list-insights";
-import { BUCKET_ITEM_CATEGORIES } from "~/lib/famous-bucket-lists";
+} from '~/lib/bucket-list-insights';
+import { BUCKET_ITEM_CATEGORIES } from '~/lib/famous-bucket-lists';
 
 type Item = {
   id: string;
@@ -34,7 +34,7 @@ type Props = { initialItems: Item[] };
 
 export function BucketListSection({ initialItems }: Props) {
   const [items, setItems] = useState<Item[]>(initialItems);
-  const [newTitle, setNewTitle] = useState("");
+  const [newTitle, setNewTitle] = useState('');
   const [isPending, startTransition] = useTransition();
   const optimisticIdBase = useId();
   const optimisticCounter = useRef(0);
@@ -44,24 +44,22 @@ export function BucketListSection({ initialItems }: Props) {
   const suggestions = useMemo(() => getBucketListSuggestions(items, 6), [items]);
 
   function handleToggle(id: string, currentStatus: string) {
-    const nextStatus = currentStatus === "done" ? "planned" : "done";
+    const nextStatus = currentStatus === 'done' ? 'planned' : 'done';
     setItems((prev) =>
       prev.map((item) =>
         item.id === id
-          ? { ...item, status: nextStatus, completedAt: nextStatus === "done" ? new Date() : null }
-          : item,
-      ),
+          ? { ...item, status: nextStatus, completedAt: nextStatus === 'done' ? new Date() : null }
+          : item
+      )
     );
     startTransition(async () => {
-      await updateBucketListItemStatus(id, nextStatus as "planned" | "done");
+      await updateBucketListItemStatus(id, nextStatus as 'planned' | 'done');
     });
   }
 
   function handleToggleVisibility(id: string, currentVisibility: string) {
-    const next = currentVisibility === "public" ? "private" : "public";
-    setItems((prev) =>
-      prev.map((item) => (item.id === id ? { ...item, visibility: next } : item)),
-    );
+    const next = currentVisibility === 'public' ? 'private' : 'public';
+    setItems((prev) => prev.map((item) => (item.id === id ? { ...item, visibility: next } : item)));
     startTransition(async () => {
       await updateBucketListItemVisibility(id, next);
     });
@@ -82,7 +80,7 @@ export function BucketListSection({ initialItems }: Props) {
     e.preventDefault();
     const title = newTitle.trim();
     if (!title) return;
-    setNewTitle("");
+    setNewTitle('');
     addItemOptimistically(title, undefined);
   }
 
@@ -93,8 +91,8 @@ export function BucketListSection({ initialItems }: Props) {
       title,
       description: null,
       category: category ?? null,
-      status: "planned",
-      visibility: "private",
+      status: 'planned',
+      visibility: 'private',
       sourceSlug: null,
       sourceItemTitle: null,
       completedAt: null,
@@ -102,19 +100,20 @@ export function BucketListSection({ initialItems }: Props) {
     };
     setItems((prev) => [optimistic, ...prev]);
     startTransition(async () => {
-      const result = await addBucketListItem({ title, category: category as Item["category"] ?? undefined });
+      const result = await addBucketListItem({
+        title,
+        category: (category as Item['category']) ?? undefined,
+      });
       if (result.id) {
         setItems((prev) =>
-          prev.map((item) =>
-            item.id === optimistic.id ? { ...item, id: result.id! } : item,
-          ),
+          prev.map((item) => (item.id === optimistic.id ? { ...item, id: result.id! } : item))
         );
       }
     });
   }
 
-  const done = items.filter((i) => i.status === "done").length;
-  const publicCount = items.filter((i) => i.visibility === "public").length;
+  const done = items.filter((i) => i.status === 'done').length;
+  const publicCount = items.filter((i) => i.visibility === 'public').length;
   const total = items.length;
 
   return (
@@ -129,7 +128,9 @@ export function BucketListSection({ initialItems }: Props) {
               <p className="text-sm text-stone-400">
                 {done} of {total} done
                 {publicCount > 0 && (
-                  <span className="ml-2 text-amber-600 font-medium">· {publicCount} public on your profile</span>
+                  <span className="ml-2 text-amber-600 font-medium">
+                    · {publicCount} public on your profile
+                  </span>
                 )}
               </p>
             )}
@@ -147,8 +148,12 @@ export function BucketListSection({ initialItems }: Props) {
       {(archetype ?? celebrity) && (
         <div className="grid gap-3 sm:grid-cols-2">
           {archetype && (
-            <div className={`rounded-2xl p-5 text-white ${archetype.color} bg-opacity-90 shadow-sm`}>
-              <p className="text-xs font-semibold uppercase tracking-wider opacity-80 mb-1">Your archetype</p>
+            <div
+              className={`rounded-2xl p-5 text-white ${archetype.color} bg-opacity-90 shadow-sm`}
+            >
+              <p className="text-xs font-semibold uppercase tracking-wider opacity-80 mb-1">
+                Your archetype
+              </p>
               <div className="flex items-center gap-2">
                 <span className="text-2xl">{archetype.emoji}</span>
                 <div>
@@ -161,7 +166,9 @@ export function BucketListSection({ initialItems }: Props) {
           )}
           {celebrity && (
             <div className="rounded-2xl border border-amber-200 bg-amber-50 p-5">
-              <p className="text-xs font-semibold uppercase tracking-wider text-amber-600 mb-1">You&apos;re most like</p>
+              <p className="text-xs font-semibold uppercase tracking-wider text-amber-600 mb-1">
+                You&apos;re most like
+              </p>
               <div className="flex items-center gap-2">
                 <span className="text-2xl">{celebrity.emoji}</span>
                 <div>
@@ -206,7 +213,9 @@ export function BucketListSection({ initialItems }: Props) {
               >
                 <span>{s.emoji}</span>
                 <span className="line-clamp-1 max-w-[180px]">{s.title}</span>
-                <span className="text-stone-300 group-hover:text-amber-400 transition-colors">+</span>
+                <span className="text-stone-300 group-hover:text-amber-400 transition-colors">
+                  +
+                </span>
               </button>
             ))}
           </div>
@@ -235,13 +244,17 @@ export function BucketListSection({ initialItems }: Props) {
       {total > 0 && (
         <div className="space-y-1.5">
           <div className="flex justify-between text-xs text-stone-400">
-            <span>{done} done · {total - done} remaining</span>
-            <span className="font-medium text-amber-600">{total > 0 ? Math.round((done / total) * 100) : 0}%</span>
+            <span>
+              {done} done · {total - done} remaining
+            </span>
+            <span className="font-medium text-amber-600">
+              {total > 0 ? Math.round((done / total) * 100) : 0}%
+            </span>
           </div>
           <div className="h-2 rounded-full bg-stone-100 overflow-hidden">
             <div
               className="h-full rounded-full bg-gradient-to-r from-amber-400 to-amber-500 transition-all duration-700"
-              style={{ width: total ? `${Math.round((done / total) * 100)}%` : "0%" }}
+              style={{ width: total ? `${Math.round((done / total) * 100)}%` : '0%' }}
             />
           </div>
         </div>
@@ -270,16 +283,16 @@ export function BucketListSection({ initialItems }: Props) {
             const cat = item.category
               ? BUCKET_ITEM_CATEGORIES[item.category as keyof typeof BUCKET_ITEM_CATEGORIES]
               : null;
-            const isDone = item.status === "done";
-            const isPublic = item.visibility === "public";
+            const isDone = item.status === 'done';
+            const isPublic = item.visibility === 'public';
 
             return (
               <li
                 key={item.id}
                 className={`group flex items-center gap-3 rounded-xl border px-4 py-3 transition-all duration-200 ${
                   isDone
-                    ? "border-emerald-200 bg-emerald-50/60"
-                    : "border-stone-200 bg-white hover:border-stone-300"
+                    ? 'border-emerald-200 bg-emerald-50/60'
+                    : 'border-stone-200 bg-white hover:border-stone-300'
                 }`}
               >
                 {/* Done toggle */}
@@ -287,16 +300,18 @@ export function BucketListSection({ initialItems }: Props) {
                   onClick={() => handleToggle(item.id, item.status)}
                   className={`h-5 w-5 shrink-0 rounded-full border-2 flex items-center justify-center transition-all ${
                     isDone
-                      ? "border-emerald-500 bg-emerald-500"
-                      : "border-stone-300 hover:border-amber-400 hover:scale-110"
+                      ? 'border-emerald-500 bg-emerald-500'
+                      : 'border-stone-300 hover:border-amber-400 hover:scale-110'
                   }`}
-                  aria-label={isDone ? "Mark as planned" : "Mark as done"}
+                  aria-label={isDone ? 'Mark as planned' : 'Mark as done'}
                 >
                   {isDone && <span className="text-white text-[9px] font-bold">✓</span>}
                 </button>
 
                 {/* Title */}
-                <span className={`flex-1 text-sm font-medium ${isDone ? "line-through text-stone-400" : "text-stone-800"}`}>
+                <span
+                  className={`flex-1 text-sm font-medium ${isDone ? 'line-through text-stone-400' : 'text-stone-800'}`}
+                >
                   {item.title}
                   {item.sourceSlug && (
                     <a
@@ -311,13 +326,21 @@ export function BucketListSection({ initialItems }: Props) {
 
                 {/* Actions */}
                 <div className="flex items-center gap-1.5 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
-                  {cat && <span className="text-sm" title={cat.label}>{cat.emoji}</span>}
+                  {cat && (
+                    <span className="text-sm" title={cat.label}>
+                      {cat.emoji}
+                    </span>
+                  )}
                   <button
                     onClick={() => handleToggleVisibility(item.id, item.visibility)}
-                    className={`text-base transition-colors ${isPublic ? "text-amber-500" : "text-stone-300 hover:text-stone-400"}`}
-                    title={isPublic ? "Public on your profile — click to make private" : "Private — click to share on your profile"}
+                    className={`text-base transition-colors ${isPublic ? 'text-amber-500' : 'text-stone-300 hover:text-stone-400'}`}
+                    title={
+                      isPublic
+                        ? 'Public on your profile — click to make private'
+                        : 'Private — click to share on your profile'
+                    }
                   >
-                    {isPublic ? "🌐" : "🔒"}
+                    {isPublic ? '🌐' : '🔒'}
                   </button>
                   <button
                     onClick={() => handleRemove(item.id)}
@@ -335,7 +358,8 @@ export function BucketListSection({ initialItems }: Props) {
 
       {total > 0 && publicCount === 0 && (
         <p className="text-center text-xs text-stone-400">
-          Items are private by default. Hover an item and click 🔒 to share it on your public profile.
+          Items are private by default. Hover an item and click 🔒 to share it on your public
+          profile.
         </p>
       )}
     </div>

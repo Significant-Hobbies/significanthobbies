@@ -1,22 +1,22 @@
-import { desc,eq } from "drizzle-orm";
-import { LayoutList,Plus } from "lucide-react";
-import Link from "next/link";
-import { redirect } from "next/navigation";
+import { desc, eq } from 'drizzle-orm';
+import { LayoutList, Plus } from 'lucide-react';
+import Link from 'next/link';
+import { redirect } from 'next/navigation';
 
-import { TimelineCard } from "~/components/timeline-card";
-import { Button } from "~/components/ui/button";
-import { timelines } from "~/db/schema";
-import type { Phase, TimelineData, TimelineVisibility } from "~/lib/types";
-import { getServerAuthSession } from "~/server/auth";
-import { db } from "~/server/db";
+import { TimelineCard } from '~/components/timeline-card';
+import { Button } from '~/components/ui/button';
+import { timelines } from '~/db/schema';
+import type { Phase, TimelineData, TimelineVisibility } from '~/lib/types';
+import { getServerAuthSession } from '~/server/auth';
+import { db } from '~/server/db';
 
-export const metadata = { title: "My Timelines — SignificantHobbies" };
+export const metadata = { title: 'My Timelines — SignificantHobbies' };
 
 export default async function MyTimelinesPage() {
   const session = await getServerAuthSession();
 
   if (!session?.user?.id) {
-    redirect("/login");
+    redirect('/login');
   }
 
   const rawTimelines = await db
@@ -29,7 +29,9 @@ export default async function MyTimelinesPage() {
     let phases: Phase[] = [];
     try {
       phases = JSON.parse(raw.phases) as Phase[];
-    } catch { /* ignore */ }
+    } catch {
+      /* ignore */
+    }
 
     return {
       id: raw.id,
@@ -50,8 +52,8 @@ export default async function MyTimelinesPage() {
           <h1 className="text-2xl font-bold text-stone-900">My Timelines</h1>
           <p className="mt-1 text-sm text-stone-500">
             {timelineList.length > 0
-              ? `${timelineList.length} timeline${timelineList.length === 1 ? "" : "s"}`
-              : "Track your hobbies across life phases"}
+              ? `${timelineList.length} timeline${timelineList.length === 1 ? '' : 's'}`
+              : 'Track your hobbies across life phases'}
           </p>
         </div>
         <Link href="/timeline/new">
@@ -68,12 +70,10 @@ export default async function MyTimelinesPage() {
           <div className="mb-5 flex h-14 w-14 items-center justify-center rounded-full border border-stone-200 bg-stone-100">
             <LayoutList className="h-6 w-6 text-stone-400" />
           </div>
-          <h2 className="mb-2 text-lg font-semibold text-stone-800">
-            No timelines yet
-          </h2>
+          <h2 className="mb-2 text-lg font-semibold text-stone-800">No timelines yet</h2>
           <p className="mb-7 max-w-xs text-sm text-stone-500">
-            Create your first timeline to start mapping the hobbies that defined
-            each chapter of your life.
+            Create your first timeline to start mapping the hobbies that defined each chapter of
+            your life.
           </p>
           <Link href="/timeline/new">
             <Button className="bg-emerald-600 hover:bg-emerald-700 text-white">
@@ -86,11 +86,7 @@ export default async function MyTimelinesPage() {
         /* Timeline grid */
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {timelineList.map((timeline) => (
-            <TimelineCard
-              key={timeline.id}
-              timeline={timeline}
-              showVisibility={true}
-            />
+            <TimelineCard key={timeline.id} timeline={timeline} showVisibility={true} />
           ))}
         </div>
       )}

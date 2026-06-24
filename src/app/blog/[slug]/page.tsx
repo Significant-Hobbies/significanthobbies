@@ -1,9 +1,9 @@
-import type { Metadata } from "next";
-import Link from "next/link";
-import { notFound } from "next/navigation";
+import type { Metadata } from 'next';
+import Link from 'next/link';
+import { notFound } from 'next/navigation';
 
-import { JsonLd } from "~/components/json-ld";
-import { type BlogPost, blogPosts, type ContentBlock } from "~/lib/blog-posts";
+import { JsonLd } from '~/components/json-ld';
+import { type BlogPost, blogPosts, type ContentBlock } from '~/lib/blog-posts';
 
 /* ─── Static generation ──────────────────────────────────────────────────────── */
 
@@ -18,7 +18,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { slug } = await params;
   const post = blogPosts.find((p) => p.slug === slug);
-  if (!post) return { title: "Not Found" };
+  if (!post) return { title: 'Not Found' };
 
   return {
     title: post.title,
@@ -29,19 +29,19 @@ export async function generateMetadata({
 /* ─── Category color helper ──────────────────────────────────────────────────── */
 
 const CATEGORY_COLORS: Record<string, { bg: string; text: string; border: string }> = {
-  Wellbeing: { bg: "bg-emerald-50", text: "text-emerald-700", border: "border-emerald-200" },
-  "Getting Started": { bg: "bg-amber-50", text: "text-amber-700", border: "border-amber-200" },
-  Psychology: { bg: "bg-violet-50", text: "text-violet-700", border: "border-violet-200" },
-  Reflection: { bg: "bg-blue-50", text: "text-blue-700", border: "border-blue-200" },
-  Inspiration: { bg: "bg-orange-50", text: "text-orange-700", border: "border-orange-200" },
+  Wellbeing: { bg: 'bg-emerald-50', text: 'text-emerald-700', border: 'border-emerald-200' },
+  'Getting Started': { bg: 'bg-amber-50', text: 'text-amber-700', border: 'border-amber-200' },
+  Psychology: { bg: 'bg-violet-50', text: 'text-violet-700', border: 'border-violet-200' },
+  Reflection: { bg: 'bg-blue-50', text: 'text-blue-700', border: 'border-blue-200' },
+  Inspiration: { bg: 'bg-orange-50', text: 'text-orange-700', border: 'border-orange-200' },
 };
 
 function categoryStyle(category: string) {
   return (
     CATEGORY_COLORS[category] ?? {
-      bg: "bg-stone-50",
-      text: "text-stone-600",
-      border: "border-stone-200",
+      bg: 'bg-stone-50',
+      text: 'text-stone-600',
+      border: 'border-stone-200',
     }
   );
 }
@@ -53,17 +53,14 @@ function BlogContent({ blocks }: { blocks: ContentBlock[] }) {
     <div>
       {blocks.map((block, idx) => {
         switch (block.type) {
-          case "paragraph":
+          case 'paragraph':
             return (
-              <p
-                key={idx}
-                className="scroll-reveal mb-5 text-lg leading-relaxed text-stone-700"
-              >
+              <p key={idx} className="scroll-reveal mb-5 text-lg leading-relaxed text-stone-700">
                 {block.text}
               </p>
             );
 
-          case "heading":
+          case 'heading':
             if (block.level === 2) {
               return (
                 <h2
@@ -83,7 +80,7 @@ function BlogContent({ blocks }: { blocks: ContentBlock[] }) {
               </h3>
             );
 
-          case "list":
+          case 'list':
             return (
               <ul key={idx} className="scroll-reveal mb-5 space-y-2">
                 {block.items.map((item, i) => (
@@ -95,7 +92,7 @@ function BlogContent({ blocks }: { blocks: ContentBlock[] }) {
               </ul>
             );
 
-          case "callout":
+          case 'callout':
             return (
               <div
                 key={idx}
@@ -104,13 +101,11 @@ function BlogContent({ blocks }: { blocks: ContentBlock[] }) {
                 <span className="mt-0.5 shrink-0 text-2xl" role="img" aria-hidden="true">
                   {block.emoji}
                 </span>
-                <p className="text-base italic leading-relaxed text-amber-900">
-                  {block.text}
-                </p>
+                <p className="text-base italic leading-relaxed text-amber-900">{block.text}</p>
               </div>
             );
 
-          case "divider":
+          case 'divider':
             return (
               <div key={idx} className="my-10 flex items-center justify-center gap-3">
                 <div className="h-px flex-1 bg-stone-200" />
@@ -119,7 +114,7 @@ function BlogContent({ blocks }: { blocks: ContentBlock[] }) {
               </div>
             );
 
-          case "quote":
+          case 'quote':
             return (
               <blockquote
                 key={idx}
@@ -136,17 +131,17 @@ function BlogContent({ blocks }: { blocks: ContentBlock[] }) {
               </blockquote>
             );
 
-          case "video": {
-            const videoId = block.url.includes("youtu.be/")
-              ? block.url.split("youtu.be/")[1]?.split("?")[0]
-              : new URL(block.url).searchParams.get("v");
+          case 'video': {
+            const videoId = block.url.includes('youtu.be/')
+              ? block.url.split('youtu.be/')[1]?.split('?')[0]
+              : new URL(block.url).searchParams.get('v');
             return (
               <div key={idx} className="scroll-reveal my-10">
                 <div className="overflow-hidden rounded-2xl border border-stone-200 shadow-sm">
                   <div className="relative aspect-video">
                     <iframe
                       src={`https://www.youtube-nocookie.com/embed/${videoId}`}
-                      title={block.caption ?? "Video"}
+                      title={block.caption ?? 'Video'}
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                       allowFullScreen
                       className="absolute inset-0 h-full w-full"
@@ -187,9 +182,7 @@ function RelatedCard({ post }: { post: BlogPost }) {
         <h3 className="mb-2 text-base font-bold leading-snug text-stone-900 transition-colors group-hover:text-emerald-700">
           {post.title}
         </h3>
-        <p className="line-clamp-2 flex-1 text-sm leading-relaxed text-stone-500">
-          {post.excerpt}
-        </p>
+        <p className="line-clamp-2 flex-1 text-sm leading-relaxed text-stone-500">{post.excerpt}</p>
         <div className="mt-4 flex items-center justify-between border-t border-stone-100 pt-3">
           <span className="text-xs text-stone-400">{post.readTime} min read</span>
           <span className="text-xs font-semibold text-emerald-600 opacity-0 transition-opacity group-hover:opacity-100">
@@ -203,38 +196,32 @@ function RelatedCard({ post }: { post: BlogPost }) {
 
 /* ─── Page ───────────────────────────────────────────────────────────────────── */
 
-export default async function BlogPostPage({
-  params,
-}: {
-  params: Promise<{ slug: string }>;
-}) {
+export default async function BlogPostPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const post = blogPosts.find((p) => p.slug === slug);
 
   if (!post) notFound();
 
-  const relatedPosts = blogPosts
-    .filter((p) => p.slug !== slug)
-    .slice(0, 2);
+  const relatedPosts = blogPosts.filter((p) => p.slug !== slug).slice(0, 2);
 
   const style = categoryStyle(post.category);
 
   return (
-    <div className="min-h-screen" style={{ background: "#FAFAFA" }}>
+    <div className="min-h-screen" style={{ background: '#FAFAFA' }}>
       <JsonLd
         data={{
-          "@context": "https://schema.org",
-          "@type": "Article",
+          '@context': 'https://schema.org',
+          '@type': 'Article',
           headline: post.title,
           description: post.excerpt,
           datePublished: post.publishedAt,
           author: {
-            "@type": "Organization",
-            name: "SignificantHobbies",
+            '@type': 'Organization',
+            name: 'SignificantHobbies',
           },
           publisher: {
-            "@type": "Organization",
-            name: "SignificantHobbies",
+            '@type': 'Organization',
+            name: 'SignificantHobbies',
           },
         }}
       />
@@ -255,8 +242,7 @@ export default async function BlogPostPage({
       <header
         className="px-4 pb-12 pt-12 sm:pt-16"
         style={{
-          background:
-            "linear-gradient(160deg, #F5F5F4 0%, #ECFDF5 50%, #FAFAF9 100%)",
+          background: 'linear-gradient(160deg, #F5F5F4 0%, #ECFDF5 50%, #FAFAF9 100%)',
         }}
       >
         <div className="mx-auto max-w-3xl">
@@ -268,13 +254,7 @@ export default async function BlogPostPage({
               {post.category}
             </span>
             <span className="flex items-center gap-1.5 rounded-full bg-stone-100 px-3 py-0.5 text-xs text-stone-500">
-              <svg
-                width="11"
-                height="11"
-                viewBox="0 0 12 12"
-                fill="none"
-                aria-hidden="true"
-              >
+              <svg width="11" height="11" viewBox="0 0 12 12" fill="none" aria-hidden="true">
                 <circle cx="6" cy="6" r="5" stroke="currentColor" strokeWidth="1.5" />
                 <path
                   d="M6 3.5v2.75l1.5 1.5"
@@ -289,7 +269,9 @@ export default async function BlogPostPage({
           </div>
 
           {/* Emoji */}
-          <div className="scroll-reveal scroll-reveal-d1 mb-6 text-6xl sm:text-7xl">{post.emoji}</div>
+          <div className="scroll-reveal scroll-reveal-d1 mb-6 text-6xl sm:text-7xl">
+            {post.emoji}
+          </div>
 
           {/* Title */}
           <h1 className="scroll-reveal scroll-reveal-d2 mb-5 text-3xl font-bold leading-tight tracking-tight text-stone-900 sm:text-4xl md:text-5xl">
@@ -337,7 +319,7 @@ export default async function BlogPostPage({
       {/* CTA */}
       <section
         className="border-t border-stone-100 px-4 py-16"
-        style={{ background: "linear-gradient(135deg, #F0FDF4 0%, #FAFAF9 100%)" }}
+        style={{ background: 'linear-gradient(135deg, #F0FDF4 0%, #FAFAF9 100%)' }}
       >
         <div className="scroll-reveal-scale mx-auto max-w-3xl text-center">
           <div className="mb-3 text-3xl">🗺️</div>
@@ -345,8 +327,8 @@ export default async function BlogPostPage({
             Ready to map your own hobby journey?
           </h2>
           <p className="mb-6 text-stone-500">
-            Track your hobbies across life phases. Discover what rekindled, what
-            persisted, and what to explore next.
+            Track your hobbies across life phases. Discover what rekindled, what persisted, and what
+            to explore next.
           </p>
           <Link
             href="/timeline/new"

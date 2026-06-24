@@ -1,16 +1,16 @@
-"use client";
+'use client';
 
-import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { toast } from "sonner";
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
+import { toast } from 'sonner';
 
-import { Button } from "~/components/ui/button";
-import { Card, CardContent } from "~/components/ui/card";
-import { Input } from "~/components/ui/input";
-import { setUsername } from "~/lib/actions/user";
+import { Button } from '~/components/ui/button';
+import { Card, CardContent } from '~/components/ui/card';
+import { Input } from '~/components/ui/input';
+import { setUsername } from '~/lib/actions/user';
 
 export function UsernameForm() {
-  const [value, setValue] = useState("");
+  const [value, setValue] = useState('');
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
@@ -22,10 +22,10 @@ export function UsernameForm() {
     setLoading(true);
     try {
       await setUsername(value);
-      toast.success("Username set!");
+      toast.success('Username set!');
       router.push(`/u/${value}`);
     } catch (err: unknown) {
-      toast.error(err instanceof Error ? err.message : "Something went wrong");
+      toast.error(err instanceof Error ? err.message : 'Something went wrong');
     } finally {
       setLoading(false);
     }
@@ -40,11 +40,7 @@ export function UsernameForm() {
               <span className="text-stone-400 text-sm select-none">@</span>
               <Input
                 value={value}
-                onChange={(e) =>
-                  setValue(
-                    e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ""),
-                  )
-                }
+                onChange={(e) => setValue(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ''))}
                 placeholder="yourname"
                 className="border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 pl-1"
                 minLength={3}
@@ -61,7 +57,7 @@ export function UsernameForm() {
             className="w-full bg-emerald-600 hover:bg-emerald-700"
             disabled={loading || !isValid}
           >
-            {loading ? "Saving..." : "Claim username"}
+            {loading ? 'Saving...' : 'Claim username'}
           </Button>
         </form>
       </CardContent>

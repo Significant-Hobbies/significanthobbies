@@ -1,8 +1,8 @@
-import { NextResponse } from "next/server";
+import { NextResponse } from 'next/server';
 
-import { HOBBY_CATEGORIES } from "@/lib/hobbies";
+import { HOBBY_CATEGORIES } from '@/lib/hobbies';
 
-export const dynamic = "force-static";
+export const dynamic = 'force-static';
 
 /**
  * Public JSON of the hobby taxonomy — every category and the hobbies
@@ -20,8 +20,8 @@ export function GET() {
     },
     {
       headers: {
-        "Cache-Control": "public, max-age=86400, s-maxage=86400",
+        'Cache-Control': 'public, max-age=86400, s-maxage=86400',
       },
-    },
+    }
   );
 }

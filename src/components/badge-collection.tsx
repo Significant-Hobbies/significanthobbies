@@ -1,4 +1,4 @@
-import { BADGES } from "~/lib/badges";
+import { BADGES } from '~/lib/badges';
 
 export function BadgeCollection({ earnedBadgeIds }: { earnedBadgeIds: string[] }) {
   const earned = new Set(earnedBadgeIds);
@@ -22,15 +22,15 @@ export function BadgeCollection({ earnedBadgeIds }: { earnedBadgeIds: string[] }
               key={badge.id}
               className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-medium transition-all ${
                 isEarned
-                  ? "border-amber-200 bg-amber-50 text-amber-800 shadow-sm"
-                  : "border-stone-200 bg-stone-50 text-stone-400"
+                  ? 'border-amber-200 bg-amber-50 text-amber-800 shadow-sm'
+                  : 'border-stone-200 bg-stone-50 text-stone-400'
               }`}
-              title={isEarned ? badge.description : "Keep completing quests to unlock this badge"}
+              title={isEarned ? badge.description : 'Keep completing quests to unlock this badge'}
             >
-              <span className={isEarned ? "" : "grayscale opacity-40"}>
-                {isEarned ? badge.emoji : "?"}
+              <span className={isEarned ? '' : 'grayscale opacity-40'}>
+                {isEarned ? badge.emoji : '?'}
               </span>
-              <span>{isEarned ? badge.name : "???"}</span>
+              <span>{isEarned ? badge.name : '???'}</span>
             </div>
           );
         })}

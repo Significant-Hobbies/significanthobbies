@@ -1,8 +1,8 @@
-import { RotateCcw } from "lucide-react";
+import { RotateCcw } from 'lucide-react';
 
-import { Badge } from "~/components/ui/badge";
-import { findRediscoveryOpportunities } from "~/lib/rediscovery";
-import type { Phase } from "~/lib/types";
+import { Badge } from '~/components/ui/badge';
+import { findRediscoveryOpportunities } from '~/lib/rediscovery';
+import type { Phase } from '~/lib/types';
 
 interface Props {
   phases: Phase[];
@@ -35,7 +35,7 @@ export function RediscoveryNudges({ phases }: Props) {
               <span className="text-sm font-semibold text-stone-800 capitalize truncate">
                 {item.name}
               </span>
-              {item.type === "rekindle" ? (
+              {item.type === 'rekindle' ? (
                 <Badge className="shrink-0 bg-orange-100 text-orange-700 border border-orange-200 text-[10px] px-1.5 py-0">
                   rekindle
                 </Badge>

@@ -1,16 +1,16 @@
-"use client";
+'use client';
 
-import { Download, Link2,Loader2 } from "lucide-react";
-import { useRef, useState } from "react";
-import { toast } from "sonner";
+import { Download, Link2, Loader2 } from 'lucide-react';
+import { useRef, useState } from 'react';
+import { toast } from 'sonner';
 
-import { Button } from "~/components/ui/button";
-import { trackCoreAction } from "~/lib/analytics";
-import { captureError } from "~/lib/foundry-monitoring";
-import { computePersonality } from "~/lib/personality";
-import type { TimelineData } from "~/lib/types";
+import { Button } from '~/components/ui/button';
+import { trackCoreAction } from '~/lib/analytics';
+import { captureError } from '~/lib/foundry-monitoring';
+import { computePersonality } from '~/lib/personality';
+import type { TimelineData } from '~/lib/types';
 
-import { ExportCard } from "./export-card";
+import { ExportCard } from './export-card';
 
 interface Props {
   timeline: TimelineData;
@@ -25,23 +25,23 @@ export function ExportButton({ timeline }: Props) {
     if (!cardRef.current) return;
     setIsExporting(true);
     try {
-      const { toPng } = await import("html-to-image");
+      const { toPng } = await import('html-to-image');
       const dataUrl = await toPng(cardRef.current, {
         pixelRatio: 2,
-        backgroundColor: "#020617",
+        backgroundColor: '#020617',
       });
-      const link = document.createElement("a");
-      link.download = `${timeline.title ?? "hobby-timeline"}.png`;
+      const link = document.createElement('a');
+      link.download = `${timeline.title ?? 'hobby-timeline'}.png`;
       link.href = dataUrl;
       link.click();
-      toast.success("Downloaded!");
+      toast.success('Downloaded!');
       // Owner analytics: exporting a share card is a core product action.
-      trackCoreAction("timeline_exported");
+      trackCoreAction('timeline_exported');
     } catch (err) {
       // PNG rendering can fail on tainted canvases / large timelines —
       // surface a clear message and capture detail for debugging.
-      console.error("Timeline PNG export failed", err);
-      captureError(err, { scope: "timeline-edit", source: "png_export" });
+      console.error('Timeline PNG export failed', err);
+      captureError(err, { scope: 'timeline-edit', source: 'png_export' });
       toast.error("Couldn't export the image — try again in a moment.");
     } finally {
       setIsExporting(false);
@@ -52,7 +52,7 @@ export function ExportButton({ timeline }: Props) {
     void navigator.clipboard
       .writeText(window.location.href)
       .then(() => {
-        toast.success("Link copied!");
+        toast.success('Link copied!');
       })
       .catch(() => {
         toast.error("Couldn't copy the link — copy it from the address bar.");
@@ -63,20 +63,17 @@ export function ExportButton({ timeline }: Props) {
     const url = window.location.href;
     const text = personality
       ? `I'm a ${personality.archetype.name}! Check out my hobby timeline on Significant Hobbies`
-      : "Check out my hobby timeline on Significant Hobbies";
+      : 'Check out my hobby timeline on Significant Hobbies';
     window.open(
       `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`,
-      "_blank",
+      '_blank'
     );
   }
 
   function handleWhatsAppShare() {
     const url = window.location.href;
-    const text = "Check out my hobby timeline on Significant Hobbies";
-    window.open(
-      `https://wa.me/?text=${encodeURIComponent(text + " " + url)}`,
-      "_blank",
-    );
+    const text = 'Check out my hobby timeline on Significant Hobbies';
+    window.open(`https://wa.me/?text=${encodeURIComponent(`${text} ${url}`)}`, '_blank');
   }
 
   return (

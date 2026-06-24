@@ -1,15 +1,15 @@
-"use server";
+'use server';
 
-import { and, count,eq } from "drizzle-orm";
-import { nanoid } from "nanoid";
-import { revalidatePath } from "next/cache";
-import { z } from "zod";
+import { and, count, eq } from 'drizzle-orm';
+import { nanoid } from 'nanoid';
+import { revalidatePath } from 'next/cache';
+import { z } from 'zod';
 
-import { comments, likes, timelines, users } from "~/db/schema";
-import { trackActivated, trackCoreAction } from "~/lib/analytics";
-import type { Phase, TimelinePin,TimelineVisibility } from "~/lib/types";
-import { getServerAuthSession } from "~/server/auth";
-import { db } from "~/server/db";
+import { comments, likes, timelines, users } from '~/db/schema';
+import { trackActivated, trackCoreAction } from '~/lib/analytics';
+import type { Phase, TimelinePin, TimelineVisibility } from '~/lib/types';
+import { getServerAuthSession } from '~/server/auth';
+import { db } from '~/server/db';
 
 const HobbySchema = z.object({
   name: z.string().min(1).max(100),
@@ -35,7 +35,10 @@ const SaveTimelineSchema = z.object({
 
 async function generateSlug(title: string | undefined | null): Promise<string> {
   if (title) {
-    const baseSlug = title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+    const baseSlug = title
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-|-$/g, '');
     if (baseSlug) {
       const existing = await db.query.timelines.findFirst({
         where: eq(timelines.slug, baseSlug),
@@ -48,12 +51,9 @@ async function generateSlug(title: string | undefined | null): Promise<string> {
   return nanoid(8);
 }
 
-export async function saveTimeline(data: {
-  title?: string;
-  phases: Phase[];
-}) {
+export async function saveTimeline(data: { title?: string; phases: Phase[] }) {
   const session = await getServerAuthSession();
-  if (!session?.user?.id) throw new Error("Not authenticated");
+  if (!session?.user?.id) throw new Error('Not authenticated');
 
   const parsed = SaveTimelineSchema.parse(data);
   const slug = await generateSlug(parsed.title);
@@ -76,14 +76,14 @@ export async function saveTimeline(data: {
       updatedAt: now,
     })
     .returning();
-  revalidatePath("/timeline");
+  revalidatePath('/timeline');
   if (session.user.username && slug) {
     revalidatePath(`/u/${session.user.username}/${slug}`);
   }
 
   // Owner analytics: saving a timeline is the core action; the first save is
   // the user's `activated` milestone.
-  trackCoreAction("timeline_saved", session.user.id);
+  trackCoreAction('timeline_saved', session.user.id);
   if (priorCount === 0) {
     trackActivated(session.user.id);
   }
@@ -91,18 +91,14 @@ export async function saveTimeline(data: {
   return timeline;
 }
 
-export async function updateTimeline(
-  id: string,
-  data: { title?: string; phases: Phase[] },
-) {
+export async function updateTimeline(id: string, data: { title?: string; phases: Phase[] }) {
   const session = await getServerAuthSession();
-  if (!session?.user?.id) throw new Error("Not authenticated");
+  if (!session?.user?.id) throw new Error('Not authenticated');
 
   const timeline = await db.query.timelines.findFirst({
     where: eq(timelines.id, id),
   });
-  if (!timeline || timeline.userId !== session.user.id)
-    throw new Error("Not found");
+  if (!timeline || timeline.userId !== session.user.id) throw new Error('Not found');
 
   const parsed = SaveTimelineSchema.parse(data);
   const newPhasesJson = JSON.stringify(parsed.phases);
@@ -112,7 +108,9 @@ export async function updateTimeline(
   try {
     const parsedVersions: unknown = JSON.parse(timeline.versions);
     if (Array.isArray(parsedVersions)) versions = parsedVersions as typeof versions;
-  } catch { /* ignore */ }
+  } catch {
+    /* ignore */
+  }
 
   if (timeline.phases !== newPhasesJson) {
     versions.push({ date: new Date().toISOString(), phases: timeline.phases });
@@ -144,25 +142,21 @@ export async function updateTimeline(
   return updated;
 }
 
-const VisibilitySchema = z.enum(["PRIVATE", "UNLISTED", "PUBLIC"]);
+const VisibilitySchema = z.enum(['PRIVATE', 'UNLISTED', 'PUBLIC']);
 
-export async function setTimelineVisibility(
-  id: string,
-  visibility: TimelineVisibility,
-) {
+export async function setTimelineVisibility(id: string, visibility: TimelineVisibility) {
   const session = await getServerAuthSession();
-  if (!session?.user?.id) throw new Error("Not authenticated");
+  if (!session?.user?.id) throw new Error('Not authenticated');
 
   const nextVisibility = VisibilitySchema.parse(visibility);
 
   const timeline = await db.query.timelines.findFirst({
     where: eq(timelines.id, id),
   });
-  if (!timeline || timeline.userId !== session.user.id)
-    throw new Error("Not found");
+  if (!timeline || timeline.userId !== session.user.id) throw new Error('Not found');
 
   let slug = timeline.slug;
-  if ((nextVisibility === "PUBLIC" || nextVisibility === "UNLISTED") && !slug) {
+  if ((nextVisibility === 'PUBLIC' || nextVisibility === 'UNLISTED') && !slug) {
     slug = nanoid(10);
   }
 
@@ -180,20 +174,19 @@ export async function setTimelineVisibility(
 
 export async function deleteTimeline(id: string) {
   const session = await getServerAuthSession();
-  if (!session?.user?.id) throw new Error("Not authenticated");
+  if (!session?.user?.id) throw new Error('Not authenticated');
 
   const timeline = await db.query.timelines.findFirst({
     where: eq(timelines.id, id),
   });
-  if (!timeline || timeline.userId !== session.user.id)
-    throw new Error("Not found");
+  if (!timeline || timeline.userId !== session.user.id) throw new Error('Not found');
 
   await db.delete(timelines).where(eq(timelines.id, id));
-  revalidatePath("/timeline");
+  revalidatePath('/timeline');
 }
 
 export async function getLikeStatus(
-  timelineId: string,
+  timelineId: string
 ): Promise<{ liked: boolean; count: number }> {
   const session = await getServerAuthSession();
 
@@ -209,26 +202,18 @@ export async function getLikeStatus(
   }
 
   const existing = await db.query.likes.findFirst({
-    where: and(
-      eq(likes.userId, session.user.id),
-      eq(likes.timelineId, timelineId),
-    ),
+    where: and(eq(likes.userId, session.user.id), eq(likes.timelineId, timelineId)),
   });
 
   return { liked: !!existing, count: likeCount };
 }
 
-export async function toggleLike(
-  timelineId: string,
-): Promise<{ liked: boolean; count: number }> {
+export async function toggleLike(timelineId: string): Promise<{ liked: boolean; count: number }> {
   const session = await getServerAuthSession();
-  if (!session?.user?.id) throw new Error("Not authenticated");
+  if (!session?.user?.id) throw new Error('Not authenticated');
 
   const existing = await db.query.likes.findFirst({
-    where: and(
-      eq(likes.userId, session.user.id),
-      eq(likes.timelineId, timelineId),
-    ),
+    where: and(eq(likes.userId, session.user.id), eq(likes.timelineId, timelineId)),
   });
 
   if (existing) {
@@ -243,10 +228,7 @@ export async function toggleLike(
   // Recount likes (reflects the toggle above) and load the timeline owner for
   // revalidation — independent reads, so run them concurrently.
   const [[result], tl] = await Promise.all([
-    db
-      .select({ count: count() })
-      .from(likes)
-      .where(eq(likes.timelineId, timelineId)),
+    db.select({ count: count() }).from(likes).where(eq(likes.timelineId, timelineId)),
     db.query.timelines.findFirst({
       where: eq(timelines.id, timelineId),
       columns: { slug: true, userId: true },
@@ -269,10 +251,10 @@ export async function toggleLike(
 
 export async function addComment(timelineId: string, body: string) {
   const session = await getServerAuthSession();
-  if (!session?.user?.id) throw new Error("Not authenticated");
+  if (!session?.user?.id) throw new Error('Not authenticated');
 
   const trimmed = body.trim().slice(0, 280);
-  if (!trimmed) throw new Error("Comment body is required");
+  if (!trimmed) throw new Error('Comment body is required');
 
   const [comment] = await db
     .insert(comments)
@@ -307,13 +289,12 @@ export async function addComment(timelineId: string, body: string) {
 
 export async function deleteComment(commentId: string) {
   const session = await getServerAuthSession();
-  if (!session?.user?.id) throw new Error("Not authenticated");
+  if (!session?.user?.id) throw new Error('Not authenticated');
 
   const comment = await db.query.comments.findFirst({
     where: eq(comments.id, commentId),
   });
-  if (!comment || comment.userId !== session.user.id)
-    throw new Error("Not found");
+  if (!comment || comment.userId !== session.user.id) throw new Error('Not found');
 
   await db.delete(comments).where(eq(comments.id, commentId));
   revalidatePath(`/timeline/${comment.timelineId}`);
@@ -343,19 +324,21 @@ const PinSchema = z.object({
 
 export async function addPin(timelineId: string, pin: TimelinePin) {
   const session = await getServerAuthSession();
-  if (!session?.user?.id) throw new Error("Not authenticated");
+  if (!session?.user?.id) throw new Error('Not authenticated');
 
   const timeline = await db.query.timelines.findFirst({
     where: eq(timelines.id, timelineId),
   });
-  if (!timeline || timeline.userId !== session.user.id) throw new Error("Not found");
+  if (!timeline || timeline.userId !== session.user.id) throw new Error('Not found');
 
   const parsed = PinSchema.parse(pin);
   let pins: TimelinePin[] = [];
   try {
     const parsedPins: unknown = JSON.parse(timeline.pins);
     if (Array.isArray(parsedPins)) pins = parsedPins as TimelinePin[];
-  } catch { /* ignore */ }
+  } catch {
+    /* ignore */
+  }
   pins.push(parsed as TimelinePin);
 
   const [updated] = await db
@@ -371,18 +354,20 @@ export async function addPin(timelineId: string, pin: TimelinePin) {
 
 export async function removePin(timelineId: string, pinId: string) {
   const session = await getServerAuthSession();
-  if (!session?.user?.id) throw new Error("Not authenticated");
+  if (!session?.user?.id) throw new Error('Not authenticated');
 
   const timeline = await db.query.timelines.findFirst({
     where: eq(timelines.id, timelineId),
   });
-  if (!timeline || timeline.userId !== session.user.id) throw new Error("Not found");
+  if (!timeline || timeline.userId !== session.user.id) throw new Error('Not found');
 
   let pins: TimelinePin[] = [];
   try {
     const parsedPins: unknown = JSON.parse(timeline.pins);
     if (Array.isArray(parsedPins)) pins = parsedPins as TimelinePin[];
-  } catch { /* ignore */ }
+  } catch {
+    /* ignore */
+  }
   pins = pins.filter((p) => p.id !== pinId);
 
   const [updatedTl] = await db

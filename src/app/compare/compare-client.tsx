@@ -1,45 +1,45 @@
-"use client";
+'use client';
 
-import { ArrowRight, Search, User, UserCheck, Users, UsersRound,X } from "lucide-react";
-import Link from "next/link";
-import { useEffect,useRef, useState } from "react";
+import { ArrowRight, Search, User, UserCheck, Users, UsersRound, X } from 'lucide-react';
+import Link from 'next/link';
+import { useEffect, useRef, useState } from 'react';
 
-import { Input } from "~/components/ui/input";
-import { getCategoryForHobby } from "~/lib/hobbies";
-import { ALL_COMPARABLE_HOBBIES, HOBBY_DETAILS, type HobbyDetail } from "~/lib/hobby-details";
+import { Input } from '~/components/ui/input';
+import { getCategoryForHobby } from '~/lib/hobbies';
+import { ALL_COMPARABLE_HOBBIES, HOBBY_DETAILS, type HobbyDetail } from '~/lib/hobby-details';
 
 // ── Helpers ────────────────────────────────────────────────────────────────
 
 function toSlug(name: string) {
-  return name.toLowerCase().replace(/\s+/g, "-");
+  return name.toLowerCase().replace(/\s+/g, '-');
 }
 
-function CostBadge({ cost }: { cost: HobbyDetail["cost"] }) {
-  const map: Record<HobbyDetail["cost"], { label: string; className: string }> = {
-    free: { label: "Free", className: "bg-emerald-100 text-emerald-700 border-emerald-200" },
-    low: { label: "Low ($)", className: "bg-yellow-100 text-yellow-700 border-yellow-200" },
-    medium: { label: "Medium ($$)", className: "bg-orange-100 text-orange-700 border-orange-200" },
-    high: { label: "High ($$$)", className: "bg-red-100 text-red-700 border-red-200" },
+function CostBadge({ cost }: { cost: HobbyDetail['cost'] }) {
+  const map: Record<HobbyDetail['cost'], { label: string; className: string }> = {
+    free: { label: 'Free', className: 'bg-emerald-100 text-emerald-700 border-emerald-200' },
+    low: { label: 'Low ($)', className: 'bg-yellow-100 text-yellow-700 border-yellow-200' },
+    medium: { label: 'Medium ($$)', className: 'bg-orange-100 text-orange-700 border-orange-200' },
+    high: { label: 'High ($$$)', className: 'bg-red-100 text-red-700 border-red-200' },
   };
   const { label, className } = map[cost];
   return (
-    <span className={`inline-block rounded-full border px-2.5 py-0.5 text-xs font-medium ${className}`}>
+    <span
+      className={`inline-block rounded-full border px-2.5 py-0.5 text-xs font-medium ${className}`}
+    >
       {label}
     </span>
   );
 }
 
-function DifficultyDots({ level }: { level: HobbyDetail["difficulty"] }) {
-  const filled = level === "easy" ? 1 : level === "moderate" ? 2 : 3;
+function DifficultyDots({ level }: { level: HobbyDetail['difficulty'] }) {
+  const filled = level === 'easy' ? 1 : level === 'moderate' ? 2 : 3;
   return (
     <span className="flex items-center gap-1">
       {[1, 2, 3].map((i) => (
         <span
           key={i}
           className={`inline-block h-2.5 w-2.5 rounded-full border ${
-            i <= filled
-              ? "border-emerald-500 bg-emerald-500"
-              : "border-stone-300 bg-transparent"
+            i <= filled ? 'border-emerald-500 bg-emerald-500' : 'border-stone-300 bg-transparent'
           }`}
         />
       ))}
@@ -48,12 +48,12 @@ function DifficultyDots({ level }: { level: HobbyDetail["difficulty"] }) {
   );
 }
 
-function PhysicalBar({ level }: { level: HobbyDetail["physical"] }) {
-  const widthMap: Record<HobbyDetail["physical"], string> = {
-    none: "w-0",
-    light: "w-1/4",
-    moderate: "w-2/4",
-    intense: "w-full",
+function PhysicalBar({ level }: { level: HobbyDetail['physical'] }) {
+  const widthMap: Record<HobbyDetail['physical'], string> = {
+    none: 'w-0',
+    light: 'w-1/4',
+    moderate: 'w-2/4',
+    intense: 'w-full',
   };
   return (
     <span className="flex items-center gap-2">
@@ -62,17 +62,17 @@ function PhysicalBar({ level }: { level: HobbyDetail["physical"] }) {
           className={`absolute left-0 top-0 h-full rounded-full bg-emerald-500 transition-all ${widthMap[level]}`}
         />
       </span>
-      <span className="text-stone-600 capitalize">{level === "none" ? "None" : level}</span>
+      <span className="text-stone-600 capitalize">{level === 'none' ? 'None' : level}</span>
     </span>
   );
 }
 
-function SocialIcon({ level }: { level: HobbyDetail["socialLevel"] }) {
-  const map: Record<HobbyDetail["socialLevel"], { Icon: React.ElementType; label: string }> = {
-    solo: { Icon: User, label: "Solo" },
-    optional: { Icon: UserCheck, label: "Optional" },
-    social: { Icon: Users, label: "Social" },
-    team: { Icon: UsersRound, label: "Team" },
+function SocialIcon({ level }: { level: HobbyDetail['socialLevel'] }) {
+  const map: Record<HobbyDetail['socialLevel'], { Icon: React.ElementType; label: string }> = {
+    solo: { Icon: User, label: 'Solo' },
+    optional: { Icon: UserCheck, label: 'Optional' },
+    social: { Icon: Users, label: 'Social' },
+    team: { Icon: UsersRound, label: 'Team' },
   };
   const { Icon, label } = map[level];
   return (
@@ -110,14 +110,13 @@ interface HobbyComboboxProps {
 }
 
 function HobbyCombobox({ label, value, onChange, exclude }: HobbyComboboxProps) {
-  const [query, setQuery] = useState("");
+  const [query, setQuery] = useState('');
   const [open, setOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
   const options = ALL_COMPARABLE_HOBBIES.filter(
     (h) =>
-      h !== exclude &&
-      (query.trim() === "" || h.toLowerCase().includes(query.trim().toLowerCase())),
+      h !== exclude && (query.trim() === '' || h.toLowerCase().includes(query.trim().toLowerCase()))
   );
 
   // Close on outside click
@@ -127,26 +126,28 @@ function HobbyCombobox({ label, value, onChange, exclude }: HobbyComboboxProps) 
         setOpen(false);
       }
     }
-    document.addEventListener("mousedown", handler);
-    return () => document.removeEventListener("mousedown", handler);
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
   }, []);
 
   function select(hobby: string) {
     onChange(hobby);
-    setQuery("");
+    setQuery('');
     setOpen(false);
   }
 
   function clear() {
     onChange(null);
-    setQuery("");
+    setQuery('');
   }
 
   const category = value ? getCategoryForHobby(value) : null;
 
   return (
     <div ref={containerRef} className="relative flex-1">
-      <p className="mb-1.5 text-xs font-semibold uppercase tracking-wider text-stone-400">{label}</p>
+      <p className="mb-1.5 text-xs font-semibold uppercase tracking-wider text-stone-400">
+        {label}
+      </p>
 
       {value ? (
         <div className="flex items-center justify-between rounded-xl border border-emerald-300 bg-white px-4 py-3">
@@ -239,7 +240,7 @@ function ComparisonCard({ a, b }: { a: HobbyDetail; b: HobbyDetail }) {
         <div className="p-5 text-right">
           <p className="text-2xl">{catA?.emoji}</p>
           <p className="mt-1 text-lg font-bold text-stone-900">{a.name}</p>
-          <p className="text-xs text-stone-400">{catA?.name ?? "Hobby"}</p>
+          <p className="text-xs text-stone-400">{catA?.name ?? 'Hobby'}</p>
         </div>
         <div className="flex items-center justify-center px-4">
           <span className="text-sm font-semibold text-stone-300">vs</span>
@@ -247,7 +248,7 @@ function ComparisonCard({ a, b }: { a: HobbyDetail; b: HobbyDetail }) {
         <div className="p-5 text-left">
           <p className="text-2xl">{catB?.emoji}</p>
           <p className="mt-1 text-lg font-bold text-stone-900">{b.name}</p>
-          <p className="text-xs text-stone-400">{catB?.name ?? "Hobby"}</p>
+          <p className="text-xs text-stone-400">{catB?.name ?? 'Hobby'}</p>
         </div>
       </div>
 
@@ -290,9 +291,7 @@ function ComparisonCard({ a, b }: { a: HobbyDetail; b: HobbyDetail }) {
         />
         <CompareRow
           label="Best for"
-          left={
-            <span className="text-right text-sm italic text-stone-500">{a.bestFor}</span>
-          }
+          left={<span className="text-right text-sm italic text-stone-500">{a.bestFor}</span>}
           right={<span className="text-sm italic text-stone-500">{b.bestFor}</span>}
         />
       </div>
@@ -343,21 +342,11 @@ export function CompareClient() {
     <div>
       {/* Selectors */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-end">
-        <HobbyCombobox
-          label="Hobby A"
-          value={hobbyA}
-          onChange={setHobbyA}
-          exclude={hobbyB}
-        />
+        <HobbyCombobox label="Hobby A" value={hobbyA} onChange={setHobbyA} exclude={hobbyB} />
         <div className="flex items-center justify-center pb-1 text-sm font-bold text-stone-300 sm:pb-3">
           VS
         </div>
-        <HobbyCombobox
-          label="Hobby B"
-          value={hobbyB}
-          onChange={setHobbyB}
-          exclude={hobbyA}
-        />
+        <HobbyCombobox label="Hobby B" value={hobbyB} onChange={setHobbyB} exclude={hobbyA} />
       </div>
 
       {/* Prompt when none selected */}
@@ -375,10 +364,8 @@ export function CompareClient() {
       {(detailA || detailB) && !(detailA && detailB) && (
         <div className="mt-10 flex flex-col items-center justify-center rounded-2xl border border-dashed border-stone-200 bg-stone-50 px-6 py-12 text-center">
           <p className="text-stone-500">
-            Now pick{" "}
-            <span className="font-semibold text-stone-800">
-              {detailA ? "Hobby B" : "Hobby A"}
-            </span>{" "}
+            Now pick{' '}
+            <span className="font-semibold text-stone-800">{detailA ? 'Hobby B' : 'Hobby A'}</span>{' '}
             to see the comparison
           </p>
         </div>
@@ -395,12 +382,12 @@ export function CompareClient() {
           </p>
           <div className="flex flex-wrap gap-2">
             {[
-              ["Running", "Cycling"],
-              ["Guitar", "Piano"],
-              ["Chess", "Reading"],
-              ["Cooking", "Baking"],
-              ["Yoga", "Dance"],
-              ["Drawing", "Painting"],
+              ['Running', 'Cycling'],
+              ['Guitar', 'Piano'],
+              ['Chess', 'Reading'],
+              ['Cooking', 'Baking'],
+              ['Yoga', 'Dance'],
+              ['Drawing', 'Painting'],
             ].map(([a, b]) => (
               <button
                 key={`${a}-${b}`}

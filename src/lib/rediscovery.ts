@@ -1,10 +1,10 @@
-import type { Phase } from "./types";
+import type { Phase } from './types';
 
 export type RediscoveryItem = {
   name: string;
   lastSeenPhase: string; // phase label where it was last present
-  totalPhases: number;   // how many phases it appeared in
-  type: "dropped" | "dormant" | "rekindle";
+  totalPhases: number; // how many phases it appeared in
+  type: 'dropped' | 'dormant' | 'rekindle';
 };
 
 export type RediscoveryResult = {
@@ -30,9 +30,7 @@ export function findRediscoveryOpportunities(phases: Phase[]): RediscoveryResult
   ]);
 
   // Collect all hobbies across all phases with per-phase presence
-  const allHobbies = new Set(
-    sorted.flatMap((p) => p.hobbies.map((h) => h.name.toLowerCase())),
-  );
+  const allHobbies = new Set(sorted.flatMap((p) => p.hobbies.map((h) => h.name.toLowerCase())));
 
   // For each hobby, track which phases it appeared in (by index)
   const hobbyPhaseIndices = new Map<string, number[]>();
@@ -74,17 +72,22 @@ export function findRediscoveryOpportunities(phases: Phase[]): RediscoveryResult
 
     // Dropped: present in any earlier phase, absent in last phase
     if (!lastPhaseNames.has(hobby)) {
-      dropped.push({ name: hobby, lastSeenPhase: lastSeen, totalPhases, type: "dropped" });
+      dropped.push({ name: hobby, lastSeenPhase: lastSeen, totalPhases, type: 'dropped' });
     }
 
     // Dormant: absent in last 2 phases (stricter subset of dropped)
     if (!lastTwoPhaseNames.has(hobby)) {
-      dormant.push({ name: hobby, lastSeenPhase: lastSeen, totalPhases, type: "dormant" });
+      dormant.push({ name: hobby, lastSeenPhase: lastSeen, totalPhases, type: 'dormant' });
     }
 
     // Rekindle candidate: appeared in non-consecutive phases
     if (isNonConsecutive(hobby)) {
-      rekindleCandidates.push({ name: hobby, lastSeenPhase: lastSeen, totalPhases, type: "rekindle" });
+      rekindleCandidates.push({
+        name: hobby,
+        lastSeenPhase: lastSeen,
+        totalPhases,
+        type: 'rekindle',
+      });
     }
   }
 

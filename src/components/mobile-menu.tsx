@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import { Menu, Search,X } from "lucide-react";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { Menu, Search, X } from 'lucide-react';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { useState } from 'react';
 
 interface MobileMenuProps {
   links: { href: string; label: string }[];
@@ -20,7 +20,7 @@ export function MobileMenu({ links, isLoggedIn }: MobileMenuProps) {
         type="button"
         onClick={() => setOpen(!open)}
         className="flex h-9 w-9 items-center justify-center rounded-md text-stone-600 hover:bg-stone-100 transition-colors"
-        aria-label={open ? "Close menu" : "Open menu"}
+        aria-label={open ? 'Close menu' : 'Open menu'}
       >
         {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
       </button>
@@ -30,7 +30,7 @@ export function MobileMenu({ links, isLoggedIn }: MobileMenuProps) {
           <div className="flex flex-col px-4 py-3 gap-1">
             {links.map((link) => {
               const isActive = pathname === link.href;
-              const isBucketList = link.href === "/bucket-lists";
+              const isBucketList = link.href === '/bucket-lists';
               return (
                 <Link
                   key={link.href}
@@ -40,11 +40,11 @@ export function MobileMenu({ links, isLoggedIn }: MobileMenuProps) {
                   className={`rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${
                     isActive
                       ? isBucketList
-                        ? "bg-amber-50 text-amber-700"
-                        : "bg-emerald-50 text-emerald-700"
+                        ? 'bg-amber-50 text-amber-700'
+                        : 'bg-emerald-50 text-emerald-700'
                       : isBucketList
-                        ? "text-stone-600 hover:bg-amber-50 hover:text-amber-700"
-                        : "text-stone-600 hover:bg-stone-50 hover:text-stone-900"
+                        ? 'text-stone-600 hover:bg-amber-50 hover:text-amber-700'
+                        : 'text-stone-600 hover:bg-stone-50 hover:text-stone-900'
                   }`}
                 >
                   {link.label}
@@ -56,9 +56,9 @@ export function MobileMenu({ links, isLoggedIn }: MobileMenuProps) {
               prefetch={false}
               onClick={() => setOpen(false)}
               className={`flex items-center gap-2 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${
-                pathname === "/search"
-                  ? "bg-emerald-50 text-emerald-700"
-                  : "text-stone-600 hover:bg-stone-50 hover:text-stone-900"
+                pathname === '/search'
+                  ? 'bg-emerald-50 text-emerald-700'
+                  : 'text-stone-600 hover:bg-stone-50 hover:text-stone-900'
               }`}
             >
               <Search className="h-4 w-4" />

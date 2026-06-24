@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import { useState, useTransition } from "react";
+import { useState, useTransition } from 'react';
 
-import { toggleFollow } from "~/lib/actions/user";
+import { toggleFollow } from '~/lib/actions/user';
 
 interface FollowButtonProps {
   targetUserId: string;
@@ -53,19 +53,19 @@ export function FollowButton({
         onMouseEnter={() => setIsHovering(true)}
         onMouseLeave={() => setIsHovering(false)}
         className={[
-          "rounded-full px-4 py-1.5 text-sm font-medium transition-all duration-150 disabled:opacity-60 cursor-pointer",
+          'rounded-full px-4 py-1.5 text-sm font-medium transition-all duration-150 disabled:opacity-60 cursor-pointer',
           following
             ? showUnfollow
-              ? "border border-red-300 bg-red-50 text-red-600 hover:bg-red-100"
-              : "border border-stone-300 bg-white text-stone-700 hover:border-stone-400"
-            : "bg-emerald-600 text-white hover:bg-emerald-700 border border-emerald-600",
-        ].join(" ")}
+              ? 'border border-red-300 bg-red-50 text-red-600 hover:bg-red-100'
+              : 'border border-stone-300 bg-white text-stone-700 hover:border-stone-400'
+            : 'bg-emerald-600 text-white hover:bg-emerald-700 border border-emerald-600',
+        ].join(' ')}
       >
-        {following ? (showUnfollow ? "Unfollow" : "Following") : "Follow"}
+        {following ? (showUnfollow ? 'Unfollow' : 'Following') : 'Follow'}
       </button>
       <span className="text-sm text-stone-500">
-        <span className="font-semibold text-stone-700">{followerCount}</span>{" "}
-        {followerCount === 1 ? "follower" : "followers"}
+        <span className="font-semibold text-stone-700">{followerCount}</span>{' '}
+        {followerCount === 1 ? 'follower' : 'followers'}
       </span>
     </div>
   );

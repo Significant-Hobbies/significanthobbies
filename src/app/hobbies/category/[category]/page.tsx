@@ -1,15 +1,15 @@
-import { desc,eq } from "drizzle-orm";
-import type { Metadata } from "next";
-import Link from "next/link";
-import { notFound } from "next/navigation";
+import { desc, eq } from 'drizzle-orm';
+import type { Metadata } from 'next';
+import Link from 'next/link';
+import { notFound } from 'next/navigation';
 
-import { JsonLd } from "~/components/json-ld";
-import { Badge } from "~/components/ui/badge";
-import { timelines, users } from "~/db/schema";
-import { HOBBY_CATEGORIES, type HobbyCategory } from "~/lib/hobbies";
-import { getTimelineUrl } from "~/lib/timeline-url";
-import type { Phase } from "~/lib/types";
-import { db } from "~/server/db";
+import { JsonLd } from '~/components/json-ld';
+import { Badge } from '~/components/ui/badge';
+import { timelines, users } from '~/db/schema';
+import { HOBBY_CATEGORIES, type HobbyCategory } from '~/lib/hobbies';
+import { getTimelineUrl } from '~/lib/timeline-url';
+import type { Phase } from '~/lib/types';
+import { db } from '~/server/db';
 
 interface Props {
   params: Promise<{ category: string }>;
@@ -17,44 +17,43 @@ interface Props {
 
 const CATEGORY_DESCRIPTIONS: Record<string, string> = {
   Creative:
-    "Express yourself through art, design, and craft. Creative hobbies are where imagination meets skill — from putting brush to canvas to shaping clay with your hands.",
+    'Express yourself through art, design, and craft. Creative hobbies are where imagination meets skill — from putting brush to canvas to shaping clay with your hands.',
   Music:
-    "Whether you play, produce, or simply lose yourself in sound. Music hobbies range from picking up your first instrument to mastering audio production.",
+    'Whether you play, produce, or simply lose yourself in sound. Music hobbies range from picking up your first instrument to mastering audio production.',
   Physical:
-    "Move your body, challenge your limits. Physical hobbies build strength, endurance, and the kind of clarity that only comes after a good sweat.",
+    'Move your body, challenge your limits. Physical hobbies build strength, endurance, and the kind of clarity that only comes after a good sweat.',
   Intellectual:
-    "Feed your curiosity. Intellectual hobbies stretch your mind — from deep reading to strategic games to learning a new language.",
+    'Feed your curiosity. Intellectual hobbies stretch your mind — from deep reading to strategic games to learning a new language.',
   Gaming:
-    "Play with purpose. Gaming hobbies connect you to stories, strategy, and communities — from board game nights to competitive esports.",
+    'Play with purpose. Gaming hobbies connect you to stories, strategy, and communities — from board game nights to competitive esports.',
   Outdoor:
-    "Step outside and explore. Outdoor hobbies connect you to nature — from tending a garden to spotting birds to sleeping under the stars.",
+    'Step outside and explore. Outdoor hobbies connect you to nature — from tending a garden to spotting birds to sleeping under the stars.',
   Culinary:
-    "Create with flavor. Culinary hobbies turn your kitchen into a playground — from perfecting sourdough to brewing the perfect cup.",
+    'Create with flavor. Culinary hobbies turn your kitchen into a playground — from perfecting sourdough to brewing the perfect cup.',
   Collecting:
-    "Curate what matters. Collecting hobbies are about the thrill of the hunt and the joy of a well-organized shelf.",
+    'Curate what matters. Collecting hobbies are about the thrill of the hunt and the joy of a well-organized shelf.',
   Making:
-    "Build with your hands. Making hobbies produce tangible results — from woodworking joints to 3D-printed prototypes to hand-stitched leather.",
+    'Build with your hands. Making hobbies produce tangible results — from woodworking joints to 3D-printed prototypes to hand-stitched leather.',
   Social:
-    "Connect through shared experiences. Social hobbies bring people together — from hosting dinner parties to improv comedy to volunteering.",
+    'Connect through shared experiences. Social hobbies bring people together — from hosting dinner parties to improv comedy to volunteering.',
 };
-
 
 function slugToCategory(slug: string): HobbyCategory | undefined {
   return HOBBY_CATEGORIES.find(
-    (c) => c.name.toLowerCase().replace(/\s+/g, "-") === slug.toLowerCase(),
+    (c) => c.name.toLowerCase().replace(/\s+/g, '-') === slug.toLowerCase()
   );
 }
 
 export function generateStaticParams() {
   return HOBBY_CATEGORIES.map((c) => ({
-    category: c.name.toLowerCase().replace(/\s+/g, "-"),
+    category: c.name.toLowerCase().replace(/\s+/g, '-'),
   }));
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { category: slug } = await params;
   const cat = slugToCategory(slug);
-  if (!cat) return { title: "Category — SignificantHobbies" };
+  if (!cat) return { title: 'Category — SignificantHobbies' };
   return {
     title: `${cat.name} Hobbies — SignificantHobbies`,
     description: `Explore ${cat.hobbies.length} ${cat.name.toLowerCase()} hobbies. Browse community timelines, find tools, and discover your next ${cat.name.toLowerCase()} passion.`,
@@ -66,7 +65,7 @@ export default async function CategoryPage({ params }: Props) {
   const cat = slugToCategory(slug);
   if (!cat) notFound();
 
-  const description = CATEGORY_DESCRIPTIONS[cat.name] ?? "";
+  const description = CATEGORY_DESCRIPTIONS[cat.name] ?? '';
 
   // Query public timelines that contain any hobby from this category
   const categoryHobbyNames = new Set(cat.hobbies.map((h) => h.toLowerCase()));
@@ -83,7 +82,7 @@ export default async function CategoryPage({ params }: Props) {
     })
     .from(timelines)
     .leftJoin(users, eq(timelines.userId, users.id))
-    .where(eq(timelines.visibility, "PUBLIC"))
+    .where(eq(timelines.visibility, 'PUBLIC'))
     .orderBy(desc(timelines.updatedAt))
     .limit(100);
 
@@ -91,7 +90,7 @@ export default async function CategoryPage({ params }: Props) {
     try {
       const phases = JSON.parse(t.phases) as Phase[];
       return phases.some((p) =>
-        p.hobbies.some((h) => categoryHobbyNames.has(h.name.toLowerCase())),
+        p.hobbies.some((h) => categoryHobbyNames.has(h.name.toLowerCase()))
       );
     } catch {
       return false;
@@ -100,25 +99,23 @@ export default async function CategoryPage({ params }: Props) {
 
   const displayedTimelines = matchingTimelines.slice(0, 6);
 
-  const relatedCategories = HOBBY_CATEGORIES.filter(
-    (c) => c.name !== cat.name,
-  );
+  const relatedCategories = HOBBY_CATEGORIES.filter((c) => c.name !== cat.name);
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-12">
       <JsonLd
         data={{
-          "@context": "https://schema.org",
-          "@type": "BreadcrumbList",
+          '@context': 'https://schema.org',
+          '@type': 'BreadcrumbList',
           itemListElement: [
             {
-              "@type": "ListItem",
+              '@type': 'ListItem',
               position: 1,
-              name: "Hobbies",
-              item: "https://significanthobbies.com/hobbies",
+              name: 'Hobbies',
+              item: 'https://significanthobbies.com/hobbies',
             },
             {
-              "@type": "ListItem",
+              '@type': 'ListItem',
               position: 2,
               name: `${cat.name} Hobbies`,
               item: `https://significanthobbies.com/hobbies/category/${slug}`,
@@ -139,12 +136,8 @@ export default async function CategoryPage({ params }: Props) {
         <div className="flex items-center gap-3 mb-3">
           <span className="text-5xl">{cat.emoji}</span>
           <div>
-            <h1 className="text-3xl font-bold text-stone-900">
-              {cat.name} Hobbies
-            </h1>
-            <p className="text-stone-500 text-sm mt-0.5">
-              {cat.hobbies.length} hobbies
-            </p>
+            <h1 className="text-3xl font-bold text-stone-900">{cat.name} Hobbies</h1>
+            <p className="text-stone-500 text-sm mt-0.5">{cat.hobbies.length} hobbies</p>
           </div>
         </div>
         <p className="text-stone-600 leading-relaxed max-w-2xl">{description}</p>
@@ -157,12 +150,9 @@ export default async function CategoryPage({ params }: Props) {
         </h2>
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
           {cat.hobbies.map((hobby) => {
-            const hobbySlug = hobby.toLowerCase().replace(/\s+/g, "-");
+            const hobbySlug = hobby.toLowerCase().replace(/\s+/g, '-');
             return (
-              <Link
-                key={hobby}
-                href={`/hobbies/${encodeURIComponent(hobbySlug)}`}
-              >
+              <Link key={hobby} href={`/hobbies/${encodeURIComponent(hobbySlug)}`}>
                 <div className="group rounded-xl border border-stone-200 bg-white p-4 transition-all hover:border-emerald-400 hover:shadow-sm cursor-pointer">
                   <span className="font-medium text-stone-700 group-hover:text-emerald-600 transition-colors text-sm">
                     {hobby}
@@ -188,14 +178,20 @@ export default async function CategoryPage({ params }: Props) {
               } catch {
                 /* ignore */
               }
-              const totalHobbies = new Set(
-                phases.flatMap((p) => p.hobbies.map((h) => h.name)),
-              ).size;
+              const totalHobbies = new Set(phases.flatMap((p) => p.hobbies.map((h) => h.name)))
+                .size;
               return (
-                <Link key={t.id} href={getTimelineUrl({ id: t.id, slug: t.slug, user: t.userUsername ? { username: t.userUsername } : null })}>
+                <Link
+                  key={t.id}
+                  href={getTimelineUrl({
+                    id: t.id,
+                    slug: t.slug,
+                    user: t.userUsername ? { username: t.userUsername } : null,
+                  })}
+                >
                   <div className="group rounded-xl border border-stone-200 bg-white p-4 transition-colors hover:border-emerald-400">
                     <h3 className="font-medium text-stone-800 group-hover:text-emerald-600 transition-colors">
-                      {t.title ?? "Hobby Timeline"}
+                      {t.title ?? 'Hobby Timeline'}
                     </h3>
                     {t.userName && (
                       <p className="text-xs text-stone-500 mt-0.5">
@@ -249,7 +245,7 @@ export default async function CategoryPage({ params }: Props) {
         </h2>
         <div className="flex flex-wrap gap-2">
           {relatedCategories.map((c) => {
-            const catSlug = c.name.toLowerCase().replace(/\s+/g, "-");
+            const catSlug = c.name.toLowerCase().replace(/\s+/g, '-');
             return (
               <Link key={c.name} href={`/hobbies/category/${catSlug}`}>
                 <Badge

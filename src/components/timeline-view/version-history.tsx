@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import { useState } from "react";
+import { useState } from 'react';
 
-import type { Phase } from "~/lib/types";
+import type { Phase } from '~/lib/types';
 
 interface Version {
   date: string;
@@ -24,10 +24,10 @@ export function VersionHistory({ versions, currentPhases }: Props) {
 
   // Compute diff: what hobbies were added/removed between selected version and current
   const currentHobbies = new Set(
-    currentPhases.flatMap((p) => p.hobbies.map((h) => h.name.toLowerCase())),
+    currentPhases.flatMap((p) => p.hobbies.map((h) => h.name.toLowerCase()))
   );
   const selectedHobbies = new Set(
-    selectedPhases.flatMap((p) => p.hobbies.map((h) => h.name.toLowerCase())),
+    selectedPhases.flatMap((p) => p.hobbies.map((h) => h.name.toLowerCase()))
   );
   const added = [...currentHobbies].filter((h) => !selectedHobbies.has(h));
   const removed = [...selectedHobbies].filter((h) => !currentHobbies.has(h));
@@ -45,8 +45,8 @@ export function VersionHistory({ versions, currentPhases }: Props) {
             onClick={() => setSelectedVersion(selectedVersion === i ? null : i)}
             className={`rounded-full px-3 py-1 text-xs font-medium transition-colors ${
               selectedVersion === i
-                ? "bg-emerald-600 text-white"
-                : "border border-stone-200 bg-white text-stone-600 hover:border-emerald-400"
+                ? 'bg-emerald-600 text-white'
+                : 'border border-stone-200 bg-white text-stone-600 hover:border-emerald-400'
             }`}
           >
             {new Date(v.date).toLocaleDateString()}
@@ -95,9 +95,7 @@ export function VersionHistory({ versions, currentPhases }: Props) {
             </div>
           )}
           {added.length === 0 && removed.length === 0 && (
-            <p className="text-sm text-stone-400">
-              No hobby changes between these versions.
-            </p>
+            <p className="text-sm text-stone-400">No hobby changes between these versions.</p>
           )}
         </div>
       )}

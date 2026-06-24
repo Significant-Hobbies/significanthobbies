@@ -1,22 +1,22 @@
-import { desc,eq } from "drizzle-orm";
-import { Clock,Plus } from "lucide-react";
-import Link from "next/link";
-import { redirect } from "next/navigation";
+import { desc, eq } from 'drizzle-orm';
+import { Clock, Plus } from 'lucide-react';
+import Link from 'next/link';
+import { redirect } from 'next/navigation';
 
-import { BucketListSection } from "~/components/bucket-list-section";
-import { TimelineCard } from "~/components/timeline-card";
-import { RecommendationsPanel } from "~/components/timeline-view/recommendations-panel";
-import { RediscoveryNudges } from "~/components/timeline-view/rediscovery-nudges";
-import { Button } from "~/components/ui/button";
-import { bucketListItems, timelines } from "~/db/schema";
-import { computePersonality } from "~/lib/personality";
-import { getTimelineUrl } from "~/lib/timeline-url";
-import type { Phase, TimelineVisibility } from "~/lib/types";
-import { getServerAuthSession } from "~/server/auth";
-import { db } from "~/server/db";
+import { BucketListSection } from '~/components/bucket-list-section';
+import { TimelineCard } from '~/components/timeline-card';
+import { RecommendationsPanel } from '~/components/timeline-view/recommendations-panel';
+import { RediscoveryNudges } from '~/components/timeline-view/rediscovery-nudges';
+import { Button } from '~/components/ui/button';
+import { bucketListItems, timelines } from '~/db/schema';
+import { computePersonality } from '~/lib/personality';
+import { getTimelineUrl } from '~/lib/timeline-url';
+import type { Phase, TimelineVisibility } from '~/lib/types';
+import { getServerAuthSession } from '~/server/auth';
+import { db } from '~/server/db';
 
 export const metadata = {
-  title: "Dashboard — SignificantHobbies",
+  title: 'Dashboard — SignificantHobbies',
   robots: { index: false, follow: false },
 };
 
@@ -25,21 +25,19 @@ function getStalenessInfo(updatedAt: Date): {
   colorClass: string;
   isStale: boolean;
 } {
-  const daysSince = Math.floor(
-    (Date.now() - updatedAt.getTime()) / (1000 * 60 * 60 * 24),
-  );
+  const daysSince = Math.floor((Date.now() - updatedAt.getTime()) / (1000 * 60 * 60 * 24));
   if (daysSince < 7) {
-    return { label: `${daysSince}d ago`, colorClass: "text-emerald-600", isStale: false };
+    return { label: `${daysSince}d ago`, colorClass: 'text-emerald-600', isStale: false };
   }
   if (daysSince < 30) {
-    return { label: `${daysSince}d ago`, colorClass: "text-amber-500", isStale: false };
+    return { label: `${daysSince}d ago`, colorClass: 'text-amber-500', isStale: false };
   }
-  return { label: `${daysSince}d ago`, colorClass: "text-red-500", isStale: true };
+  return { label: `${daysSince}d ago`, colorClass: 'text-red-500', isStale: true };
 }
 
 export default async function DashboardPage() {
   const session = await getServerAuthSession();
-  if (!session?.user) redirect("/login");
+  if (!session?.user) redirect('/login');
 
   const [rawTimelines, rawBucketItems] = await Promise.all([
     db
@@ -89,7 +87,7 @@ export default async function DashboardPage() {
       {/* Welcome header */}
       <div>
         <h1 className="text-3xl font-bold text-stone-900">
-          Welcome back, {session.user.name?.split(" ")[0] ?? "there"}
+          Welcome back, {session.user.name?.split(' ')[0] ?? 'there'}
         </h1>
         <p className="mt-1 text-stone-500">Your hobby dashboard</p>
       </div>
@@ -103,15 +101,9 @@ export default async function DashboardPage() {
               <p className="text-xs font-semibold uppercase tracking-wider text-emerald-600 mb-1">
                 Your hobby archetype
               </p>
-              <h2 className="text-xl font-bold text-stone-900">
-                {personality.archetype.name}
-              </h2>
-              <p className="mt-1 text-sm text-stone-600">
-                {personality.archetype.description}
-              </p>
-              <p className="mt-2 text-xs text-stone-500 italic">
-                {personality.narrative}
-              </p>
+              <h2 className="text-xl font-bold text-stone-900">{personality.archetype.name}</h2>
+              <p className="mt-1 text-sm text-stone-600">{personality.archetype.description}</p>
+              <p className="mt-2 text-xs text-stone-500 italic">{personality.narrative}</p>
             </div>
           </div>
           {Object.keys(personality.categoryBreakdown).length > 0 && (
@@ -163,9 +155,7 @@ export default async function DashboardPage() {
                   <TimelineCard timeline={timeline} showVisibility />
                   <div className="mt-1 flex items-center gap-1 px-1">
                     <Clock className="h-3 w-3 text-stone-400" />
-                    <span className={`text-xs ${staleness.colorClass}`}>
-                      {staleness.label}
-                    </span>
+                    <span className={`text-xs ${staleness.colorClass}`}>{staleness.label}</span>
                     {staleness.isStale && (
                       <Link
                         href={getTimelineUrl(timeline)}

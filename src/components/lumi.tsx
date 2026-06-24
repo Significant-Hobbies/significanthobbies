@@ -1,4 +1,4 @@
-import type { SVGProps } from "react";
+import type { SVGProps } from 'react';
 
 type LumiProps = SVGProps<SVGSVGElement> & {
   size?: number;
@@ -8,19 +8,28 @@ type LumiProps = SVGProps<SVGSVGElement> & {
   onDark?: boolean;
 };
 
-export function Lumi({ size = 80, glow = false, float = false, onDark = false, className = "", ...props }: LumiProps) {
+export function Lumi({
+  size = 80,
+  glow = false,
+  float = false,
+  onDark = false,
+  className = '',
+  ...props
+}: LumiProps) {
   // Coral palette — oklch(0.62 0.20 27) family
-  const body = onDark ? "#f87171" : "#e05533";       // coral-500 / coral-400 on dark
-  const highlight = onDark ? "#fca5a5" : "#f07050";  // lighter coral
-  const deep = onDark ? "#e05533" : "#b83520";        // darker coral for depth
-  const smile = onDark ? "#7f1d1d" : "#7f1d1d";      // dark red for smile
-  const sparkle = onDark ? "#fca5a5" : "#f87171";    // light coral sparkle
+  const body = onDark ? '#f87171' : '#e05533'; // coral-500 / coral-400 on dark
+  const highlight = onDark ? '#fca5a5' : '#f07050'; // lighter coral
+  const deep = onDark ? '#e05533' : '#b83520'; // darker coral for depth
+  const smile = onDark ? '#7f1d1d' : '#7f1d1d'; // dark red for smile
+  const sparkle = onDark ? '#fca5a5' : '#f87171'; // light coral sparkle
 
   const animClasses = [
     className,
-    float ? "animate-lumi-float" : "",
-    glow ? "animate-lumi-glow" : "",
-  ].filter(Boolean).join(" ");
+    float ? 'animate-lumi-float' : '',
+    glow ? 'animate-lumi-glow' : '',
+  ]
+    .filter(Boolean)
+    .join(' ');
 
   return (
     <svg
@@ -77,7 +86,13 @@ export function Lumi({ size = 80, glow = false, float = false, onDark = false, c
   );
 }
 
-export function LumiWordmark({ className = "", onDark = false }: { className?: string; onDark?: boolean }) {
+export function LumiWordmark({
+  className = '',
+  onDark = false,
+}: {
+  className?: string;
+  onDark?: boolean;
+}) {
   return (
     <span className={`inline-flex items-center gap-1.5 font-bold tracking-tight ${className}`}>
       <Lumi size={28} onDark={onDark} />

@@ -1,5 +1,5 @@
-import { getCategoryForHobby,HOBBY_CATEGORIES } from "./hobbies";
-import type { Phase } from "./types";
+import { getCategoryForHobby, HOBBY_CATEGORIES } from './hobbies';
+import type { Phase } from './types';
 
 export type RecommendedHobby = {
   name: string;
@@ -70,9 +70,7 @@ export function getRecommendations(phases: Phase[], limit = 8): RecommendedHobby
     const affinity = categoryAffinity[cat.name] ?? 0;
 
     // Check if user has exhausted all hobbies in this category
-    const remainingInCat = cat.hobbies.filter(
-      (h) => !userHobbiesLower.has(h.toLowerCase()),
-    );
+    const remainingInCat = cat.hobbies.filter((h) => !userHobbiesLower.has(h.toLowerCase()));
     if (remainingInCat.length === 0) continue;
 
     for (const hobby of remainingInCat) {

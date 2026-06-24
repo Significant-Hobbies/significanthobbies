@@ -1,29 +1,29 @@
-import type { Metadata } from "next";
-import Link from "next/link";
+import type { Metadata } from 'next';
+import Link from 'next/link';
 
-import { EmailCapture } from "~/components/email-capture";
-import { type BlogPost,blogPosts } from "~/lib/blog-posts";
+import { EmailCapture } from '~/components/email-capture';
+import { type BlogPost, blogPosts } from '~/lib/blog-posts';
 
 export const metadata: Metadata = {
-  title: "The Hobby Journal",
+  title: 'The Hobby Journal',
   description:
-    "Thoughts on hobbies, identity, and living curiously. Articles on the psychology of leisure, rekindled passions, and finding what matters.",
+    'Thoughts on hobbies, identity, and living curiously. Articles on the psychology of leisure, rekindled passions, and finding what matters.',
 };
 
 const CATEGORY_COLORS: Record<string, { bg: string; text: string; border: string }> = {
-  Wellbeing: { bg: "bg-emerald-50", text: "text-emerald-700", border: "border-emerald-200" },
-  "Getting Started": { bg: "bg-amber-50", text: "text-amber-700", border: "border-amber-200" },
-  Psychology: { bg: "bg-violet-50", text: "text-violet-700", border: "border-violet-200" },
-  Reflection: { bg: "bg-blue-50", text: "text-blue-700", border: "border-blue-200" },
-  Inspiration: { bg: "bg-orange-50", text: "text-orange-700", border: "border-orange-200" },
+  Wellbeing: { bg: 'bg-emerald-50', text: 'text-emerald-700', border: 'border-emerald-200' },
+  'Getting Started': { bg: 'bg-amber-50', text: 'text-amber-700', border: 'border-amber-200' },
+  Psychology: { bg: 'bg-violet-50', text: 'text-violet-700', border: 'border-violet-200' },
+  Reflection: { bg: 'bg-blue-50', text: 'text-blue-700', border: 'border-blue-200' },
+  Inspiration: { bg: 'bg-orange-50', text: 'text-orange-700', border: 'border-orange-200' },
 };
 
 function categoryStyle(category: string) {
   return (
     CATEGORY_COLORS[category] ?? {
-      bg: "bg-stone-50",
-      text: "text-stone-600",
-      border: "border-stone-200",
+      bg: 'bg-stone-50',
+      text: 'text-stone-600',
+      border: 'border-stone-200',
     }
   );
 }
@@ -36,14 +36,14 @@ function PostCard({ post, featured = false }: { post: BlogPost; featured?: boole
       <div
         className={`relative flex h-full overflow-hidden border border-stone-200 bg-white shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-emerald-300 ${
           featured
-            ? "flex-col gap-6 rounded-3xl p-8 hover:shadow-[0_12px_40px_rgba(16,185,129,0.12)] sm:flex-row sm:items-center sm:gap-12 sm:p-10"
-            : "flex-col rounded-2xl hover:shadow-[0_8px_32px_rgba(16,185,129,0.10)]"
+            ? 'flex-col gap-6 rounded-3xl p-8 hover:shadow-[0_12px_40px_rgba(16,185,129,0.12)] sm:flex-row sm:items-center sm:gap-12 sm:p-10'
+            : 'flex-col rounded-2xl hover:shadow-[0_8px_32px_rgba(16,185,129,0.10)]'
         }`}
       >
         {/* Top accent */}
         <div
           className={`absolute inset-x-0 top-0 origin-left scale-x-0 bg-gradient-to-r from-emerald-400 to-emerald-300 transition-transform duration-300 group-hover:scale-x-100 ${
-            featured ? "h-1 rounded-t-3xl" : "h-0.5"
+            featured ? 'h-1 rounded-t-3xl' : 'h-0.5'
           }`}
         />
 
@@ -51,14 +51,14 @@ function PostCard({ post, featured = false }: { post: BlogPost; featured?: boole
         <div
           className={`shrink-0 transition-transform duration-300 group-hover:scale-110 ${
             featured
-              ? "flex h-24 w-24 items-center justify-center rounded-2xl border border-stone-100 bg-stone-50 text-5xl shadow-sm"
-              : "p-6 pb-0 text-4xl"
+              ? 'flex h-24 w-24 items-center justify-center rounded-2xl border border-stone-100 bg-stone-50 text-5xl shadow-sm'
+              : 'p-6 pb-0 text-4xl'
           }`}
         >
           {post.emoji}
         </div>
 
-        <div className={`flex flex-1 flex-col ${featured ? "" : "p-6 pt-4"}`}>
+        <div className={`flex flex-1 flex-col ${featured ? '' : 'p-6 pt-4'}`}>
           {/* Category + meta */}
           <div className="mb-3 flex flex-wrap items-center gap-2">
             <span
@@ -85,7 +85,7 @@ function PostCard({ post, featured = false }: { post: BlogPost; featured?: boole
           {/* Excerpt */}
           <p
             className={`flex-1 leading-relaxed text-stone-500 ${
-              featured ? "text-base sm:text-lg" : "line-clamp-2 text-sm"
+              featured ? 'text-base sm:text-lg' : 'line-clamp-2 text-sm'
             }`}
           >
             {post.excerpt}
@@ -95,7 +95,9 @@ function PostCard({ post, featured = false }: { post: BlogPost; featured?: boole
           {featured ? (
             <div className="mt-5 inline-flex items-center gap-1 text-sm font-semibold text-emerald-600 transition-all duration-200 group-hover:gap-2">
               Read article
-              <span className="transition-transform duration-200 group-hover:translate-x-0.5">→</span>
+              <span className="transition-transform duration-200 group-hover:translate-x-0.5">
+                →
+              </span>
             </div>
           ) : (
             <div className="mt-4 flex items-center justify-between border-t border-stone-100 pt-4">
@@ -115,13 +117,12 @@ export default function BlogPage() {
   const [featured, ...rest] = blogPosts;
 
   return (
-    <div className="min-h-screen" style={{ background: "#FAFAFA" }}>
+    <div className="min-h-screen" style={{ background: '#FAFAFA' }}>
       {/* Hero */}
       <section
         className="relative overflow-hidden px-4 py-20 sm:py-28"
         style={{
-          background:
-            "linear-gradient(160deg, #F5F5F4 0%, #ECFDF5 40%, #FAFAF9 70%, #F5F5F4 100%)",
+          background: 'linear-gradient(160deg, #F5F5F4 0%, #ECFDF5 40%, #FAFAF9 70%, #F5F5F4 100%)',
         }}
       >
         {/* Subtle decorative orbs */}
@@ -131,10 +132,9 @@ export default function BlogPage() {
             style={{
               width: 500,
               height: 500,
-              top: "-20%",
-              right: "-5%",
-              background:
-                "radial-gradient(circle, rgba(16,185,129,0.08) 0%, transparent 70%)",
+              top: '-20%',
+              right: '-5%',
+              background: 'radial-gradient(circle, rgba(16,185,129,0.08) 0%, transparent 70%)',
             }}
           />
           <div
@@ -142,10 +142,9 @@ export default function BlogPage() {
             style={{
               width: 400,
               height: 400,
-              bottom: "-15%",
-              left: "10%",
-              background:
-                "radial-gradient(circle, rgba(245,158,11,0.07) 0%, transparent 70%)",
+              bottom: '-15%',
+              left: '10%',
+              background: 'radial-gradient(circle, rgba(245,158,11,0.07) 0%, transparent 70%)',
             }}
           />
         </div>
@@ -193,7 +192,9 @@ export default function BlogPage() {
           {/* Email capture */}
           <div className="scroll-reveal mb-10 rounded-xl border border-stone-200 bg-stone-50 p-6 text-center">
             <p className="font-medium text-stone-800 mb-2">Enjoy the journal?</p>
-            <p className="text-sm text-stone-500 mb-4">Get new articles and hobby inspiration in your inbox.</p>
+            <p className="text-sm text-stone-500 mb-4">
+              Get new articles and hobby inspiration in your inbox.
+            </p>
             <EmailCapture source="blog" />
           </div>
 
@@ -210,7 +211,10 @@ export default function BlogPage() {
           {rest.length > 0 && (
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
               {rest.map((post, i) => (
-                <div key={post.slug} className={`scroll-reveal-flip scroll-reveal-d${Math.min(i + 1, 6)}`}>
+                <div
+                  key={post.slug}
+                  className={`scroll-reveal-flip scroll-reveal-d${Math.min(i + 1, 6)}`}
+                >
                   <PostCard post={post} />
                 </div>
               ))}
@@ -222,9 +226,7 @@ export default function BlogPage() {
       {/* Back to site */}
       <section className="border-t border-stone-100 px-4 py-10">
         <div className="scroll-reveal-scale mx-auto max-w-5xl text-center">
-          <p className="mb-3 text-sm text-stone-500">
-            Ready to map your own hobby story?
-          </p>
+          <p className="mb-3 text-sm text-stone-500">Ready to map your own hobby story?</p>
           <Link
             href="/timeline/new"
             className="inline-flex items-center gap-1.5 rounded-full bg-emerald-600 px-6 py-2.5 text-sm font-semibold text-white shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:bg-emerald-700 hover:shadow-md"

@@ -1,14 +1,14 @@
-import { eq } from "drizzle-orm";
-import type { Metadata } from "next";
+import { eq } from 'drizzle-orm';
+import type { Metadata } from 'next';
 
-import { timelines,users } from "~/db/schema";
-import type { Phase } from "~/lib/types";
-import { db } from "~/server/db";
+import { timelines, users } from '~/db/schema';
+import type { Phase } from '~/lib/types';
+import { db } from '~/server/db';
 
-import { CompareJourneysClient } from "./compare-client";
+import { CompareJourneysClient } from './compare-client';
 
 export const metadata: Metadata = {
-  title: "Compare Hobby Journeys — SignificantHobbies",
+  title: 'Compare Hobby Journeys — SignificantHobbies',
   description:
     "Compare your hobby timeline with a friend. See what hobbies you share, what's unique to each of you, and discover your combined personality.",
 };
@@ -38,9 +38,13 @@ export default async function CompareJourneysPage({ searchParams }: Props) {
         .where(eq(timelines.userId, raw.id));
 
       const phases: Phase[] = properTimelines
-        .filter((t) => t.visibility === "PUBLIC" || t.visibility === "UNLISTED")
+        .filter((t) => t.visibility === 'PUBLIC' || t.visibility === 'UNLISTED')
         .flatMap((t) => {
-          try { return JSON.parse(t.phases) as Phase[]; } catch { return []; }
+          try {
+            return JSON.parse(t.phases) as Phase[];
+          } catch {
+            return [];
+          }
         });
       userA = { username: raw.username ?? usernameA, phases };
     }
@@ -58,9 +62,13 @@ export default async function CompareJourneysPage({ searchParams }: Props) {
         .where(eq(timelines.userId, raw.id));
 
       const phases: Phase[] = properTimelines
-        .filter((t) => t.visibility === "PUBLIC" || t.visibility === "UNLISTED")
+        .filter((t) => t.visibility === 'PUBLIC' || t.visibility === 'UNLISTED')
         .flatMap((t) => {
-          try { return JSON.parse(t.phases) as Phase[]; } catch { return []; }
+          try {
+            return JSON.parse(t.phases) as Phase[];
+          } catch {
+            return [];
+          }
         });
       userB = { username: raw.username ?? usernameB, phases };
     }
@@ -74,12 +82,7 @@ export default async function CompareJourneysPage({ searchParams }: Props) {
           See shared hobbies, diverging paths, and your combined personality archetype.
         </p>
       </div>
-      <CompareJourneysClient
-        userA={userA}
-        userB={userB}
-        paramA={usernameA}
-        paramB={usernameB}
-      />
+      <CompareJourneysClient userA={userA} userB={userB} paramA={usernameA} paramB={usernameB} />
     </div>
   );
 }

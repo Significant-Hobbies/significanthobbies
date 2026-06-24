@@ -1,16 +1,16 @@
-import { eq } from "drizzle-orm";
-import { ArrowLeft } from "lucide-react";
-import Link from "next/link";
-import { redirect } from "next/navigation";
+import { eq } from 'drizzle-orm';
+import { ArrowLeft } from 'lucide-react';
+import Link from 'next/link';
+import { redirect } from 'next/navigation';
 
-import { users } from "~/db/schema";
-import { getServerAuthSession } from "~/server/auth";
-import { db } from "~/server/db";
+import { users } from '~/db/schema';
+import { getServerAuthSession } from '~/server/auth';
+import { db } from '~/server/db';
 
-import { ProfileForm } from "./profile-form";
+import { ProfileForm } from './profile-form';
 
 export const metadata = {
-  title: "Settings — SignificantHobbies",
+  title: 'Settings — SignificantHobbies',
   robots: { index: false, follow: false },
 };
 
@@ -18,7 +18,7 @@ export default async function SettingsPage() {
   const session = await getServerAuthSession();
 
   if (!session?.user?.id) {
-    redirect("/login");
+    redirect('/login');
   }
 
   const user = await db.query.users.findFirst({
@@ -32,7 +32,7 @@ export default async function SettingsPage() {
     },
   });
 
-  if (!user) redirect("/login");
+  if (!user) redirect('/login');
 
   return (
     <div className="mx-auto max-w-xl px-4 py-12">
@@ -50,14 +50,12 @@ export default async function SettingsPage() {
       <h1 className="mb-8 text-2xl font-bold text-stone-900">Settings</h1>
 
       <div className="rounded-2xl border border-stone-200 bg-white p-6 shadow-sm">
-        <h2 className="mb-5 text-base font-semibold text-stone-800">
-          Edit profile
-        </h2>
+        <h2 className="mb-5 text-base font-semibold text-stone-800">Edit profile</h2>
         <ProfileForm
-          initialName={user.name ?? ""}
-          initialBio={user.bio ?? ""}
-          initialWebsite={user.website ?? ""}
-          username={user.username ?? ""}
+          initialName={user.name ?? ''}
+          initialBio={user.bio ?? ''}
+          initialWebsite={user.website ?? ''}
+          username={user.username ?? ''}
         />
       </div>
     </div>

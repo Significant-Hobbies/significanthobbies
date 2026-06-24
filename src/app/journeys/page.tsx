@@ -1,10 +1,10 @@
-import type { Metadata } from "next";
-import Link from "next/link";
+import type { Metadata } from 'next';
+import Link from 'next/link';
 
-import { FAMOUS_JOURNEYS } from "~/lib/famous-journeys";
+import { FAMOUS_JOURNEYS } from '~/lib/famous-journeys';
 
 export const metadata: Metadata = {
-  title: "Famous Hobby Journeys — SignificantHobbies",
+  title: 'Famous Hobby Journeys — SignificantHobbies',
   description:
     "Explore how famous people's hobbies shaped who they became. From Steve Jobs' calligraphy to Einstein's violin — discover the hobby timelines of remarkable people.",
 };
@@ -19,17 +19,15 @@ export default function JourneysPage() {
           How the world&apos;s most interesting people spent their free time
         </p>
         <p className="mt-3 text-sm text-stone-400">
-          <span className="font-medium text-stone-600">{FAMOUS_JOURNEYS.length}</span> remarkable people
+          <span className="font-medium text-stone-600">{FAMOUS_JOURNEYS.length}</span> remarkable
+          people
         </p>
       </div>
 
       {/* Person cards grid */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
         {FAMOUS_JOURNEYS.map((person) => {
-          const totalHobbies = person.phases.reduce(
-            (sum, phase) => sum + phase.hobbies.length,
-            0
-          );
+          const totalHobbies = person.phases.reduce((sum, phase) => sum + phase.hobbies.length, 0);
           return (
             <Link key={person.slug} href={`/journeys/${person.slug}`} className="group block">
               <div className="relative flex h-full flex-col overflow-hidden rounded-xl border border-stone-200 bg-white p-5 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-emerald-300 hover:shadow-md">
@@ -57,8 +55,10 @@ export default function JourneysPage() {
                 {/* Stats row */}
                 <div className="flex items-center justify-between border-t border-stone-100 pt-3">
                   <span className="text-xs text-stone-400">
-                    <span className="font-semibold text-stone-600">{totalHobbies}</span> hobbies across{" "}
-                    <span className="font-semibold text-stone-600">{person.phases.length}</span> phases
+                    <span className="font-semibold text-stone-600">{totalHobbies}</span> hobbies
+                    across{' '}
+                    <span className="font-semibold text-stone-600">{person.phases.length}</span>{' '}
+                    phases
                   </span>
                   <span className="text-xs font-semibold text-emerald-600 opacity-0 transition-opacity group-hover:opacity-100">
                     Explore →

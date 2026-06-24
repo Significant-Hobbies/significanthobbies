@@ -1,26 +1,23 @@
-"use server";
+'use server';
 
-import { and, count,eq } from "drizzle-orm";
-import { revalidatePath } from "next/cache";
-import { z } from "zod";
+import { and, count, eq } from 'drizzle-orm';
+import { revalidatePath } from 'next/cache';
+import { z } from 'zod';
 
-import { follows,users } from "~/db/schema";
-import { parseStringArray } from "~/lib/utils";
-import { getServerAuthSession } from "~/server/auth";
-import { db } from "~/server/db";
+import { follows, users } from '~/db/schema';
+import { parseStringArray } from '~/lib/utils';
+import { getServerAuthSession } from '~/server/auth';
+import { db } from '~/server/db';
 
 const UsernameSchema = z
   .string()
   .min(3)
   .max(30)
-  .regex(
-    /^[a-z0-9-]+$/,
-    "Lowercase letters, numbers, and hyphens only",
-  );
+  .regex(/^[a-z0-9-]+$/, 'Lowercase letters, numbers, and hyphens only');
 
 export async function setUsername(username: string, birthYear?: number) {
   const session = await getServerAuthSession();
-  if (!session?.user?.id) throw new Error("Not authenticated");
+  if (!session?.user?.id) throw new Error('Not authenticated');
 
   const parsed = UsernameSchema.parse(username.toLowerCase());
 
@@ -28,7 +25,7 @@ export async function setUsername(username: string, birthYear?: number) {
     where: eq(users.username, parsed),
   });
   if (existing && existing.id !== session.user.id) {
-    throw new Error("Username already taken");
+    throw new Error('Username already taken');
   }
 
   const [user] = await db
@@ -51,22 +48,19 @@ export async function getMyProfile() {
 }
 
 export async function toggleFollow(
-  targetUserId: string,
+  targetUserId: string
 ): Promise<{ following: boolean; followerCount: number }> {
   const session = await getServerAuthSession();
-  if (!session?.user?.id) throw new Error("Not authenticated");
+  if (!session?.user?.id) throw new Error('Not authenticated');
 
   const currentUserId = session.user.id;
 
   if (currentUserId === targetUserId) {
-    throw new Error("Cannot follow yourself");
+    throw new Error('Cannot follow yourself');
   }
 
   const existing = await db.query.follows.findFirst({
-    where: and(
-      eq(follows.followerId, currentUserId),
-      eq(follows.followingId, targetUserId),
-    ),
+    where: and(eq(follows.followerId, currentUserId), eq(follows.followingId, targetUserId)),
   });
 
   if (existing) {
@@ -104,8 +98,8 @@ const UpdateProfileSchema = z.object({
     .string()
     .max(200)
     .refine(
-      (v) => !v || v.trim() === "" || /^https?:\/\/.+/.test(v.trim()),
-      "Website must start with http:// or https://",
+      (v) => !v || v.trim() === '' || /^https?:\/\/.+/.test(v.trim()),
+      'Website must start with http:// or https://'
     )
     .optional(),
 });
@@ -116,7 +110,7 @@ export async function updateProfile(data: {
   name?: string;
 }): Promise<void> {
   const session = await getServerAuthSession();
-  if (!session?.user?.id) throw new Error("Not authenticated");
+  if (!session?.user?.id) throw new Error('Not authenticated');
 
   const parsed = UpdateProfileSchema.parse(data);
   const website = parsed.website?.trim() ?? undefined;
@@ -137,14 +131,14 @@ export async function updateProfile(data: {
   if (user?.username) {
     revalidatePath(`/u/${user.username}`);
   }
-  revalidatePath("/settings");
+  revalidatePath('/settings');
 }
 
 const QuestProgressArraySchema = z.array(z.string().max(100)).max(500);
 
 export async function syncQuestProgress(completedQuests: string[], earnedBadges: string[]) {
   const session = await getServerAuthSession();
-  if (!session?.user?.id) throw new Error("Not authenticated");
+  if (!session?.user?.id) throw new Error('Not authenticated');
 
   // Validate before persisting: a non-array payload here would corrupt the
   // JSON columns and break every later quest read for this user.
@@ -160,7 +154,10 @@ export async function syncQuestProgress(completedQuests: string[], earnedBadges:
     .where(eq(users.id, session.user.id));
 }
 
-export async function getQuestProgress(): Promise<{ completedQuests: string[]; earnedBadges: string[] }> {
+export async function getQuestProgress(): Promise<{
+  completedQuests: string[];
+  earnedBadges: string[];
+}> {
   const session = await getServerAuthSession();
   if (!session?.user?.id) return { completedQuests: [], earnedBadges: [] };
 

@@ -1,16 +1,16 @@
-"use client";
+'use client';
 
-import Link from "next/link";
-import { useEffect, useState } from "react";
+import Link from 'next/link';
+import { useEffect, useState } from 'react';
 
-import { Lumi } from "~/components/lumi";
+import { Lumi } from '~/components/lumi';
 
-const DISMISS_KEY = "lumi-floating-dismissed";
+const DISMISS_KEY = 'lumi-floating-dismissed';
 
 const SHORTCUTS = [
-  { label: "✨ My bucket list", href: "/dashboard" },
-  { label: "Browse famous lists", href: "/bucket-lists" },
-  { label: "150+ ideas", href: "/bucket-list-ideas" },
+  { label: '✨ My bucket list', href: '/dashboard' },
+  { label: 'Browse famous lists', href: '/bucket-lists' },
+  { label: '150+ ideas', href: '/bucket-list-ideas' },
 ];
 
 export function FloatingLumi() {
@@ -20,7 +20,7 @@ export function FloatingLumi() {
   // Read sessionStorage only after mount to avoid SSR mismatch
   useEffect(() => {
     setMounted(true);
-    if (typeof window !== "undefined" && sessionStorage.getItem(DISMISS_KEY)) {
+    if (typeof window !== 'undefined' && sessionStorage.getItem(DISMISS_KEY)) {
       setDismissed(true);
     }
   }, []);
@@ -28,7 +28,7 @@ export function FloatingLumi() {
   function handleDismiss(e: React.MouseEvent) {
     e.stopPropagation();
     e.preventDefault();
-    sessionStorage.setItem(DISMISS_KEY, "1");
+    sessionStorage.setItem(DISMISS_KEY, '1');
     setDismissed(true);
   }
 

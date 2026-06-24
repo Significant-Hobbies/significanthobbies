@@ -1,18 +1,18 @@
-"use client";
+'use client';
 
-import { Globe, Link, Loader2,Lock } from "lucide-react";
-import { useState, useTransition } from "react";
-import { toast } from "sonner";
+import { Globe, Link, Loader2, Lock } from 'lucide-react';
+import { useState, useTransition } from 'react';
+import { toast } from 'sonner';
 
-import { Button } from "~/components/ui/button";
+import { Button } from '~/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "~/components/ui/dropdown-menu";
-import { setTimelineVisibility } from "~/lib/actions/timeline";
-import type { TimelineVisibility } from "~/lib/types";
+} from '~/components/ui/dropdown-menu';
+import { setTimelineVisibility } from '~/lib/actions/timeline';
+import type { TimelineVisibility } from '~/lib/types';
 
 const OPTIONS: {
   value: TimelineVisibility;
@@ -21,22 +21,22 @@ const OPTIONS: {
   desc: string;
 }[] = [
   {
-    value: "PRIVATE",
-    label: "Private",
+    value: 'PRIVATE',
+    label: 'Private',
     icon: Lock,
-    desc: "Only you can see",
+    desc: 'Only you can see',
   },
   {
-    value: "UNLISTED",
-    label: "Unlisted",
+    value: 'UNLISTED',
+    label: 'Unlisted',
     icon: Link,
-    desc: "Anyone with the link",
+    desc: 'Anyone with the link',
   },
   {
-    value: "PUBLIC",
-    label: "Public",
+    value: 'PUBLIC',
+    label: 'Public',
     icon: Globe,
-    desc: "Listed publicly",
+    desc: 'Listed publicly',
   },
 ];
 
@@ -60,7 +60,7 @@ export function VisibilityToggle({ timelineId, current }: Props) {
         setVisibility(value);
         toast.success(`Visibility set to ${value.toLowerCase()}`);
       } catch {
-        toast.error("Failed to update visibility");
+        toast.error('Failed to update visibility');
       }
     });
   }
@@ -82,10 +82,7 @@ export function VisibilityToggle({ timelineId, current }: Props) {
           {active.label}
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent
-        align="end"
-        className="bg-white border-stone-200"
-      >
+      <DropdownMenuContent align="end" className="bg-white border-stone-200">
         {OPTIONS.map((opt) => {
           const OptIcon = opt.icon;
           return (
