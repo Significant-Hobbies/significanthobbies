@@ -1,5 +1,5 @@
 ---
-import landingStyles from '@/styles/landing.css?raw';
+import '@/styles/landing.css';
 
 interface Props {
   title: string;
@@ -95,7 +95,5 @@ const OG_IMAGE = `${SITE_URL}/opengraph-image`;
       })();
     </script>
     <slot />
-    {/* Tailwind at body-end so the parser reaches #lcp-shell after ~2KB head, not ~22KB. */}
-    <style is:inline set:html={landingStyles} />
   </body>
 </html>
