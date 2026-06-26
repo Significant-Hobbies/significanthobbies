@@ -17,6 +17,7 @@ export default defineConfig({
       // area. Add a file here when it gains a co-located *.test.ts.
       include: [
         'src/lib/accountability-circles.ts',
+        'src/lib/bucket-list-insights.ts',
         'src/lib/hobby-roadmap.ts',
         'src/lib/insights.ts',
         'src/lib/personality.ts',

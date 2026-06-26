@@ -141,6 +141,8 @@ export function getCelebrityMatch(
 
   if (Object.keys(userCats).length === 0) return null;
 
+  const userTotal = Object.values(userCats).reduce((s, v) => s + (v ?? 0), 0);
+
   const scored = FAMOUS_BUCKET_LISTS.map((person) => {
     const famCats: Partial<Record<BucketItemCategory, number>> = {};
     for (const item of person.items) {
@@ -156,7 +158,6 @@ export function getCelebrityMatch(
       }
     }
 
-    const userTotal = Object.values(userCats).reduce((s, v) => s + (v ?? 0), 0);
     const famTotal = person.items.length;
     const score = (overlap / Math.sqrt(userTotal * famTotal)) * 100;
 
@@ -165,7 +166,11 @@ export function getCelebrityMatch(
 
   scored.sort((a, b) => b.score - a.score);
   const top = scored[0];
+  // Require a meaningful match: either a real cosine-style score (≥15) or at
+  // least two shared categories. A single overlapping category produces a
+  // near-zero score that reads as a broken "1% match".
   if (!top || top.score === 0) return null;
+  if (top.score < 15 && top.shared.length < 2) return null;
 
   return {
     slug: top.person.slug,
@@ -255,27 +260,102 @@ const SUGGESTION_POOL: SuggestionItem[] = [
   { title: 'Donate anonymously and never tell anyone', category: 'humanitarian', emoji: '🤫' },
 ];
 
+// ─── Token-based title similarity ────────────────────────────────────────────
+
+const STOPWORDS = new Set([
+  'the',
+  'a',
+  'an',
+  'in',
+  'on',
+  'at',
+  'to',
+  'of',
+  'and',
+  'or',
+  'for',
+  'with',
+  'from',
+  'your',
+  'you',
+  'it',
+  'is',
+  'that',
+  'this',
+]);
+
+function tokenize(title: string): Set<string> {
+  return new Set(
+    title
+      .toLowerCase()
+      .replace(/[^a-z0-9\s]/g, ' ')
+      .split(/\s+/)
+      .filter((w) => w.length > 2 && !STOPWORDS.has(w))
+  );
+}
+
+// Jaccard similarity over meaningful tokens. Returns 0–1.
+function titleSimilarity(a: string, b: string): number {
+  const ta = tokenize(a);
+  const tb = tokenize(b);
+  if (ta.size === 0 || tb.size === 0) return 0;
+  let inter = 0;
+  for (const t of ta) if (tb.has(t)) inter++;
+  const union = ta.size + tb.size - inter;
+  return union === 0 ? 0 : inter / union;
+}
+
+// Deterministic seeded PRNG (mulberry32) so suggestions are stable for a given
+// set of existing items + seed, instead of reshuffling on every render.
+function mulberry32(seed: number): () => number {
+  let a = seed >>> 0;
+  return () => {
+    a |= 0;
+    a = (a + 0x6d2b79f5) | 0;
+    let t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+function hashString(s: string): number {
+  let h = 2166136261;
+  for (let i = 0; i < s.length; i++) {
+    h ^= s.charCodeAt(i);
+    h = Math.imul(h, 16777619);
+  }
+  return h >>> 0;
+}
+
 export function getBucketListSuggestions(
   existingItems: Array<{ title: string; category: string | null }>,
-  count = 6
+  count = 6,
+  seed = 0
 ): SuggestionItem[] {
-  const existingTitles = new Set(existingItems.map((i) => i.title.toLowerCase().trim()));
   const existingCats = new Set(existingItems.map((i) => i.category).filter(Boolean));
 
-  // Filter out items the user already has (fuzzy: if existing title contains pool title word or vice versa)
-  const pool = SUGGESTION_POOL.filter((s) => {
-    const sLower = s.title.toLowerCase();
-    return ![...existingTitles].some(
-      (t) => t.includes(sLower.slice(0, 20)) || sLower.includes(t.slice(0, 20))
-    );
-  });
+  // Filter out items too similar to one the user already has (Jaccard ≥ 0.5
+  // over meaningful tokens). Catches "Run a marathon" vs "Run a half marathon"
+  // while letting genuinely different suggestions through.
+  const pool = SUGGESTION_POOL.filter(
+    (s) => !existingItems.some((e) => titleSimilarity(s.title, e.title) >= 0.5)
+  );
 
   // Separate into "gap categories" (user has none) vs "familiar" (user has some)
   const gaps = pool.filter((s) => !existingCats.has(s.category));
   const familiar = pool.filter((s) => existingCats.has(s.category));
 
-  // Shuffle each bucket
-  const shuffle = <T>(arr: T[]) => [...arr].sort(() => Math.random() - 0.5);
+  // Deterministic shuffle from a seed derived from existing titles + caller seed.
+  const existingKey = existingItems
+    .map((i) => i.title)
+    .sort()
+    .join('|');
+  const rng = mulberry32(hashString(existingKey) + seed);
+  const shuffle = <T>(arr: T[]): T[] =>
+    [...arr]
+      .map((v) => ({ v, k: rng() }))
+      .sort((a, b) => a.k - b.k)
+      .map(({ v }) => v);
 
   // Return up to count/2 from gaps + rest from familiar
   const gapCount = Math.min(Math.ceil(count / 2), gaps.length);

@@ -8,14 +8,22 @@ import { bucketListItems } from '~/db/schema';
 import { getServerAuthSession } from '~/server/auth';
 import { db } from '~/server/db';
 
+const CATEGORIES = [
+  'travel',
+  'adventure',
+  'creative',
+  'achievement',
+  'social',
+  'humanitarian',
+] as const;
+
 const AddItemSchema = z.object({
   title: z.string().min(1).max(200),
   description: z.string().max(500).optional(),
-  category: z
-    .enum(['travel', 'adventure', 'creative', 'achievement', 'social', 'humanitarian'])
-    .optional(),
+  category: z.enum(CATEGORIES).optional(),
   sourceSlug: z.string().optional(),
   sourceItemTitle: z.string().optional(),
+  targetYear: z.number().int().min(1900).max(2200).optional(),
 });
 
 export async function addBucketListItem(data: {
@@ -24,6 +32,7 @@ export async function addBucketListItem(data: {
   category?: string;
   sourceSlug?: string;
   sourceItemTitle?: string;
+  targetYear?: number;
 }): Promise<{ success: boolean; id?: string }> {
   const session = await getServerAuthSession();
   if (!session?.user?.id) throw new Error('Not authenticated');
@@ -40,6 +49,7 @@ export async function addBucketListItem(data: {
       status: 'planned',
       sourceSlug: parsed.sourceSlug ?? null,
       sourceItemTitle: parsed.sourceItemTitle ?? null,
+      targetYear: parsed.targetYear ?? null,
     })
     .returning({ id: bucketListItems.id });
 
@@ -63,6 +73,29 @@ export async function updateBucketListItemStatus(
       completedAt: status === 'done' ? new Date() : null,
       updatedAt: new Date(),
     })
+    .where(and(eq(bucketListItems.id, id), eq(bucketListItems.userId, session.user.id)));
+
+  revalidatePath('/dashboard');
+  return { success: true };
+}
+
+const UpdateItemSchema = z.object({
+  targetYear: z.number().int().min(1900).max(2200).nullable().optional(),
+  category: z.enum(CATEGORIES).nullable().optional(),
+});
+
+export async function updateBucketListItem(
+  id: string,
+  patch: { targetYear?: number | null; category?: string | null }
+): Promise<{ success: boolean }> {
+  const session = await getServerAuthSession();
+  if (!session?.user?.id) throw new Error('Not authenticated');
+
+  const parsed = UpdateItemSchema.parse(patch);
+
+  await db
+    .update(bucketListItems)
+    .set({ ...parsed, updatedAt: new Date() })
     .where(and(eq(bucketListItems.id, id), eq(bucketListItems.userId, session.user.id)));
 
   revalidatePath('/dashboard');
@@ -97,20 +130,9 @@ export async function updateBucketListItemVisibility(
   return { success: true };
 }
 
-export async function getUserBucketList(): Promise<
-  Array<{
-    id: string;
-    title: string;
-    description: string | null;
-    category: string | null;
-    status: string;
-    visibility: string;
-    sourceSlug: string | null;
-    sourceItemTitle: string | null;
-    completedAt: Date | null;
-    createdAt: Date;
-  }>
-> {
+export type BucketListItem = typeof bucketListItems.$inferSelect;
+
+export async function getUserBucketList(): Promise<BucketListItem[]> {
   const session = await getServerAuthSession();
   if (!session?.user?.id) return [];
 

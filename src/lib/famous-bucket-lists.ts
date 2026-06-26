@@ -1,4 +1,4 @@
-export type BucketItemStatus = 'planned' | 'done';
+export type BucketItemStatus = 'planned' | 'in_progress' | 'done';
 
 export type BucketItemCategory =
   | 'travel'

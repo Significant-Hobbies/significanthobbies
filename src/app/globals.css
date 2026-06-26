@@ -416,3 +416,37 @@
   .animate-lumi-float,
   .animate-lumi-glow { animation: none; }
 }
+
+/* ─── Bucket list micro-interactions ─────────────────────────────────────── */
+
+@keyframes bucketItemIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.animate-bucket-item-in {
+  animation: bucketItemIn 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes bucketCheckPop {
+  0%   { transform: scale(0.4); opacity: 0; }
+  60%  { transform: scale(1.15); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+.animate-bucket-check-pop {
+  animation: bucketCheckPop 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes bucketSparkle {
+  0%   { opacity: 0; transform: scale(0.3) rotate(0deg); }
+  40%  { opacity: 1; }
+  100% { opacity: 0; transform: scale(1.4) rotate(60deg); }
+}
+.animate-bucket-sparkle {
+  animation: bucketSparkle 0.7s ease-out forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-bucket-item-in,
+  .animate-bucket-check-pop,
+  .animate-bucket-sparkle { animation: none; }
+}

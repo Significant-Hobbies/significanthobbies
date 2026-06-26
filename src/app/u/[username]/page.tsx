@@ -395,30 +395,39 @@ export default async function ProfilePage({ params }: Props) {
                 const cat = item.category
                   ? BUCKET_ITEM_CATEGORIES[item.category as keyof typeof BUCKET_ITEM_CATEGORIES]
                   : null;
+                const isDone = item.status === 'done';
+                const isInProgress = item.status === 'in_progress';
                 return (
                   <li
                     key={item.id}
                     className={`flex items-start gap-3 rounded-lg border px-4 py-3 ${
-                      item.status === 'done'
-                        ? 'border-emerald-200 bg-emerald-50/60'
-                        : 'border-stone-200 bg-stone-50'
+                      isDone
+                        ? 'border-[#f0a090] bg-[#fff6f2]'
+                        : isInProgress
+                          ? 'border-amber-200 bg-amber-50/60'
+                          : 'border-stone-200 bg-stone-50'
                     }`}
                   >
                     <span
                       className={`mt-0.5 h-4.5 w-4.5 shrink-0 rounded-full border-2 flex items-center justify-center text-[9px] font-bold ${
-                        item.status === 'done'
-                          ? 'border-emerald-500 bg-emerald-500 text-white'
-                          : 'border-stone-300'
+                        isDone
+                          ? 'border-[#e05533] bg-[#e05533] text-white'
+                          : isInProgress
+                            ? 'border-amber-400 bg-amber-400/40 text-amber-600'
+                            : 'border-stone-300'
                       }`}
                     >
-                      {item.status === 'done' ? '✓' : ''}
+                      {isDone ? '✓' : isInProgress ? '●' : ''}
                     </span>
                     <span
                       className={`flex-1 text-sm ${
-                        item.status === 'done' ? 'line-through text-stone-400' : 'text-stone-700'
+                        isDone ? 'line-through text-stone-400' : 'text-stone-700'
                       }`}
                     >
                       {item.title}
+                      {item.targetYear && (
+                        <span className="ml-2 text-xs text-stone-400">by {item.targetYear}</span>
+                      )}
                     </span>
                     {cat && (
                       <span className="text-xs text-stone-400 shrink-0" title={cat.label}>

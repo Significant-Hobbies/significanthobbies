@@ -7,6 +7,7 @@ import { Lumi } from '~/components/lumi';
 import {
   addBucketListItem,
   removeBucketListItem,
+  updateBucketListItem,
   updateBucketListItemStatus,
   updateBucketListItemVisibility,
 } from '~/lib/actions/bucket-list';
@@ -15,7 +16,9 @@ import {
   getBucketListSuggestions,
   getCelebrityMatch,
 } from '~/lib/bucket-list-insights';
-import { BUCKET_ITEM_CATEGORIES } from '~/lib/famous-bucket-lists';
+import { BUCKET_ITEM_CATEGORIES, type BucketItemCategory } from '~/lib/famous-bucket-lists';
+
+type ItemStatus = 'planned' | 'in_progress' | 'done';
 
 type Item = {
   id: string;
@@ -26,35 +29,75 @@ type Item = {
   visibility: string;
   sourceSlug: string | null;
   sourceItemTitle: string | null;
+  targetYear: number | null;
   completedAt: Date | null;
   createdAt: Date;
 };
 
 type Props = { initialItems: Item[] };
 
+const STATUS_CYCLE: Record<ItemStatus, ItemStatus> = {
+  planned: 'in_progress',
+  in_progress: 'done',
+  done: 'planned',
+};
+
+const STATUS_LABEL: Record<ItemStatus, string> = {
+  planned: 'Planned',
+  in_progress: 'In progress',
+  done: 'Done',
+};
+
+const CATEGORY_OPTIONS = Object.entries(BUCKET_ITEM_CATEGORIES) as [
+  BucketItemCategory,
+  { label: string; emoji: string },
+][];
+
 export function BucketListSection({ initialItems }: Props) {
   const [items, setItems] = useState<Item[]>(initialItems);
   const [newTitle, setNewTitle] = useState('');
+  const [newCategory, setNewCategory] = useState<string>('');
+  const [newYear, setNewYear] = useState<string>('');
+  const [showAddOptions, setShowAddOptions] = useState(false);
   const [isPending, startTransition] = useTransition();
+  const [suggestionSeed, setSuggestionSeed] = useState(0);
+  const [justDoneId, setJustDoneId] = useState<string | null>(null);
   const optimisticIdBase = useId();
   const optimisticCounter = useRef(0);
+  const justDoneTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const archetype = useMemo(() => getBucketListArchetype(items), [items]);
   const celebrity = useMemo(() => getCelebrityMatch(items), [items]);
-  const suggestions = useMemo(() => getBucketListSuggestions(items, 6), [items]);
+  // Stable across re-renders unless the item set meaningfully changes or the
+  // user explicitly refreshes. No more reshuffle on every status toggle.
+  const suggestions = useMemo(
+    () => getBucketListSuggestions(items, 6, suggestionSeed),
+    [items, suggestionSeed]
+  );
 
-  function handleToggle(id: string, currentStatus: string) {
-    const nextStatus = currentStatus === 'done' ? 'planned' : 'done';
+  function cycleStatus(id: string, current: string) {
+    const cur = current as ItemStatus;
+    const next = STATUS_CYCLE[cur];
+    const becameDone = next === 'done';
     setItems((prev) =>
       prev.map((item) =>
         item.id === id
-          ? { ...item, status: nextStatus, completedAt: nextStatus === 'done' ? new Date() : null }
+          ? {
+              ...item,
+              status: next,
+              completedAt: becameDone ? new Date() : null,
+            }
           : item
       )
     );
     startTransition(async () => {
-      await updateBucketListItemStatus(id, nextStatus as 'planned' | 'done');
+      await updateBucketListItemStatus(id, next);
     });
+    if (becameDone) {
+      setJustDoneId(id);
+      if (justDoneTimer.current) clearTimeout(justDoneTimer.current);
+      justDoneTimer.current = setTimeout(() => setJustDoneId(null), 750);
+    }
   }
 
   function handleToggleVisibility(id: string, currentVisibility: string) {
@@ -72,6 +115,13 @@ export function BucketListSection({ initialItems }: Props) {
     });
   }
 
+  function handleSetYear(id: string, year: number | null) {
+    setItems((prev) => prev.map((item) => (item.id === id ? { ...item, targetYear: year } : item)));
+    startTransition(async () => {
+      await updateBucketListItem(id, { targetYear: year });
+    });
+  }
+
   function handleAddSuggestion(title: string, category: string) {
     addItemOptimistically(title, category);
   }
@@ -81,11 +131,15 @@ export function BucketListSection({ initialItems }: Props) {
     const title = newTitle.trim();
     if (!title) return;
     setNewTitle('');
-    addItemOptimistically(title, undefined);
+    setNewCategory('');
+    setNewYear('');
+    setShowAddOptions(false);
+    addItemOptimistically(title, newCategory || undefined, newYear || undefined);
   }
 
-  function addItemOptimistically(title: string, category?: string) {
+  function addItemOptimistically(title: string, category?: string, year?: string) {
     optimisticCounter.current += 1;
+    const targetYear = year ? Number.parseInt(year, 10) : null;
     const optimistic: Item = {
       id: `optimistic-${optimisticIdBase}-${optimisticCounter.current}`,
       title,
@@ -95,6 +149,7 @@ export function BucketListSection({ initialItems }: Props) {
       visibility: 'private',
       sourceSlug: null,
       sourceItemTitle: null,
+      targetYear: Number.isNaN(targetYear) ? null : targetYear,
       completedAt: null,
       createdAt: new Date(),
     };
@@ -103,6 +158,7 @@ export function BucketListSection({ initialItems }: Props) {
       const result = await addBucketListItem({
         title,
         category: (category as Item['category']) ?? undefined,
+        targetYear: Number.isNaN(targetYear) ? undefined : (targetYear ?? undefined),
       });
       if (result.id) {
         setItems((prev) =>
@@ -113,81 +169,120 @@ export function BucketListSection({ initialItems }: Props) {
   }
 
   const done = items.filter((i) => i.status === 'done').length;
+  const inProgress = items.filter((i) => i.status === 'in_progress').length;
   const publicCount = items.filter((i) => i.visibility === 'public').length;
   const total = items.length;
+  const pct = total > 0 ? Math.round((done / total) * 100) : 0;
+
+  // Circular progress geometry
+  const R = 26;
+  const CIRC = 2 * Math.PI * R;
+  const offset = CIRC * (1 - pct / 100);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-7">
       {/* ── Header ──────────────────────────────────────────────── */}
       <div className="flex items-start justify-between gap-4">
         <div className="flex items-center gap-3">
-          <Lumi size={40} glow />
+          <Lumi size={44} glow />
           <div>
-            <h2 className="text-xl font-bold text-stone-900">Your Bucket List</h2>
-            {total > 0 && (
-              <p className="text-sm text-stone-400">
-                {done} of {total} done
+            <h2 className="text-xl font-bold text-stone-900">Your bucket list</h2>
+            {total > 0 ? (
+              <p className="text-sm text-stone-500">
+                <span className="font-semibold text-[#e05533]">{done}</span> done
+                {inProgress > 0 && (
+                  <>
+                    {' · '}
+                    <span className="font-semibold text-amber-600">{inProgress}</span> in progress
+                  </>
+                )}
                 {publicCount > 0 && (
-                  <span className="ml-2 text-amber-600 font-medium">
-                    · {publicCount} public on your profile
-                  </span>
+                  <span className="ml-1 text-stone-400">· {publicCount} public</span>
                 )}
               </p>
+            ) : (
+              <p className="text-sm text-stone-500">A life list, one check at a time.</p>
             )}
           </div>
         </div>
-        <Link
-          href="/bucket-lists"
-          className="shrink-0 text-sm font-medium text-amber-600 hover:text-amber-700 transition-colors"
-        >
-          Browse famous lists →
-        </Link>
+        <div className="flex items-center gap-3">
+          {total > 0 && (
+            <div className="relative hidden sm:block shrink-0">
+              <svg width="64" height="64" viewBox="0 0 64 64" className="-rotate-90">
+                <circle cx="32" cy="32" r={R} fill="none" stroke="#f5f5f4" strokeWidth="5" />
+                <circle
+                  cx="32"
+                  cy="32"
+                  r={R}
+                  fill="none"
+                  stroke="#e05533"
+                  strokeWidth="5"
+                  strokeLinecap="round"
+                  strokeDasharray={CIRC}
+                  strokeDashoffset={offset}
+                  style={{ transition: 'stroke-dashoffset 0.7s cubic-bezier(0.22,1,0.36,1)' }}
+                />
+              </svg>
+              <span className="absolute inset-0 flex items-center justify-center text-xs font-bold text-stone-700">
+                {pct}%
+              </span>
+            </div>
+          )}
+          <Link
+            href="/bucket-lists"
+            className="shrink-0 text-sm font-medium text-[#e05533] hover:text-[#c94420] transition-colors"
+          >
+            Famous lists →
+          </Link>
+        </div>
       </div>
 
-      {/* ── Archetype + Celebrity row ────────────────────────────── */}
+      {/* ── Archetype + Celebrity ────────────────────────────────── */}
       {(archetype ?? celebrity) && (
         <div className="grid gap-3 sm:grid-cols-2">
           {archetype && (
             <div
-              className={`rounded-2xl p-5 text-white ${archetype.color} bg-opacity-90 shadow-sm`}
+              className={`relative overflow-hidden rounded-2xl p-5 text-white shadow-sm ${archetype.color}`}
             >
-              <p className="text-xs font-semibold uppercase tracking-wider opacity-80 mb-1">
-                Your archetype
-              </p>
-              <div className="flex items-center gap-2">
-                <span className="text-2xl">{archetype.emoji}</span>
-                <div>
-                  <p className="font-bold">{archetype.name}</p>
-                  <p className="text-xs opacity-80 italic">&ldquo;{archetype.tagline}&rdquo;</p>
-                </div>
+              <div className="absolute -right-6 -top-6 text-7xl opacity-20 select-none">
+                {archetype.emoji}
               </div>
-              <p className="mt-2 text-xs opacity-75 leading-relaxed">{archetype.description}</p>
+              <div className="relative">
+                <div className="flex items-center gap-2.5">
+                  <span className="text-3xl leading-none">{archetype.emoji}</span>
+                  <div>
+                    <p className="font-bold leading-tight">{archetype.name}</p>
+                    <p className="text-xs opacity-85 italic">&ldquo;{archetype.tagline}&rdquo;</p>
+                  </div>
+                </div>
+                <p className="mt-2.5 text-xs opacity-90 leading-relaxed">{archetype.description}</p>
+              </div>
             </div>
           )}
           {celebrity && (
-            <div className="rounded-2xl border border-amber-200 bg-amber-50 p-5">
-              <p className="text-xs font-semibold uppercase tracking-wider text-amber-600 mb-1">
-                You&apos;re most like
-              </p>
-              <div className="flex items-center gap-2">
-                <span className="text-2xl">{celebrity.emoji}</span>
+            <div className="rounded-2xl border border-[#f0a090] bg-[#fff6f2] p-5">
+              <p className="text-sm text-stone-600 mb-1.5">You&apos;re most like</p>
+              <div className="flex items-center gap-2.5">
+                <span className="text-3xl leading-none">{celebrity.emoji}</span>
                 <div>
                   <a
                     href={`/bucket-lists/${celebrity.slug}`}
-                    className="font-bold text-stone-900 hover:text-amber-700 transition-colors"
+                    className="font-bold text-stone-900 hover:text-[#c94420] transition-colors"
                   >
                     {celebrity.name}
                   </a>
-                  <div className="flex items-center gap-1 mt-0.5">
+                  <div className="flex items-center gap-1.5 mt-0.5">
                     {celebrity.sharedCategories.slice(0, 3).map((cat) => {
                       const info = BUCKET_ITEM_CATEGORIES[cat];
                       return info ? (
-                        <span key={cat} className="text-xs text-stone-500" title={info.label}>
+                        <span key={cat} className="text-sm" title={info.label}>
                           {info.emoji}
                         </span>
                       ) : null;
                     })}
-                    <span className="text-xs text-stone-400">{celebrity.score}% match</span>
+                    <span className="text-xs font-semibold text-[#e05533]">
+                      {celebrity.score}% match
+                    </span>
                   </div>
                 </div>
               </div>
@@ -197,23 +292,31 @@ export function BucketListSection({ initialItems }: Props) {
         </div>
       )}
 
-      {/* ── Suggestions strip ────────────────────────────────────── */}
+      {/* ── Suggestions ─────────────────────────────────────────── */}
       {suggestions.length > 0 && (
-        <div className="space-y-2">
-          <p className="text-xs font-semibold uppercase tracking-wider text-stone-400">
-            Lumi suggests
-          </p>
+        <div className="space-y-2.5">
+          <div className="flex items-center justify-between">
+            <p className="text-sm font-medium text-stone-600">Lumi suggests</p>
+            <button
+              type="button"
+              onClick={() => setSuggestionSeed((s) => s + 1)}
+              className="inline-flex items-center gap-1 text-xs text-stone-400 hover:text-[#e05533] transition-colors"
+              aria-label="Refresh suggestions"
+            >
+              <span className="text-base leading-none">↻</span> shuffle
+            </button>
+          </div>
           <div className="flex gap-2 flex-wrap">
             {suggestions.map((s, i) => (
               <button
-                key={i}
+                key={`${s.title}-${i}`}
                 onClick={() => handleAddSuggestion(s.title, s.category)}
                 disabled={isPending}
-                className="group inline-flex items-center gap-1.5 rounded-full border border-stone-200 bg-white px-3 py-1.5 text-xs text-stone-700 hover:border-amber-300 hover:bg-amber-50 hover:text-amber-700 transition-all disabled:opacity-50"
+                className="group inline-flex items-center gap-1.5 rounded-full border border-stone-200 bg-white px-3 py-1.5 text-xs text-stone-700 hover:border-[#f0a090] hover:bg-[#fff6f2] hover:text-[#c94420] hover:-translate-y-0.5 transition-all disabled:opacity-50 disabled:hover:translate-y-0"
               >
                 <span>{s.emoji}</span>
                 <span className="line-clamp-1 max-w-[180px]">{s.title}</span>
-                <span className="text-stone-300 group-hover:text-amber-400 transition-colors">
+                <span className="text-stone-300 group-hover:text-[#e05533] transition-colors">
                   +
                 </span>
               </button>
@@ -223,122 +326,177 @@ export function BucketListSection({ initialItems }: Props) {
       )}
 
       {/* ── Add item ─────────────────────────────────────────────── */}
-      <form onSubmit={handleAdd} className="flex gap-2">
-        <input
-          type="text"
-          value={newTitle}
-          onChange={(e) => setNewTitle(e.target.value)}
-          placeholder="Add your own bucket list item…"
-          className="flex-1 rounded-xl border border-stone-200 bg-white px-4 py-2.5 text-sm text-stone-900 placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-amber-300 focus:border-transparent"
-        />
-        <button
-          type="submit"
-          disabled={isPending || !newTitle.trim()}
-          className="rounded-xl bg-amber-400 px-5 py-2.5 text-sm font-semibold text-stone-950 hover:bg-amber-300 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-        >
-          Add
-        </button>
-      </form>
-
-      {/* ── Progress bar ─────────────────────────────────────────── */}
-      {total > 0 && (
-        <div className="space-y-1.5">
-          <div className="flex justify-between text-xs text-stone-400">
-            <span>
-              {done} done · {total - done} remaining
-            </span>
-            <span className="font-medium text-amber-600">
-              {total > 0 ? Math.round((done / total) * 100) : 0}%
-            </span>
-          </div>
-          <div className="h-2 rounded-full bg-stone-100 overflow-hidden">
-            <div
-              className="h-full rounded-full bg-gradient-to-r from-amber-400 to-amber-500 transition-all duration-700"
-              style={{ width: total ? `${Math.round((done / total) * 100)}%` : '0%' }}
+      <form onSubmit={handleAdd} className="space-y-2">
+        <div className="flex gap-2">
+          <input
+            type="text"
+            value={newTitle}
+            onChange={(e) => setNewTitle(e.target.value)}
+            onFocus={() => setShowAddOptions(true)}
+            placeholder="Add your own bucket list item…"
+            className="flex-1 rounded-xl border border-stone-200 bg-white px-4 py-2.5 text-sm text-stone-900 placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-[#f0a090] focus:border-transparent"
+          />
+          <button
+            type="submit"
+            disabled={isPending || !newTitle.trim()}
+            className="rounded-xl bg-[#e05533] px-5 py-2.5 text-sm font-semibold text-white hover:bg-[#c94420] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          >
+            Add
+          </button>
+        </div>
+        {showAddOptions && (
+          <div className="flex flex-wrap items-center gap-2 pl-1 text-xs text-stone-500">
+            <span className="text-stone-400">Optional:</span>
+            <select
+              value={newCategory}
+              onChange={(e) => setNewCategory(e.target.value)}
+              className="rounded-lg border border-stone-200 bg-white px-2.5 py-1.5 text-xs text-stone-700 focus:outline-none focus:ring-2 focus:ring-[#f0a090]"
+              aria-label="Category"
+            >
+              <option value="">No category</option>
+              {CATEGORY_OPTIONS.map(([key, { label, emoji }]) => (
+                <option key={key} value={key}>
+                  {emoji} {label}
+                </option>
+              ))}
+            </select>
+            <input
+              type="number"
+              inputMode="numeric"
+              value={newYear}
+              onChange={(e) => setNewYear(e.target.value)}
+              placeholder="by year"
+              min={1900}
+              max={2200}
+              className="w-24 rounded-lg border border-stone-200 bg-white px-2.5 py-1.5 text-xs text-stone-700 placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-[#f0a090]"
+              aria-label="Target year"
             />
           </div>
-        </div>
-      )}
+        )}
+      </form>
 
       {/* ── Items list ───────────────────────────────────────────── */}
       {items.length === 0 ? (
-        <div className="rounded-2xl border border-dashed border-amber-200 bg-amber-50/50 py-12 text-center space-y-4">
-          <Lumi size={56} glow className="mx-auto" />
+        <div className="rounded-2xl border border-dashed border-[#f0a090] bg-[#fff6f2]/60 py-14 text-center space-y-4">
+          <Lumi size={64} glow className="mx-auto" />
           <div>
             <p className="font-semibold text-stone-800">Your bucket list is waiting.</p>
-            <p className="text-sm text-stone-500 mt-1">
-              Lumi will help you fill it — browse famous lists or add your own above.
+            <p className="text-sm text-stone-500 mt-1 max-w-sm mx-auto">
+              Lumi will help you fill it. Browse famous lists for inspiration, or add your own
+              above.
             </p>
           </div>
           <Link
             href="/bucket-lists"
-            className="inline-flex items-center gap-2 rounded-full bg-amber-400 px-5 py-2 text-sm font-semibold text-stone-950 hover:bg-amber-300 transition-colors"
+            className="inline-flex items-center gap-2 rounded-full bg-[#e05533] px-5 py-2 text-sm font-semibold text-white hover:bg-[#c94420] transition-colors"
           >
-            ✨ Browse famous bucket lists
+            Browse famous bucket lists →
           </Link>
         </div>
       ) : (
         <ul className="space-y-2">
-          {items.map((item) => {
+          {items.map((item, i) => {
             const cat = item.category
               ? BUCKET_ITEM_CATEGORIES[item.category as keyof typeof BUCKET_ITEM_CATEGORIES]
               : null;
-            const isDone = item.status === 'done';
+            const status = item.status as ItemStatus;
+            const isDone = status === 'done';
+            const isInProgress = status === 'in_progress';
             const isPublic = item.visibility === 'public';
+            const celebrating = justDoneId === item.id;
 
             return (
               <li
                 key={item.id}
-                className={`group flex items-center gap-3 rounded-xl border px-4 py-3 transition-all duration-200 ${
+                style={{ animationDelay: `${Math.min(i * 40, 400)}ms` }}
+                className={`group animate-bucket-item-in relative flex items-center gap-3 rounded-xl border px-4 py-3 transition-all duration-200 ${
                   isDone
-                    ? 'border-emerald-200 bg-emerald-50/60'
-                    : 'border-stone-200 bg-white hover:border-stone-300'
+                    ? 'border-[#f0a090] bg-[#fff6f2]/70'
+                    : isInProgress
+                      ? 'border-amber-200 bg-amber-50/60'
+                      : 'border-stone-200 bg-white hover:border-stone-300 hover:shadow-sm'
                 }`}
               >
-                {/* Done toggle */}
+                {/* Celebration sparkle */}
+                {celebrating && (
+                  <span
+                    className="animate-bucket-sparkle pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-xl text-[#e05533] select-none"
+                    aria-hidden
+                  >
+                    ✨
+                  </span>
+                )}
+
+                {/* Status toggle — 3-state cycle */}
                 <button
-                  onClick={() => handleToggle(item.id, item.status)}
-                  className={`h-5 w-5 shrink-0 rounded-full border-2 flex items-center justify-center transition-all ${
+                  onClick={() => cycleStatus(item.id, item.status)}
+                  className={`relative h-6 w-6 shrink-0 rounded-full border-2 flex items-center justify-center transition-all ${
                     isDone
-                      ? 'border-emerald-500 bg-emerald-500'
-                      : 'border-stone-300 hover:border-amber-400 hover:scale-110'
+                      ? 'border-[#e05533] bg-[#e05533] hover:bg-[#c94420] hover:border-[#c94420]'
+                      : isInProgress
+                        ? 'border-amber-400 bg-amber-400/40 hover:bg-amber-400/60'
+                        : 'border-stone-300 hover:border-[#e05533] hover:scale-110'
                   }`}
-                  aria-label={isDone ? 'Mark as planned' : 'Mark as done'}
+                  aria-label={`Status: ${STATUS_LABEL[status]}. Click to advance.`}
+                  title={STATUS_LABEL[status]}
                 >
-                  {isDone && <span className="text-white text-[9px] font-bold">✓</span>}
-                </button>
-
-                {/* Title */}
-                <span
-                  className={`flex-1 text-sm font-medium ${isDone ? 'line-through text-stone-400' : 'text-stone-800'}`}
-                >
-                  {item.title}
-                  {item.sourceSlug && (
-                    <a
-                      href={`/bucket-lists/${item.sourceSlug}`}
-                      className="ml-2 text-xs text-stone-400 hover:text-amber-500 transition-colors not-italic no-underline"
-                      onClick={(e) => e.stopPropagation()}
-                    >
-                      ✨
-                    </a>
-                  )}
-                </span>
-
-                {/* Actions */}
-                <div className="flex items-center gap-1.5 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
-                  {cat && (
-                    <span className="text-sm" title={cat.label}>
-                      {cat.emoji}
+                  {isDone && (
+                    <span className="animate-bucket-check-pop text-white text-[10px] font-bold leading-none">
+                      ✓
                     </span>
                   )}
+                  {isInProgress && (
+                    <span className="text-amber-600 text-[10px] font-bold leading-none">●</span>
+                  )}
+                </button>
+
+                {/* Title + meta */}
+                <div className="flex-1 min-w-0">
+                  <span
+                    className={`block text-sm font-medium truncate ${
+                      isDone ? 'line-through text-stone-400' : 'text-stone-800'
+                    }`}
+                  >
+                    {item.title}
+                    {item.sourceSlug && (
+                      <a
+                        href={`/bucket-lists/${item.sourceSlug}`}
+                        className="ml-1.5 text-xs text-stone-300 hover:text-[#e05533] transition-colors no-underline"
+                        onClick={(e) => e.stopPropagation()}
+                        title="From this famous list"
+                      >
+                        ✨
+                      </a>
+                    )}
+                  </span>
+                  {(cat || item.targetYear) && (
+                    <div className="flex items-center gap-2 mt-0.5">
+                      {cat && (
+                        <span className="text-xs text-stone-400">
+                          {cat.emoji} {cat.label}
+                        </span>
+                      )}
+                      {item.targetYear && (
+                        <span className="text-xs text-stone-400">· by {item.targetYear}</span>
+                      )}
+                    </div>
+                  )}
+                </div>
+
+                {/* Actions */}
+                <div className="flex items-center gap-1.5 shrink-0 opacity-0 group-hover:opacity-100 focus-within:opacity-100 transition-opacity">
+                  <YearEditor id={item.id} year={item.targetYear} onSet={handleSetYear} />
                   <button
                     onClick={() => handleToggleVisibility(item.id, item.visibility)}
-                    className={`text-base transition-colors ${isPublic ? 'text-amber-500' : 'text-stone-300 hover:text-stone-400'}`}
+                    className={`text-base transition-colors ${
+                      isPublic ? 'text-[#e05533]' : 'text-stone-300 hover:text-stone-400'
+                    }`}
                     title={
                       isPublic
                         ? 'Public on your profile — click to make private'
                         : 'Private — click to share on your profile'
                     }
+                    aria-label={isPublic ? 'Make private' : 'Make public'}
                   >
                     {isPublic ? '🌐' : '🔒'}
                   </button>
@@ -363,5 +521,68 @@ export function BucketListSection({ initialItems }: Props) {
         </p>
       )}
     </div>
+  );
+}
+
+// ─── Inline target-year editor ───────────────────────────────────────────────
+
+function YearEditor({
+  id,
+  year,
+  onSet,
+}: {
+  id: string;
+  year: number | null;
+  onSet: (id: string, year: number | null) => void;
+}) {
+  const [editing, setEditing] = useState(false);
+  const [value, setValue] = useState(year ? String(year) : '');
+
+  if (editing) {
+    return (
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          const parsed = value ? Number.parseInt(value, 10) : null;
+          onSet(id, parsed && !Number.isNaN(parsed) ? parsed : null);
+          setEditing(false);
+        }}
+        className="flex items-center gap-1"
+      >
+        <input
+          autoFocus
+          type="number"
+          inputMode="numeric"
+          value={value}
+          onChange={(e) => setValue(e.target.value)}
+          min={1900}
+          max={2200}
+          placeholder="year"
+          className="w-16 rounded-md border border-stone-200 px-1.5 py-0.5 text-xs text-stone-700 focus:outline-none focus:ring-2 focus:ring-[#f0a090]"
+          aria-label="Target year"
+        />
+        <button
+          type="submit"
+          className="text-xs text-[#e05533] hover:text-[#c94420] font-medium"
+          aria-label="Save year"
+        >
+          ✓
+        </button>
+      </form>
+    );
+  }
+
+  return (
+    <button
+      onClick={() => {
+        setValue(year ? String(year) : '');
+        setEditing(true);
+      }}
+      className="text-base text-stone-300 hover:text-[#e05533] transition-colors"
+      title={year ? `Target: ${year} — click to edit` : 'Set a target year'}
+      aria-label="Set target year"
+    >
+      🗓️
+    </button>
   );
 }
