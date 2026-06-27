@@ -7,6 +7,7 @@ import { z } from 'zod';
 
 import { comments, likes, timelines, users } from '~/db/schema';
 import { trackActivated, trackCoreAction } from '~/lib/analytics';
+import { enforceRateLimit } from '~/lib/rate-limit';
 import type { Phase, TimelinePin, TimelineVisibility } from '~/lib/types';
 import { parseJSONColumn } from '~/lib/utils';
 import { getServerAuthSession } from '~/server/auth';
@@ -213,6 +214,7 @@ export async function getLikeStatus(
 export async function toggleLike(timelineId: string): Promise<{ liked: boolean; count: number }> {
   const session = await getServerAuthSession();
   if (!session?.user?.id) throw new Error('Not authenticated');
+  await enforceRateLimit('like', session.user.id);
 
   // Authorization: only the owner, or viewers of a PUBLIC/UNLISTED timeline,
   // may like it. PRIVATE timelines cannot be liked by non-owners.
@@ -260,6 +262,7 @@ export async function toggleLike(timelineId: string): Promise<{ liked: boolean; 
 export async function addComment(timelineId: string, body: string) {
   const session = await getServerAuthSession();
   if (!session?.user?.id) throw new Error('Not authenticated');
+  await enforceRateLimit('comment', session.user.id);
 
   // Authorization: only the owner, or viewers of a PUBLIC/UNLISTED timeline,
   // may comment. PRIVATE timelines cannot be commented on by non-owners.

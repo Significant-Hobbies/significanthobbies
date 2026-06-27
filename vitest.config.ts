@@ -21,6 +21,7 @@ export default defineConfig({
         'src/lib/hobby-roadmap.ts',
         'src/lib/insights.ts',
         'src/lib/personality.ts',
+        'src/lib/rate-limit.ts',
         'src/lib/recommendations.ts',
         'src/lib/rediscovery.ts',
         'src/lib/slug.ts',

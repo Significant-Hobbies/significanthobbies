@@ -1,10 +1,11 @@
 'use client';
 
-import { RefreshCw } from 'lucide-react';
+import { Check, Flame, RefreshCw } from 'lucide-react';
 import { useState, useTransition } from 'react';
 
 import { Lumi } from '~/components/lumi';
 import type { CoachReflection } from '~/lib/lumi-coach';
+import { useReviewStreak } from '~/hooks/use-review-streak';
 
 type Props = {
   initialReflection: CoachReflection | null;
@@ -13,6 +14,8 @@ type Props = {
 export function LumiWeeklyReview({ initialReflection }: Props) {
   const [reflection, setReflection] = useState<CoachReflection | null>(initialReflection);
   const [isPending, startTransition] = useTransition();
+  const [justMarked, setJustMarked] = useState(false);
+  const { streak, due, daysSince, hydrated, markReviewDone } = useReviewStreak();
 
   function handleRefresh() {
     startTransition(async () => {
@@ -22,9 +25,16 @@ export function LumiWeeklyReview({ initialReflection }: Props) {
     });
   }
 
+  function handleMarkDone() {
+    markReviewDone();
+    setJustMarked(true);
+  }
+
   if (!reflection) return null;
 
   const isAI = reflection.source === 'ai';
+  const showStreak = hydrated && streak > 0;
+  const showDueBadge = hydrated && due && !justMarked;
 
   return (
     <div className="relative overflow-hidden rounded-2xl border border-[#f0a090] bg-gradient-to-br from-[#fff6f2] to-white p-6 shadow-sm">
@@ -39,7 +49,15 @@ export function LumiWeeklyReview({ initialReflection }: Props) {
           <div className="flex items-center gap-3">
             <Lumi size={40} glow float />
             <div>
-              <h3 className="font-bold text-stone-900">Weekly check-in with Lumi</h3>
+              <div className="flex items-center gap-2">
+                <h3 className="font-bold text-stone-900">Weekly check-in with Lumi</h3>
+                {showStreak && (
+                  <span className="inline-flex items-center gap-1 rounded-full bg-orange-100 px-2 py-0.5 text-xs font-semibold text-orange-600">
+                    <Flame className="h-3 w-3" />
+                    {streak} week{streak !== 1 ? 's' : ''}
+                  </span>
+                )}
+              </div>
               <p className="text-xs text-stone-500">
                 {isAI ? 'AI-powered reflection' : 'Reflection'}
                 {' · '}
@@ -61,6 +79,19 @@ export function LumiWeeklyReview({ initialReflection }: Props) {
           </button>
         </div>
 
+        {/* Due badge */}
+        {showDueBadge && (
+          <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-[#e05533] px-3 py-1 text-xs font-semibold text-white">
+            <span className="relative flex h-2 w-2">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-white opacity-75" />
+              <span className="relative inline-flex h-2 w-2 rounded-full bg-white" />
+            </span>
+            {daysSince === null
+              ? "Your first check-in — let's start"
+              : `Review due · last checked in ${daysSince}d ago`}
+          </div>
+        )}
+
         {/* Greeting */}
         <p className="text-lg font-semibold text-stone-900 mb-2">{reflection.greeting}</p>
 
@@ -78,12 +109,39 @@ export function LumiWeeklyReview({ initialReflection }: Props) {
         </div>
 
         {/* Suggestion */}
-        <div className="rounded-xl bg-white/70 border border-[#f0a090]/50 px-4 py-3">
+        <div className="rounded-xl bg-white/70 border border-[#f0a090]/50 px-4 py-3 mb-4">
           <p className="text-xs font-semibold uppercase tracking-wide text-[#c94420] mb-1">
             This week
           </p>
           <p className="text-sm text-stone-700">{reflection.suggestion}</p>
         </div>
+
+        {/* Mark as done — the ritual action */}
+        {hydrated && (
+          <div className="flex items-center gap-3">
+            <button
+              onClick={handleMarkDone}
+              disabled={justMarked}
+              className={`inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold transition-all ${
+                justMarked
+                  ? 'bg-emerald-100 text-emerald-700 cursor-default'
+                  : 'bg-[#e05533] text-white hover:bg-[#c94420]'
+              }`}
+            >
+              <Check className="h-4 w-4" />
+              {justMarked
+                ? streak > 1
+                  ? `Done — ${streak} week streak!`
+                  : 'Done — see you next week!'
+                : "I've reviewed this week"}
+            </button>
+            {justMarked && streak > 1 && (
+              <span className="text-xs text-stone-500">
+                Come back in 7 days to keep your streak alive.
+              </span>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );

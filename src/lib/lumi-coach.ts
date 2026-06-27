@@ -12,6 +12,7 @@ import {
   getCelebrityMatch,
 } from '~/lib/bucket-list-insights';
 import { BUCKET_ITEM_CATEGORIES } from '~/lib/famous-bucket-lists';
+import { enforceRateLimit } from '~/lib/rate-limit';
 import { getServerAuthSession } from '~/server/auth';
 import { db } from '~/server/db';
 
@@ -271,6 +272,9 @@ function ruleBasedReflection(ctx: CoachContext): CoachReflection {
 export async function getWeeklyReflection(): Promise<CoachReflection | null> {
   const ctx = await gatherCoachContext();
   if (!ctx) return null;
+
+  // Rate limit the AI call (10 reflections per 5 minutes per user).
+  await enforceRateLimit('coach', ctx.userName);
 
   const aiResponse = await callWorkersAI(buildPrompt(ctx));
   if (aiResponse) {
