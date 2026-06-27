@@ -148,6 +148,13 @@ SUGGESTION: <suggestion>`;
 
 // ─── AI call via Workers AI binding ──────────────────────────────────────────
 
+// Model fallback chain: try the best model first, fall back to smaller/faster
+// ones if it fails. All models are free on Cloudflare Workers AI.
+const AI_MODELS = [
+  '@cf/meta/llama-3.3-70b-instruct-fp8-fast', // 70B — best quality
+  '@cf/meta/llama-3.1-8b-instruct', // 8B — fast fallback
+] as const;
+
 async function callWorkersAI(prompt: string): Promise<string | null> {
   try {
     const cfCtx = await getCloudflareContext();
@@ -158,18 +165,25 @@ async function callWorkersAI(prompt: string): Promise<string | null> {
     ).AI;
     if (!ai) return null;
 
-    const result = await ai.run('@cf/meta/llama-3.1-8b-instruct', {
-      messages: [
-        {
-          role: 'system',
-          content: 'You are Lumi, a warm life coach. Be concise, specific, and genuine.',
-        },
-        { role: 'user', content: prompt },
-      ],
-      max_tokens: 500,
-      temperature: 0.7,
-    });
-    return result?.response ?? null;
+    for (const model of AI_MODELS) {
+      try {
+        const result = await ai.run(model, {
+          messages: [
+            {
+              role: 'system',
+              content: 'You are Lumi, a warm life coach. Be concise, specific, and genuine.',
+            },
+            { role: 'user', content: prompt },
+          ],
+          max_tokens: 600,
+          temperature: 0.7,
+        });
+        if (result?.response) return result.response;
+      } catch (modelErr) {
+        console.error(`[lumi-coach] Model ${model} failed, trying fallback`, modelErr);
+      }
+    }
+    return null;
   } catch (err) {
     console.error('[lumi-coach] Workers AI call failed', err);
     return null;
