@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { likes, timelines, users } from '~/db/schema';
 import { getCategoryForHobby } from '~/lib/hobbies';
 import type { Phase, TimelineData, TimelineVisibility } from '~/lib/types';
+import { parseJSONColumn } from '~/lib/utils';
 import { db } from '~/server/db';
 
 import { ExploreClient } from './explore-client';
@@ -53,12 +54,7 @@ export default async function ExplorePage() {
   }
 
   const timelineList: (TimelineData & { likeCount: number })[] = rawTimelines.map((raw) => {
-    let phases: Phase[] = [];
-    try {
-      phases = JSON.parse(raw.phases) as Phase[];
-    } catch {
-      /* ignore */
-    }
+    const phases = parseJSONColumn<Phase[]>(raw.phases, [], 'explore:phases');
     return {
       id: raw.id,
       title: raw.title,

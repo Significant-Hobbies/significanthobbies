@@ -3,6 +3,7 @@ import { ImageResponse } from 'next/og';
 
 import { timelines, users } from '~/db/schema';
 import type { Phase } from '~/lib/types';
+import { parseJSONColumn } from '~/lib/utils';
 import { db } from '~/server/db';
 
 export const runtime = 'nodejs';
@@ -56,12 +57,8 @@ export default async function OgImage({ params }: { params: Promise<{ username: 
 
   const allHobbies = new Set<string>();
   for (const t of publicTimelines) {
-    try {
-      const phases = JSON.parse(t.phases) as Phase[];
-      for (const p of phases) for (const h of p.hobbies) allHobbies.add(h.name);
-    } catch {
-      /* ignore */
-    }
+    const phases = parseJSONColumn<Phase[]>(t.phases, [], 'user-og-image:phases');
+    for (const p of phases) for (const h of p.hobbies) allHobbies.add(h.name);
   }
 
   const initial = (user.name?.[0] ?? username[0] ?? '?').toUpperCase();

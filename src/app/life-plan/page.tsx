@@ -1,0 +1,407 @@
+import { desc, eq } from 'drizzle-orm';
+import Link from 'next/link';
+import { redirect } from 'next/navigation';
+
+import { Lumi } from '~/components/lumi';
+import { bucketListItems, timelines } from '~/db/schema';
+import { BUCKET_ITEM_CATEGORIES, type BucketItemCategory } from '~/lib/famous-bucket-lists';
+import { computePersonality } from '~/lib/personality';
+import type { Phase, TimelineVisibility } from '~/lib/types';
+import { parseJSONColumn } from '~/lib/utils';
+import { getServerAuthSession } from '~/server/auth';
+import { db } from '~/server/db';
+
+export const metadata = {
+  title: 'Life Plan — SignificantHobbies',
+  robots: { index: false, follow: false },
+};
+
+const CATEGORY_COLORS: Record<
+  BucketItemCategory,
+  { bg: string; border: string; text: string; dot: string }
+> = {
+  travel: { bg: 'bg-sky-50', border: 'border-sky-200', text: 'text-sky-700', dot: 'bg-sky-400' },
+  adventure: {
+    bg: 'bg-orange-50',
+    border: 'border-orange-200',
+    text: 'text-orange-700',
+    dot: 'bg-orange-400',
+  },
+  creative: {
+    bg: 'bg-purple-50',
+    border: 'border-purple-200',
+    text: 'text-purple-700',
+    dot: 'bg-purple-400',
+  },
+  achievement: {
+    bg: 'bg-amber-50',
+    border: 'border-amber-200',
+    text: 'text-amber-700',
+    dot: 'bg-amber-400',
+  },
+  social: {
+    bg: 'bg-rose-50',
+    border: 'border-rose-200',
+    text: 'text-rose-700',
+    dot: 'bg-rose-400',
+  },
+  humanitarian: {
+    bg: 'bg-emerald-50',
+    border: 'border-emerald-200',
+    text: 'text-emerald-700',
+    dot: 'bg-emerald-400',
+  },
+};
+
+export default async function LifePlanPage() {
+  const session = await getServerAuthSession();
+  if (!session?.user) redirect('/login');
+
+  const [rawTimelines, rawBucketItems] = await Promise.all([
+    db
+      .select()
+      .from(timelines)
+      .where(eq(timelines.userId, session.user.id))
+      .orderBy(desc(timelines.updatedAt)),
+    db
+      .select()
+      .from(bucketListItems)
+      .where(eq(bucketListItems.userId, session.user.id))
+      .orderBy(desc(bucketListItems.createdAt)),
+  ]);
+
+  // Parse all phases
+  const allPhases: Phase[] = [];
+  const timelineList = rawTimelines.map((raw) => {
+    const phases = parseJSONColumn<Phase[]>(raw.phases, [], `life-plan:timeline:${raw.id}`);
+    allPhases.push(...phases);
+    return {
+      id: raw.id,
+      title: raw.title,
+      visibility: raw.visibility as TimelineVisibility,
+      slug: raw.slug,
+      phases,
+      updatedAt: raw.updatedAt,
+    };
+  });
+
+  const personality = allPhases.length > 0 ? computePersonality(allPhases) : null;
+
+  // Categorize bucket list items
+  const bucketByCategory: Record<string, typeof rawBucketItems> = {};
+  const bucketDone = rawBucketItems.filter((i) => i.status === 'done');
+  const bucketInProgress = rawBucketItems.filter((i) => i.status === 'in_progress');
+  const bucketPlanned = rawBucketItems.filter((i) => i.status === 'planned');
+
+  for (const item of rawBucketItems) {
+    const cat = item.category ?? 'uncategorized';
+    if (!bucketByCategory[cat]) bucketByCategory[cat] = [];
+    bucketByCategory[cat].push(item);
+  }
+
+  // Life wheel: count items per category (excluding uncategorized)
+  const wheelData = (Object.keys(BUCKET_ITEM_CATEGORIES) as BucketItemCategory[]).map((cat) => ({
+    category: cat,
+    label: BUCKET_ITEM_CATEGORIES[cat].label,
+    emoji: BUCKET_ITEM_CATEGORIES[cat].emoji,
+    count: (bucketByCategory[cat] ?? []).length,
+    done: (bucketByCategory[cat] ?? []).filter((i) => i.status === 'done').length,
+  }));
+  const maxCount = Math.max(...wheelData.map((d) => d.count), 1);
+
+  // Recent hobbies (present focus)
+  const recentHobbies = [
+    ...new Set(allPhases.slice(-3).flatMap((p) => p.hobbies.map((h) => h.name))),
+  ].slice(0, 6);
+
+  const totalBucket = rawBucketItems.length;
+  const totalDone = bucketDone.length;
+  const totalInProgress = bucketInProgress.length;
+  const totalPlanned = bucketPlanned.length;
+
+  return (
+    <div className="mx-auto max-w-5xl px-4 py-12 space-y-12">
+      {/* ── Header ──────────────────────────────────────────────── */}
+      <div className="flex items-start justify-between gap-4 flex-wrap">
+        <div className="flex items-center gap-4">
+          <Lumi size={52} glow />
+          <div>
+            <h1 className="text-3xl font-bold text-stone-900">Your life plan</h1>
+            <p className="mt-1 text-stone-500">
+              {session.user.name?.split(' ')[0] ?? 'Your'} past, present, and future — one view.
+            </p>
+          </div>
+        </div>
+        {personality && (
+          <div className="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-2.5">
+            <p className="text-xs text-emerald-600 font-medium">Your archetype</p>
+            <p className="text-sm font-bold text-stone-800">
+              {personality.archetype.emoji} {personality.archetype.name}
+            </p>
+          </div>
+        )}
+      </div>
+
+      {/* ── Summary stats ───────────────────────────────────────── */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        <StatCard
+          label="Life phases"
+          value={allPhases.length}
+          sub={`${timelineList.length} timeline${timelineList.length !== 1 ? 's' : ''}`}
+        />
+        <StatCard
+          label="Bucket list"
+          value={totalBucket}
+          sub={`${totalDone} done`}
+          accent="text-[#e05533]"
+        />
+        <StatCard
+          label="In progress"
+          value={totalInProgress}
+          sub="right now"
+          accent="text-amber-600"
+        />
+        <StatCard label="Planned" value={totalPlanned} sub="ahead of you" accent="text-stone-600" />
+      </div>
+
+      {/* ── Life wheel ──────────────────────────────────────────── */}
+      {totalBucket > 0 && (
+        <section>
+          <h2 className="text-lg font-semibold text-stone-800 mb-4">Life balance</h2>
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {wheelData.map((d) => {
+              const colors = CATEGORY_COLORS[d.category];
+              const pct = d.count > 0 ? (d.done / d.count) * 100 : 0;
+              const barWidth = (d.count / maxCount) * 100;
+              return (
+                <div
+                  key={d.category}
+                  className={`rounded-xl border ${colors.border} ${colors.bg} p-4`}
+                >
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-sm font-medium text-stone-700">
+                      {d.emoji} {d.label}
+                    </span>
+                    <span className={`text-xs font-semibold ${colors.text}`}>
+                      {d.done}/{d.count}
+                    </span>
+                  </div>
+                  {/* Balance bar (relative to max category) */}
+                  <div className="h-1.5 rounded-full bg-white/60 overflow-hidden mb-1.5">
+                    <div
+                      className={`h-full rounded-full ${colors.dot} transition-all duration-700`}
+                      style={{ width: `${barWidth}%` }}
+                    />
+                  </div>
+                  {/* Completion bar */}
+                  <div className="h-1 rounded-full bg-white/40 overflow-hidden">
+                    <div
+                      className="h-full rounded-full bg-stone-400 transition-all duration-700"
+                      style={{ width: `${pct}%` }}
+                    />
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </section>
+      )}
+
+      {/* ── Present ─────────────────────────────────────────────── */}
+      <section className="space-y-4">
+        <h2 className="text-lg font-semibold text-stone-800">Right now</h2>
+        <div className="grid gap-4 sm:grid-cols-2">
+          {/* Active hobbies */}
+          <div className="rounded-xl border border-stone-200 bg-white p-5">
+            <p className="text-sm font-medium text-stone-600 mb-3">Active hobbies</p>
+            {recentHobbies.length > 0 ? (
+              <div className="flex flex-wrap gap-2">
+                {recentHobbies.map((hobby) => (
+                  <span
+                    key={hobby}
+                    className="inline-flex items-center rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-sm text-emerald-700"
+                  >
+                    {hobby}
+                  </span>
+                ))}
+              </div>
+            ) : (
+              <p className="text-sm text-stone-400">
+                No recent hobbies.{' '}
+                <Link href="/timeline/new" className="text-emerald-600 hover:underline">
+                  Start a timeline →
+                </Link>
+              </p>
+            )}
+          </div>
+
+          {/* In-progress bucket items */}
+          <div className="rounded-xl border border-amber-200 bg-amber-50/60 p-5">
+            <p className="text-sm font-medium text-stone-600 mb-3">In progress</p>
+            {bucketInProgress.length > 0 ? (
+              <ul className="space-y-2">
+                {bucketInProgress.slice(0, 5).map((item) => (
+                  <li key={item.id} className="flex items-center gap-2 text-sm text-stone-700">
+                    <span className="h-2 w-2 rounded-full bg-amber-400 shrink-0" />
+                    <span className="truncate">{item.title}</span>
+                    {item.targetYear && (
+                      <span className="text-xs text-stone-400 shrink-0">by {item.targetYear}</span>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="text-sm text-stone-400">
+                Nothing in progress yet.{' '}
+                <Link href="/dashboard" className="text-amber-600 hover:underline">
+                  Move something forward →
+                </Link>
+              </p>
+            )}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Future (bucket list by domain) ──────────────────────── */}
+      {totalPlanned > 0 && (
+        <section className="space-y-4">
+          <div className="flex items-center justify-between">
+            <h2 className="text-lg font-semibold text-stone-800">Ahead of you</h2>
+            <Link
+              href="/dashboard"
+              className="text-sm text-[#e05533] hover:text-[#c94420] transition-colors"
+            >
+              Manage bucket list →
+            </Link>
+          </div>
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {(Object.keys(BUCKET_ITEM_CATEGORIES) as BucketItemCategory[]).map((cat) => {
+              const items = (bucketByCategory[cat] ?? []).filter((i) => i.status !== 'done');
+              if (items.length === 0) return null;
+              const colors = CATEGORY_COLORS[cat];
+              return (
+                <div key={cat} className={`rounded-xl border ${colors.border} ${colors.bg} p-4`}>
+                  <p className={`text-sm font-semibold ${colors.text} mb-3`}>
+                    {BUCKET_ITEM_CATEGORIES[cat].emoji} {BUCKET_ITEM_CATEGORIES[cat].label}
+                  </p>
+                  <ul className="space-y-1.5">
+                    {items.slice(0, 6).map((item) => (
+                      <li key={item.id} className="flex items-center gap-2 text-sm text-stone-700">
+                        <span className={`h-1.5 w-1.5 rounded-full ${colors.dot} shrink-0`} />
+                        <span className="truncate flex-1">{item.title}</span>
+                        {item.targetYear && (
+                          <span className="text-xs text-stone-400 shrink-0">{item.targetYear}</span>
+                        )}
+                      </li>
+                    ))}
+                    {items.length > 6 && (
+                      <li className="text-xs text-stone-400 pl-3.5">+{items.length - 6} more</li>
+                    )}
+                  </ul>
+                </div>
+              );
+            })}
+          </div>
+        </section>
+      )}
+
+      {/* ── Past (timeline arc) ─────────────────────────────────── */}
+      <section className="space-y-4">
+        <div className="flex items-center justify-between">
+          <h2 className="text-lg font-semibold text-stone-800">Where you&apos;ve been</h2>
+          <Link
+            href="/timeline/new"
+            className="text-sm text-emerald-600 hover:text-emerald-700 transition-colors"
+          >
+            Add a phase →
+          </Link>
+        </div>
+        {timelineList.length > 0 ? (
+          <div className="space-y-3">
+            {timelineList.map((tl) => (
+              <Link
+                key={tl.id}
+                href={`/timeline/${tl.id}`}
+                className="block rounded-xl border border-stone-200 bg-white p-4 hover:border-stone-300 hover:shadow-sm transition-all"
+              >
+                <div className="flex items-center justify-between mb-2">
+                  <span className="font-medium text-stone-800">{tl.title}</span>
+                  <span className="text-xs text-stone-400">
+                    {tl.phases.length} phase{tl.phases.length !== 1 ? 's' : ''}
+                  </span>
+                </div>
+                <div className="flex flex-wrap gap-1.5">
+                  {tl.phases
+                    .flatMap((p) => p.hobbies.map((h) => h.name))
+                    .slice(0, 8)
+                    .map((hobby, i) => (
+                      <span
+                        key={`${hobby}-${i}`}
+                        className="inline-flex items-center rounded-full bg-stone-100 px-2.5 py-0.5 text-xs text-stone-600"
+                      >
+                        {hobby}
+                      </span>
+                    ))}
+                  {tl.phases.flatMap((p) => p.hobbies).length > 8 && (
+                    <span className="text-xs text-stone-400 self-center">
+                      +{tl.phases.flatMap((p) => p.hobbies).length - 8} more
+                    </span>
+                  )}
+                </div>
+              </Link>
+            ))}
+          </div>
+        ) : (
+          <div className="rounded-xl border border-dashed border-stone-300 bg-stone-50 p-8 text-center">
+            <p className="text-stone-500 mb-3">No timelines yet.</p>
+            <Link
+              href="/timeline/new"
+              className="inline-flex items-center gap-2 rounded-full bg-emerald-600 px-5 py-2 text-sm font-semibold text-white hover:bg-emerald-700 transition-colors"
+            >
+              Build your first timeline →
+            </Link>
+          </div>
+        )}
+      </section>
+
+      {/* ── Completed (the archive) ─────────────────────────────── */}
+      {totalDone > 0 && (
+        <section className="space-y-4">
+          <h2 className="text-lg font-semibold text-stone-800">Done &amp; dusted</h2>
+          <div className="rounded-xl border border-[#f0a090] bg-[#fff6f2] p-5">
+            <ul className="grid gap-2 sm:grid-cols-2">
+              {bucketDone.map((item) => (
+                <li key={item.id} className="flex items-center gap-2 text-sm text-stone-600">
+                  <span className="inline-flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-[#e05533] text-white text-[9px] font-bold">
+                    ✓
+                  </span>
+                  <span className="truncate">{item.title}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
+      )}
+    </div>
+  );
+}
+
+function StatCard({
+  label,
+  value,
+  sub,
+  accent = 'text-stone-800',
+}: {
+  label: string;
+  value: number;
+  sub: string;
+  accent?: string;
+}) {
+  return (
+    <div className="rounded-xl border border-stone-200 bg-white p-4">
+      <p className="text-xs text-stone-500 font-medium">{label}</p>
+      <p className={`text-2xl font-bold ${accent} mt-1`}>{value}</p>
+      <p className="text-xs text-stone-400 mt-0.5">{sub}</p>
+    </div>
+  );
+}

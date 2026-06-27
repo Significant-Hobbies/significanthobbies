@@ -2,6 +2,7 @@ import { desc, eq } from 'drizzle-orm';
 import Link from 'next/link';
 
 import { timelines, users } from '~/db/schema';
+import { parseJSONColumn } from '~/lib/utils';
 import { db } from '~/server/db';
 
 export const metadata = {
@@ -18,12 +19,8 @@ interface Phase {
 }
 
 function parsePhases(raw: string): Phase[] {
-  try {
-    const v = JSON.parse(raw);
-    return Array.isArray(v) ? v : [];
-  } catch {
-    return [];
-  }
+  const v = parseJSONColumn<unknown>(raw, null, 'recent-timelines:phases');
+  return Array.isArray(v) ? v : [];
 }
 
 export default async function RecentTimelinesPage() {

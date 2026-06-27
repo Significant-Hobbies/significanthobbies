@@ -8,6 +8,7 @@ import { z } from 'zod';
 import { comments, likes, timelines, users } from '~/db/schema';
 import { trackActivated, trackCoreAction } from '~/lib/analytics';
 import type { Phase, TimelinePin, TimelineVisibility } from '~/lib/types';
+import { parseJSONColumn } from '~/lib/utils';
 import { getServerAuthSession } from '~/server/auth';
 import { db } from '~/server/db';
 
@@ -104,13 +105,14 @@ export async function updateTimeline(id: string, data: { title?: string; phases:
   const newPhasesJson = JSON.stringify(parsed.phases);
 
   // Snapshot current phases into versions if they changed
-  let versions: { date: string; phases: string }[] = [];
-  try {
-    const parsedVersions: unknown = JSON.parse(timeline.versions);
-    if (Array.isArray(parsedVersions)) versions = parsedVersions as typeof versions;
-  } catch {
-    /* ignore */
-  }
+  const parsedVersions = parseJSONColumn<unknown>(
+    timeline.versions,
+    null,
+    'timeline-action:update:versions'
+  );
+  let versions: { date: string; phases: string }[] = Array.isArray(parsedVersions)
+    ? (parsedVersions as { date: string; phases: string }[])
+    : [];
 
   if (timeline.phases !== newPhasesJson) {
     versions.push({ date: new Date().toISOString(), phases: timeline.phases });
@@ -212,6 +214,16 @@ export async function toggleLike(timelineId: string): Promise<{ liked: boolean; 
   const session = await getServerAuthSession();
   if (!session?.user?.id) throw new Error('Not authenticated');
 
+  // Authorization: only the owner, or viewers of a PUBLIC/UNLISTED timeline,
+  // may like it. PRIVATE timelines cannot be liked by non-owners.
+  const tl = await db.query.timelines.findFirst({
+    where: eq(timelines.id, timelineId),
+    columns: { userId: true, visibility: true, slug: true },
+  });
+  if (!tl) throw new Error('Not found');
+  const isOwner = tl.userId === session.user.id;
+  if (!isOwner && tl.visibility === 'PRIVATE') throw new Error('Not found');
+
   const existing = await db.query.likes.findFirst({
     where: and(eq(likes.userId, session.user.id), eq(likes.timelineId, timelineId)),
   });
@@ -225,26 +237,22 @@ export async function toggleLike(timelineId: string): Promise<{ liked: boolean; 
     });
   }
 
-  // Recount likes (reflects the toggle above) and load the timeline owner for
+  // Recount likes (reflects the toggle above) and reload the timeline owner for
   // revalidation — independent reads, so run them concurrently.
-  const [[result], tl] = await Promise.all([
+  const [[result], tlOwner] = await Promise.all([
     db.select({ count: count() }).from(likes).where(eq(likes.timelineId, timelineId)),
-    db.query.timelines.findFirst({
-      where: eq(timelines.id, timelineId),
-      columns: { slug: true, userId: true },
-    }),
+    tl.userId
+      ? db.query.users.findFirst({
+          where: eq(users.id, tl.userId),
+          columns: { username: true },
+        })
+      : Promise.resolve(null),
   ]);
 
   const likeCount = result?.count ?? 0;
   revalidatePath(`/timeline/${timelineId}`);
-  if (tl?.slug && tl.userId) {
-    const tlUser = await db.query.users.findFirst({
-      where: eq(users.id, tl.userId),
-      columns: { username: true },
-    });
-    if (tlUser?.username) {
-      revalidatePath(`/u/${tlUser.username}/${tl.slug}`);
-    }
+  if (tl.slug && tlOwner?.username) {
+    revalidatePath(`/u/${tlOwner.username}/${tl.slug}`);
   }
   return { liked: !existing, count: likeCount };
 }
@@ -252,6 +260,16 @@ export async function toggleLike(timelineId: string): Promise<{ liked: boolean; 
 export async function addComment(timelineId: string, body: string) {
   const session = await getServerAuthSession();
   if (!session?.user?.id) throw new Error('Not authenticated');
+
+  // Authorization: only the owner, or viewers of a PUBLIC/UNLISTED timeline,
+  // may comment. PRIVATE timelines cannot be commented on by non-owners.
+  const tl = await db.query.timelines.findFirst({
+    where: eq(timelines.id, timelineId),
+    columns: { userId: true, visibility: true, slug: true },
+  });
+  if (!tl) throw new Error('Not found');
+  const isOwner = tl.userId === session.user.id;
+  if (!isOwner && tl.visibility === 'PRIVATE') throw new Error('Not found');
 
   const trimmed = body.trim().slice(0, 280);
   if (!trimmed) throw new Error('Comment body is required');
@@ -263,26 +281,22 @@ export async function addComment(timelineId: string, body: string) {
 
   // Fetch the comment author info to return, and the timeline owner info for
   // revalidation — independent reads, so run them concurrently.
-  const [commentUser, tl] = await Promise.all([
+  const [commentUser, tlOwner] = await Promise.all([
     db.query.users.findFirst({
       where: eq(users.id, session.user.id),
       columns: { name: true, username: true, image: true },
     }),
-    db.query.timelines.findFirst({
-      where: eq(timelines.id, timelineId),
-      columns: { slug: true, userId: true },
-    }),
+    tl.userId
+      ? db.query.users.findFirst({
+          where: eq(users.id, tl.userId),
+          columns: { username: true },
+        })
+      : Promise.resolve(null),
   ]);
 
   revalidatePath(`/timeline/${timelineId}`);
-  if (tl?.slug && tl.userId) {
-    const tlUser = await db.query.users.findFirst({
-      where: eq(users.id, tl.userId),
-      columns: { username: true },
-    });
-    if (tlUser?.username) {
-      revalidatePath(`/u/${tlUser.username}/${tl.slug}`);
-    }
+  if (tl.slug && tlOwner?.username) {
+    revalidatePath(`/u/${tlOwner.username}/${tl.slug}`);
   }
   return { ...comment, user: commentUser };
 }
@@ -332,13 +346,8 @@ export async function addPin(timelineId: string, pin: TimelinePin) {
   if (!timeline || timeline.userId !== session.user.id) throw new Error('Not found');
 
   const parsed = PinSchema.parse(pin);
-  let pins: TimelinePin[] = [];
-  try {
-    const parsedPins: unknown = JSON.parse(timeline.pins);
-    if (Array.isArray(parsedPins)) pins = parsedPins as TimelinePin[];
-  } catch {
-    /* ignore */
-  }
+  const parsedPins = parseJSONColumn<unknown>(timeline.pins, null, 'timeline-action:add-pin:pins');
+  const pins: TimelinePin[] = Array.isArray(parsedPins) ? (parsedPins as TimelinePin[]) : [];
   pins.push(parsed as TimelinePin);
 
   const [updated] = await db
@@ -361,13 +370,12 @@ export async function removePin(timelineId: string, pinId: string) {
   });
   if (!timeline || timeline.userId !== session.user.id) throw new Error('Not found');
 
-  let pins: TimelinePin[] = [];
-  try {
-    const parsedPins: unknown = JSON.parse(timeline.pins);
-    if (Array.isArray(parsedPins)) pins = parsedPins as TimelinePin[];
-  } catch {
-    /* ignore */
-  }
+  const parsedPins = parseJSONColumn<unknown>(
+    timeline.pins,
+    null,
+    'timeline-action:remove-pin:pins'
+  );
+  let pins: TimelinePin[] = Array.isArray(parsedPins) ? (parsedPins as TimelinePin[]) : [];
   pins = pins.filter((p) => p.id !== pinId);
 
   const [updatedTl] = await db

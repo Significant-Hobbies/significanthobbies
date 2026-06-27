@@ -15,6 +15,7 @@ import { getCategoryForHobby } from '~/lib/hobbies';
 import type { Phase, TimelineVisibility } from '~/lib/types';
 import { getServerAuthSession } from '~/server/auth';
 import { db } from '~/server/db';
+import { parseJSONColumn } from '~/lib/utils';
 
 interface Props {
   params: Promise<{ username: string }>;
@@ -91,12 +92,11 @@ export default async function ProfilePage({ params }: Props) {
         .orderBy(desc(timelines.updatedAt));
 
   // Parse earned badges
-  let earnedBadgeIds: string[] = [];
-  try {
-    earnedBadgeIds = JSON.parse(user.earnedBadges) as string[];
-  } catch {
-    /* ignore */
-  }
+  const earnedBadgeIds = parseJSONColumn<string[]>(
+    user.earnedBadges,
+    [],
+    `profile:badges:${user.id}`
+  );
 
   // Public bucket list items for this profile
   const publicBucketItems = await db
@@ -115,12 +115,7 @@ export default async function ProfilePage({ params }: Props) {
   }
 
   const timelineList = ownTimelines.map((t) => {
-    let phases: Phase[] = [];
-    try {
-      phases = JSON.parse(t.phases) as Phase[];
-    } catch {
-      /* ignore */
-    }
+    const phases = parseJSONColumn<Phase[]>(t.phases, [], `profile:timeline:${t.id}`);
     return {
       id: t.id,
       title: t.title,

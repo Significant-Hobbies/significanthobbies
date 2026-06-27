@@ -17,6 +17,7 @@ import { Badge } from '~/components/ui/badge';
 import { Button } from '~/components/ui/button';
 import { comments as commentsTable, likes as likesTable, timelines, users } from '~/db/schema';
 import type { Phase, TimelineData, TimelinePin, TimelineVisibility } from '~/lib/types';
+import { parseJSONColumn } from '~/lib/utils';
 import { getServerAuthSession } from '~/server/auth';
 import { db } from '~/server/db';
 
@@ -84,30 +85,19 @@ export default async function TimelineBySlugPage({ params }: Props) {
 
   if (!isVisible) notFound();
 
-  let phases: Phase[] = [];
-  try {
-    phases = JSON.parse(raw.phases) as Phase[];
-  } catch {
-    /* ignore */
-  }
+  const phases = parseJSONColumn<Phase[]>(raw.phases, [], 'timeline-slug-view:phases');
 
-  let pins: TimelinePin[] = [];
-  try {
-    pins = JSON.parse(raw.pins) as TimelinePin[];
-  } catch {
-    /* ignore */
-  }
+  const pins = parseJSONColumn<TimelinePin[]>(raw.pins, [], 'timeline-slug-view:pins');
 
-  let versions: { date: string; phases: Phase[] }[] = [];
-  try {
-    const rawVersions = JSON.parse(raw.versions) as { date: string; phases: string }[];
-    versions = rawVersions.map((v) => ({
-      date: v.date,
-      phases: JSON.parse(v.phases) as Phase[],
-    }));
-  } catch {
-    /* ignore */
-  }
+  const rawVersions = parseJSONColumn<{ date: string; phases: string }[]>(
+    raw.versions,
+    [],
+    'timeline-slug-view:versions'
+  );
+  const versions = rawVersions.map((v) => ({
+    date: v.date,
+    phases: parseJSONColumn<Phase[]>(v.phases, [], 'timeline-slug-view:version-phases'),
+  }));
 
   const timeline: TimelineData = {
     id: raw.id,

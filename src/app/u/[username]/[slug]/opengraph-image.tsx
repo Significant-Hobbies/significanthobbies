@@ -4,6 +4,7 @@ import { ImageResponse } from 'next/og';
 import { timelines, users } from '~/db/schema';
 import { computePersonality } from '~/lib/personality';
 import type { Phase } from '~/lib/types';
+import { parseJSONColumn } from '~/lib/utils';
 import { db } from '~/server/db';
 
 export const runtime = 'nodejs';
@@ -63,12 +64,7 @@ export default async function OgImage({
     return fallbackImage('Timeline not found');
   }
 
-  let phases: Phase[] = [];
-  try {
-    phases = JSON.parse(timeline.phases) as Phase[];
-  } catch {
-    /* ignore */
-  }
+  const phases = parseJSONColumn<Phase[]>(timeline.phases, [], 'timeline-slug-og-image:phases');
 
   const totalHobbies = new Set(phases.flatMap((p) => p.hobbies.map((h) => h.name))).size;
 

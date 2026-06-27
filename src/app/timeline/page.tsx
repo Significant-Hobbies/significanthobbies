@@ -7,6 +7,7 @@ import { TimelineCard } from '~/components/timeline-card';
 import { Button } from '~/components/ui/button';
 import { timelines } from '~/db/schema';
 import type { Phase, TimelineData, TimelineVisibility } from '~/lib/types';
+import { parseJSONColumn } from '~/lib/utils';
 import { getServerAuthSession } from '~/server/auth';
 import { db } from '~/server/db';
 
@@ -26,12 +27,7 @@ export default async function MyTimelinesPage() {
     .orderBy(desc(timelines.updatedAt));
 
   const timelineList: TimelineData[] = rawTimelines.map((raw) => {
-    let phases: Phase[] = [];
-    try {
-      phases = JSON.parse(raw.phases) as Phase[];
-    } catch {
-      /* ignore */
-    }
+    const phases = parseJSONColumn<Phase[]>(raw.phases, [], 'my-timelines:phases');
 
     return {
       id: raw.id,

@@ -16,6 +16,7 @@ import { NavLinks } from './nav-links';
 import { NavSignOut } from './nav-sign-out';
 
 const NAV_LINKS = [
+  { href: '/life-plan', label: 'Life Plan' },
   { href: '/hobbies', label: 'Discover' },
   { href: '/find-your-hobby', label: 'Quiz' },
   { href: '/bucket-lists', label: '✨ Bucket Lists' },

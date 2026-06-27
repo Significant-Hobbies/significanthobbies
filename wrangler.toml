@@ -23,6 +23,12 @@ cpu_ms = 30000
 [vars]
 NODE_ENV = "production"
 
+# ─── Workers AI binding (Lumi coach) ─────────────────────────────────────
+# Free tier, no API key needed. Used by the AI-powered weekly review.
+# Accessed in-app via getCloudflareContext().env.AI.
+[ai]
+binding = "AI"
+
 # ─── Preview environment ───────────────────────────────────────────────
 # Used by the PR deploy job: `wrangler deploy --env preview`. Deploys to
 # significanthobbies-preview.<account>.workers.dev (no production routes).

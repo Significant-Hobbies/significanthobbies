@@ -4,14 +4,17 @@ import Link from 'next/link';
 import { redirect } from 'next/navigation';
 
 import { BucketListSection } from '~/components/bucket-list-section';
+import { LumiWeeklyReview } from '~/components/lumi-weekly-review';
 import { TimelineCard } from '~/components/timeline-card';
 import { RecommendationsPanel } from '~/components/timeline-view/recommendations-panel';
 import { RediscoveryNudges } from '~/components/timeline-view/rediscovery-nudges';
 import { Button } from '~/components/ui/button';
 import { bucketListItems, timelines } from '~/db/schema';
+import { getWeeklyReflection } from '~/lib/lumi-coach';
 import { computePersonality } from '~/lib/personality';
 import { getTimelineUrl } from '~/lib/timeline-url';
 import type { Phase, TimelineVisibility } from '~/lib/types';
+import { parseJSONColumn } from '~/lib/utils';
 import { getServerAuthSession } from '~/server/auth';
 import { db } from '~/server/db';
 
@@ -60,12 +63,7 @@ export default async function DashboardPage() {
   };
 
   const timelineList = rawTimelines.map((raw) => {
-    let phases: Phase[] = [];
-    try {
-      phases = JSON.parse(raw.phases) as Phase[];
-    } catch {
-      /* ignore */
-    }
+    const phases = parseJSONColumn<Phase[]>(raw.phases, [], `dashboard:timeline:${raw.id}`);
     return {
       id: raw.id,
       title: raw.title,
@@ -82,6 +80,13 @@ export default async function DashboardPage() {
   const allPhases = timelineList.flatMap((t) => t.phases);
   const personality = allPhases.length > 0 ? computePersonality(allPhases) : null;
 
+  // Lumi weekly reflection — AI-powered when Workers AI binding is available,
+  // rule-based fallback otherwise. Non-blocking: failures degrade to null.
+  const weeklyReflection = await getWeeklyReflection().catch((err) => {
+    console.error('[dashboard] weekly reflection failed', err);
+    return null;
+  });
+
   return (
     <div className="mx-auto max-w-5xl px-4 py-12 space-y-10">
       {/* Welcome header */}
@@ -91,6 +96,9 @@ export default async function DashboardPage() {
         </h1>
         <p className="mt-1 text-stone-500">Your hobby dashboard</p>
       </div>
+
+      {/* Lumi weekly check-in */}
+      {weeklyReflection && <LumiWeeklyReview initialReflection={weeklyReflection} />}
 
       {/* Personality summary */}
       {personality && (

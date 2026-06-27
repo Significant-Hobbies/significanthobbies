@@ -14,6 +14,7 @@ import { getRoadmapForHobby } from '~/lib/hobby-roadmap';
 import { safeDecodeURIComponent } from '~/lib/slug';
 import { getTimelineUrl } from '~/lib/timeline-url';
 import type { Phase } from '~/lib/types';
+import { parseJSONColumn } from '~/lib/utils';
 import { getServerAuthSession } from '~/server/auth';
 import { db } from '~/server/db';
 
@@ -79,14 +80,10 @@ export default async function HobbyDetailPage({ params }: Props) {
     .limit(50);
 
   const matchingTimelines = rawTimelines.filter((t) => {
-    try {
-      const phases = JSON.parse(t.phases) as Phase[];
-      return phases.some((p) =>
-        p.hobbies.some((h) => h.name.toLowerCase() === hobbyName.toLowerCase())
-      );
-    } catch {
-      return false;
-    }
+    const phases = parseJSONColumn<Phase[]>(t.phases, [], 'hobby-detail:filter:phases');
+    return phases.some((p) =>
+      p.hobbies.some((h) => h.name.toLowerCase() === hobbyName.toLowerCase())
+    );
   });
 
   const popularityCount = matchingTimelines.length;
@@ -273,12 +270,7 @@ export default async function HobbyDetailPage({ params }: Props) {
         {matchingTimelines.length > 0 ? (
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             {matchingTimelines.map((t) => {
-              let phases: Phase[] = [];
-              try {
-                phases = JSON.parse(t.phases) as Phase[];
-              } catch {
-                /* ignore */
-              }
+              const phases = parseJSONColumn<Phase[]>(t.phases, [], 'hobby-detail:render:phases');
               const totalHobbies = new Set(phases.flatMap((p) => p.hobbies.map((h) => h.name)))
                 .size;
               return (

@@ -40,8 +40,12 @@ type ErrorBoundaryScope =
   | 'global'
   | 'timeline-builder'
   | 'timeline-edit'
+  | 'timeline-view'
   | 'explore'
   | 'dashboard'
+  | 'settings'
+  | 'profile'
+  | 'life-plan'
   | 'unknown';
 
 /**

@@ -4,6 +4,7 @@ import { notFound, redirect } from 'next/navigation';
 import { TimelineBuilder } from '~/components/timeline-builder/builder';
 import { timelines, users } from '~/db/schema';
 import type { Phase, TimelineData, TimelineVisibility } from '~/lib/types';
+import { parseJSONColumn } from '~/lib/utils';
 import { getServerAuthSession } from '~/server/auth';
 import { db } from '~/server/db';
 
@@ -32,12 +33,7 @@ export default async function EditTimelinePage({ params }: Props) {
       })
     : null;
 
-  let phases: Phase[] = [];
-  try {
-    phases = JSON.parse(raw.phases) as Phase[];
-  } catch {
-    /* ignore */
-  }
+  const phases = parseJSONColumn<Phase[]>(raw.phases, [], 'timeline-edit:phases');
 
   const timeline: TimelineData = {
     id: raw.id,

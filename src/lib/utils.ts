@@ -19,3 +19,22 @@ export function parseStringArray(raw: string | null | undefined): string[] {
     return [];
   }
 }
+
+/**
+ * Parse a JSON text column with a typed fallback. Logs parse failures with
+ * context so corrupt data is visible in observability instead of silently
+ * producing an empty array — the user's data doesn't vanish without a trace.
+ */
+export function parseJSONColumn<T>(
+  raw: string | null | undefined,
+  fallback: T,
+  context = 'unknown'
+): T {
+  if (!raw) return fallback;
+  try {
+    return JSON.parse(raw) as T;
+  } catch (err) {
+    console.error(`[parseJSONColumn] ${context}: failed to parse JSON column`, err);
+    return fallback;
+  }
+}

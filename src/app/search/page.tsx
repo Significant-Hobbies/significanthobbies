@@ -5,6 +5,7 @@ import { timelines, users } from '~/db/schema';
 import { HOBBY_CATEGORIES } from '~/lib/hobbies';
 import { getTimelineUrl } from '~/lib/timeline-url';
 import type { Phase, TimelineVisibility } from '~/lib/types';
+import { parseJSONColumn } from '~/lib/utils';
 import { db } from '~/server/db';
 
 import { SearchPageClient } from './search-client';
@@ -72,12 +73,7 @@ export default async function SearchPage({ searchParams }: Props) {
   const filteredTimelines = rawTimelines.filter((t) => t.title?.toLowerCase().includes(lower));
 
   const timelineResults = filteredTimelines.slice(0, 20).map((raw) => {
-    let phases: Phase[] = [];
-    try {
-      phases = JSON.parse(raw.phases) as Phase[];
-    } catch {
-      /* ignore */
-    }
+    const phases = parseJSONColumn<Phase[]>(raw.phases, [], 'search:phases');
     return {
       id: raw.id,
       title: raw.title,

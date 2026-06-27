@@ -3,6 +3,7 @@ import type { Metadata } from 'next';
 
 import { timelines, users } from '~/db/schema';
 import type { Phase } from '~/lib/types';
+import { parseJSONColumn } from '~/lib/utils';
 import { db } from '~/server/db';
 
 import { CompareJourneysClient } from './compare-client';
@@ -39,13 +40,7 @@ export default async function CompareJourneysPage({ searchParams }: Props) {
 
       const phases: Phase[] = properTimelines
         .filter((t) => t.visibility === 'PUBLIC' || t.visibility === 'UNLISTED')
-        .flatMap((t) => {
-          try {
-            return JSON.parse(t.phases) as Phase[];
-          } catch {
-            return [];
-          }
-        });
+        .flatMap((t) => parseJSONColumn<Phase[]>(t.phases, [], 'compare-journeys:userA:phases'));
       userA = { username: raw.username ?? usernameA, phases };
     }
   }
@@ -63,13 +58,7 @@ export default async function CompareJourneysPage({ searchParams }: Props) {
 
       const phases: Phase[] = properTimelines
         .filter((t) => t.visibility === 'PUBLIC' || t.visibility === 'UNLISTED')
-        .flatMap((t) => {
-          try {
-            return JSON.parse(t.phases) as Phase[];
-          } catch {
-            return [];
-          }
-        });
+        .flatMap((t) => parseJSONColumn<Phase[]>(t.phases, [], 'compare-journeys:userB:phases'));
       userB = { username: raw.username ?? usernameB, phases };
     }
   }

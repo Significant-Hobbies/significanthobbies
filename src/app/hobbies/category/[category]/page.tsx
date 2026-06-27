@@ -9,6 +9,7 @@ import { timelines, users } from '~/db/schema';
 import { HOBBY_CATEGORIES, type HobbyCategory } from '~/lib/hobbies';
 import { getTimelineUrl } from '~/lib/timeline-url';
 import type { Phase } from '~/lib/types';
+import { parseJSONColumn } from '~/lib/utils';
 import { db } from '~/server/db';
 
 interface Props {
@@ -87,14 +88,8 @@ export default async function CategoryPage({ params }: Props) {
     .limit(100);
 
   const matchingTimelines = rawTimelines.filter((t) => {
-    try {
-      const phases = JSON.parse(t.phases) as Phase[];
-      return phases.some((p) =>
-        p.hobbies.some((h) => categoryHobbyNames.has(h.name.toLowerCase()))
-      );
-    } catch {
-      return false;
-    }
+    const phases = parseJSONColumn<Phase[]>(t.phases, [], 'hobby-category:filter:phases');
+    return phases.some((p) => p.hobbies.some((h) => categoryHobbyNames.has(h.name.toLowerCase())));
   });
 
   const displayedTimelines = matchingTimelines.slice(0, 6);
@@ -172,12 +167,7 @@ export default async function CategoryPage({ params }: Props) {
         {displayedTimelines.length > 0 ? (
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             {displayedTimelines.map((t) => {
-              let phases: Phase[] = [];
-              try {
-                phases = JSON.parse(t.phases) as Phase[];
-              } catch {
-                /* ignore */
-              }
+              const phases = parseJSONColumn<Phase[]>(t.phases, [], 'hobby-category:render:phases');
               const totalHobbies = new Set(phases.flatMap((p) => p.hobbies.map((h) => h.name)))
                 .size;
               return (
