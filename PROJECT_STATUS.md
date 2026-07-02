@@ -120,7 +120,7 @@ Build pipeline (`scripts/cf-build.mjs`): Next build → patch sparse pnpm store 
 
 ### Planned
 
-1. **Decommission today-little-log** — redirect `today-little-log.pages.dev` to `significanthobbies.com`, archive TLL repo. No data migration needed (single user, no import). Requires operator action (domain redirect + repo archive).
+1. ~~**Decommission today-little-log**~~ — TLL repo marked archived/merged (2026-07-02). Domain redirect from `today-little-log.pages.dev` to `significanthobbies.com` still pending operator action when ready. No data migration needed.
 2. Tighten timeline creation and sharing loop so a first-time user can produce a meaningful public journey quickly.
 3. Decide which discovery path is primary: taxonomy browsing, recommendations, quiz, or famous journey inspiration.
 4. Turn side quests, XP, and badges into a coherent progression system only if they improve hobby follow-through.
