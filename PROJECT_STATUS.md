@@ -1,6 +1,6 @@
 # significanthobbies — PROJECT STATUS
 
-Last updated: 2026-06-28
+Last updated: 2026-07-02
 
 ## Why / What
 
@@ -54,6 +54,7 @@ Build pipeline (`scripts/cf-build.mjs`): Next build → patch sparse pnpm store 
 
 ## Timeline
 
+- **2026-07-02** — Added global try/catch error handler to OpenNext worker (`worker.mjs`).
 - **2026-06-20 — Hybrid Astro `/`:** Full static landing in `landing-astro/` (hero + below-fold sections); overlaid into `.open-next/assets`; Worker skips invocation on `GET /`; Next `page.tsx` is auth-only fallback; demo timelines moved to `GET /api/demo-timelines`.
 - **Platform hardening:** Custom `cf-build.mjs` fixes OpenNext + pnpm monorepo sparse-store resolution; PR preview environment without prod route conflicts; dependency hygiene (removed unused `lighthouse` devDependency).
 
