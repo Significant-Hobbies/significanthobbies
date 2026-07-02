@@ -16,25 +16,22 @@ import { NavLinks } from './nav-links';
 import { NavSignOut } from './nav-sign-out';
 
 const NAV_LINKS = [
-  { href: '/life-plan', label: 'Life Plan' },
-  { href: '/hobbies', label: 'Discover' },
-  { href: '/find-your-hobby', label: 'Quiz' },
-  { href: '/bucket-lists', label: '✨ Bucket Lists' },
+  { href: '/hobbies', label: 'Hobbies' },
+  { href: '/bucket-lists', label: 'Bucket Lists' },
   { href: '/side-quests', label: 'Side Quests' },
-  { href: '/explore', label: 'Explore' },
-  { href: '/blog', label: 'Blog' },
+  { href: '/daily', label: 'Daily' },
 ];
 
 export async function Nav() {
   const session = await getServerAuthSession();
 
   return (
-    <nav className="sticky top-0 z-50 border-b border-stone-200 bg-white/80 backdrop-blur-sm">
+    <nav className="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur-md">
       <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-4">
         <Link
           href="/"
           prefetch={false}
-          className="text-lg font-semibold tracking-tight text-emerald-600 hover:text-emerald-700 transition-colors"
+          className="text-base font-semibold tracking-tight text-foreground hover:opacity-80 transition-opacity"
         >
           SignificantHobbies
         </Link>
@@ -45,28 +42,21 @@ export async function Nav() {
 
           {session?.user ? (
             <>
-              <Link href="/dashboard" prefetch={false}>
-                <Button variant="ghost" size="sm" className="text-stone-500 hover:text-stone-700">
-                  Dashboard
-                </Button>
-              </Link>
               <Link href="/timeline/new" prefetch={false}>
-                <Button size="sm" className="bg-emerald-600 hover:bg-emerald-700 text-white">
-                  New Timeline
-                </Button>
+                <Button size="sm">New Timeline</Button>
               </Link>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <button className="rounded-full focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                  <button className="rounded-full focus:outline-none focus:ring-2 focus:ring-foreground/30">
                     <Avatar className="h-8 w-8">
                       <AvatarImage src={session.user.image ?? ''} />
-                      <AvatarFallback className="bg-emerald-100 text-emerald-700 text-sm">
+                      <AvatarFallback className="bg-foreground/10 text-foreground text-sm">
                         {session.user.name?.[0] ?? 'U'}
                       </AvatarFallback>
                     </Avatar>
                   </button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-48 border-stone-200 bg-white">
+                <DropdownMenuContent align="end" className="w-48">
                   {session.user.username ? (
                     <DropdownMenuItem asChild>
                       <Link href={`/u/${session.user.username}`} prefetch={false}>
@@ -75,7 +65,7 @@ export async function Nav() {
                     </DropdownMenuItem>
                   ) : (
                     <DropdownMenuItem asChild>
-                      <Link href="/setup" prefetch={false} className="text-yellow-600">
+                      <Link href="/setup" prefetch={false}>
                         Set username →
                       </Link>
                     </DropdownMenuItem>
@@ -85,18 +75,19 @@ export async function Nav() {
                       Dashboard
                     </Link>
                   </DropdownMenuItem>
-                  <DropdownMenuSeparator className="bg-stone-200" />
+                  <DropdownMenuItem asChild>
+                    <Link href="/commitments" prefetch={false}>
+                      Commitments
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
                   <NavSignOut />
                 </DropdownMenuContent>
               </DropdownMenu>
             </>
           ) : (
             <Link href="/login" prefetch={false}>
-              <Button
-                size="sm"
-                variant="outline"
-                className="border-stone-300 text-stone-600 hover:text-stone-900"
-              >
+              <Button size="sm" variant="outline">
                 Sign in
               </Button>
             </Link>
@@ -108,16 +99,16 @@ export async function Nav() {
           {session?.user && (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <button className="rounded-full focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                <button className="rounded-full focus:outline-none focus:ring-2 focus:ring-foreground/30">
                   <Avatar className="h-8 w-8">
                     <AvatarImage src={session.user.image ?? ''} />
-                    <AvatarFallback className="bg-emerald-100 text-emerald-700 text-sm">
+                    <AvatarFallback className="bg-foreground/10 text-foreground text-sm">
                       {session.user.name?.[0] ?? 'U'}
                     </AvatarFallback>
                   </Avatar>
                 </button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-48 border-stone-200 bg-white">
+              <DropdownMenuContent align="end" className="w-48">
                 {session.user.username ? (
                   <DropdownMenuItem asChild>
                     <Link href={`/u/${session.user.username}`} prefetch={false}>
@@ -126,7 +117,7 @@ export async function Nav() {
                   </DropdownMenuItem>
                 ) : (
                   <DropdownMenuItem asChild>
-                    <Link href="/setup" prefetch={false} className="text-yellow-600">
+                    <Link href="/setup" prefetch={false}>
                       Set username →
                     </Link>
                   </DropdownMenuItem>
@@ -136,7 +127,12 @@ export async function Nav() {
                     Dashboard
                   </Link>
                 </DropdownMenuItem>
-                <DropdownMenuSeparator className="bg-stone-200" />
+                <DropdownMenuItem asChild>
+                  <Link href="/commitments" prefetch={false}>
+                    Commitments
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
                 <NavSignOut />
               </DropdownMenuContent>
             </DropdownMenu>

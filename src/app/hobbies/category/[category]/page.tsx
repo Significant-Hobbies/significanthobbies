@@ -6,6 +6,7 @@ import { notFound } from 'next/navigation';
 import { JsonLd } from '~/components/json-ld';
 import { Badge } from '~/components/ui/badge';
 import { timelines, users } from '~/db/schema';
+import { categoryImageSrc, categoryImageSrcSet } from '~/lib/category-images';
 import { HOBBY_CATEGORIES, type HobbyCategory } from '~/lib/hobbies';
 import { getTimelineUrl } from '~/lib/timeline-url';
 import type { Phase } from '~/lib/types';
@@ -121,26 +122,45 @@ export default async function CategoryPage({ params }: Props) {
 
       {/* Breadcrumb */}
       <div className="mb-4">
-        <Link href="/hobbies" className="text-sm text-stone-500 hover:text-stone-700">
+        <Link href="/hobbies" className="text-sm text-muted-foreground hover:text-foreground">
           ← Hobby directory
         </Link>
       </div>
 
-      {/* Header */}
-      <div className="mb-6">
-        <div className="flex items-center gap-3 mb-3">
-          <span className="text-5xl">{cat.emoji}</span>
-          <div>
-            <h1 className="text-3xl font-bold text-stone-900">{cat.name} Hobbies</h1>
-            <p className="text-stone-500 text-sm mt-0.5">{cat.hobbies.length} hobbies</p>
+      {/* Image header — photo with a simple bottom darkening for text */}
+      <div className="relative -mx-4 mb-8 h-56 sm:mx-0 sm:h-72 sm:rounded-xl overflow-hidden">
+        {categoryImageSrc(cat.name) ? (
+          <img
+            src={categoryImageSrc(cat.name, 1200)!}
+            srcSet={categoryImageSrcSet(cat.name)!}
+            sizes="(max-width: 640px) 100vw, 1200px"
+            alt={`${cat.name} hobbies`}
+            className="absolute inset-0 h-full w-full object-cover"
+          />
+        ) : (
+          <div className="absolute inset-0 bg-card" />
+        )}
+        <div
+          className="absolute inset-0"
+          style={{
+            background:
+              'linear-gradient(to top, rgba(12, 43, 41, 0.85) 0%, rgba(12, 43, 41, 0.3) 50%, transparent 80%)',
+          }}
+        />
+        <div className="absolute bottom-0 left-0 right-0 p-5 sm:p-6">
+          <div className="flex items-center gap-2.5">
+            <span className="text-3xl">{cat.emoji}</span>
+            <h1 className="text-2xl sm:text-3xl font-semibold text-foreground">{cat.name}</h1>
           </div>
+          <p className="mt-1 text-sm text-foreground/70">{cat.hobbies.length} hobbies</p>
         </div>
-        <p className="text-stone-600 leading-relaxed max-w-2xl">{description}</p>
       </div>
+
+      <p className="text-muted-foreground leading-relaxed max-w-2xl mb-8">{description}</p>
 
       {/* Hobbies grid */}
       <div className="mb-12">
-        <h2 className="mb-4 text-sm font-medium uppercase tracking-wide text-stone-500">
+        <h2 className="mb-4 text-sm font-medium text-foreground">
           Browse {cat.name.toLowerCase()} hobbies
         </h2>
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
@@ -148,8 +168,8 @@ export default async function CategoryPage({ params }: Props) {
             const hobbySlug = hobby.toLowerCase().replace(/\s+/g, '-');
             return (
               <Link key={hobby} href={`/hobbies/${encodeURIComponent(hobbySlug)}`}>
-                <div className="group rounded-xl border border-stone-200 bg-white p-4 transition-all hover:border-emerald-400 hover:shadow-sm cursor-pointer">
-                  <span className="font-medium text-stone-700 group-hover:text-emerald-600 transition-colors text-sm">
+                <div className="group rounded-xl border border-border bg-card p-4 transition-all hover:border-lumi-500/50 hover:shadow-sm cursor-pointer">
+                  <span className="font-medium text-foreground group-hover:text-lumi-400 transition-colors text-sm">
                     {hobby}
                   </span>
                 </div>
@@ -161,7 +181,7 @@ export default async function CategoryPage({ params }: Props) {
 
       {/* Community timelines */}
       <div className="mb-12">
-        <h2 className="mb-4 text-sm font-medium uppercase tracking-wide text-stone-500">
+        <h2 className="mb-4 text-sm font-medium text-foreground">
           Popular {cat.name.toLowerCase()} timelines
         </h2>
         {displayedTimelines.length > 0 ? (
@@ -179,16 +199,16 @@ export default async function CategoryPage({ params }: Props) {
                     user: t.userUsername ? { username: t.userUsername } : null,
                   })}
                 >
-                  <div className="group rounded-xl border border-stone-200 bg-white p-4 transition-colors hover:border-emerald-400">
-                    <h3 className="font-medium text-stone-800 group-hover:text-emerald-600 transition-colors">
+                  <div className="group rounded-xl border border-border bg-card p-4 transition-colors hover:border-lumi-500/50">
+                    <h3 className="font-medium text-foreground group-hover:text-lumi-400 transition-colors">
                       {t.title ?? 'Hobby Timeline'}
                     </h3>
                     {t.userName && (
-                      <p className="text-xs text-stone-500 mt-0.5">
+                      <p className="text-xs text-muted-foreground mt-0.5">
                         @{t.userUsername ?? t.userName}
                       </p>
                     )}
-                    <p className="text-xs text-stone-400 mt-1.5">
+                    <p className="text-xs text-muted-foreground/60 mt-1.5">
                       {phases.length} phases · {totalHobbies} hobbies
                     </p>
                   </div>
@@ -197,12 +217,12 @@ export default async function CategoryPage({ params }: Props) {
             })}
           </div>
         ) : (
-          <div className="rounded-xl border border-stone-200 bg-stone-50 p-8 text-center">
-            <p className="text-stone-500">
+          <div className="rounded-xl border border-border bg-card/40 p-8 text-center">
+            <p className="text-muted-foreground">
               No public timelines for {cat.name.toLowerCase()} hobbies yet.
             </p>
             <Link href="/timeline/new">
-              <button className="mt-3 text-sm text-emerald-600 hover:text-emerald-700">
+              <button className="mt-3 text-sm text-lumi-400 hover:text-lumi-400">
                 Be the first →
               </button>
             </Link>
@@ -211,18 +231,18 @@ export default async function CategoryPage({ params }: Props) {
       </div>
 
       {/* CTA */}
-      <div className="mb-12 rounded-xl border border-emerald-200 bg-emerald-50 p-6 flex items-center justify-between gap-4">
+      <div className="mb-12 rounded-xl border border-lumi-500/30 bg-lumi-500/10 p-6 flex items-center justify-between gap-4">
         <div>
-          <p className="font-semibold text-stone-900">
+          <p className="font-semibold text-foreground">
             Track your {cat.name.toLowerCase()} journey
           </p>
-          <p className="text-sm text-stone-600 mt-0.5">
+          <p className="text-sm text-muted-foreground mt-0.5">
             Build a timeline that captures every phase of your hobby life.
           </p>
         </div>
         <Link
           href="/timeline/new"
-          className="shrink-0 rounded-lg bg-emerald-600 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-700 transition-colors"
+          className="shrink-0 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-lumi-300 transition-colors"
         >
           Start now →
         </Link>
@@ -230,9 +250,7 @@ export default async function CategoryPage({ params }: Props) {
 
       {/* Related categories */}
       <div>
-        <h2 className="mb-4 text-sm font-medium uppercase tracking-wide text-stone-500">
-          Explore other categories
-        </h2>
+        <h2 className="mb-4 text-sm font-medium text-foreground">Explore other categories</h2>
         <div className="flex flex-wrap gap-2">
           {relatedCategories.map((c) => {
             const catSlug = c.name.toLowerCase().replace(/\s+/g, '-');
@@ -240,7 +258,7 @@ export default async function CategoryPage({ params }: Props) {
               <Link key={c.name} href={`/hobbies/category/${catSlug}`}>
                 <Badge
                   variant="outline"
-                  className="border-stone-200 text-stone-500 hover:border-emerald-400 hover:text-emerald-600 cursor-pointer transition-colors py-1 px-3"
+                  className="border-border text-muted-foreground hover:border-lumi-500/50 hover:text-lumi-400 cursor-pointer transition-colors py-1 px-3"
                 >
                   {c.emoji} {c.name}
                 </Badge>

@@ -226,15 +226,15 @@ const MAKING: Hobby[] = [
 
 function HobbyCard({ hobby }: { hobby: Hobby }) {
   return (
-    <li className="flex gap-4 rounded-lg border border-stone-100 bg-white p-4 hover:border-emerald-200 transition-colors">
+    <li className="flex gap-4 rounded-lg border border-border bg-card p-4 hover:border-lumi-500/30 transition-colors">
       <div className="flex-1">
         <Link
           href={`/hobbies/${hobbySlug(hobby.name)}`}
-          className="font-semibold text-stone-900 hover:text-emerald-700 transition-colors"
+          className="font-semibold text-foreground hover:text-lumi-400 transition-colors"
         >
           {hobby.name}
         </Link>
-        <p className="mt-1 text-sm text-stone-500 leading-relaxed">{hobby.desc}</p>
+        <p className="mt-1 text-sm text-muted-foreground leading-relaxed">{hobby.desc}</p>
       </div>
     </li>
   );
@@ -301,15 +301,15 @@ export default function HobbiesForAdultsPage() {
       />
 
       <div className="mb-6">
-        <Link href="/hobbies" className="text-sm text-stone-500 hover:text-stone-700">
+        <Link href="/hobbies" className="text-sm text-muted-foreground hover:text-foreground">
           ← Hobby Directory
         </Link>
       </div>
 
-      <h1 className="text-3xl font-bold text-stone-900 mb-4">
+      <h1 className="text-3xl font-bold text-foreground mb-4">
         50 Best Hobbies for Adults — Find What Excites You
       </h1>
-      <p className="text-lg text-stone-500 mb-8 leading-relaxed">
+      <p className="text-lg text-muted-foreground mb-8 leading-relaxed">
         Most hobby lists are filler. This one isn&apos;t. We curated 50 hobbies across six
         categories — Creative, Physical, Intellectual, Social, Outdoor, and Making — with real
         context on what each one involves and why adults in particular find them rewarding. Scan the
@@ -317,11 +317,11 @@ export default function HobbiesForAdultsPage() {
       </p>
 
       <Section title="Creative" hobbies={CREATIVE} color="text-purple-700" />
-      <Section title="Physical" hobbies={PHYSICAL} color="text-emerald-700" />
+      <Section title="Physical" hobbies={PHYSICAL} color="text-lumi-400" />
 
-      <div className="my-8 rounded-xl bg-stone-50 border border-stone-200 p-6">
-        <p className="text-stone-600 text-sm leading-relaxed">
-          <strong className="text-stone-800">Finding it hard to choose?</strong> Most adults
+      <div className="my-8 rounded-xl bg-card/40 border border-border p-6">
+        <p className="text-muted-foreground text-sm leading-relaxed">
+          <strong className="text-foreground">Finding it hard to choose?</strong> Most adults
           discover their best hobbies by experimenting freely, not by thinking hard. Give something
           three sessions before deciding — the first one is always awkward.
         </p>
@@ -330,24 +330,24 @@ export default function HobbiesForAdultsPage() {
       <Section title="Intellectual" hobbies={INTELLECTUAL} color="text-blue-700" />
       <Section title="Social" hobbies={SOCIAL} color="text-orange-700" />
       <Section title="Outdoor" hobbies={OUTDOOR} color="text-teal-700" />
-      <Section title="Making" hobbies={MAKING} color="text-amber-700" />
+      <Section title="Making" hobbies={MAKING} color="text-lumi-400" />
 
-      <div className="mt-12 rounded-xl bg-emerald-50 border border-emerald-200 p-8 text-center">
-        <h2 className="text-xl font-bold text-stone-900 mb-2">Not sure which fits you best?</h2>
-        <p className="text-stone-500 mb-4">
+      <div className="mt-12 rounded-xl bg-lumi-500/10 border border-lumi-500/30 p-8 text-center">
+        <h2 className="text-xl font-bold text-foreground mb-2">Not sure which fits you best?</h2>
+        <p className="text-muted-foreground mb-4">
           Take our 2-minute quiz — answer a few questions about your personality and schedule, and
           get a shortlist tailored to you.
         </p>
         <Link
           href="/find-your-hobby"
-          className="inline-flex rounded-lg bg-emerald-600 px-6 py-2.5 text-sm font-semibold text-white hover:bg-emerald-700 transition-colors"
+          className="inline-flex rounded-lg bg-primary px-6 py-2.5 text-sm font-semibold text-primary-foreground hover:bg-lumi-300 transition-colors"
         >
           Take the Quiz →
         </Link>
         <div className="mt-4">
           <Link
             href="/timeline/new"
-            className="text-sm text-stone-400 hover:text-stone-600 transition-colors"
+            className="text-sm text-muted-foreground/60 hover:text-muted-foreground transition-colors"
           >
             Already have hobbies? Build your hobby timeline →
           </Link>

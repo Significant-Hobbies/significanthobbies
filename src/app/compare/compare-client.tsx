@@ -16,10 +16,13 @@ function toSlug(name: string) {
 
 function CostBadge({ cost }: { cost: HobbyDetail['cost'] }) {
   const map: Record<HobbyDetail['cost'], { label: string; className: string }> = {
-    free: { label: 'Free', className: 'bg-emerald-100 text-emerald-700 border-emerald-200' },
-    low: { label: 'Low ($)', className: 'bg-yellow-100 text-yellow-700 border-yellow-200' },
+    free: { label: 'Free', className: 'bg-lumi-500/15 text-lumi-400 border-lumi-500/30' },
+    low: { label: 'Low ($)', className: 'bg-lumi-500/15 text-lumi-400 border-lumi-500/30' },
     medium: { label: 'Medium ($$)', className: 'bg-orange-100 text-orange-700 border-orange-200' },
-    high: { label: 'High ($$$)', className: 'bg-red-100 text-red-700 border-red-200' },
+    high: {
+      label: 'High ($$$)',
+      className: 'bg-destructive/15 text-destructive border-destructive/30',
+    },
   };
   const { label, className } = map[cost];
   return (
@@ -39,11 +42,11 @@ function DifficultyDots({ level }: { level: HobbyDetail['difficulty'] }) {
         <span
           key={i}
           className={`inline-block h-2.5 w-2.5 rounded-full border ${
-            i <= filled ? 'border-emerald-500 bg-emerald-500' : 'border-stone-300 bg-transparent'
+            i <= filled ? 'border-lumi-500/60 bg-lumi-500/100' : 'border-border bg-transparent'
           }`}
         />
       ))}
-      <span className="ml-1 text-stone-600 capitalize">{level}</span>
+      <span className="ml-1 text-muted-foreground capitalize">{level}</span>
     </span>
   );
 }
@@ -57,12 +60,12 @@ function PhysicalBar({ level }: { level: HobbyDetail['physical'] }) {
   };
   return (
     <span className="flex items-center gap-2">
-      <span className="relative h-2 w-24 overflow-hidden rounded-full bg-stone-200">
+      <span className="relative h-2 w-24 overflow-hidden rounded-full bg-foreground/10">
         <span
-          className={`absolute left-0 top-0 h-full rounded-full bg-emerald-500 transition-all ${widthMap[level]}`}
+          className={`absolute left-0 top-0 h-full rounded-full bg-lumi-500/100 transition-all ${widthMap[level]}`}
         />
       </span>
-      <span className="text-stone-600 capitalize">{level === 'none' ? 'None' : level}</span>
+      <span className="text-muted-foreground capitalize">{level === 'none' ? 'None' : level}</span>
     </span>
   );
 }
@@ -76,8 +79,8 @@ function SocialIcon({ level }: { level: HobbyDetail['socialLevel'] }) {
   };
   const { Icon, label } = map[level];
   return (
-    <span className="flex items-center gap-1.5 text-stone-600">
-      <Icon className="h-4 w-4 text-stone-400" />
+    <span className="flex items-center gap-1.5 text-muted-foreground">
+      <Icon className="h-4 w-4 text-muted-foreground/60" />
       {label}
     </span>
   );
@@ -145,19 +148,19 @@ function HobbyCombobox({ label, value, onChange, exclude }: HobbyComboboxProps) 
 
   return (
     <div ref={containerRef} className="relative flex-1">
-      <p className="mb-1.5 text-xs font-semibold uppercase tracking-wider text-stone-400">
+      <p className="mb-1.5 text-xs font-semibold uppercase tracking-wider text-muted-foreground/60">
         {label}
       </p>
 
       {value ? (
-        <div className="flex items-center justify-between rounded-xl border border-emerald-300 bg-white px-4 py-3">
-          <span className="font-medium text-stone-800">
+        <div className="flex items-center justify-between rounded-xl border border-lumi-500/40 bg-card px-4 py-3">
+          <span className="font-medium text-foreground">
             {category?.emoji} {value}
           </span>
           <button
             type="button"
             onClick={clear}
-            className="ml-2 text-stone-400 hover:text-stone-600 transition-colors"
+            className="ml-2 text-muted-foreground/60 hover:text-muted-foreground transition-colors"
             aria-label="Clear selection"
           >
             <X className="h-4 w-4" />
@@ -166,7 +169,7 @@ function HobbyCombobox({ label, value, onChange, exclude }: HobbyComboboxProps) 
       ) : (
         <div>
           <div className="relative">
-            <Search className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-stone-400" />
+            <Search className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground/60" />
             <Input
               value={query}
               onChange={(e) => {
@@ -175,14 +178,14 @@ function HobbyCombobox({ label, value, onChange, exclude }: HobbyComboboxProps) 
               }}
               onFocus={() => setOpen(true)}
               placeholder="Search a hobby…"
-              className="h-11 border-stone-300 bg-white pl-10 placeholder:text-stone-400"
+              className="h-11 border-border bg-card pl-10 placeholder:text-muted-foreground/60"
             />
           </div>
 
           {open && (
-            <div className="absolute z-20 mt-1 max-h-60 w-full overflow-y-auto rounded-xl border border-stone-200 bg-white shadow-lg">
+            <div className="absolute z-20 mt-1 max-h-60 w-full overflow-y-auto rounded-xl border border-border bg-card shadow-lg">
               {options.length === 0 ? (
-                <p className="px-4 py-3 text-sm text-stone-400">No hobbies found</p>
+                <p className="px-4 py-3 text-sm text-muted-foreground/60">No hobbies found</p>
               ) : (
                 options.map((hobby) => {
                   const cat = getCategoryForHobby(hobby);
@@ -190,7 +193,7 @@ function HobbyCombobox({ label, value, onChange, exclude }: HobbyComboboxProps) 
                     <button
                       key={hobby}
                       type="button"
-                      className="flex w-full items-center gap-2 px-4 py-2.5 text-left text-sm text-stone-700 hover:bg-stone-50 transition-colors"
+                      className="flex w-full items-center gap-2 px-4 py-2.5 text-left text-sm text-foreground hover:bg-card/40 transition-colors"
                       onClick={() => select(hobby)}
                     >
                       <span>{cat?.emoji}</span>
@@ -217,9 +220,9 @@ interface RowProps {
 
 function CompareRow({ label, left, right }: RowProps) {
   return (
-    <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-3 border-b border-stone-100 py-4 last:border-0">
+    <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-3 border-b border-border py-4 last:border-0">
       <div className="flex justify-end">{left}</div>
-      <div className="w-28 text-center text-xs font-semibold uppercase tracking-wider text-stone-400">
+      <div className="w-28 text-center text-xs font-semibold uppercase tracking-wider text-muted-foreground/60">
         {label}
       </div>
       <div className="flex justify-start">{right}</div>
@@ -234,21 +237,21 @@ function ComparisonCard({ a, b }: { a: HobbyDetail; b: HobbyDetail }) {
   const catB = getCategoryForHobby(b.name);
 
   return (
-    <div className="mt-8 overflow-hidden rounded-2xl border border-stone-200 bg-white shadow-sm">
+    <div className="mt-8 overflow-hidden rounded-2xl border border-border bg-card shadow-sm">
       {/* Header */}
-      <div className="grid grid-cols-[1fr_auto_1fr] border-b border-stone-100 bg-stone-50">
+      <div className="grid grid-cols-[1fr_auto_1fr] border-b border-border bg-card/40">
         <div className="p-5 text-right">
           <p className="text-2xl">{catA?.emoji}</p>
-          <p className="mt-1 text-lg font-bold text-stone-900">{a.name}</p>
-          <p className="text-xs text-stone-400">{catA?.name ?? 'Hobby'}</p>
+          <p className="mt-1 text-lg font-bold text-foreground">{a.name}</p>
+          <p className="text-xs text-muted-foreground/60">{catA?.name ?? 'Hobby'}</p>
         </div>
         <div className="flex items-center justify-center px-4">
-          <span className="text-sm font-semibold text-stone-300">vs</span>
+          <span className="text-sm font-semibold text-muted-foreground/40">vs</span>
         </div>
         <div className="p-5 text-left">
           <p className="text-2xl">{catB?.emoji}</p>
-          <p className="mt-1 text-lg font-bold text-stone-900">{b.name}</p>
-          <p className="text-xs text-stone-400">{catB?.name ?? 'Hobby'}</p>
+          <p className="mt-1 text-lg font-bold text-foreground">{b.name}</p>
+          <p className="text-xs text-muted-foreground/60">{catB?.name ?? 'Hobby'}</p>
         </div>
       </div>
 
@@ -261,8 +264,8 @@ function ComparisonCard({ a, b }: { a: HobbyDetail; b: HobbyDetail }) {
         />
         <CompareRow
           label="Time / session"
-          left={<span className="text-sm text-stone-700">{a.timePerSession}</span>}
-          right={<span className="text-sm text-stone-700">{b.timePerSession}</span>}
+          left={<span className="text-sm text-foreground">{a.timePerSession}</span>}
+          right={<span className="text-sm text-foreground">{b.timePerSession}</span>}
         />
         <CompareRow
           label="Social"
@@ -286,22 +289,24 @@ function ComparisonCard({ a, b }: { a: HobbyDetail; b: HobbyDetail }) {
         />
         <CompareRow
           label="Gear"
-          left={<span className="text-right text-sm text-stone-600">{a.gear}</span>}
-          right={<span className="text-sm text-stone-600">{b.gear}</span>}
+          left={<span className="text-right text-sm text-muted-foreground">{a.gear}</span>}
+          right={<span className="text-sm text-muted-foreground">{b.gear}</span>}
         />
         <CompareRow
           label="Best for"
-          left={<span className="text-right text-sm italic text-stone-500">{a.bestFor}</span>}
-          right={<span className="text-sm italic text-stone-500">{b.bestFor}</span>}
+          left={
+            <span className="text-right text-sm italic text-muted-foreground">{a.bestFor}</span>
+          }
+          right={<span className="text-sm italic text-muted-foreground">{b.bestFor}</span>}
         />
       </div>
 
       {/* Footer */}
-      <div className="grid grid-cols-[1fr_auto_1fr] gap-3 border-t border-stone-100 bg-stone-50 p-5">
+      <div className="grid grid-cols-[1fr_auto_1fr] gap-3 border-t border-border bg-card/40 p-5">
         <div className="flex justify-end">
           <Link
             href={`/hobbies/${toSlug(a.name)}`}
-            className="inline-flex items-center gap-1.5 rounded-lg border border-stone-200 bg-white px-3.5 py-2 text-sm font-medium text-stone-700 hover:border-emerald-400 hover:text-emerald-600 transition-colors"
+            className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-card px-3.5 py-2 text-sm font-medium text-foreground hover:border-lumi-500/50 hover:text-lumi-400 transition-colors"
           >
             {a.name} detail
             <ArrowRight className="h-3.5 w-3.5" />
@@ -310,7 +315,7 @@ function ComparisonCard({ a, b }: { a: HobbyDetail; b: HobbyDetail }) {
         <div className="flex items-center justify-center">
           <Link
             href="/timeline/new"
-            className="rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-700 transition-colors"
+            className="rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:bg-lumi-300 transition-colors"
           >
             Try both
           </Link>
@@ -318,7 +323,7 @@ function ComparisonCard({ a, b }: { a: HobbyDetail; b: HobbyDetail }) {
         <div className="flex justify-start">
           <Link
             href={`/hobbies/${toSlug(b.name)}`}
-            className="inline-flex items-center gap-1.5 rounded-lg border border-stone-200 bg-white px-3.5 py-2 text-sm font-medium text-stone-700 hover:border-emerald-400 hover:text-emerald-600 transition-colors"
+            className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-card px-3.5 py-2 text-sm font-medium text-foreground hover:border-lumi-500/50 hover:text-lumi-400 transition-colors"
           >
             {b.name} detail
             <ArrowRight className="h-3.5 w-3.5" />
@@ -343,7 +348,7 @@ export function CompareClient() {
       {/* Selectors */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-end">
         <HobbyCombobox label="Hobby A" value={hobbyA} onChange={setHobbyA} exclude={hobbyB} />
-        <div className="flex items-center justify-center pb-1 text-sm font-bold text-stone-300 sm:pb-3">
+        <div className="flex items-center justify-center pb-1 text-sm font-bold text-muted-foreground/40 sm:pb-3">
           VS
         </div>
         <HobbyCombobox label="Hobby B" value={hobbyB} onChange={setHobbyB} exclude={hobbyA} />
@@ -351,10 +356,10 @@ export function CompareClient() {
 
       {/* Prompt when none selected */}
       {!detailA && !detailB && (
-        <div className="mt-12 flex flex-col items-center justify-center rounded-2xl border border-dashed border-stone-200 bg-stone-50 px-6 py-16 text-center">
+        <div className="mt-12 flex flex-col items-center justify-center rounded-2xl border border-dashed border-border bg-card/40 px-6 py-16 text-center">
           <p className="text-2xl">⚖️</p>
-          <p className="mt-3 font-medium text-stone-600">Select two hobbies to compare</p>
-          <p className="mt-1 text-sm text-stone-400">
+          <p className="mt-3 font-medium text-muted-foreground">Select two hobbies to compare</p>
+          <p className="mt-1 text-sm text-muted-foreground/60">
             Use the dropdowns above to pick Hobby A and Hobby B
           </p>
         </div>
@@ -362,10 +367,10 @@ export function CompareClient() {
 
       {/* Partial selection */}
       {(detailA || detailB) && !(detailA && detailB) && (
-        <div className="mt-10 flex flex-col items-center justify-center rounded-2xl border border-dashed border-stone-200 bg-stone-50 px-6 py-12 text-center">
-          <p className="text-stone-500">
+        <div className="mt-10 flex flex-col items-center justify-center rounded-2xl border border-dashed border-border bg-card/40 px-6 py-12 text-center">
+          <p className="text-muted-foreground">
             Now pick{' '}
-            <span className="font-semibold text-stone-800">{detailA ? 'Hobby B' : 'Hobby A'}</span>{' '}
+            <span className="font-semibold text-foreground">{detailA ? 'Hobby B' : 'Hobby A'}</span>{' '}
             to see the comparison
           </p>
         </div>
@@ -377,7 +382,7 @@ export function CompareClient() {
       {/* Quick picks */}
       {!hobbyA && !hobbyB && (
         <div className="mt-10">
-          <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-stone-400">
+          <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground/60">
             Popular comparisons
           </p>
           <div className="flex flex-wrap gap-2">
@@ -396,7 +401,7 @@ export function CompareClient() {
                   setHobbyA(a);
                   setHobbyB(b);
                 }}
-                className="rounded-full border border-stone-200 bg-white px-3.5 py-1.5 text-sm text-stone-600 hover:border-emerald-400 hover:text-emerald-600 transition-colors"
+                className="rounded-full border border-border bg-card px-3.5 py-1.5 text-sm text-muted-foreground hover:border-lumi-500/50 hover:text-lumi-400 transition-colors"
               >
                 {a} vs {b}
               </button>

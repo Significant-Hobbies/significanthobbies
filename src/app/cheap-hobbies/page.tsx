@@ -224,20 +224,20 @@ export default function CheapHobbiesPage() {
       />
 
       <div className="mb-6">
-        <Link href="/hobbies" className="text-sm text-stone-500 hover:text-stone-700">
+        <Link href="/hobbies" className="text-sm text-muted-foreground hover:text-foreground">
           ← Hobby Directory
         </Link>
       </div>
 
-      <h1 className="text-3xl font-bold text-stone-900 mb-4">
+      <h1 className="text-3xl font-bold text-foreground mb-4">
         25 Free &amp; Cheap Hobbies That Are Actually Fun
       </h1>
-      <p className="text-lg text-stone-500 mb-4 leading-relaxed">
+      <p className="text-lg text-muted-foreground mb-4 leading-relaxed">
         The most rewarding hobbies usually aren&apos;t the expensive ones. Running, reading,
         writing, chess, hiking, drawing — these cost nothing, and some of the deepest hobbyists in
         the world practice them.
       </p>
-      <p className="text-lg text-stone-500 mb-8 leading-relaxed">
+      <p className="text-lg text-muted-foreground mb-8 leading-relaxed">
         This list is honest: we&apos;ve included 15 completely free hobbies and 10 that cost under
         $50 to start, with a real breakdown of what you actually need. No filler, no
         &quot;you&apos;ll need to upgrade your gear&quot; bait-and-switch.
@@ -247,7 +247,7 @@ export default function CheapHobbiesPage() {
       <div className="flex gap-3 mb-10 flex-wrap">
         <a
           href="#free"
-          className="rounded-full border border-emerald-200 bg-emerald-50 px-4 py-1.5 text-xs font-semibold text-emerald-800 hover:opacity-80 transition-opacity"
+          className="rounded-full border border-lumi-500/30 bg-lumi-500/10 px-4 py-1.5 text-xs font-semibold text-lumi-600 hover:opacity-80 transition-opacity"
         >
           15 Completely Free
         </a>
@@ -261,9 +261,9 @@ export default function CheapHobbiesPage() {
 
       {/* Free Hobbies */}
       <section id="free" className="mb-12">
-        <div className="border-l-4 border-emerald-400 pl-4 mb-6">
-          <h2 className="text-2xl font-bold text-stone-900">15 Completely Free Hobbies</h2>
-          <p className="text-stone-500 mt-1 text-sm">
+        <div className="border-l-4 border-lumi-500/50 pl-4 mb-6">
+          <h2 className="text-2xl font-bold text-foreground">15 Completely Free Hobbies</h2>
+          <p className="text-muted-foreground mt-1 text-sm">
             Zero dollars required to start. These hobbies are free indefinitely — no catch, no
             upgrade required.
           </p>
@@ -272,21 +272,21 @@ export default function CheapHobbiesPage() {
           {FREE_HOBBIES.map((hobby) => (
             <li
               key={hobby.name}
-              className="rounded-xl border border-stone-100 bg-white p-5 hover:border-emerald-200 transition-colors"
+              className="rounded-xl border border-border bg-card p-5 hover:border-lumi-500/30 transition-colors"
             >
               <div className="flex items-start justify-between gap-3 flex-wrap mb-2">
                 <Link
                   href={`/hobbies/${hobbySlug(hobby.name)}`}
-                  className="text-base font-bold text-stone-900 hover:text-emerald-700 transition-colors"
+                  className="text-base font-bold text-foreground hover:text-lumi-400 transition-colors"
                 >
                   {hobby.name}
                 </Link>
-                <span className="flex-shrink-0 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-0.5 text-xs font-medium text-emerald-700">
+                <span className="flex-shrink-0 rounded-full border border-lumi-500/30 bg-lumi-500/10 px-3 py-0.5 text-xs font-medium text-lumi-400">
                   {hobby.cost}
                 </span>
               </div>
-              <p className="text-xs text-stone-400 mb-2 font-medium">{hobby.what}</p>
-              <p className="text-sm text-stone-500 leading-relaxed">{hobby.why}</p>
+              <p className="text-xs text-muted-foreground/60 mb-2 font-medium">{hobby.what}</p>
+              <p className="text-sm text-muted-foreground leading-relaxed">{hobby.why}</p>
             </li>
           ))}
         </ul>
@@ -295,8 +295,8 @@ export default function CheapHobbiesPage() {
       {/* Cheap Hobbies */}
       <section id="cheap">
         <div className="border-l-4 border-blue-400 pl-4 mb-6">
-          <h2 className="text-2xl font-bold text-stone-900">10 Hobbies Under $50 to Start</h2>
-          <p className="text-stone-500 mt-1 text-sm">
+          <h2 className="text-2xl font-bold text-foreground">10 Hobbies Under $50 to Start</h2>
+          <p className="text-muted-foreground mt-1 text-sm">
             A small upfront investment, then free forever. These are the hobbies where one purchase
             gives you years of practice.
           </p>
@@ -305,12 +305,12 @@ export default function CheapHobbiesPage() {
           {CHEAP_HOBBIES.map((hobby) => (
             <li
               key={hobby.name}
-              className="rounded-xl border border-stone-100 bg-white p-5 hover:border-blue-200 transition-colors"
+              className="rounded-xl border border-border bg-card p-5 hover:border-blue-200 transition-colors"
             >
               <div className="flex items-start justify-between gap-3 flex-wrap mb-2">
                 <Link
                   href={`/hobbies/${hobbySlug(hobby.name)}`}
-                  className="text-base font-bold text-stone-900 hover:text-emerald-700 transition-colors"
+                  className="text-base font-bold text-foreground hover:text-lumi-400 transition-colors"
                 >
                   {hobby.name}
                 </Link>
@@ -318,31 +318,31 @@ export default function CheapHobbiesPage() {
                   {hobby.cost}
                 </span>
               </div>
-              <p className="text-xs text-stone-400 mb-2 font-medium">{hobby.what}</p>
-              <p className="text-sm text-stone-500 leading-relaxed">{hobby.why}</p>
+              <p className="text-xs text-muted-foreground/60 mb-2 font-medium">{hobby.what}</p>
+              <p className="text-sm text-muted-foreground leading-relaxed">{hobby.why}</p>
             </li>
           ))}
         </ul>
       </section>
 
-      <div className="mt-10 rounded-xl bg-stone-50 border border-stone-200 p-6">
-        <h2 className="text-sm font-bold text-stone-800 mb-2">The real cost of any hobby</h2>
-        <p className="text-sm text-stone-600 leading-relaxed">
+      <div className="mt-10 rounded-xl bg-card/40 border border-border p-6">
+        <h2 className="text-sm font-bold text-foreground mb-2">The real cost of any hobby</h2>
+        <p className="text-sm text-muted-foreground leading-relaxed">
           The most expensive part of any hobby is the time you invest in it. Choose based on what
           genuinely interests you, not what gear looks coolest. The hobby that sticks is the one
           you&apos;ll actually do — usually the one with the lowest friction to start.
         </p>
       </div>
 
-      <div className="mt-12 rounded-xl bg-emerald-50 border border-emerald-200 p-8 text-center">
-        <h2 className="text-xl font-bold text-stone-900 mb-2">Find your perfect hobby</h2>
-        <p className="text-stone-500 mb-4">
+      <div className="mt-12 rounded-xl bg-lumi-500/10 border border-lumi-500/30 p-8 text-center">
+        <h2 className="text-xl font-bold text-foreground mb-2">Find your perfect hobby</h2>
+        <p className="text-muted-foreground mb-4">
           Take our 2-minute quiz for personalized recommendations. We&apos;ll ask about your
           schedule, budget, and what you want to get out of a hobby.
         </p>
         <Link
           href="/find-your-hobby"
-          className="inline-flex rounded-lg bg-emerald-600 px-6 py-2.5 text-sm font-semibold text-white hover:bg-emerald-700 transition-colors"
+          className="inline-flex rounded-lg bg-primary px-6 py-2.5 text-sm font-semibold text-primary-foreground hover:bg-lumi-300 transition-colors"
         >
           Take the Quiz →
         </Link>

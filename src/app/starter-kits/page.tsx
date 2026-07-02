@@ -11,11 +11,11 @@ export const metadata: Metadata = {
 };
 
 const CATEGORY_STYLES: Record<string, string> = {
-  Creative: 'border-emerald-300 bg-emerald-50 text-emerald-800',
+  Creative: 'border-lumi-500/40 bg-lumi-500/10 text-lumi-600',
   Outdoor: 'border-teal-300 bg-teal-50 text-teal-800',
   Physical: 'border-blue-300 bg-blue-50 text-blue-800',
   Intellectual: 'border-purple-300 bg-purple-50 text-purple-800',
-  Culinary: 'border-amber-300 bg-amber-50 text-amber-800',
+  Culinary: 'border-amber-400/40 bg-amber-400/10 text-amber-300',
 };
 
 function hobbySlug(name: string) {
@@ -37,19 +37,19 @@ export default function StarterKitsPage() {
       />
 
       <div className="mb-6">
-        <Link href="/tools" className="text-sm text-stone-500 hover:text-stone-700">
+        <Link href="/tools" className="text-sm text-muted-foreground hover:text-foreground">
           Back to tools
         </Link>
       </div>
 
       <section className="mb-10 max-w-3xl">
-        <p className="mb-3 text-sm font-semibold uppercase tracking-wide text-emerald-700">
+        <p className="mb-3 text-sm font-semibold uppercase tracking-wide text-lumi-400">
           Starter kits
         </p>
-        <h1 className="text-3xl font-bold tracking-tight text-stone-900 sm:text-4xl">
+        <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
           Local starter kits for hobby experiments
         </h1>
-        <p className="mt-4 text-lg leading-relaxed text-stone-500">
+        <p className="mt-4 text-lg leading-relaxed text-muted-foreground">
           Each kit is designed for one small experiment using materials you can find nearby. Pick a
           kit, run the first experiment, then decide whether the hobby deserves a second session.
         </p>
@@ -63,7 +63,7 @@ export default function StarterKitsPage() {
               key={category}
               href={`#${category.toLowerCase()}`}
               className={`rounded-xl border p-4 text-sm font-semibold transition-opacity hover:opacity-80 ${
-                CATEGORY_STYLES[category] ?? 'border-stone-200 bg-white text-stone-700'
+                CATEGORY_STYLES[category] ?? 'border-border bg-card text-foreground'
               }`}
             >
               <span>{category}</span>
@@ -79,10 +79,10 @@ export default function StarterKitsPage() {
         {STARTER_KIT_CATEGORIES.map((category) => (
           <section key={category} id={category.toLowerCase()}>
             <div className="mb-4 flex items-center gap-3">
-              <h2 className="text-xl font-bold text-stone-900">{category}</h2>
+              <h2 className="text-xl font-bold text-foreground">{category}</h2>
               <span
                 className={`rounded-full border px-3 py-1 text-xs font-semibold ${
-                  CATEGORY_STYLES[category] ?? 'border-stone-200 bg-stone-50 text-stone-600'
+                  CATEGORY_STYLES[category] ?? 'border-border bg-card/40 text-muted-foreground'
                 }`}
               >
                 First-session experiments
@@ -93,69 +93,75 @@ export default function StarterKitsPage() {
               {STARTER_KITS.filter((kit) => kit.category === category).map((kit) => (
                 <article
                   key={kit.slug}
-                  className="rounded-xl border border-stone-200 bg-white p-5 shadow-sm transition-colors hover:border-emerald-200"
+                  className="rounded-xl border border-border bg-card p-5 shadow-sm transition-colors hover:border-lumi-500/30"
                 >
                   <div className="mb-4 flex flex-wrap items-start justify-between gap-3">
                     <div>
-                      <h3 className="text-lg font-bold text-stone-900">{kit.title}</h3>
-                      <p className="mt-1 text-sm leading-relaxed text-stone-500">{kit.fit}</p>
+                      <h3 className="text-lg font-bold text-foreground">{kit.title}</h3>
+                      <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
+                        {kit.fit}
+                      </p>
                     </div>
-                    <div className="rounded-lg border border-stone-200 bg-stone-50 px-3 py-2 text-right">
-                      <p className="text-xs font-medium uppercase tracking-wide text-stone-400">
+                    <div className="rounded-lg border border-border bg-card/40 px-3 py-2 text-right">
+                      <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground/60">
                         Budget
                       </p>
-                      <p className="text-sm font-semibold text-stone-800">{kit.budget}</p>
+                      <p className="text-sm font-semibold text-foreground">{kit.budget}</p>
                     </div>
                   </div>
 
-                  <dl className="grid gap-3 border-y border-stone-100 py-4 sm:grid-cols-2">
+                  <dl className="grid gap-3 border-y border-border py-4 sm:grid-cols-2">
                     <div>
-                      <dt className="text-xs font-medium uppercase tracking-wide text-stone-400">
+                      <dt className="text-xs font-medium uppercase tracking-wide text-muted-foreground/60">
                         First win
                       </dt>
-                      <dd className="mt-1 text-sm font-medium text-stone-700">
+                      <dd className="mt-1 text-sm font-medium text-foreground">
                         {kit.timeToFirstWin}
                       </dd>
                     </div>
                     <div>
-                      <dt className="text-xs font-medium uppercase tracking-wide text-stone-400">
+                      <dt className="text-xs font-medium uppercase tracking-wide text-muted-foreground/60">
                         Local sources
                       </dt>
-                      <dd className="mt-1 text-sm text-stone-600">{kit.localSources.join(', ')}</dd>
+                      <dd className="mt-1 text-sm text-muted-foreground">
+                        {kit.localSources.join(', ')}
+                      </dd>
                     </div>
                   </dl>
 
                   <div className="mt-4 grid gap-4 lg:grid-cols-2">
                     <div>
-                      <h4 className="text-sm font-semibold text-stone-900">Minimal supplies</h4>
-                      <ul className="mt-2 space-y-1 text-sm text-stone-500">
+                      <h4 className="text-sm font-semibold text-foreground">Minimal supplies</h4>
+                      <ul className="mt-2 space-y-1 text-sm text-muted-foreground">
                         {kit.supplies.map((item) => (
                           <li key={item} className="flex gap-2">
-                            <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-500" />
+                            <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-lumi-500/100" />
                             <span>{item}</span>
                           </li>
                         ))}
                       </ul>
                     </div>
                     <div>
-                      <h4 className="text-sm font-semibold text-stone-900">First experiment</h4>
-                      <p className="mt-2 text-sm leading-relaxed text-stone-500">
+                      <h4 className="text-sm font-semibold text-foreground">First experiment</h4>
+                      <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
                         {kit.firstExperiment}
                       </p>
                     </div>
                   </div>
 
-                  <div className="mt-4 rounded-lg border border-stone-100 bg-stone-50 p-4">
-                    <p className="text-xs font-medium uppercase tracking-wide text-stone-400">
+                  <div className="mt-4 rounded-lg border border-border bg-card/40 p-4">
+                    <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground/60">
                       Keep going if
                     </p>
-                    <p className="mt-1 text-sm leading-relaxed text-stone-600">
+                    <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
                       {kit.successSignal}
                     </p>
-                    <p className="mt-3 text-xs font-medium uppercase tracking-wide text-stone-400">
+                    <p className="mt-3 text-xs font-medium uppercase tracking-wide text-muted-foreground/60">
                       Next upgrade
                     </p>
-                    <p className="mt-1 text-sm leading-relaxed text-stone-600">{kit.upgradePath}</p>
+                    <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
+                      {kit.upgradePath}
+                    </p>
                   </div>
 
                   <div className="mt-4 flex flex-wrap gap-2">
@@ -163,7 +169,7 @@ export default function StarterKitsPage() {
                       <Link
                         key={hobby}
                         href={`/hobbies/${hobbySlug(hobby)}`}
-                        className="rounded-full border border-stone-200 px-3 py-1 text-xs font-medium text-stone-500 transition-colors hover:border-emerald-300 hover:text-emerald-700"
+                        className="rounded-full border border-border px-3 py-1 text-xs font-medium text-muted-foreground transition-colors hover:border-lumi-500/40 hover:text-lumi-400"
                       >
                         {hobby}
                       </Link>
@@ -176,15 +182,15 @@ export default function StarterKitsPage() {
         ))}
       </div>
 
-      <section className="mt-12 rounded-xl border border-emerald-200 bg-emerald-50 p-6 text-center">
-        <h2 className="text-xl font-bold text-stone-900">Want a more personal shortlist?</h2>
-        <p className="mx-auto mt-2 max-w-2xl text-sm leading-relaxed text-stone-600">
+      <section className="mt-12 rounded-xl border border-lumi-500/30 bg-lumi-500/10 p-6 text-center">
+        <h2 className="text-xl font-bold text-foreground">Want a more personal shortlist?</h2>
+        <p className="mx-auto mt-2 max-w-2xl text-sm leading-relaxed text-muted-foreground">
           Take the hobby quiz first, then use the starter kit closest to your recommended hobby as a
           low-risk experiment.
         </p>
         <Link
           href="/find-your-hobby"
-          className="mt-4 inline-flex rounded-lg bg-emerald-600 px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-emerald-700"
+          className="mt-4 inline-flex rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground transition-colors hover:bg-lumi-300"
         >
           Take the quiz
         </Link>

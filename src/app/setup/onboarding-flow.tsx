@@ -384,10 +384,10 @@ function ProgressDots({ current, total }: { current: number; total: number }) {
           key={i}
           className={`rounded-full transition-all duration-500 ${
             i === current
-              ? 'w-7 h-2.5 bg-emerald-600'
+              ? 'w-7 h-2.5 bg-primary'
               : i < current
-                ? 'w-2.5 h-2.5 bg-emerald-300'
-                : 'w-2.5 h-2.5 bg-stone-200'
+                ? 'w-2.5 h-2.5 bg-lumi-500/60'
+                : 'w-2.5 h-2.5 bg-foreground/10'
           }`}
           style={i === current ? { boxShadow: '0 0 8px rgba(5,150,105,0.5)' } : {}}
         />
@@ -666,7 +666,7 @@ export function OnboardingFlow({ user }: { user: OnboardingUser }) {
       <div className="relative z-10 flex min-h-screen items-center justify-center px-4 py-12">
         <div key={step} className="animate-slide-in-up w-full max-w-md">
           <div
-            className="rounded-3xl sm:rounded-[28px] bg-white px-5 py-8 sm:px-8 sm:py-10"
+            className="rounded-3xl sm:rounded-[28px] bg-card px-5 py-8 sm:px-8 sm:py-10"
             style={{
               boxShadow:
                 '0 20px 60px rgba(251,191,36,0.12), 0 8px 24px rgba(0,0,0,0.06), 0 1px 3px rgba(0,0,0,0.04)',
@@ -680,7 +680,7 @@ export function OnboardingFlow({ user }: { user: OnboardingUser }) {
                   {SPARKLES.map((sp, i) => (
                     <span
                       key={i}
-                      className="absolute text-amber-400 font-bold text-sm"
+                      className="absolute text-amber-300 font-bold text-sm"
                       style={{
                         top: sp.top,
                         left: sp.left,
@@ -725,7 +725,7 @@ export function OnboardingFlow({ user }: { user: OnboardingUser }) {
                     />
                   ) : (
                     <div
-                      className="avatar-glow flex h-16 w-16 sm:h-20 sm:w-20 items-center justify-center rounded-full text-xl sm:text-2xl font-bold text-white relative z-10"
+                      className="avatar-glow flex h-16 w-16 sm:h-20 sm:w-20 items-center justify-center rounded-full text-xl sm:text-2xl font-bold text-foreground relative z-10"
                       style={{ background: 'linear-gradient(135deg, #059669 0%, #10b981 100%)' }}
                     >
                       {initials}
@@ -739,7 +739,7 @@ export function OnboardingFlow({ user }: { user: OnboardingUser }) {
                   <span className="relative inline-block">
                     {firstName}!
                     <span
-                      className="absolute left-0 right-0 bottom-0 h-0.5 rounded-full bg-emerald-400"
+                      className="absolute left-0 right-0 bottom-0 h-0.5 rounded-full bg-lumi-400"
                       style={{
                         animation: 'nameUnderline 0.6s 0.4s cubic-bezier(0.16,1,0.3,1) both',
                         transformOrigin: 'left center',
@@ -759,7 +759,7 @@ export function OnboardingFlow({ user }: { user: OnboardingUser }) {
                 {/* CTA button */}
                 <button
                   onClick={() => setStep(1)}
-                  className="mt-8 w-full rounded-2xl py-3.5 text-base font-semibold text-white transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]"
+                  className="mt-8 w-full rounded-2xl py-3.5 text-base font-semibold text-foreground transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]"
                   style={{
                     background: 'linear-gradient(135deg, #059669 0%, #10b981 100%)',
                     animation: 'glowPulseBtn 2.5s ease-in-out infinite',
@@ -813,7 +813,7 @@ export function OnboardingFlow({ user }: { user: OnboardingUser }) {
                 {/* Username input */}
                 <div className="mb-3 relative">
                   <div
-                    className={`flex items-center rounded-2xl border-2 bg-white px-4 py-1 transition-all duration-300 focus-within:shadow-md ${
+                    className={`flex items-center rounded-2xl border-2 bg-card px-4 py-1 transition-all duration-300 focus-within:shadow-md ${
                       isUsernameValid ? 'border-cycle' : ''
                     }`}
                     style={{
@@ -838,7 +838,7 @@ export function OnboardingFlow({ user }: { user: OnboardingUser }) {
                       }
                       placeholder="yourname"
                       maxLength={30}
-                      className="flex-1 bg-transparent py-3 text-base outline-none placeholder:text-stone-300"
+                      className="flex-1 bg-transparent py-3 text-base outline-none placeholder:text-muted-foreground/40"
                       style={{ color: '#1C1917' }}
                       autoFocus
                       autoComplete="off"
@@ -847,7 +847,7 @@ export function OnboardingFlow({ user }: { user: OnboardingUser }) {
                     />
                     {isUsernameValid && (
                       <div className="relative flex items-center justify-center">
-                        <span className="text-emerald-500 text-lg font-bold">✓</span>
+                        <span className="text-lumi-400 text-lg font-bold">✓</span>
                         {/* Burst dots */}
                         {[0, 60, 120, 180, 240, 300].map((angle, i) => (
                           <div
@@ -924,7 +924,7 @@ export function OnboardingFlow({ user }: { user: OnboardingUser }) {
                     />
                   </svg>
                   {/* Green secure dot */}
-                  <div className="h-1.5 w-1.5 rounded-full bg-emerald-500 flex-shrink-0" />
+                  <div className="h-1.5 w-1.5 rounded-full bg-lumi-500/100 flex-shrink-0" />
                   <span className="text-xs truncate" style={{ color: '#A8A29E' }}>
                     significanthobbies.com/u/
                   </span>
@@ -943,7 +943,7 @@ export function OnboardingFlow({ user }: { user: OnboardingUser }) {
                 <button
                   onClick={() => setStep(2)}
                   disabled={!isUsernameValid}
-                  className="w-full rounded-2xl py-3.5 text-base font-semibold text-white transition-all duration-200 hover:scale-[1.02] hover:shadow-lg active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:scale-100"
+                  className="w-full rounded-2xl py-3.5 text-base font-semibold text-foreground transition-all duration-200 hover:scale-[1.02] hover:shadow-lg active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:scale-100"
                   style={{
                     background: 'linear-gradient(135deg, #059669 0%, #10b981 100%)',
                     boxShadow: isUsernameValid ? '0 4px 14px rgba(5,150,105,0.35)' : undefined,
@@ -1071,7 +1071,7 @@ export function OnboardingFlow({ user }: { user: OnboardingUser }) {
                   <button
                     onClick={() => handleFinish(false)}
                     disabled={loading}
-                    className="w-full rounded-2xl py-3.5 text-base font-semibold text-white transition-all duration-200 hover:scale-[1.02] hover:shadow-lg active:scale-[0.98] disabled:opacity-60 disabled:hover:scale-100"
+                    className="w-full rounded-2xl py-3.5 text-base font-semibold text-foreground transition-all duration-200 hover:scale-[1.02] hover:shadow-lg active:scale-[0.98] disabled:opacity-60 disabled:hover:scale-100"
                     style={{
                       background: 'linear-gradient(135deg, #059669 0%, #10b981 100%)',
                       boxShadow: '0 4px 14px rgba(5,150,105,0.35)',
@@ -1115,7 +1115,7 @@ export function OnboardingFlow({ user }: { user: OnboardingUser }) {
                   {['✦', '⋆', '✦', '⋆', '✦'].map((star, i) => (
                     <span
                       key={i}
-                      className="absolute text-amber-400 font-bold"
+                      className="absolute text-amber-300 font-bold"
                       style={{
                         fontSize: `${10 + (i % 3) * 4}px`,
                         top: `${-10 + Math.sin((i * 72 * Math.PI) / 180) * 36}px`,
@@ -1148,7 +1148,7 @@ export function OnboardingFlow({ user }: { user: OnboardingUser }) {
                 >
                   <Link
                     href="/timeline/new"
-                    className="block w-full rounded-2xl py-3.5 text-center text-base font-semibold text-white transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]"
+                    className="block w-full rounded-2xl py-3.5 text-center text-base font-semibold text-foreground transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]"
                     style={{
                       background: 'linear-gradient(135deg, #059669 0%, #10b981 100%)',
                       animation: 'glowPulseBtn 2s ease-in-out infinite',

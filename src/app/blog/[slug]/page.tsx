@@ -29,8 +29,12 @@ export async function generateMetadata({
 /* ─── Category color helper ──────────────────────────────────────────────────── */
 
 const CATEGORY_COLORS: Record<string, { bg: string; text: string; border: string }> = {
-  Wellbeing: { bg: 'bg-emerald-50', text: 'text-emerald-700', border: 'border-emerald-200' },
-  'Getting Started': { bg: 'bg-amber-50', text: 'text-amber-700', border: 'border-amber-200' },
+  Wellbeing: { bg: 'bg-lumi-500/10', text: 'text-lumi-400', border: 'border-lumi-500/30' },
+  'Getting Started': {
+    bg: 'bg-amber-400/10',
+    text: 'text-lumi-400',
+    border: 'border-amber-400/30',
+  },
   Psychology: { bg: 'bg-violet-50', text: 'text-violet-700', border: 'border-violet-200' },
   Reflection: { bg: 'bg-blue-50', text: 'text-blue-700', border: 'border-blue-200' },
   Inspiration: { bg: 'bg-orange-50', text: 'text-orange-700', border: 'border-orange-200' },
@@ -39,9 +43,9 @@ const CATEGORY_COLORS: Record<string, { bg: string; text: string; border: string
 function categoryStyle(category: string) {
   return (
     CATEGORY_COLORS[category] ?? {
-      bg: 'bg-stone-50',
-      text: 'text-stone-600',
-      border: 'border-stone-200',
+      bg: 'bg-card/40',
+      text: 'text-muted-foreground',
+      border: 'border-border',
     }
   );
 }
@@ -55,7 +59,7 @@ function BlogContent({ blocks }: { blocks: ContentBlock[] }) {
         switch (block.type) {
           case 'paragraph':
             return (
-              <p key={idx} className="scroll-reveal mb-5 text-lg leading-relaxed text-stone-700">
+              <p key={idx} className="scroll-reveal mb-5 text-lg leading-relaxed text-foreground">
                 {block.text}
               </p>
             );
@@ -65,7 +69,7 @@ function BlogContent({ blocks }: { blocks: ContentBlock[] }) {
               return (
                 <h2
                   key={idx}
-                  className="scroll-reveal-left mb-4 mt-10 text-2xl font-bold text-stone-900"
+                  className="scroll-reveal-left mb-4 mt-10 text-2xl font-bold text-foreground"
                 >
                   {block.text}
                 </h2>
@@ -74,7 +78,7 @@ function BlogContent({ blocks }: { blocks: ContentBlock[] }) {
             return (
               <h3
                 key={idx}
-                className="scroll-reveal-left mb-3 mt-8 text-xl font-semibold text-stone-800"
+                className="scroll-reveal-left mb-3 mt-8 text-xl font-semibold text-foreground"
               >
                 {block.text}
               </h3>
@@ -84,8 +88,8 @@ function BlogContent({ blocks }: { blocks: ContentBlock[] }) {
             return (
               <ul key={idx} className="scroll-reveal mb-5 space-y-2">
                 {block.items.map((item, i) => (
-                  <li key={i} className="flex items-start gap-3 text-lg text-stone-700">
-                    <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-500" />
+                  <li key={i} className="flex items-start gap-3 text-lg text-foreground">
+                    <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-lumi-500/100" />
                     <span className="leading-relaxed">{item}</span>
                   </li>
                 ))}
@@ -96,21 +100,21 @@ function BlogContent({ blocks }: { blocks: ContentBlock[] }) {
             return (
               <div
                 key={idx}
-                className="scroll-reveal-scale my-8 flex gap-4 rounded-xl border border-amber-200 bg-amber-50 px-6 py-5"
+                className="scroll-reveal-scale my-8 flex gap-4 rounded-xl border border-amber-400/30 bg-amber-400/10 px-6 py-5"
               >
                 <span className="mt-0.5 shrink-0 text-2xl" role="img" aria-hidden="true">
                   {block.emoji}
                 </span>
-                <p className="text-base italic leading-relaxed text-amber-900">{block.text}</p>
+                <p className="text-base italic leading-relaxed text-amber-300">{block.text}</p>
               </div>
             );
 
           case 'divider':
             return (
               <div key={idx} className="my-10 flex items-center justify-center gap-3">
-                <div className="h-px flex-1 bg-stone-200" />
-                <div className="h-1.5 w-1.5 rounded-full bg-stone-300" />
-                <div className="h-px flex-1 bg-stone-200" />
+                <div className="h-px flex-1 bg-foreground/10" />
+                <div className="h-1.5 w-1.5 rounded-full bg-foreground/15" />
+                <div className="h-px flex-1 bg-foreground/10" />
               </div>
             );
 
@@ -118,13 +122,13 @@ function BlogContent({ blocks }: { blocks: ContentBlock[] }) {
             return (
               <blockquote
                 key={idx}
-                className="scroll-reveal-blur my-8 border-l-4 border-emerald-400 py-1 pl-6"
+                className="scroll-reveal-blur my-8 border-l-4 border-lumi-500/50 py-1 pl-6"
               >
-                <p className="text-lg italic leading-relaxed text-stone-600">
+                <p className="text-lg italic leading-relaxed text-muted-foreground">
                   &ldquo;{block.text}&rdquo;
                 </p>
                 {block.attribution && (
-                  <cite className="mt-2 block text-sm text-stone-400 not-italic">
+                  <cite className="mt-2 block text-sm text-muted-foreground/60 not-italic">
                     — {block.attribution}
                   </cite>
                 )}
@@ -137,7 +141,7 @@ function BlogContent({ blocks }: { blocks: ContentBlock[] }) {
               : new URL(block.url).searchParams.get('v');
             return (
               <div key={idx} className="scroll-reveal my-10">
-                <div className="overflow-hidden rounded-2xl border border-stone-200 shadow-sm">
+                <div className="overflow-hidden rounded-2xl border border-border shadow-sm">
                   <div className="relative aspect-video">
                     <iframe
                       src={`https://www.youtube-nocookie.com/embed/${videoId}`}
@@ -149,7 +153,9 @@ function BlogContent({ blocks }: { blocks: ContentBlock[] }) {
                   </div>
                 </div>
                 {block.caption && (
-                  <p className="mt-3 text-center text-sm text-stone-400">{block.caption}</p>
+                  <p className="mt-3 text-center text-sm text-muted-foreground/60">
+                    {block.caption}
+                  </p>
                 )}
               </div>
             );
@@ -170,7 +176,7 @@ function RelatedCard({ post }: { post: BlogPost }) {
 
   return (
     <Link href={`/blog/${post.slug}`} className="group block">
-      <div className="flex h-full flex-col overflow-hidden rounded-2xl border border-stone-200 bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-emerald-300 hover:shadow-[0_8px_32px_rgba(16,185,129,0.10)]">
+      <div className="flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-card p-6 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-lumi-500/40 hover:shadow-[0_8px_32px_rgba(16,185,129,0.10)]">
         <div className="mb-3 text-3xl transition-transform duration-300 group-hover:scale-110">
           {post.emoji}
         </div>
@@ -179,13 +185,15 @@ function RelatedCard({ post }: { post: BlogPost }) {
         >
           {post.category}
         </span>
-        <h3 className="mb-2 text-base font-bold leading-snug text-stone-900 transition-colors group-hover:text-emerald-700">
+        <h3 className="mb-2 text-base font-bold leading-snug text-foreground transition-colors group-hover:text-lumi-400">
           {post.title}
         </h3>
-        <p className="line-clamp-2 flex-1 text-sm leading-relaxed text-stone-500">{post.excerpt}</p>
-        <div className="mt-4 flex items-center justify-between border-t border-stone-100 pt-3">
-          <span className="text-xs text-stone-400">{post.readTime} min read</span>
-          <span className="text-xs font-semibold text-emerald-600 opacity-0 transition-opacity group-hover:opacity-100">
+        <p className="line-clamp-2 flex-1 text-sm leading-relaxed text-muted-foreground">
+          {post.excerpt}
+        </p>
+        <div className="mt-4 flex items-center justify-between border-t border-border pt-3">
+          <span className="text-xs text-muted-foreground/60">{post.readTime} min read</span>
+          <span className="text-xs font-semibold text-lumi-400 opacity-0 transition-opacity group-hover:opacity-100">
             Read →
           </span>
         </div>
@@ -226,11 +234,11 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
         }}
       />
       {/* Back link */}
-      <div className="border-b border-stone-100 px-4 py-3">
+      <div className="border-b border-border px-4 py-3">
         <div className="mx-auto max-w-3xl">
           <Link
             href="/blog"
-            className="inline-flex items-center gap-1.5 text-sm text-stone-400 transition-colors hover:text-stone-700"
+            className="inline-flex items-center gap-1.5 text-sm text-muted-foreground/60 transition-colors hover:text-foreground"
           >
             <span>←</span>
             <span>Blog</span>
@@ -253,7 +261,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
             >
               {post.category}
             </span>
-            <span className="flex items-center gap-1.5 rounded-full bg-stone-100 px-3 py-0.5 text-xs text-stone-500">
+            <span className="flex items-center gap-1.5 rounded-full bg-foreground/5 px-3 py-0.5 text-xs text-muted-foreground">
               <svg width="11" height="11" viewBox="0 0 12 12" fill="none" aria-hidden="true">
                 <circle cx="6" cy="6" r="5" stroke="currentColor" strokeWidth="1.5" />
                 <path
@@ -265,7 +273,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
               </svg>
               {post.readTime} min read
             </span>
-            <span className="text-xs text-stone-400">{post.publishedAt}</span>
+            <span className="text-xs text-muted-foreground/60">{post.publishedAt}</span>
           </div>
 
           {/* Emoji */}
@@ -274,12 +282,12 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
           </div>
 
           {/* Title */}
-          <h1 className="scroll-reveal scroll-reveal-d2 mb-5 text-3xl font-bold leading-tight tracking-tight text-stone-900 sm:text-4xl md:text-5xl">
+          <h1 className="scroll-reveal scroll-reveal-d2 mb-5 text-3xl font-bold leading-tight tracking-tight text-foreground sm:text-4xl md:text-5xl">
             {post.title}
           </h1>
 
           {/* Excerpt */}
-          <p className="scroll-reveal scroll-reveal-d3 text-lg leading-relaxed text-stone-500 sm:text-xl">
+          <p className="scroll-reveal scroll-reveal-d3 text-lg leading-relaxed text-muted-foreground sm:text-xl">
             {post.excerpt}
           </p>
         </div>
@@ -294,15 +302,15 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
 
       {/* Related posts */}
       {relatedPosts.length > 0 && (
-        <section className="border-t border-stone-200 px-4 py-14">
+        <section className="border-t border-border px-4 py-14">
           <div className="mx-auto max-w-3xl">
             {/* Divider with label */}
             <div className="mb-8 flex items-center gap-4">
-              <div className="h-px flex-1 bg-stone-200" />
-              <p className="text-xs font-semibold uppercase tracking-widest text-stone-400">
+              <div className="h-px flex-1 bg-foreground/10" />
+              <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground/60">
                 More from the journal
               </p>
-              <div className="h-px flex-1 bg-stone-200" />
+              <div className="h-px flex-1 bg-foreground/10" />
             </div>
 
             <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
@@ -318,28 +326,28 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
 
       {/* CTA */}
       <section
-        className="border-t border-stone-100 px-4 py-16"
+        className="border-t border-border px-4 py-16"
         style={{ background: 'linear-gradient(135deg, #F0FDF4 0%, #FAFAF9 100%)' }}
       >
         <div className="scroll-reveal-scale mx-auto max-w-3xl text-center">
           <div className="mb-3 text-3xl">🗺️</div>
-          <h2 className="mb-3 text-2xl font-bold text-stone-900">
+          <h2 className="mb-3 text-2xl font-bold text-foreground">
             Ready to map your own hobby journey?
           </h2>
-          <p className="mb-6 text-stone-500">
+          <p className="mb-6 text-muted-foreground">
             Track your hobbies across life phases. Discover what rekindled, what persisted, and what
             to explore next.
           </p>
           <Link
             href="/timeline/new"
-            className="inline-flex items-center gap-2 rounded-full bg-emerald-600 px-7 py-3 text-sm font-semibold text-white shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:bg-emerald-700 hover:shadow-md"
+            className="inline-flex items-center gap-2 rounded-full bg-primary px-7 py-3 text-sm font-semibold text-primary-foreground shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:bg-lumi-300 hover:shadow-md"
           >
             Build your timeline →
           </Link>
           <div className="mt-5">
             <Link
               href="/blog"
-              className="text-sm text-stone-400 transition-colors hover:text-stone-600"
+              className="text-sm text-muted-foreground/60 transition-colors hover:text-muted-foreground"
             >
               ← Back to all articles
             </Link>

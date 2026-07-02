@@ -19,14 +19,14 @@ export function MobileMenu({ links, isLoggedIn }: MobileMenuProps) {
       <button
         type="button"
         onClick={() => setOpen(!open)}
-        className="flex h-9 w-9 items-center justify-center rounded-md text-stone-600 hover:bg-stone-100 transition-colors"
+        className="flex h-9 w-9 items-center justify-center rounded-md text-muted-foreground hover:bg-foreground/5 transition-colors"
         aria-label={open ? 'Close menu' : 'Open menu'}
       >
         {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
       </button>
 
       {open && (
-        <div className="absolute left-0 top-14 z-50 w-full border-b border-stone-200 bg-white/95 backdrop-blur-sm">
+        <div className="absolute left-0 top-14 z-50 w-full border-b border-border bg-card/95 backdrop-blur-sm">
           <div className="flex flex-col px-4 py-3 gap-1">
             {links.map((link) => {
               const isActive = pathname === link.href;
@@ -40,11 +40,11 @@ export function MobileMenu({ links, isLoggedIn }: MobileMenuProps) {
                   className={`rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${
                     isActive
                       ? isBucketList
-                        ? 'bg-amber-50 text-amber-700'
-                        : 'bg-emerald-50 text-emerald-700'
+                        ? 'bg-amber-400/10 text-lumi-400'
+                        : 'bg-lumi-500/10 text-lumi-400'
                       : isBucketList
-                        ? 'text-stone-600 hover:bg-amber-50 hover:text-amber-700'
-                        : 'text-stone-600 hover:bg-stone-50 hover:text-stone-900'
+                        ? 'text-muted-foreground hover:bg-amber-400/10 hover:text-lumi-400'
+                        : 'text-muted-foreground hover:bg-card/40 hover:text-foreground'
                   }`}
                 >
                   {link.label}
@@ -57,20 +57,20 @@ export function MobileMenu({ links, isLoggedIn }: MobileMenuProps) {
               onClick={() => setOpen(false)}
               className={`flex items-center gap-2 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${
                 pathname === '/search'
-                  ? 'bg-emerald-50 text-emerald-700'
-                  : 'text-stone-600 hover:bg-stone-50 hover:text-stone-900'
+                  ? 'bg-lumi-500/10 text-lumi-400'
+                  : 'text-muted-foreground hover:bg-card/40 hover:text-foreground'
               }`}
             >
               <Search className="h-4 w-4" />
               Search
             </Link>
-            <div className="my-1 border-t border-stone-100" />
+            <div className="my-1 border-t border-border" />
             {isLoggedIn ? (
               <Link
                 href="/timeline/new"
                 prefetch={false}
                 onClick={() => setOpen(false)}
-                className="rounded-lg bg-emerald-600 px-3 py-2.5 text-center text-sm font-semibold text-white hover:bg-emerald-700 transition-colors"
+                className="rounded-lg bg-primary px-3 py-2.5 text-center text-sm font-semibold text-primary-foreground hover:bg-lumi-300 transition-colors"
               >
                 New Timeline
               </Link>
@@ -79,7 +79,7 @@ export function MobileMenu({ links, isLoggedIn }: MobileMenuProps) {
                 href="/login"
                 prefetch={false}
                 onClick={() => setOpen(false)}
-                className="rounded-lg border border-stone-300 px-3 py-2.5 text-center text-sm font-medium text-stone-600 hover:text-stone-900 transition-colors"
+                className="rounded-lg border border-border px-3 py-2.5 text-center text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
               >
                 Sign in
               </Link>

@@ -5,13 +5,18 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
 import { BadgeCollection } from '~/components/badge-collection';
+import { CommitmentCard } from '~/components/commitments/commitment-card';
 import { FollowButton } from '~/components/follow-button';
+import { LifeGrid } from '~/components/life-grid';
 import { SuggestionsPanel } from '~/components/suggestions-panel';
 import { TimelineCard } from '~/components/timeline-card';
 import { Button } from '~/components/ui/button';
 import { bucketListItems, follows, timelines, users } from '~/db/schema';
+import { getPublicCommitmentsForUser } from '~/lib/actions/commitments';
+import type { StampRow } from '~/lib/commitments';
 import { BUCKET_ITEM_CATEGORIES } from '~/lib/famous-bucket-lists';
 import { getCategoryForHobby } from '~/lib/hobbies';
+import { birthDateFromYear, buildLifeGrid, weekIndexForDay } from '~/lib/mortality';
 import type { Phase, TimelineVisibility } from '~/lib/types';
 import { getServerAuthSession } from '~/server/auth';
 import { db } from '~/server/db';
@@ -30,16 +35,16 @@ export async function generateMetadata({ params }: Props) {
 }
 
 const CATEGORY_BADGE_COLORS: Record<string, string> = {
-  Creative: 'border-purple-300 bg-purple-50 text-purple-700',
-  Music: 'border-pink-300 bg-pink-50 text-pink-700',
-  Physical: 'border-orange-300 bg-orange-50 text-orange-700',
-  Intellectual: 'border-blue-300 bg-blue-50 text-blue-700',
-  Gaming: 'border-violet-300 bg-violet-50 text-violet-700',
-  Outdoor: 'border-emerald-300 bg-emerald-50 text-emerald-700',
-  Culinary: 'border-yellow-300 bg-yellow-50 text-yellow-700',
-  Collecting: 'border-stone-300 bg-stone-100 text-stone-600',
-  Making: 'border-amber-300 bg-amber-50 text-amber-700',
-  Social: 'border-teal-300 bg-teal-50 text-teal-700',
+  Creative: 'border-purple-400/30 bg-purple-400/10 text-purple-300',
+  Music: 'border-pink-400/30 bg-pink-400/10 text-pink-300',
+  Physical: 'border-orange-400/30 bg-orange-400/10 text-orange-300',
+  Intellectual: 'border-blue-400/30 bg-blue-400/10 text-blue-300',
+  Gaming: 'border-violet-400/30 bg-violet-400/10 text-violet-300',
+  Outdoor: 'border-lumi-500/30 bg-lumi-500/10 text-lumi-400',
+  Culinary: 'border-lumi-500/50/30 bg-lumi-400/10 text-lumi-300',
+  Collecting: 'border-border bg-foreground/5 text-muted-foreground',
+  Making: 'border-amber-400/30 bg-amber-400/10 text-amber-300',
+  Social: 'border-teal-400/30 bg-teal-400/10 text-teal-300',
 };
 
 export default async function ProfilePage({ params }: Props) {
@@ -57,6 +62,7 @@ export default async function ProfilePage({ params }: Props) {
       website: true,
       createdAt: true,
       earnedBadges: true,
+      birthYear: true,
     },
   });
 
@@ -104,6 +110,18 @@ export default async function ProfilePage({ params }: Props) {
     .from(bucketListItems)
     .where(and(eq(bucketListItems.userId, user.id), eq(bucketListItems.visibility, 'public')))
     .orderBy(desc(bucketListItems.createdAt));
+
+  // Commitments + stamps for the life grid and commitments section.
+  const profileCommitments = await getPublicCommitmentsForUser(user.id);
+  const birth = birthDateFromYear(user.birthYear);
+  const stampedWeeks = new Set<number>();
+  for (const c of profileCommitments) {
+    for (const s of c.stamps) {
+      const idx = weekIndexForDay(birth, s.dayDate);
+      if (idx !== null) stampedWeeks.add(idx);
+    }
+  }
+  const lifeGrid = buildLifeGrid(birth, stampedWeeks);
 
   // Check if the current user is following this profile
   let isFollowing = false;
@@ -156,7 +174,7 @@ export default async function ProfilePage({ params }: Props) {
         <div
           className={
             isOwner
-              ? 'rounded-full p-0.5 bg-gradient-to-br from-emerald-400/40 via-emerald-600/20 to-transparent ring-2 ring-emerald-400/30 shadow-[0_0_18px_2px_rgba(16,185,129,0.15)]'
+              ? 'rounded-full p-0.5 bg-gradient-to-br from-lumi-400/40 via-lumi-600/20 to-transparent ring-2 ring-lumi-500/30 shadow-[0_0_18px_2px_oklch(0.82_0.13_88/0.15)]'
               : ''
           }
         >
@@ -166,10 +184,10 @@ export default async function ProfilePage({ params }: Props) {
               alt={user.name ?? 'Avatar'}
               width={72}
               height={72}
-              className="rounded-full border-2 border-stone-200"
+              className="rounded-full border-2 border-border"
             />
           ) : (
-            <div className="h-[72px] w-[72px] rounded-full bg-stone-100 border-2 border-stone-200 flex items-center justify-center text-2xl font-bold text-stone-500">
+            <div className="h-[72px] w-[72px] rounded-full bg-foreground/5 border-2 border-border flex items-center justify-center text-2xl font-bold text-muted-foreground">
               {(user.name ?? username).charAt(0).toUpperCase()}
             </div>
           )}
@@ -177,22 +195,22 @@ export default async function ProfilePage({ params }: Props) {
 
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 flex-wrap">
-            <h1 className="text-2xl font-bold text-stone-900">{user.name ?? username}</h1>
+            <h1 className="text-2xl font-bold text-foreground">{user.name ?? username}</h1>
             {isOwner && (
               <Link
                 href="/settings"
-                className="inline-flex items-center gap-1 text-xs text-stone-400 hover:text-emerald-600 transition-colors"
+                className="inline-flex items-center gap-1 text-xs text-muted-foreground/60 hover:text-lumi-400 transition-colors"
               >
                 <Pencil className="h-3 w-3" />
                 Edit profile
               </Link>
             )}
           </div>
-          <p className="text-stone-500">@{user.username}</p>
+          <p className="text-muted-foreground">@{user.username}</p>
 
           {/* Bio */}
           {user.bio && (
-            <p className="mt-2 text-sm text-stone-600 italic leading-relaxed max-w-md">
+            <p className="mt-2 text-sm text-muted-foreground italic leading-relaxed max-w-md">
               {user.bio}
             </p>
           )}
@@ -203,7 +221,7 @@ export default async function ProfilePage({ params }: Props) {
               href={user.website}
               target="_blank"
               rel="noopener noreferrer"
-              className="mt-1.5 inline-flex items-center gap-1 text-xs text-emerald-600 hover:text-emerald-700 hover:underline transition-colors"
+              className="mt-1.5 inline-flex items-center gap-1 text-xs text-lumi-400 hover:text-lumi-400 hover:underline transition-colors"
             >
               <ExternalLink className="h-3 w-3" />
               {user.website.replace(/^https?:\/\//, '')}
@@ -212,27 +230,31 @@ export default async function ProfilePage({ params }: Props) {
 
           {/* Stats bar */}
           <div className="mt-3 flex flex-wrap gap-2">
-            <span className="inline-flex items-center gap-1.5 rounded-full border border-stone-200 bg-stone-50 px-3 py-1 text-xs text-stone-700">
-              <span className="text-emerald-600 font-semibold">{timelineList.length}</span>
-              <span className="text-stone-500">timeline{timelineList.length !== 1 ? 's' : ''}</span>
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card/40 px-3 py-1 text-xs text-foreground">
+              <span className="text-lumi-400 font-semibold">{timelineList.length}</span>
+              <span className="text-muted-foreground">
+                timeline{timelineList.length !== 1 ? 's' : ''}
+              </span>
             </span>
-            <span className="inline-flex items-center gap-1.5 rounded-full border border-stone-200 bg-stone-50 px-3 py-1 text-xs text-stone-700">
-              <span className="text-emerald-600 font-semibold">{allHobbies.length}</span>
-              <span className="text-stone-500">
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card/40 px-3 py-1 text-xs text-foreground">
+              <span className="text-lumi-400 font-semibold">{allHobbies.length}</span>
+              <span className="text-muted-foreground">
                 unique hobbie{allHobbies.length !== 1 ? 's' : ''}
               </span>
             </span>
-            <span className="inline-flex items-center gap-1.5 rounded-full border border-stone-200 bg-stone-50 px-3 py-1 text-xs text-stone-700">
-              <span className="text-emerald-600 font-semibold">{totalPhases}</span>
-              <span className="text-stone-500">phase{totalPhases !== 1 ? 's' : ''}</span>
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card/40 px-3 py-1 text-xs text-foreground">
+              <span className="text-lumi-400 font-semibold">{totalPhases}</span>
+              <span className="text-muted-foreground">phase{totalPhases !== 1 ? 's' : ''}</span>
             </span>
-            <span className="inline-flex items-center gap-1.5 rounded-full border border-stone-200 bg-stone-50 px-3 py-1 text-xs text-stone-700">
-              <span className="text-emerald-600 font-semibold">{followerCount}</span>
-              <span className="text-stone-500">follower{followerCount !== 1 ? 's' : ''}</span>
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card/40 px-3 py-1 text-xs text-foreground">
+              <span className="text-lumi-400 font-semibold">{followerCount}</span>
+              <span className="text-muted-foreground">
+                follower{followerCount !== 1 ? 's' : ''}
+              </span>
             </span>
-            <span className="inline-flex items-center gap-1.5 rounded-full border border-stone-200 bg-stone-50 px-3 py-1 text-xs text-stone-700">
-              <span className="text-emerald-600 font-semibold">{followingCount}</span>
-              <span className="text-stone-500">following</span>
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card/40 px-3 py-1 text-xs text-foreground">
+              <span className="text-lumi-400 font-semibold">{followingCount}</span>
+              <span className="text-muted-foreground">following</span>
             </span>
           </div>
 
@@ -253,12 +275,12 @@ export default async function ProfilePage({ params }: Props) {
             <div className="mt-3">
               <Link
                 href="/login"
-                className="inline-flex items-center gap-1.5 rounded-full bg-emerald-600 px-4 py-1.5 text-sm font-medium text-white hover:bg-emerald-700 transition-colors"
+                className="inline-flex items-center gap-1.5 rounded-full bg-primary px-4 py-1.5 text-sm font-medium text-primary-foreground hover:bg-lumi-300 transition-colors"
               >
                 Follow
               </Link>
-              <span className="ml-3 text-sm text-stone-500">
-                <span className="font-semibold text-stone-700">{followerCount}</span>{' '}
+              <span className="ml-3 text-sm text-muted-foreground">
+                <span className="font-semibold text-foreground">{followerCount}</span>{' '}
                 {followerCount === 1 ? 'follower' : 'followers'}
               </span>
             </div>
@@ -267,7 +289,7 @@ export default async function ProfilePage({ params }: Props) {
 
         {isOwner && (
           <Link href="/timeline/new">
-            <Button className="bg-emerald-600 text-white hover:bg-emerald-700">
+            <Button className="bg-primary text-primary-foreground hover:bg-lumi-300">
               <Plus className="mr-1.5 h-4 w-4" />
               New timeline
             </Button>
@@ -276,24 +298,60 @@ export default async function ProfilePage({ params }: Props) {
       </div>
 
       <div className="space-y-8">
+        {/* Life in weeks — mortality frame */}
+        {(user.birthYear || stampedWeeks.size > 0) && (
+          <div className="scroll-reveal">
+            <LifeGrid grid={lifeGrid} />
+          </div>
+        )}
+
+        {/* Commitments */}
+        {profileCommitments.length > 0 && (
+          <div className="scroll-reveal scroll-reveal-d1">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-sm font-medium text-foreground">Commitments</h2>
+              {isOwner && (
+                <a
+                  href="/commitments"
+                  className="text-xs text-lumi-400 hover:text-lumi-400 transition-colors"
+                >
+                  Manage →
+                </a>
+              )}
+            </div>
+            <div className="grid gap-3 sm:grid-cols-2">
+              {profileCommitments.slice(0, 4).map((c) => (
+                <CommitmentCard
+                  key={c.id}
+                  id={c.id}
+                  hobbyName={c.hobbyName}
+                  goalDays={c.goalDays}
+                  status={c.status}
+                  startDate={c.startDate}
+                  stamps={c.stamps as StampRow[]}
+                  canAbandon={false}
+                />
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* Hobby cloud */}
         {allHobbies.length > 0 && (
           <div className="scroll-reveal scroll-reveal-d1">
-            <h2 className="mb-3 text-sm font-medium uppercase tracking-wide text-stone-500">
-              Hobby cloud
-            </h2>
+            <h2 className="mb-3 text-sm font-medium text-foreground">Hobby cloud</h2>
             <div className="flex flex-wrap gap-2">
               {top10Hobbies.map((hobbyName) => {
                 const cat = getCategoryForHobby(hobbyName);
                 const colorClass = cat
                   ? (CATEGORY_BADGE_COLORS[cat.name] ??
-                    'border-stone-200 bg-stone-50 text-stone-600')
-                  : 'border-stone-200 bg-stone-50 text-stone-600';
+                    'border-border bg-card/40 text-muted-foreground')
+                  : 'border-border bg-card/40 text-muted-foreground';
                 return (
                   <Link
                     key={hobbyName}
                     href={`/hobbies/${encodeURIComponent(hobbyName.toLowerCase().replace(/\s+/g, '-'))}`}
-                    className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-medium transition-colors hover:ring-1 hover:ring-emerald-300 ${colorClass}`}
+                    className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-medium transition-colors hover:ring-1 hover:ring-lumi-500/40 ${colorClass}`}
                   >
                     {cat && <span>{cat.emoji}</span>}
                     {hobbyName}
@@ -309,9 +367,9 @@ export default async function ProfilePage({ params }: Props) {
           <div className="scroll-reveal scroll-reveal-d1">
             <BadgeCollection earnedBadgeIds={earnedBadgeIds} />
             {isOwner && earnedBadgeIds.length === 0 && (
-              <p className="mt-2 text-xs text-stone-400">
+              <p className="mt-2 text-xs text-muted-foreground/60">
                 Complete{' '}
-                <a href="/side-quests" className="text-emerald-600 hover:underline">
+                <a href="/side-quests" className="text-lumi-400 hover:underline">
                   side quests
                 </a>{' '}
                 to earn badges!
@@ -323,9 +381,7 @@ export default async function ProfilePage({ params }: Props) {
         {/* Timelines */}
         {timelineList.length > 0 ? (
           <div className="scroll-reveal scroll-reveal-d2">
-            <h2 className="mb-4 text-sm font-medium uppercase tracking-wide text-stone-500">
-              Timelines
-            </h2>
+            <h2 className="mb-4 text-sm font-medium text-foreground">Timelines</h2>
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               {timelineList.map((t) => (
                 <TimelineCard key={t.id} timeline={t} showVisibility={isOwner} />
@@ -333,20 +389,20 @@ export default async function ProfilePage({ params }: Props) {
             </div>
           </div>
         ) : (
-          <div className="rounded-xl border border-stone-200 bg-stone-50 p-10 text-center">
-            <p className="text-stone-600 font-medium">
+          <div className="rounded-xl border border-border bg-card/40 p-10 text-center">
+            <p className="text-muted-foreground font-medium">
               {isOwner
                 ? "You haven't built a timeline yet."
                 : `@${username} hasn't shared a timeline yet.`}
             </p>
-            <p className="mt-1 text-sm text-stone-400">
+            <p className="mt-1 text-sm text-muted-foreground/60">
               {isOwner
                 ? 'Map the hobbies that shaped each chapter of your life.'
                 : "Check back later, or explore other people's hobby journeys in the meantime."}
             </p>
             {isOwner ? (
               <Link href="/timeline/new">
-                <Button className="mt-4 bg-emerald-600 text-white hover:bg-emerald-700">
+                <Button className="mt-4 bg-primary text-primary-foreground hover:bg-lumi-300">
                   Build your first timeline
                 </Button>
               </Link>
@@ -354,13 +410,13 @@ export default async function ProfilePage({ params }: Props) {
               <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
                 <Link
                   href="/explore"
-                  className="inline-flex items-center gap-1.5 rounded-full bg-emerald-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-emerald-700"
+                  className="inline-flex items-center gap-1.5 rounded-full bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition-colors hover:bg-lumi-300"
                 >
                   Explore timelines
                 </Link>
                 <Link
                   href="/journeys"
-                  className="inline-flex items-center gap-1.5 rounded-full border border-stone-300 bg-white px-4 py-2 text-sm font-medium text-stone-700 transition-colors hover:border-emerald-400 hover:text-emerald-700"
+                  className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-4 py-2 text-sm font-medium text-foreground transition-colors hover:border-lumi-500/50 hover:text-lumi-400"
                 >
                   Famous journeys
                 </Link>
@@ -373,13 +429,11 @@ export default async function ProfilePage({ params }: Props) {
         {publicBucketItems.length > 0 && (
           <div className="scroll-reveal scroll-reveal-d3">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-sm font-medium uppercase tracking-wide text-stone-500">
-                Bucket list
-              </h2>
+              <h2 className="text-sm font-medium text-foreground">Bucket list</h2>
               {isOwner && (
                 <a
                   href="/dashboard"
-                  className="text-xs text-emerald-600 hover:text-emerald-700 transition-colors"
+                  className="text-xs text-lumi-400 hover:text-lumi-400 transition-colors"
                 >
                   Manage →
                 </a>
@@ -397,35 +451,37 @@ export default async function ProfilePage({ params }: Props) {
                     key={item.id}
                     className={`flex items-start gap-3 rounded-lg border px-4 py-3 ${
                       isDone
-                        ? 'border-[#f0a090] bg-[#fff6f2]'
+                        ? 'border-lumi-500/40 bg-lumi-500/10'
                         : isInProgress
-                          ? 'border-amber-200 bg-amber-50/60'
-                          : 'border-stone-200 bg-stone-50'
+                          ? 'border-amber-400/40 bg-amber-400/10'
+                          : 'border-border bg-card/40'
                     }`}
                   >
                     <span
                       className={`mt-0.5 h-4.5 w-4.5 shrink-0 rounded-full border-2 flex items-center justify-center text-[9px] font-bold ${
                         isDone
-                          ? 'border-[#e05533] bg-[#e05533] text-white'
+                          ? 'border-lumi-500 bg-lumi-500 text-primary-foreground'
                           : isInProgress
-                            ? 'border-amber-400 bg-amber-400/40 text-amber-600'
-                            : 'border-stone-300'
+                            ? 'border-amber-400 bg-amber-400/40 text-amber-300'
+                            : 'border-border'
                       }`}
                     >
                       {isDone ? '✓' : isInProgress ? '●' : ''}
                     </span>
                     <span
                       className={`flex-1 text-sm ${
-                        isDone ? 'line-through text-stone-400' : 'text-stone-700'
+                        isDone ? 'line-through text-muted-foreground/60' : 'text-foreground'
                       }`}
                     >
                       {item.title}
                       {item.targetYear && (
-                        <span className="ml-2 text-xs text-stone-400">by {item.targetYear}</span>
+                        <span className="ml-2 text-xs text-muted-foreground/60">
+                          by {item.targetYear}
+                        </span>
                       )}
                     </span>
                     {cat && (
-                      <span className="text-xs text-stone-400 shrink-0" title={cat.label}>
+                      <span className="text-xs text-muted-foreground/60 shrink-0" title={cat.label}>
                         {cat.emoji}
                       </span>
                     )}

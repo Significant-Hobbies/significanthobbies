@@ -145,24 +145,24 @@ export default function HobbiesForMentalHealthPage() {
       />
 
       <div className="mb-6">
-        <Link href="/hobbies" className="text-sm text-stone-500 hover:text-stone-700">
+        <Link href="/hobbies" className="text-sm text-muted-foreground hover:text-foreground">
           ← Hobby Directory
         </Link>
       </div>
 
-      <h1 className="text-3xl font-bold text-stone-900 mb-4">
+      <h1 className="text-3xl font-bold text-foreground mb-4">
         15 Hobbies That Improve Mental Health — Science-Backed
       </h1>
-      <p className="text-lg text-stone-500 mb-4 leading-relaxed">
+      <p className="text-lg text-muted-foreground mb-4 leading-relaxed">
         Hobbies aren&apos;t a luxury — they&apos;re one of the most effective, accessible mental
         health tools available. Research consistently shows that engaged leisure activity reduces
         anxiety, counters depression, builds resilience, and even slows cognitive decline.
       </p>
-      <p className="text-lg text-stone-500 mb-8 leading-relaxed">
+      <p className="text-lg text-muted-foreground mb-8 leading-relaxed">
         Three mechanisms explain most of the effect:{' '}
-        <strong className="text-stone-700">flow state</strong> (full absorption that quiets
-        rumination), <strong className="text-stone-700">social connection</strong> (most hobbies
-        create community), and <strong className="text-stone-700">identity</strong> (having a self
+        <strong className="text-foreground">flow state</strong> (full absorption that quiets
+        rumination), <strong className="text-foreground">social connection</strong> (most hobbies
+        create community), and <strong className="text-foreground">identity</strong> (having a self
         beyond work and roles). Below are 15 hobbies with strong evidence behind them — and an
         explanation of exactly why each one works.
       </p>
@@ -171,34 +171,34 @@ export default function HobbiesForMentalHealthPage() {
         {HOBBIES.map((hobby, i) => (
           <div
             key={hobby.name}
-            className="rounded-xl border border-stone-200 bg-white p-6 hover:border-emerald-200 transition-colors"
+            className="rounded-xl border border-border bg-card p-6 hover:border-lumi-500/30 transition-colors"
           >
             <div className="flex items-start gap-4">
-              <span className="flex-shrink-0 w-8 h-8 rounded-full bg-emerald-100 text-emerald-700 text-sm font-bold flex items-center justify-center">
+              <span className="flex-shrink-0 w-8 h-8 rounded-full bg-lumi-500/15 text-lumi-400 text-sm font-bold flex items-center justify-center">
                 {i + 1}
               </span>
               <div className="flex-1">
                 <div className="flex items-center flex-wrap gap-3 mb-2">
                   <Link
                     href={`/hobbies/${hobbySlug(hobby.name)}`}
-                    className="text-lg font-bold text-stone-900 hover:text-emerald-700 transition-colors"
+                    className="text-lg font-bold text-foreground hover:text-lumi-400 transition-colors"
                   >
                     {hobby.name}
                   </Link>
-                  <span className="inline-block rounded-full bg-emerald-50 border border-emerald-200 px-3 py-0.5 text-xs font-medium text-emerald-700">
+                  <span className="inline-block rounded-full bg-lumi-500/10 border border-lumi-500/30 px-3 py-0.5 text-xs font-medium text-lumi-400">
                     {hobby.benefit}
                   </span>
                 </div>
-                <p className="text-stone-600 leading-relaxed text-sm">{hobby.why}</p>
+                <p className="text-muted-foreground leading-relaxed text-sm">{hobby.why}</p>
               </div>
             </div>
           </div>
         ))}
       </div>
 
-      <div className="mt-10 rounded-xl bg-stone-50 border border-stone-200 p-6">
-        <h2 className="text-base font-bold text-stone-800 mb-2">A note on consistency</h2>
-        <p className="text-sm text-stone-600 leading-relaxed">
+      <div className="mt-10 rounded-xl bg-card/40 border border-border p-6">
+        <h2 className="text-base font-bold text-foreground mb-2">A note on consistency</h2>
+        <p className="text-sm text-muted-foreground leading-relaxed">
           The mental health benefits of hobbies are cumulative and dose-dependent. A single session
           of yoga is pleasant. Two hundred sessions builds a different kind of person. The key
           isn&apos;t finding the perfect hobby — it&apos;s finding one you&apos;ll actually return
@@ -206,15 +206,15 @@ export default function HobbiesForMentalHealthPage() {
         </p>
       </div>
 
-      <div className="mt-12 rounded-xl bg-emerald-50 border border-emerald-200 p-8 text-center">
-        <h2 className="text-xl font-bold text-stone-900 mb-2">Find your perfect hobby</h2>
-        <p className="text-stone-500 mb-4">
+      <div className="mt-12 rounded-xl bg-lumi-500/10 border border-lumi-500/30 p-8 text-center">
+        <h2 className="text-xl font-bold text-foreground mb-2">Find your perfect hobby</h2>
+        <p className="text-muted-foreground mb-4">
           Take our 2-minute quiz for personalized recommendations based on your personality,
           schedule, and what you want to get out of it.
         </p>
         <Link
           href="/find-your-hobby"
-          className="inline-flex rounded-lg bg-emerald-600 px-6 py-2.5 text-sm font-semibold text-white hover:bg-emerald-700 transition-colors"
+          className="inline-flex rounded-lg bg-primary px-6 py-2.5 text-sm font-semibold text-primary-foreground hover:bg-lumi-300 transition-colors"
         >
           Take the Quiz →
         </Link>

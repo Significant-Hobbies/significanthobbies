@@ -138,6 +138,40 @@ export const BADGES: Badge[] = [
     hidden: true,
   },
 
+  // ── Streak (commitments) ───────────────────────────────────────
+  {
+    id: 'showed-up',
+    name: 'Showed Up',
+    description: 'Keep a 7-day practice streak on a commitment',
+    emoji: '\u{1F525}',
+    category: 'quest',
+    hidden: false,
+  },
+  {
+    id: 'month-of-marks',
+    name: 'Month of Marks',
+    description: 'Keep a 30-day practice streak — a full month of stamps',
+    emoji: '\u{1F4C5}',
+    category: 'quest',
+    hidden: false,
+  },
+  {
+    id: 'iron-streak',
+    name: 'Iron Streak',
+    description: 'Keep a 100-day practice streak',
+    emoji: '\u{1F6E1}\uFE0F',
+    category: 'quest',
+    hidden: false,
+  },
+  {
+    id: 'year-of-stamps',
+    name: 'Year of Stamps',
+    description: 'Keep a 365-day practice streak — a year of showing up',
+    emoji: '\u{1F31F}',
+    category: 'quest',
+    hidden: false,
+  },
+
   // ── Secret ─────────────────────────────────────────────────
   {
     id: 'night-owl',

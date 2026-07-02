@@ -81,6 +81,7 @@ export const users = sqliteTable('User', {
   image: text('image'),
   username: text('username').unique(),
   birthYear: integer('birthYear'),
+  dob: text('dob'),
   bio: text('bio'),
   website: text('website'),
   completedQuests: text('completedQuests').notNull().default('[]'),
@@ -239,6 +240,159 @@ export const bucketListItems = sqliteTable(
     updatedAt: integer('updatedAt', { mode: 'timestamp' }).notNull().default(sql`(unixepoch())`),
   },
   (table) => [index('BucketListItem_userId_idx').on(table.userId)]
+);
+
+// ─── Commitments & Stamps ─────────────────────────────────────────────────
+// A "commitment" is a multi-day goal to show up daily for a hobby
+// (e.g. "30 days of guitar"). Each calendar day the user logs a "stamp" —
+// a proof URL (YouTube video, photo, blog post) that they practiced. Stamps
+// are the "stamp of your existence": evidence that you spent this day on
+// something that matters. Streaks feed back into badges and the mortality
+// grid on the profile.
+
+export const commitments = sqliteTable(
+  'Commitment',
+  {
+    id: text('id')
+      .primaryKey()
+      .$defaultFn(() => createId()),
+    userId: text('userId')
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
+    hobbyName: text('hobbyName').notNull(),
+    goalDays: integer('goalDays').notNull().default(30),
+    // 'active' | 'completed' | 'abandoned'
+    status: text('status').notNull().default('active'),
+    startDate: integer('startDate', { mode: 'timestamp' }).notNull(),
+    completedAt: integer('completedAt', { mode: 'timestamp' }),
+    createdAt: integer('createdAt', { mode: 'timestamp' }).notNull().default(sql`(unixepoch())`),
+    updatedAt: integer('updatedAt', { mode: 'timestamp' }).notNull().default(sql`(unixepoch())`),
+  },
+  (table) => [
+    index('Commitment_userId_idx').on(table.userId),
+    index('Commitment_status_idx').on(table.status),
+  ]
+);
+
+export const stamps = sqliteTable(
+  'Stamp',
+  {
+    id: text('id')
+      .primaryKey()
+      .$defaultFn(() => createId()),
+    commitmentId: text('commitmentId')
+      .notNull()
+      .references(() => commitments.id, { onDelete: 'cascade' }),
+    userId: text('userId')
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
+    // Calendar day in YYYY-MM-DD (user-local), enforced unique per commitment
+    // so only one stamp can exist per day.
+    dayDate: text('dayDate').notNull(),
+    // 0-indexed day number since commitment.startDate
+    dayIndex: integer('dayIndex').notNull(),
+    proofUrl: text('proofUrl').notNull(),
+    // 'youtube' | 'video' | 'image' | 'url' | 'text' — derived from proofUrl
+    proofType: text('proofType').notNull().default('url'),
+    note: text('note'),
+    createdAt: integer('createdAt', { mode: 'timestamp' }).notNull().default(sql`(unixepoch())`),
+  },
+  (table) => [
+    uniqueIndex('Stamp_commitmentId_dayDate_key').on(table.commitmentId, table.dayDate),
+    index('Stamp_commitmentId_idx').on(table.commitmentId),
+    index('Stamp_userId_idx').on(table.userId),
+  ]
+);
+
+// ─── Daily Ritual (from today-little-log merge) ────────────────────────────
+// One daily ritual page merges habits, rituals, and journal into a single
+// flow. Private by default — no visibility fields on any of these tables.
+
+// Habit definitions — simple check-ins, no scoring.
+export const habits = sqliteTable(
+  'Habit',
+  {
+    id: text('id')
+      .primaryKey()
+      .$defaultFn(() => createId()),
+    userId: text('userId')
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
+    name: text('name').notNull(),
+    // 'active' | 'archived'
+    status: text('status').notNull().default('active'),
+    createdAt: integer('createdAt', { mode: 'timestamp' }).notNull().default(sql`(unixepoch())`),
+  },
+  (table) => [index('Habit_userId_idx').on(table.userId)]
+);
+
+// Daily habit check-ins — one per habit per day.
+export const habitLogs = sqliteTable(
+  'HabitLog',
+  {
+    id: text('id')
+      .primaryKey()
+      .$defaultFn(() => createId()),
+    habitId: text('habitId')
+      .notNull()
+      .references(() => habits.id, { onDelete: 'cascade' }),
+    userId: text('userId')
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
+    // Calendar day in YYYY-MM-DD (user-local)
+    dayDate: text('dayDate').notNull(),
+    completed: integer('completed', { mode: 'boolean' }).notNull().default(true),
+    createdAt: integer('createdAt', { mode: 'timestamp' }).notNull().default(sql`(unixepoch())`),
+  },
+  (table) => [
+    uniqueIndex('HabitLog_habitId_dayDate_key').on(table.habitId, table.dayDate),
+    index('HabitLog_userId_idx').on(table.userId),
+  ]
+);
+
+// Journal entries — one per day, linked to the daily ritual.
+export const journalEntries = sqliteTable(
+  'JournalEntry',
+  {
+    id: text('id')
+      .primaryKey()
+      .$defaultFn(() => createId()),
+    userId: text('userId')
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
+    // Calendar day in YYYY-MM-DD (user-local)
+    dayDate: text('dayDate').notNull(),
+    // AM reflection (morning prompt response)
+    amEntry: text('amEntry'),
+    // PM reflection (evening prompt response — compulsory)
+    pmEntry: text('pmEntry'),
+    createdAt: integer('createdAt', { mode: 'timestamp' }).notNull().default(sql`(unixepoch())`),
+    updatedAt: integer('updatedAt', { mode: 'timestamp' }).notNull().default(sql`(unixepoch())`),
+  },
+  (table) => [
+    uniqueIndex('JournalEntry_userId_dayDate_key').on(table.userId, table.dayDate),
+    index('JournalEntry_userId_idx').on(table.userId),
+  ]
+);
+
+// Daily ritual check-in state — tracks whether AM/PM ritual was completed.
+export const dailyCheckins = sqliteTable(
+  'DailyCheckin',
+  {
+    id: text('id')
+      .primaryKey()
+      .$defaultFn(() => createId()),
+    userId: text('userId')
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
+    // Calendar day in YYYY-MM-DD (user-local)
+    dayDate: text('dayDate').notNull(),
+    amCompleted: integer('amCompleted', { mode: 'boolean' }).notNull().default(false),
+    pmCompleted: integer('pmCompleted', { mode: 'boolean' }).notNull().default(false),
+    createdAt: integer('createdAt', { mode: 'timestamp' }).notNull().default(sql`(unixepoch())`),
+    updatedAt: integer('updatedAt', { mode: 'timestamp' }).notNull().default(sql`(unixepoch())`),
+  },
+  (table) => [uniqueIndex('DailyCheckin_userId_dayDate_key').on(table.userId, table.dayDate)]
 );
 
 // Simple cuid-like ID generator using nanoid pattern

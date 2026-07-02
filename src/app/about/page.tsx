@@ -10,20 +10,20 @@ export const metadata: Metadata = {
 export default function AboutPage() {
   return (
     <main className="mx-auto max-w-3xl px-4 py-12">
-      <Link href="/" className="text-xs text-stone-500 hover:underline">
+      <Link href="/" className="text-xs text-muted-foreground hover:underline">
         ← Significant Hobbies
       </Link>
-      <h1 className="mt-3 text-3xl font-bold tracking-tight text-stone-900">About</h1>
-      <p className="mt-4 text-sm leading-6 text-stone-700">
+      <h1 className="mt-3 text-3xl font-bold tracking-tight text-foreground">About</h1>
+      <p className="mt-4 text-sm leading-6 text-foreground">
         Some hobbies make you. Some you make. Significant Hobbies is a place to map that history —
         phase by phase — and find the next thing worth being bad at.
       </p>
 
       <section className="mt-8 space-y-3 text-sm leading-6">
-        <h2 className="text-xs font-medium uppercase tracking-wide text-stone-500">
+        <h2 className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
           What you can do
         </h2>
-        <ul className="list-disc space-y-1 pl-5 marker:text-stone-400">
+        <ul className="list-disc space-y-1 pl-5 marker:text-muted-foreground/60">
           <li>
             Build a timeline of your hobby phases — childhood experiments through current
             obsessions.
@@ -34,7 +34,7 @@ export default function AboutPage() {
           <li>Earn badges and complete side-quests when you actually go do the thing.</li>
           <li>
             Share a public profile at{' '}
-            <code className="rounded bg-stone-100 px-1.5 py-0.5 text-xs">/u/username</code>.
+            <code className="rounded bg-foreground/5 px-1.5 py-0.5 text-xs">/u/username</code>.
           </li>
           <li>
             Browse famous people&apos;s hobby journeys to see how interests compound over a life.
@@ -43,8 +43,10 @@ export default function AboutPage() {
       </section>
 
       <section className="mt-8 space-y-3 text-sm leading-6">
-        <h2 className="text-xs font-medium uppercase tracking-wide text-stone-500">Why bother</h2>
-        <p className="text-stone-700">
+        <h2 className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+          Why bother
+        </h2>
+        <p className="text-foreground">
           The reps on a thing you actually care about beat the dopamine loop of feeds. Most people
           can&apos;t even list their hobbies — the timeline is forcing function to remember, then
           choose.

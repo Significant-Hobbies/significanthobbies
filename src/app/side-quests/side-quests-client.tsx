@@ -21,9 +21,9 @@ import {
 
 const CATEGORY_COLORS: Record<QuestCategory, { border: string; bg: string; text: string }> = {
   sensory: {
-    border: 'border-emerald-200',
-    bg: 'bg-emerald-50',
-    text: 'text-emerald-700',
+    border: 'border-lumi-500/30',
+    bg: 'bg-lumi-500/10',
+    text: 'text-lumi-400',
   },
   creative: {
     border: 'border-purple-200',
@@ -31,9 +31,9 @@ const CATEGORY_COLORS: Record<QuestCategory, { border: string; bg: string; text:
     text: 'text-purple-700',
   },
   culinary: {
-    border: 'border-amber-200',
-    bg: 'bg-amber-50',
-    text: 'text-amber-700',
+    border: 'border-amber-400/30',
+    bg: 'bg-amber-400/10',
+    text: 'text-lumi-400',
   },
   social: {
     border: 'border-blue-200',
@@ -82,7 +82,7 @@ function DifficultyDots({ difficulty }: { difficulty: string }) {
         <span
           key={i}
           className={`inline-block h-1.5 w-1.5 rounded-full ${
-            i < count ? 'bg-stone-500' : 'bg-stone-200'
+            i < count ? 'bg-card/400' : 'bg-foreground/10'
           }`}
         />
       ))}
@@ -118,24 +118,24 @@ function QuestCard({
   }, [quest.id]);
 
   return (
-    <div className="mx-auto w-full max-w-lg rounded-2xl border border-stone-200 bg-white p-8 shadow-sm transition-all">
+    <div className="mx-auto w-full max-w-lg rounded-2xl border border-border bg-card p-8 shadow-sm transition-all">
       {/* Emoji */}
       <div className="mb-5 text-center text-6xl">{quest.emoji}</div>
 
       {/* Title */}
-      <h2 className="mb-3 text-center text-2xl font-bold text-stone-900">{quest.title}</h2>
+      <h2 className="mb-3 text-center text-2xl font-bold text-foreground">{quest.title}</h2>
 
       {/* Description */}
-      <p className="mb-5 text-center leading-relaxed text-stone-600">{quest.description}</p>
+      <p className="mb-5 text-center leading-relaxed text-muted-foreground">{quest.description}</p>
 
       {/* Pills row */}
       <div className="mb-5 flex flex-wrap items-center justify-center gap-2">
         <CategoryPill category={quest.category} />
-        <span className="inline-flex items-center gap-1.5 rounded-full border border-stone-200 bg-stone-50 px-2.5 py-0.5 text-xs font-medium text-stone-600">
+        <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card/40 px-2.5 py-0.5 text-xs font-medium text-muted-foreground">
           <DifficultyDots difficulty={quest.difficulty} />
           {quest.difficulty}
         </span>
-        <span className="inline-flex items-center rounded-full border border-stone-200 bg-stone-50 px-2.5 py-0.5 text-xs font-medium text-stone-600">
+        <span className="inline-flex items-center rounded-full border border-border bg-card/40 px-2.5 py-0.5 text-xs font-medium text-muted-foreground">
           {quest.timeEstimate}
         </span>
       </div>
@@ -146,7 +146,7 @@ function QuestCard({
           {quest.relatedHobbies.map((hobby) => (
             <span
               key={hobby}
-              className="rounded-full bg-stone-100 px-2 py-0.5 text-xs text-stone-500"
+              className="rounded-full bg-foreground/5 px-2 py-0.5 text-xs text-muted-foreground"
             >
               {hobby}
             </span>
@@ -160,17 +160,17 @@ function QuestCard({
           <button
             type="button"
             onClick={() => onUncomplete(quest.id)}
-            className="inline-flex items-center gap-1.5 rounded-full border border-stone-200 bg-stone-50 px-5 py-2.5 text-sm font-medium text-stone-500 transition-all hover:border-stone-300 hover:bg-stone-100"
+            className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card/40 px-5 py-2.5 text-sm font-medium text-muted-foreground transition-all hover:border-border hover:bg-foreground/5"
           >
             Completed
-            <span className="text-emerald-500">&#10003;</span>
-            <span className="ml-1 text-xs text-stone-400">(undo)</span>
+            <span className="text-lumi-400">&#10003;</span>
+            <span className="ml-1 text-xs text-muted-foreground/60">(undo)</span>
           </button>
         ) : (
           <button
             type="button"
             onClick={() => onComplete(quest.id)}
-            className="inline-flex items-center gap-1.5 rounded-full bg-emerald-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:-translate-y-0.5 hover:bg-emerald-700 hover:shadow-md"
+            className="inline-flex items-center gap-1.5 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow-sm transition-all hover:-translate-y-0.5 hover:bg-lumi-300 hover:shadow-md"
           >
             Mark Complete &#10003;
           </button>
@@ -180,7 +180,7 @@ function QuestCard({
           <button
             type="button"
             onClick={onRollAgain}
-            className="inline-flex items-center gap-1.5 rounded-full border border-stone-200 bg-white px-5 py-2.5 text-sm font-medium text-stone-700 transition-all hover:border-emerald-300 hover:text-emerald-700"
+            className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-5 py-2.5 text-sm font-medium text-foreground transition-all hover:border-lumi-500/40 hover:text-lumi-400"
           >
             {rollLabel ?? 'Roll Again'} &#127922;
           </button>
@@ -190,7 +190,7 @@ function QuestCard({
           <button
             type="button"
             onClick={handleShare}
-            className="inline-flex items-center gap-1.5 rounded-full border border-stone-200 bg-white px-4 py-2.5 text-sm font-medium text-stone-600 transition-all hover:border-stone-300 hover:bg-stone-50"
+            className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-4 py-2.5 text-sm font-medium text-muted-foreground transition-all hover:border-border hover:bg-card/40"
           >
             {copied ? 'Copied!' : 'Share'}
           </button>
@@ -213,7 +213,7 @@ function FilterPills<T extends string>({
 }) {
   return (
     <div className="flex flex-wrap items-center gap-2">
-      <span className="mr-1 text-sm font-medium text-stone-500">{label}:</span>
+      <span className="mr-1 text-sm font-medium text-muted-foreground">{label}:</span>
       {options.map((opt) => (
         <button
           key={opt.value}
@@ -221,8 +221,8 @@ function FilterPills<T extends string>({
           onClick={() => onSelect(selected === opt.value ? undefined : opt.value)}
           className={`rounded-full px-3.5 py-1.5 text-sm font-medium transition-all ${
             selected === opt.value
-              ? 'bg-emerald-600 text-white shadow-sm'
-              : 'border border-stone-200 bg-white text-stone-600 hover:border-emerald-300 hover:text-emerald-700'
+              ? 'bg-primary text-primary-foreground shadow-sm'
+              : 'border border-border bg-card text-muted-foreground hover:border-lumi-500/40 hover:text-lumi-400'
           }`}
         >
           {opt.label}
@@ -237,14 +237,14 @@ function ProgressBar({ completed, total }: { completed: number; total: number })
   return (
     <div className="mb-8">
       <div className="mb-2 flex items-center justify-between text-sm">
-        <span className="font-medium text-stone-700">
+        <span className="font-medium text-foreground">
           {completed} / {total} completed
         </span>
-        <span className="text-stone-400">{pct}%</span>
+        <span className="text-muted-foreground/60">{pct}%</span>
       </div>
-      <div className="h-3 w-full overflow-hidden rounded-full bg-stone-100">
+      <div className="h-3 w-full overflow-hidden rounded-full bg-foreground/5">
         <div
-          className="h-full rounded-full bg-emerald-500 transition-all duration-500"
+          className="h-full rounded-full bg-lumi-500/100 transition-all duration-500"
           style={{ width: `${pct}%` }}
         />
       </div>
@@ -286,14 +286,14 @@ function BadgeToast({ badgeIds, onDismiss }: { badgeIds: string[]; onDismiss: ()
               setVisible(false);
               setTimeout(onDismiss, 300);
             }}
-            className={`flex items-center gap-3 rounded-xl border border-amber-300 bg-amber-50 p-4 shadow-lg transition-all duration-300 ${
+            className={`flex items-center gap-3 rounded-xl border border-amber-400/40 bg-amber-400/10 p-4 shadow-lg transition-all duration-300 ${
               visible ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'
             }`}
           >
             <span className="text-3xl">{badge.emoji}</span>
             <div className="text-left">
-              <p className="font-bold text-stone-900">{badge.name}</p>
-              <p className="text-sm text-stone-500">{badge.description}</p>
+              <p className="font-bold text-foreground">{badge.name}</p>
+              <p className="text-sm text-muted-foreground">{badge.description}</p>
             </div>
           </button>
         );
@@ -446,16 +446,16 @@ function SideQuestsInner() {
         </div>
 
         <div className="relative mx-auto max-w-5xl text-center">
-          <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-4 py-1.5 text-xs font-semibold uppercase tracking-widest text-emerald-700">
-            <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+          <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-lumi-500/30 bg-lumi-500/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-widest text-lumi-400">
+            <span className="h-1.5 w-1.5 rounded-full bg-lumi-500/100" />
             Side Quests
           </div>
 
-          <h1 className="mb-4 text-4xl font-bold tracking-tight text-stone-900 sm:text-5xl md:text-6xl">
+          <h1 className="mb-4 text-4xl font-bold tracking-tight text-foreground sm:text-5xl md:text-6xl">
             50 Quests to Make Life Interesting
           </h1>
 
-          <p className="mx-auto max-w-xl text-lg text-stone-500 sm:text-xl">
+          <p className="mx-auto max-w-xl text-lg text-muted-foreground sm:text-xl">
             Roll a random quest, get a personalized pick, or take on the full board.
           </p>
 
@@ -463,7 +463,7 @@ function SideQuestsInner() {
             {[...Array(5)].map((_, i) => (
               <div
                 key={i}
-                className="h-1.5 w-1.5 rounded-full bg-emerald-300"
+                className="h-1.5 w-1.5 rounded-full bg-lumi-500/60"
                 style={{ opacity: 0.4 + i * 0.12 }}
               />
             ))}
@@ -472,7 +472,7 @@ function SideQuestsInner() {
       </section>
 
       {/* Tab bar */}
-      <section className="border-b border-stone-200 px-4">
+      <section className="border-b border-border px-4">
         <div className="mx-auto flex max-w-2xl items-center justify-center gap-1">
           {TABS.map((tab) => (
             <button
@@ -480,12 +480,14 @@ function SideQuestsInner() {
               type="button"
               onClick={() => setActiveTab(tab.id)}
               className={`relative px-5 py-3.5 text-sm font-medium transition-all ${
-                activeTab === tab.id ? 'text-emerald-700' : 'text-stone-500 hover:text-stone-700'
+                activeTab === tab.id
+                  ? 'text-lumi-400'
+                  : 'text-muted-foreground hover:text-foreground'
               }`}
             >
               <span>{tab.label}</span>
               {activeTab === tab.id && (
-                <span className="absolute inset-x-2 bottom-0 h-0.5 rounded-full bg-emerald-500" />
+                <span className="absolute inset-x-2 bottom-0 h-0.5 rounded-full bg-lumi-500/100" />
               )}
             </button>
           ))}
@@ -518,7 +520,7 @@ function SideQuestsInner() {
           {/* Mode B: Help Me Pick */}
           {activeTab === 'pick' && (
             <div>
-              <div className="mx-auto mb-8 max-w-lg space-y-4 rounded-2xl border border-stone-200 bg-white p-6 shadow-sm">
+              <div className="mx-auto mb-8 max-w-lg space-y-4 rounded-2xl border border-border bg-card p-6 shadow-sm">
                 <FilterPills
                   label="Vibe"
                   options={[
@@ -563,8 +565,8 @@ function SideQuestsInner() {
                     rollLabel="Try Another"
                   />
                 ) : (
-                  <div className="rounded-2xl border border-stone-200 bg-stone-50 px-8 py-16 text-center">
-                    <p className="text-lg text-stone-500">
+                  <div className="rounded-2xl border border-border bg-card/40 px-8 py-16 text-center">
+                    <p className="text-lg text-muted-foreground">
                       No quests match those filters — try loosening up!
                     </p>
                   </div>
@@ -580,21 +582,18 @@ function SideQuestsInner() {
 
               {/* Save prompt */}
               {showSavePrompt && (
-                <div className="mb-8 flex items-center justify-between rounded-xl border border-amber-200 bg-amber-50 px-5 py-3">
-                  <p className="text-sm text-stone-700">
+                <div className="mb-8 flex items-center justify-between rounded-xl border border-amber-400/30 bg-amber-400/10 px-5 py-3">
+                  <p className="text-sm text-foreground">
                     <span className="mr-1">&#128190;</span> Save your progress — sign in to keep
                     your quests across devices.{' '}
-                    <Link
-                      href="/login"
-                      className="font-semibold text-emerald-600 hover:text-emerald-700"
-                    >
+                    <Link href="/login" className="font-semibold text-lumi-400 hover:text-lumi-400">
                       Sign in
                     </Link>
                   </p>
                   <button
                     type="button"
                     onClick={dismissSavePrompt}
-                    className="ml-4 shrink-0 text-stone-400 hover:text-stone-600"
+                    className="ml-4 shrink-0 text-muted-foreground/60 hover:text-muted-foreground"
                     aria-label="Dismiss"
                   >
                     &#10005;
@@ -611,8 +610,8 @@ function SideQuestsInner() {
                   <div key={cat.id} className="mb-10">
                     <div className="mb-4 flex items-center gap-2">
                       <span className="text-xl">{cat.emoji}</span>
-                      <h3 className="text-lg font-bold text-stone-900">{cat.label}</h3>
-                      <span className="text-sm text-stone-400">
+                      <h3 className="text-lg font-bold text-foreground">{cat.label}</h3>
+                      <span className="text-sm text-muted-foreground/60">
                         {catCompleted}/{quests.length} completed
                       </span>
                     </div>
@@ -625,8 +624,8 @@ function SideQuestsInner() {
                         return (
                           <div
                             key={quest.id}
-                            className={`rounded-xl border bg-white transition-all ${
-                              done ? 'border-emerald-200 bg-emerald-50/30' : 'border-stone-200'
+                            className={`rounded-xl border bg-card transition-all ${
+                              done ? 'border-lumi-500/30 bg-lumi-500/10/30' : 'border-border'
                             }`}
                           >
                             <div className="flex items-start gap-3 p-4">
@@ -639,8 +638,8 @@ function SideQuestsInner() {
                                 }}
                                 className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded transition-all ${
                                   done
-                                    ? 'bg-emerald-500 text-white'
-                                    : 'border-2 border-stone-300 hover:border-emerald-400'
+                                    ? 'bg-lumi-500/100 text-primary-foreground'
+                                    : 'border-2 border-border hover:border-lumi-500/50'
                                 }`}
                                 aria-label={
                                   done ? `Uncomplete ${quest.title}` : `Complete ${quest.title}`
@@ -669,7 +668,9 @@ function SideQuestsInner() {
                                   <span className="text-lg">{quest.emoji}</span>
                                   <span
                                     className={`font-medium ${
-                                      done ? 'text-stone-400 line-through' : 'text-stone-800'
+                                      done
+                                        ? 'text-muted-foreground/60 line-through'
+                                        : 'text-foreground'
                                     }`}
                                   >
                                     {quest.title}
@@ -681,18 +682,18 @@ function SideQuestsInner() {
 
                             {/* Expanded details */}
                             {expanded && (
-                              <div className="border-t border-stone-100 px-4 pb-4 pt-3">
-                                <p className="mb-3 text-sm leading-relaxed text-stone-600">
+                              <div className="border-t border-border px-4 pb-4 pt-3">
+                                <p className="mb-3 text-sm leading-relaxed text-muted-foreground">
                                   {quest.description}
                                 </p>
                                 <div className="flex flex-wrap items-center gap-2">
-                                  <span className="text-xs text-stone-400">
+                                  <span className="text-xs text-muted-foreground/60">
                                     {quest.timeEstimate}
                                   </span>
                                   {quest.relatedHobbies.map((hobby) => (
                                     <span
                                       key={hobby}
-                                      className="rounded-full bg-stone-100 px-2 py-0.5 text-xs text-stone-500"
+                                      className="rounded-full bg-foreground/5 px-2 py-0.5 text-xs text-muted-foreground"
                                     >
                                       {hobby}
                                     </span>
@@ -700,7 +701,7 @@ function SideQuestsInner() {
                                 </div>
                                 <Link
                                   href="/timeline/new"
-                                  className="mt-3 inline-flex items-center gap-1 text-xs font-semibold text-emerald-600 hover:text-emerald-700"
+                                  className="mt-3 inline-flex items-center gap-1 text-xs font-semibold text-lumi-400 hover:text-lumi-400"
                                 >
                                   Add to timeline
                                   <span>&#8594;</span>
@@ -737,7 +738,7 @@ export function SideQuestsClient() {
           className="flex min-h-screen items-center justify-center"
           style={{ background: '#FAFAFA' }}
         >
-          <div className="text-stone-400">Loading quests...</div>
+          <div className="text-muted-foreground/60">Loading quests...</div>
         </div>
       }
     >

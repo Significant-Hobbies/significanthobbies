@@ -233,10 +233,10 @@ const CATEGORY_STYLES = {
   },
   rose: { bg: 'bg-rose-50', border: 'border-rose-200', text: 'text-rose-700', dot: 'bg-rose-400' },
   emerald: {
-    bg: 'bg-emerald-50',
-    border: 'border-emerald-200',
-    text: 'text-emerald-700',
-    dot: 'bg-emerald-400',
+    bg: 'bg-lumi-500/10',
+    border: 'border-lumi-500/30',
+    text: 'text-lumi-400',
+    dot: 'bg-lumi-400',
   },
 };
 
@@ -247,9 +247,9 @@ export default function BucketListIdeasPage() {
   );
 
   return (
-    <main className="bg-white">
+    <main className="bg-card">
       {/* ── Hero ─────────────────────────────────────────────────── */}
-      <section className="bg-white pt-16 pb-10 px-4">
+      <section className="bg-card pt-16 pb-10 px-4">
         <div className="mx-auto max-w-4xl">
           {/* Lumi in a coral-tinted card */}
           <div className="flex items-center gap-5 rounded-2xl border border-[#f0a090] bg-[#fff0ec] px-6 py-5 mb-8 max-w-md">
@@ -258,29 +258,29 @@ export default function BucketListIdeasPage() {
               <p className="text-[#e05533] text-xs font-semibold uppercase tracking-widest mb-1">
                 Guided by Lumi · {totalIdeas}+ ideas
               </p>
-              <p className="text-stone-600 text-sm leading-relaxed">
+              <p className="text-muted-foreground text-sm leading-relaxed">
                 Curated from real bucket lists of presidents, athletes, and icons.
               </p>
             </div>
           </div>
 
-          <h1 className="text-4xl sm:text-5xl font-bold leading-tight text-stone-900 text-balance">
+          <h1 className="text-4xl sm:text-5xl font-bold leading-tight text-foreground text-balance">
             Bucket list ideas <span className="text-[#e05533]">worth doing before you die</span>
           </h1>
-          <p className="mt-4 text-stone-500 text-lg max-w-xl">
+          <p className="mt-4 text-muted-foreground text-lg max-w-xl">
             Curated from the verified bucket lists of presidents, athletes, billionaires, and icons
             — then expanded to cover every kind of life well-lived.
           </p>
           <div className="mt-6 flex flex-wrap gap-3">
             <Link
               href="/dashboard"
-              className="inline-flex items-center gap-2 rounded-full bg-[#e05533] px-6 py-3 text-sm font-semibold text-white hover:bg-[#c94420] transition-colors shadow-md"
+              className="inline-flex items-center gap-2 rounded-full bg-[#e05533] px-6 py-3 text-sm font-semibold text-foreground hover:bg-[#c94420] transition-colors shadow-md"
             >
               ✨ Build my bucket list
             </Link>
             <Link
               href="/bucket-lists"
-              className="inline-flex items-center gap-2 rounded-full border border-stone-300 px-6 py-3 text-sm font-medium text-stone-600 hover:border-[#e05533] hover:text-[#e05533] transition-colors"
+              className="inline-flex items-center gap-2 rounded-full border border-border px-6 py-3 text-sm font-medium text-muted-foreground hover:border-[#e05533] hover:text-[#e05533] transition-colors"
             >
               See famous lists →
             </Link>
@@ -289,7 +289,7 @@ export default function BucketListIdeasPage() {
       </section>
 
       {/* ── Category nav ─────────────────────────────────────────── */}
-      <div className="sticky top-14 z-30 border-b border-stone-200 bg-white/90 backdrop-blur-sm">
+      <div className="sticky top-14 z-30 border-b border-border bg-card/90 backdrop-blur-sm">
         <div className="mx-auto max-w-5xl px-4 overflow-x-auto">
           <div className="flex gap-1 py-2 min-w-max">
             {Object.entries(IDEAS_BY_CATEGORY).map(([key, cat]) => {
@@ -322,7 +322,7 @@ export default function BucketListIdeasPage() {
                   {cat.emoji}
                 </div>
                 <div>
-                  <h2 className="text-2xl font-bold text-stone-900 text-balance">{cat.label}</h2>
+                  <h2 className="text-2xl font-bold text-foreground text-balance">{cat.label}</h2>
                   <p className={`text-sm ${style.text} font-medium`}>{cat.ideas.length} ideas</p>
                 </div>
               </div>
@@ -334,7 +334,7 @@ export default function BucketListIdeasPage() {
                     className={`flex items-start gap-3 rounded-xl border ${style.border} ${style.bg} px-4 py-3 group`}
                   >
                     <span className={`mt-1.5 h-2 w-2 shrink-0 rounded-full ${style.dot}`} />
-                    <span className="text-sm text-stone-700 leading-relaxed">{idea}</span>
+                    <span className="text-sm text-foreground leading-relaxed">{idea}</span>
                   </div>
                 ))}
               </div>
@@ -357,11 +357,11 @@ export default function BucketListIdeasPage() {
                         <Link
                           key={p.slug}
                           href={`/bucket-lists/${p.slug}`}
-                          className="inline-flex items-center gap-2 text-sm text-stone-700 hover:text-stone-900 font-medium transition-colors"
+                          className="inline-flex items-center gap-2 text-sm text-foreground hover:text-foreground font-medium transition-colors"
                         >
                           <span>{p.emoji}</span>
                           <span>{p.name}</span>
-                          <span className="text-stone-400 text-xs">→</span>
+                          <span className="text-muted-foreground/60 text-xs">→</span>
                         </Link>
                       ))}
                     </div>
@@ -377,23 +377,23 @@ export default function BucketListIdeasPage() {
       <section className="bg-[#fff0ec] border-t border-[#f0a090]">
         <div className="mx-auto max-w-3xl px-4 py-16 text-center space-y-6">
           <Lumi size={64} glow float className="mx-auto" />
-          <h2 className="text-3xl font-bold text-stone-900 text-balance">
+          <h2 className="text-3xl font-bold text-foreground text-balance">
             Found something that speaks to you?
           </h2>
-          <p className="text-stone-600 max-w-md mx-auto">
+          <p className="text-muted-foreground max-w-md mx-auto">
             Lumi tracks your bucket list, shows your personality archetype, and matches you to the
             famous person whose ambitions look most like yours.
           </p>
           <div className="flex flex-wrap gap-3 justify-center">
             <Link
               href="/dashboard"
-              className="inline-flex items-center gap-2 rounded-full bg-[#e05533] px-6 py-3 text-sm font-semibold text-white hover:bg-[#c94420] transition-colors shadow-md"
+              className="inline-flex items-center gap-2 rounded-full bg-[#e05533] px-6 py-3 text-sm font-semibold text-foreground hover:bg-[#c94420] transition-colors shadow-md"
             >
               ✨ Start my bucket list
             </Link>
             <Link
               href="/bucket-lists"
-              className="inline-flex items-center gap-2 rounded-full border border-stone-300 bg-white px-6 py-3 text-sm font-medium text-stone-700 hover:border-[#e05533] transition-colors"
+              className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-6 py-3 text-sm font-medium text-foreground hover:border-[#e05533] transition-colors"
             >
               Browse famous lists →
             </Link>

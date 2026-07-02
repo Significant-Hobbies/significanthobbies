@@ -10,26 +10,26 @@ interface Props {
 const CATEGORY_COLORS: Record<string, string> = {
   Creative: 'bg-pink-400',
   Music: 'bg-violet-400',
-  Physical: 'bg-emerald-500',
+  Physical: 'bg-lumi-500/100',
   Intellectual: 'bg-blue-500',
   Gaming: 'bg-indigo-400',
   Outdoor: 'bg-green-400',
   Culinary: 'bg-amber-400',
   Collecting: 'bg-orange-400',
-  Making: 'bg-stone-500',
+  Making: 'bg-card/400',
   Social: 'bg-teal-400',
-  Other: 'bg-stone-300',
+  Other: 'bg-foreground/15',
 };
 
 function TraitBar({ label, value }: { label: string; value: number }) {
   const pct = Math.round(value * 100);
   return (
     <div className="flex items-center gap-2">
-      <span className="w-20 shrink-0 text-xs text-stone-500">{label}</span>
-      <div className="flex-1 h-1.5 rounded-full bg-stone-100 overflow-hidden">
-        <div className="h-full rounded-full bg-emerald-400" style={{ width: `${pct}%` }} />
+      <span className="w-20 shrink-0 text-xs text-muted-foreground">{label}</span>
+      <div className="flex-1 h-1.5 rounded-full bg-foreground/5 overflow-hidden">
+        <div className="h-full rounded-full bg-lumi-400" style={{ width: `${pct}%` }} />
       </div>
-      <span className="w-7 text-right text-xs text-stone-400">{pct}%</span>
+      <span className="w-7 text-right text-xs text-muted-foreground/60">{pct}%</span>
     </div>
   );
 }
@@ -46,24 +46,24 @@ export function PersonalityCard({ phases }: Props) {
   const categoryEmoji = Object.fromEntries(HOBBY_CATEGORIES.map((c) => [c.name, c.emoji]));
 
   return (
-    <div className="rounded-xl border border-stone-200 bg-white p-5 space-y-5">
+    <div className="rounded-xl border border-border bg-card p-5 space-y-5">
       {/* Header */}
       <div className="flex items-start gap-3">
         <span className="text-4xl leading-none">{archetype.emoji}</span>
         <div>
-          <h2 className="text-lg font-bold text-stone-900">{archetype.name}</h2>
-          <p className="text-sm text-stone-500 mt-0.5">{archetype.description}</p>
+          <h2 className="text-lg font-bold text-foreground">{archetype.name}</h2>
+          <p className="text-sm text-muted-foreground mt-0.5">{archetype.description}</p>
         </div>
       </div>
 
       {/* Narrative */}
-      <blockquote className="border-l-2 border-emerald-400 pl-3 text-sm italic text-stone-600">
+      <blockquote className="border-l-2 border-lumi-500/50 pl-3 text-sm italic text-muted-foreground">
         {narrative}
       </blockquote>
 
       {/* Category breakdown */}
       <div>
-        <h3 className="text-xs font-medium uppercase tracking-wide text-stone-400 mb-2">
+        <h3 className="text-xs font-medium uppercase tracking-wide text-muted-foreground/60 mb-2">
           Category breakdown
         </h3>
         {/* Stacked bar */}
@@ -71,7 +71,7 @@ export function PersonalityCard({ phases }: Props) {
           {breakdownEntries.map(([cat, pct]) => (
             <div
               key={cat}
-              className={`h-full ${CATEGORY_COLORS[cat] ?? 'bg-stone-300'}`}
+              className={`h-full ${CATEGORY_COLORS[cat] ?? 'bg-foreground/15'}`}
               style={{ width: `${pct}%` }}
               title={`${cat}: ${pct}%`}
             />
@@ -82,8 +82,8 @@ export function PersonalityCard({ phases }: Props) {
           {breakdownEntries.map(([cat, pct]) => (
             <div key={cat} className="flex items-center gap-1">
               <span className="text-xs">{categoryEmoji[cat] ?? '•'}</span>
-              <span className="text-xs text-stone-500">
-                {cat} <span className="text-stone-400">{pct}%</span>
+              <span className="text-xs text-muted-foreground">
+                {cat} <span className="text-muted-foreground/60">{pct}%</span>
               </span>
             </div>
           ))}
@@ -92,7 +92,9 @@ export function PersonalityCard({ phases }: Props) {
 
       {/* Trait indicators */}
       <div>
-        <h3 className="text-xs font-medium uppercase tracking-wide text-stone-400 mb-2">Traits</h3>
+        <h3 className="text-xs font-medium uppercase tracking-wide text-muted-foreground/60 mb-2">
+          Traits
+        </h3>
         <div className="space-y-1.5">
           <TraitBar label="Breadth" value={traits.breadth} />
           <TraitBar label="Depth" value={traits.depth} />

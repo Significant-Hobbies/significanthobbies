@@ -106,9 +106,9 @@ const CATEGORIES: Category[] = [
     title: 'Discipline & Consistency',
     description:
       'These demonstrate the ability to commit, practice deliberately, and improve over time.',
-    color: 'text-emerald-700',
-    bgColor: 'bg-emerald-50',
-    borderColor: 'border-emerald-200',
+    color: 'text-lumi-400',
+    bgColor: 'bg-lumi-500/10',
+    borderColor: 'border-lumi-500/30',
     hobbies: [
       {
         name: 'Running',
@@ -278,28 +278,28 @@ export default function HobbiesForResumePage() {
       />
 
       <div className="mb-6">
-        <Link href="/hobbies" className="text-sm text-stone-500 hover:text-stone-700">
+        <Link href="/hobbies" className="text-sm text-muted-foreground hover:text-foreground">
           ← Hobby Directory
         </Link>
       </div>
 
-      <h1 className="text-3xl font-bold text-stone-900 mb-4">
+      <h1 className="text-3xl font-bold text-foreground mb-4">
         {total} Impressive Hobbies to Put on Your Resume
       </h1>
-      <p className="text-lg text-stone-500 mb-4 leading-relaxed">
+      <p className="text-lg text-muted-foreground mb-4 leading-relaxed">
         The hobbies section of a resume is either an afterthought or a differentiator. Done well, it
         signals personality, discipline, and transferable skills that work history alone can&apos;t
         convey. Done poorly, it&apos;s filler that interviewers skip.
       </p>
-      <p className="text-lg text-stone-500 mb-8 leading-relaxed">
+      <p className="text-lg text-muted-foreground mb-8 leading-relaxed">
         The rule: only include a hobby if you can speak about it substantively in an interview.
         Depth beats breadth. Below are {total} hobbies organized by what they communicate — pick the
         ones that genuinely reflect you, then be ready to talk about them.
       </p>
 
-      <div className="mb-8 rounded-xl bg-amber-50 border border-amber-200 p-5">
-        <h2 className="text-sm font-bold text-amber-900 mb-1">How to choose what to include</h2>
-        <ul className="space-y-1.5 text-sm text-amber-800">
+      <div className="mb-8 rounded-xl bg-amber-400/10 border border-amber-400/30 p-5">
+        <h2 className="text-sm font-bold text-amber-300 mb-1">How to choose what to include</h2>
+        <ul className="space-y-1.5 text-sm text-amber-300">
           <li>
             Include hobbies where you&apos;ve reached a notable level — a rank, a project, a
             milestone
@@ -318,23 +318,23 @@ export default function HobbiesForResumePage() {
           <section key={cat.title}>
             <div className={`rounded-lg ${cat.bgColor} border ${cat.borderColor} px-5 py-4 mb-4`}>
               <h2 className={`text-lg font-bold ${cat.color} mb-1`}>{cat.title}</h2>
-              <p className="text-sm text-stone-600">{cat.description}</p>
+              <p className="text-sm text-muted-foreground">{cat.description}</p>
             </div>
             <ul className="space-y-3">
               {cat.hobbies.map((hobby) => (
                 <li
                   key={hobby.name}
-                  className="flex gap-4 rounded-lg border border-stone-100 bg-white p-4 hover:border-emerald-200 transition-colors"
+                  className="flex gap-4 rounded-lg border border-border bg-card p-4 hover:border-lumi-500/30 transition-colors"
                 >
                   <div className="flex-1">
                     <Link
                       href={`/hobbies/${hobbySlug(hobby.name)}`}
-                      className="font-semibold text-stone-900 hover:text-emerald-700 transition-colors"
+                      className="font-semibold text-foreground hover:text-lumi-400 transition-colors"
                     >
                       {hobby.name}
                     </Link>
                     <p
-                      className="mt-1 text-sm text-stone-500 leading-relaxed"
+                      className="mt-1 text-sm text-muted-foreground leading-relaxed"
                       dangerouslySetInnerHTML={{ __html: hobby.signal }}
                     />
                   </div>
@@ -345,22 +345,22 @@ export default function HobbiesForResumePage() {
         ))}
       </div>
 
-      <div className="mt-12 rounded-xl bg-emerald-50 border border-emerald-200 p-8 text-center">
-        <h2 className="text-xl font-bold text-stone-900 mb-2">Build your hobby timeline</h2>
-        <p className="text-stone-500 mb-4">
+      <div className="mt-12 rounded-xl bg-lumi-500/10 border border-lumi-500/30 p-8 text-center">
+        <h2 className="text-xl font-bold text-foreground mb-2">Build your hobby timeline</h2>
+        <p className="text-muted-foreground mb-4">
           Track your hobbies over time — a visual record of the skills, communities, and experiences
           you&apos;ve built. Useful for interviews, applications, and self-understanding.
         </p>
         <Link
           href="/timeline/new"
-          className="inline-flex rounded-lg bg-emerald-600 px-6 py-2.5 text-sm font-semibold text-white hover:bg-emerald-700 transition-colors"
+          className="inline-flex rounded-lg bg-primary px-6 py-2.5 text-sm font-semibold text-primary-foreground hover:bg-lumi-300 transition-colors"
         >
           Build your timeline →
         </Link>
         <div className="mt-4">
           <Link
             href="/find-your-hobby"
-            className="text-sm text-stone-400 hover:text-stone-600 transition-colors"
+            className="text-sm text-muted-foreground/60 hover:text-muted-foreground transition-colors"
           >
             Or take the quiz to find a new hobby →
           </Link>

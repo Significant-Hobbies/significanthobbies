@@ -20,7 +20,7 @@ const OG_IMAGE = `${SITE_URL}/opengraph-image`;
     <style is:inline>
       #lcp-shell {
         margin: 0;
-        background: #0c0a09;
+        background: #0c2b29;
         padding: 6rem 1.5rem;
       }
       #lcp-shell h1 {
@@ -36,7 +36,7 @@ const OG_IMAGE = `${SITE_URL}/opengraph-image`;
         display: block;
       }
       #lcp-shell .lcp-muted {
-        color: #a8a29e;
+        color: #d6d3d1;
       }
       /* Hide the real landing until the shell drops — avoids double hero flash. */
       body.lcp-pending main,
@@ -57,8 +57,14 @@ const OG_IMAGE = `${SITE_URL}/opengraph-image`;
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={OG_IMAGE} />
-    <meta name="theme-color" content="#059669" />
+    <meta name="theme-color" content="#0c2b29" />
     <link rel="icon" href="/favicon.ico" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,400;0,500;0,700;1,400&display=swap"
+      rel="stylesheet"
+    />
   </head>
   <body class="antialiased lcp-pending">
     <div id="lcp-shell">

@@ -50,19 +50,19 @@ export function SuggestionsPanel({ existingHobbies }: Props) {
   }
 
   return (
-    <div className="rounded-xl border border-stone-200 bg-stone-50 p-5">
-      <h2 className="mb-4 text-sm font-medium text-stone-700">{headerText}</h2>
+    <div className="rounded-xl border border-border bg-card/40 p-5">
+      <h2 className="mb-4 text-sm font-medium text-foreground">{headerText}</h2>
       <div className="space-y-4">
         {grouped.map((group) => (
           <div key={group.name}>
-            <p className="mb-2 text-xs font-medium text-stone-500 uppercase tracking-wide">
+            <p className="mb-2 text-xs font-medium text-muted-foreground uppercase tracking-wide">
               {group.emoji} {group.name}
             </p>
             <div className="flex flex-wrap gap-2">
               {group.hobbies.map((hobby) => (
                 <span
                   key={hobby}
-                  className="inline-flex items-center gap-1.5 rounded-full border border-stone-200 bg-white px-3 py-1 text-xs text-stone-600 hover:border-emerald-400 hover:text-emerald-600 transition-colors cursor-default"
+                  className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3 py-1 text-xs text-muted-foreground hover:border-lumi-500/50 hover:text-lumi-400 transition-colors cursor-default"
                 >
                   {hobby}
                 </span>

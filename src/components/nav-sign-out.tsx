@@ -17,7 +17,7 @@ export function NavSignOut() {
   return (
     <DropdownMenuItem
       onClick={handleSignOut}
-      className="cursor-pointer text-stone-700 hover:text-stone-900"
+      className="cursor-pointer text-foreground hover:text-foreground"
     >
       Sign out
     </DropdownMenuItem>

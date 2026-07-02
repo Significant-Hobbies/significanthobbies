@@ -158,7 +158,7 @@ export default async function TimelinePage({ params }: Props) {
       <div className="mb-6">
         <Link
           href={breadcrumbHref}
-          className="inline-flex items-center gap-1.5 text-sm text-stone-500 hover:text-stone-700 transition-colors"
+          className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors"
         >
           <ArrowLeft className="h-3.5 w-3.5" />
           {breadcrumbLabel}
@@ -168,23 +168,23 @@ export default async function TimelinePage({ params }: Props) {
       {/* Header */}
       <div className="mb-8 flex items-start justify-between gap-4 flex-wrap">
         <div>
-          <h1 className="text-2xl font-bold text-stone-900">
+          <h1 className="text-2xl font-bold text-foreground">
             {timeline.title ?? 'Hobby Timeline'}
           </h1>
           {timelineUser && (
             <Link
               href={timelineUser.username ? `/u/${timelineUser.username}` : '#'}
-              className="mt-1 inline-flex items-center gap-1.5 text-sm text-stone-500 hover:text-stone-700"
+              className="mt-1 inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground"
             >
               <User className="h-3.5 w-3.5" />
               {timelineUser.username ? `@${timelineUser.username}` : timelineUser.name}
             </Link>
           )}
           <div className="mt-2 flex items-center gap-2">
-            <Badge variant="outline" className="border-stone-200 text-xs text-stone-500">
+            <Badge variant="outline" className="border-border text-xs text-muted-foreground">
               {phases.length} phases
             </Badge>
-            <Badge variant="outline" className="border-stone-200 text-xs text-stone-500">
+            <Badge variant="outline" className="border-border text-xs text-muted-foreground">
               {new Set(phases.flatMap((p) => p.hobbies.map((h) => h.name))).size} hobbies
             </Badge>
           </div>
@@ -203,7 +203,7 @@ export default async function TimelinePage({ params }: Props) {
               <Button
                 variant="outline"
                 size="sm"
-                className="border-stone-300 text-stone-600 hover:text-stone-900"
+                className="border-border text-muted-foreground hover:text-foreground"
               >
                 Compare with mine
               </Button>
@@ -214,7 +214,7 @@ export default async function TimelinePage({ params }: Props) {
               <Button
                 variant="outline"
                 size="sm"
-                className="border-stone-300 text-stone-600 hover:text-stone-900"
+                className="border-border text-muted-foreground hover:text-foreground"
               >
                 <Pencil className="mr-1.5 h-3.5 w-3.5" />
                 Edit
@@ -225,11 +225,11 @@ export default async function TimelinePage({ params }: Props) {
       </div>
 
       {phases.length === 0 ? (
-        <div className="rounded-xl border border-stone-200 bg-stone-50 p-12 text-center">
-          <p className="text-stone-500">No phases yet.</p>
+        <div className="rounded-xl border border-border bg-card/40 p-12 text-center">
+          <p className="text-muted-foreground">No phases yet.</p>
           {isOwner && (
             <Link href={`/timeline/${timeline.id}/edit`}>
-              <Button className="mt-4 bg-emerald-600 text-white hover:bg-emerald-700">
+              <Button className="mt-4 bg-primary text-primary-foreground hover:bg-lumi-300">
                 Add phases
               </Button>
             </Link>

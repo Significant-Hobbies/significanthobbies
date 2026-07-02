@@ -21,7 +21,7 @@ const CATEGORY_BORDER_HOVER: Record<string, string> = {
   creative: 'hover:border-purple-300',
   achievement: 'hover:border-[#f0a090]',
   social: 'hover:border-rose-300',
-  humanitarian: 'hover:border-emerald-300',
+  humanitarian: 'hover:border-lumi-500/40',
 };
 
 function getDominantCategory(slug: string) {
@@ -41,9 +41,9 @@ const TOTAL_CATEGORIES = Object.keys(BUCKET_ITEM_CATEGORIES).length;
 
 export default function BucketListsPage() {
   return (
-    <main className="bg-white">
+    <main className="bg-card">
       {/* ── Hero ─────────────────────────────────────────────────────────── */}
-      <section className="bg-white pt-20 pb-16 px-4">
+      <section className="bg-card pt-20 pb-16 px-4">
         <div className="mx-auto max-w-4xl">
           <div className="flex flex-col sm:flex-row items-center sm:items-start gap-8">
             {/* Lumi left-aligned */}
@@ -55,24 +55,24 @@ export default function BucketListsPage() {
               <p className="text-[#e05533] text-xs font-semibold uppercase tracking-[0.2em]">
                 Guided by Lumi
               </p>
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold leading-[1.08] tracking-tight text-stone-900 text-balance">
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold leading-[1.08] tracking-tight text-foreground text-balance">
                 Your bucket list is a <span className="text-[#e05533]">love letter</span> to your
                 future self.
               </h1>
-              <p className="text-stone-500 text-lg max-w-xl leading-relaxed">
+              <p className="text-muted-foreground text-lg max-w-xl leading-relaxed">
                 The world&apos;s most remarkable people have written theirs down. Browse their lists
                 — then build yours.
               </p>
               <div className="flex flex-wrap gap-4 justify-center sm:justify-start">
                 <Link
                   href="/dashboard"
-                  className="inline-flex items-center gap-2 rounded-full bg-[#e05533] px-8 py-3.5 text-sm font-bold text-white hover:bg-[#c94420] active:scale-95 transition-all duration-150 shadow-md"
+                  className="inline-flex items-center gap-2 rounded-full bg-[#e05533] px-8 py-3.5 text-sm font-bold text-foreground hover:bg-[#c94420] active:scale-95 transition-all duration-150 shadow-md"
                 >
                   ✨ Start my list
                 </Link>
                 <a
                   href="#lists"
-                  className="inline-flex items-center gap-2 rounded-full border border-stone-300 px-8 py-3.5 text-sm font-medium text-stone-600 hover:border-[#e05533] hover:text-[#e05533] transition-colors duration-200"
+                  className="inline-flex items-center gap-2 rounded-full border border-border px-8 py-3.5 text-sm font-medium text-muted-foreground hover:border-[#e05533] hover:text-[#e05533] transition-colors duration-200"
                 >
                   Browse famous lists ↓
                 </a>
@@ -85,7 +85,7 @@ export default function BucketListsPage() {
             {Object.entries(BUCKET_ITEM_CATEGORIES).map(([key, { label, emoji }]) => (
               <span
                 key={key}
-                className="inline-flex items-center gap-1.5 rounded-full border border-stone-200 bg-stone-50 px-3 py-1 text-xs text-stone-500"
+                className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card/40 px-3 py-1 text-xs text-muted-foreground"
               >
                 {emoji} {label}
               </span>
@@ -95,7 +95,7 @@ export default function BucketListsPage() {
       </section>
 
       {/* ── Stats bar ────────────────────────────────────────────────────── */}
-      <section className="border-y border-stone-100 bg-white">
+      <section className="border-y border-border bg-card">
         <div className="mx-auto max-w-4xl px-4 py-5">
           <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-3">
             {[
@@ -106,9 +106,11 @@ export default function BucketListsPage() {
             ].map(({ value, label }, i) => (
               <div key={i} className="flex items-center gap-2 text-sm">
                 <span className="text-xl font-bold text-[#e05533]">{value}</span>
-                <span className="text-stone-500">{label}</span>
+                <span className="text-muted-foreground">{label}</span>
                 {i < 3 && (
-                  <span className="hidden sm:inline-block ml-8 text-stone-300 select-none">·</span>
+                  <span className="hidden sm:inline-block ml-8 text-muted-foreground/40 select-none">
+                    ·
+                  </span>
                 )}
               </div>
             ))}
@@ -117,13 +119,13 @@ export default function BucketListsPage() {
       </section>
 
       {/* ── Person grid ──────────────────────────────────────────────────── */}
-      <section id="lists" className="bg-white pb-24 pt-16">
+      <section id="lists" className="bg-card pb-24 pt-16">
         <div className="mx-auto max-w-5xl px-4 space-y-10">
           <div className="text-center space-y-3">
-            <h2 className="text-3xl sm:text-4xl font-bold text-stone-900 text-balance">
+            <h2 className="text-3xl sm:text-4xl font-bold text-foreground text-balance">
               Famous bucket lists
             </h2>
-            <p className="text-stone-500 text-base max-w-md mx-auto">
+            <p className="text-muted-foreground text-base max-w-md mx-auto">
               Click any person to see their full list — and borrow items for yours.
             </p>
           </div>
@@ -147,7 +149,7 @@ export default function BucketListsPage() {
                 <Link
                   key={person.slug}
                   href={`/bucket-lists/${person.slug}`}
-                  className={`group relative flex flex-col rounded-2xl border border-stone-200 bg-white p-6 shadow-sm hover:shadow-md ${borderHover} hover:-translate-y-1 transition-all duration-200 overflow-hidden`}
+                  className={`group relative flex flex-col rounded-2xl border border-border bg-card p-6 shadow-sm hover:shadow-md ${borderHover} hover:-translate-y-1 transition-all duration-200 overflow-hidden`}
                 >
                   <div className="flex items-start justify-between gap-3 mb-4">
                     <span className="text-4xl leading-none">{person.emoji}</span>
@@ -184,33 +186,38 @@ export default function BucketListsPage() {
                     </svg>
                   </div>
 
-                  <h2 className="text-lg font-bold text-stone-900 group-hover:text-[#e05533] transition-colors leading-snug">
+                  <h2 className="text-lg font-bold text-foreground group-hover:text-[#e05533] transition-colors leading-snug">
                     {person.name}
                   </h2>
-                  <p className="mt-1 text-sm text-stone-500 line-clamp-2 flex-1 leading-relaxed">
+                  <p className="mt-1 text-sm text-muted-foreground line-clamp-2 flex-1 leading-relaxed">
                     {person.knownFor}
                   </p>
 
                   {/* Top 2 items preview */}
                   <ul className="mt-5 space-y-2">
                     {person.items.slice(0, 2).map((item, i) => (
-                      <li key={i} className="flex items-center gap-2.5 text-sm text-stone-500">
+                      <li
+                        key={i}
+                        className="flex items-center gap-2.5 text-sm text-muted-foreground"
+                      >
                         <span
                           className={`h-3.5 w-3.5 shrink-0 rounded-full border-2 ${
                             item.status === 'done'
                               ? 'border-[#e05533] bg-[#e05533]'
-                              : 'border-stone-300'
+                              : 'border-border'
                           }`}
                         />
                         <span
-                          className={item.status === 'done' ? 'line-through text-stone-500' : ''}
+                          className={
+                            item.status === 'done' ? 'line-through text-muted-foreground' : ''
+                          }
                         >
                           {item.title.length > 46 ? `${item.title.slice(0, 46)}…` : item.title}
                         </span>
                       </li>
                     ))}
                     {total > 2 && (
-                      <li className="text-xs text-stone-500 pl-6">+{total - 2} more</li>
+                      <li className="text-xs text-muted-foreground pl-6">+{total - 2} more</li>
                     )}
                   </ul>
 
@@ -231,24 +238,24 @@ export default function BucketListsPage() {
           <div className="flex justify-center">
             <Lumi size={80} glow float onDark />
           </div>
-          <h2 className="text-3xl sm:text-4xl font-bold text-white leading-tight text-balance">
+          <h2 className="text-3xl sm:text-4xl font-bold text-foreground leading-tight text-balance">
             Your turn. What do you want to do
             <br className="hidden sm:block" /> before you die?
           </h2>
-          <p className="text-white/80 text-base max-w-sm mx-auto">
+          <p className="text-foreground/80 text-base max-w-sm mx-auto">
             Lumi will help you discover what belongs on your list — based on who you are, not who
             everyone else expects you to be.
           </p>
           <div className="flex flex-wrap gap-3 justify-center">
             <Link
               href="/dashboard"
-              className="inline-flex items-center gap-2 rounded-full bg-white px-7 py-3.5 text-sm font-bold text-[#e05533] hover:bg-stone-100 active:scale-95 transition-all duration-150 shadow-lg"
+              className="inline-flex items-center gap-2 rounded-full bg-card px-7 py-3.5 text-sm font-bold text-[#e05533] hover:bg-foreground/5 active:scale-95 transition-all duration-150 shadow-lg"
             >
               ✨ Start my bucket list
             </Link>
             <Link
               href="/find-your-hobby"
-              className="inline-flex items-center gap-2 rounded-full border-2 border-white/40 bg-white/10 px-7 py-3.5 text-sm font-semibold text-white hover:bg-white/20 transition-colors duration-150"
+              className="inline-flex items-center gap-2 rounded-full border-2 border-white/40 bg-card/10 px-7 py-3.5 text-sm font-semibold text-foreground hover:bg-card/20 transition-colors duration-150"
             >
               Take the hobby quiz →
             </Link>

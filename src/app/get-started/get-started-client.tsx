@@ -92,23 +92,23 @@ export function GetStartedClient() {
   }, []);
 
   return (
-    <main className="min-h-screen bg-stone-50">
+    <main className="min-h-screen bg-card/40">
       {/* Hero */}
       <section className="mx-auto max-w-2xl px-4 pt-20 pb-12 text-center">
-        <h1 className="text-4xl font-bold tracking-tight text-stone-900 sm:text-5xl">
+        <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
           Get your hobby profile
         </h1>
-        <p className="mt-4 text-lg text-stone-500">
+        <p className="mt-4 text-lg text-muted-foreground">
           Choose a username and share your hobby journey with the world.
         </p>
       </section>
 
       {/* Username checker */}
       <section className="mx-auto max-w-xl px-4 pb-12">
-        <div className="rounded-2xl border border-stone-200 bg-white p-6 shadow-sm">
+        <div className="rounded-2xl border border-border bg-card p-6 shadow-sm">
           {/* Input row */}
-          <div className="flex items-center overflow-hidden rounded-xl border border-stone-300 bg-stone-50 focus-within:border-emerald-500 focus-within:ring-2 focus-within:ring-emerald-500/20 transition-all">
-            <span className="select-none whitespace-nowrap px-4 py-4 text-base text-stone-400 font-medium">
+          <div className="flex items-center overflow-hidden rounded-xl border border-border bg-card/40 focus-within:border-lumi-500/60 focus-within:ring-2 focus-within:ring-lumi-500/20 transition-all">
+            <span className="select-none whitespace-nowrap px-4 py-4 text-base text-muted-foreground/60 font-medium">
               significanthobbies.com/u/
             </span>
             <input
@@ -121,18 +121,18 @@ export function GetStartedClient() {
               spellCheck={false}
               autoCapitalize="none"
               autoComplete="off"
-              className="min-w-0 flex-1 bg-transparent py-4 pr-4 text-base font-semibold text-stone-900 placeholder-stone-300 outline-none"
+              className="min-w-0 flex-1 bg-transparent py-4 pr-4 text-base font-semibold text-foreground placeholder-stone-300 outline-none"
             />
           </div>
 
           {/* Status feedback */}
           <div className="mt-4 min-h-[4rem]">
             {state === 'idle' && (
-              <p className="text-sm text-stone-400">Start typing to check availability</p>
+              <p className="text-sm text-muted-foreground/60">Start typing to check availability</p>
             )}
 
             {state === 'checking' && (
-              <div className="flex items-center gap-2 text-sm text-stone-400">
+              <div className="flex items-center gap-2 text-sm text-muted-foreground/60">
                 <svg className="h-4 w-4 animate-spin" fill="none" viewBox="0 0 24 24">
                   <circle
                     className="opacity-25"
@@ -154,7 +154,7 @@ export function GetStartedClient() {
 
             {state === 'available' && (
               <div>
-                <div className="flex items-center gap-2 text-emerald-600">
+                <div className="flex items-center gap-2 text-lumi-400">
                   <svg
                     className="h-5 w-5"
                     fill="none"
@@ -168,7 +168,7 @@ export function GetStartedClient() {
                 </div>
                 <Link
                   href={`/login?callbackUrl=/setup&username=${encodeURIComponent(input)}`}
-                  className="mt-3 inline-flex items-center gap-2 rounded-xl bg-emerald-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-emerald-700 transition-colors"
+                  className="mt-3 inline-flex items-center gap-2 rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow-sm hover:bg-lumi-300 transition-colors"
                 >
                   Sign up with Google
                   <svg
@@ -190,7 +190,7 @@ export function GetStartedClient() {
 
             {state === 'taken' && (
               <div>
-                <div className="flex items-center gap-2 text-red-500">
+                <div className="flex items-center gap-2 text-destructive">
                   <svg
                     className="h-5 w-5"
                     fill="none"
@@ -204,7 +204,7 @@ export function GetStartedClient() {
                 </div>
                 <Link
                   href={`/u/${input}`}
-                  className="mt-2 inline-flex items-center gap-1 text-sm text-stone-500 hover:text-stone-700 hover:underline transition-colors"
+                  className="mt-2 inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground hover:underline transition-colors"
                 >
                   See their profile →
                 </Link>
@@ -212,7 +212,7 @@ export function GetStartedClient() {
             )}
 
             {state === 'invalid' && validationError && (
-              <div className="flex items-start gap-2 text-amber-600">
+              <div className="flex items-start gap-2 text-lumi-400">
                 <svg
                   className="mt-0.5 h-4 w-4 shrink-0"
                   fill="none"
@@ -234,7 +234,7 @@ export function GetStartedClient() {
 
         {/* Example profiles */}
         <div className="mt-6">
-          <p className="mb-3 text-xs font-medium uppercase tracking-wider text-stone-400">
+          <p className="mb-3 text-xs font-medium uppercase tracking-wider text-muted-foreground/60">
             Example profiles
           </p>
           <div className="flex flex-col gap-2">
@@ -242,11 +242,11 @@ export function GetStartedClient() {
               <Link
                 key={handle}
                 href={`/u/${handle}`}
-                className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-stone-500 hover:bg-stone-100 hover:text-emerald-700 transition-colors"
+                className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-muted-foreground hover:bg-foreground/5 hover:text-lumi-400 transition-colors"
               >
-                <span className="font-mono text-emerald-500">/u/</span>
+                <span className="font-mono text-lumi-400">/u/</span>
                 <span>{handle}</span>
-                <span className="ml-auto text-xs text-stone-400">{display}</span>
+                <span className="ml-auto text-xs text-muted-foreground/60">{display}</span>
               </Link>
             ))}
           </div>
@@ -255,15 +255,15 @@ export function GetStartedClient() {
 
       {/* What you get */}
       <section className="mx-auto max-w-xl px-4 pb-12">
-        <p className="mb-4 text-sm font-semibold uppercase tracking-wider text-stone-400">
+        <p className="mb-4 text-sm font-semibold uppercase tracking-wider text-muted-foreground/60">
           What you get with a profile
         </p>
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
           {BENEFITS.map(({ icon, title, desc }) => (
-            <div key={title} className="rounded-xl border border-stone-200 bg-white p-4 shadow-sm">
+            <div key={title} className="rounded-xl border border-border bg-card p-4 shadow-sm">
               <div className="mb-2 text-2xl">{icon}</div>
-              <p className="font-semibold text-stone-900 text-sm">{title}</p>
-              <p className="mt-1 text-xs text-stone-500">{desc}</p>
+              <p className="font-semibold text-foreground text-sm">{title}</p>
+              <p className="mt-1 text-xs text-muted-foreground">{desc}</p>
             </div>
           ))}
         </div>
@@ -271,9 +271,11 @@ export function GetStartedClient() {
 
       {/* Email capture */}
       <section className="mx-auto max-w-xl px-4 pb-20">
-        <div className="mt-12 rounded-xl border border-stone-200 bg-stone-50 p-6 text-center max-w-lg mx-auto">
-          <p className="font-medium text-stone-800 mb-2">Not ready to sign up yet?</p>
-          <p className="text-sm text-stone-500 mb-4">Get weekly hobby inspiration in your inbox.</p>
+        <div className="mt-12 rounded-xl border border-border bg-card/40 p-6 text-center max-w-lg mx-auto">
+          <p className="font-medium text-foreground mb-2">Not ready to sign up yet?</p>
+          <p className="text-sm text-muted-foreground mb-4">
+            Get weekly hobby inspiration in your inbox.
+          </p>
           <EmailCapture source="get-started" />
         </div>
       </section>

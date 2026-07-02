@@ -80,7 +80,7 @@ export function AccountabilityCircles({ completedQuestIds }: { completedQuestIds
 
   if (!selectedPlan || !selectedCircle) {
     return (
-      <div className="rounded-2xl border border-stone-200 bg-white p-8 text-center text-stone-500">
+      <div className="rounded-2xl border border-border bg-card p-8 text-center text-muted-foreground">
         Loading circles...
       </div>
     );
@@ -88,16 +88,16 @@ export function AccountabilityCircles({ completedQuestIds }: { completedQuestIds
 
   return (
     <div className="grid gap-5 lg:grid-cols-[280px_minmax(0,1fr)]">
-      <aside className="rounded-2xl border border-stone-200 bg-white p-4 shadow-sm">
+      <aside className="rounded-2xl border border-border bg-card p-4 shadow-sm">
         <div className="mb-3 flex items-center justify-between">
-          <div className="flex items-center gap-2 font-semibold text-stone-800">
-            <Users className="h-4 w-4 text-emerald-600" />
+          <div className="flex items-center gap-2 font-semibold text-foreground">
+            <Users className="h-4 w-4 text-lumi-400" />
             Circles
           </div>
           <button
             type="button"
             onClick={addCircle}
-            className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-stone-200 text-stone-500 hover:border-emerald-300 hover:text-emerald-700"
+            className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-border text-muted-foreground hover:border-lumi-500/40 hover:text-lumi-400"
             aria-label="Add circle"
           >
             <Plus className="h-4 w-4" />
@@ -112,12 +112,12 @@ export function AccountabilityCircles({ completedQuestIds }: { completedQuestIds
               onClick={() => setSelectedId(circle.id)}
               className={`w-full rounded-xl border px-3 py-2 text-left transition-all ${
                 selectedCircle.id === circle.id
-                  ? 'border-emerald-300 bg-emerald-50'
-                  : 'border-stone-200 hover:border-stone-300'
+                  ? 'border-lumi-500/40 bg-lumi-500/10'
+                  : 'border-border hover:border-border'
               }`}
             >
-              <div className="font-medium text-stone-800">{circle.name}</div>
-              <div className="mt-0.5 text-xs text-stone-500">
+              <div className="font-medium text-foreground">{circle.name}</div>
+              <div className="mt-0.5 text-xs text-muted-foreground">
                 {focusLabel(circle.focus)} · {circle.members.length} member
                 {circle.members.length === 1 ? '' : 's'}
               </div>
@@ -127,18 +127,18 @@ export function AccountabilityCircles({ completedQuestIds }: { completedQuestIds
       </aside>
 
       <div className="space-y-5">
-        <section className="rounded-2xl border border-stone-200 bg-white p-5 shadow-sm">
+        <section className="rounded-2xl border border-border bg-card p-5 shadow-sm">
           <div className="grid gap-4 md:grid-cols-2">
             <label className="space-y-1.5">
-              <span className="text-sm font-medium text-stone-600">Circle name</span>
+              <span className="text-sm font-medium text-muted-foreground">Circle name</span>
               <input
                 value={selectedCircle.name}
                 onChange={(event) => updateCircle(selectedCircle.id, { name: event.target.value })}
-                className="w-full rounded-xl border border-stone-200 px-3 py-2 text-sm outline-none focus:border-emerald-400"
+                className="w-full rounded-xl border border-border px-3 py-2 text-sm outline-none focus:border-lumi-500/50"
               />
             </label>
             <label className="space-y-1.5">
-              <span className="text-sm font-medium text-stone-600">Focus</span>
+              <span className="text-sm font-medium text-muted-foreground">Focus</span>
               <select
                 value={selectedCircle.focus}
                 onChange={(event) =>
@@ -146,7 +146,7 @@ export function AccountabilityCircles({ completedQuestIds }: { completedQuestIds
                     focus: event.target.value as QuestCategory | 'balanced',
                   })
                 }
-                className="w-full rounded-xl border border-stone-200 px-3 py-2 text-sm outline-none focus:border-emerald-400"
+                className="w-full rounded-xl border border-border px-3 py-2 text-sm outline-none focus:border-lumi-500/50"
               >
                 <option value="balanced">Balanced</option>
                 {QUEST_CATEGORIES.map((category) => (
@@ -157,7 +157,7 @@ export function AccountabilityCircles({ completedQuestIds }: { completedQuestIds
               </select>
             </label>
             <label className="space-y-1.5">
-              <span className="text-sm font-medium text-stone-600">Cadence</span>
+              <span className="text-sm font-medium text-muted-foreground">Cadence</span>
               <select
                 value={selectedCircle.cadence}
                 onChange={(event) =>
@@ -165,7 +165,7 @@ export function AccountabilityCircles({ completedQuestIds }: { completedQuestIds
                     cadence: event.target.value as CircleCadence,
                   })
                 }
-                className="w-full rounded-xl border border-stone-200 px-3 py-2 text-sm outline-none focus:border-emerald-400"
+                className="w-full rounded-xl border border-border px-3 py-2 text-sm outline-none focus:border-lumi-500/50"
               >
                 <option value="weekly">Weekly</option>
                 <option value="weekend">Weekend</option>
@@ -173,7 +173,7 @@ export function AccountabilityCircles({ completedQuestIds }: { completedQuestIds
               </select>
             </label>
             <label className="space-y-1.5">
-              <span className="text-sm font-medium text-stone-600">Members</span>
+              <span className="text-sm font-medium text-muted-foreground">Members</span>
               <textarea
                 value={selectedCircle.members.join(', ')}
                 onChange={(event) =>
@@ -182,17 +182,17 @@ export function AccountabilityCircles({ completedQuestIds }: { completedQuestIds
                   })
                 }
                 rows={2}
-                className="w-full resize-none rounded-xl border border-stone-200 px-3 py-2 text-sm outline-none focus:border-emerald-400"
+                className="w-full resize-none rounded-xl border border-border px-3 py-2 text-sm outline-none focus:border-lumi-500/50"
               />
             </label>
           </div>
         </section>
 
-        <section className="rounded-2xl border border-stone-200 bg-white p-5 shadow-sm">
+        <section className="rounded-2xl border border-border bg-card p-5 shadow-sm">
           <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
             <div>
-              <h2 className="text-lg font-bold text-stone-900">Accountability round</h2>
-              <p className="text-sm text-stone-500">
+              <h2 className="text-lg font-bold text-foreground">Accountability round</h2>
+              <p className="text-sm text-muted-foreground">
                 {selectedPlan.completedCount}/{selectedPlan.totalCount} done ·{' '}
                 {selectedPlan.completionPct}% complete
               </p>
@@ -200,7 +200,7 @@ export function AccountabilityCircles({ completedQuestIds }: { completedQuestIds
             <button
               type="button"
               onClick={copyPrompt}
-              className="inline-flex items-center gap-1.5 rounded-full border border-stone-200 bg-white px-4 py-2 text-sm font-medium text-stone-600 transition-all hover:border-emerald-300 hover:text-emerald-700"
+              className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-4 py-2 text-sm font-medium text-muted-foreground transition-all hover:border-lumi-500/40 hover:text-lumi-400"
             >
               <Copy className="h-4 w-4" />
               {copied ? 'Copied' : 'Copy check-in'}
@@ -216,14 +216,16 @@ export function AccountabilityCircles({ completedQuestIds }: { completedQuestIds
                   href={`/side-quests?q=${quest.id}`}
                   className={`rounded-xl border p-4 transition-all hover:-translate-y-0.5 ${
                     done
-                      ? 'border-emerald-200 bg-emerald-50'
-                      : 'border-stone-200 bg-stone-50 hover:border-emerald-300'
+                      ? 'border-lumi-500/30 bg-lumi-500/10'
+                      : 'border-border bg-card/40 hover:border-lumi-500/40'
                   }`}
                 >
                   <div className="text-3xl">{quest.emoji}</div>
-                  <div className="mt-3 font-semibold text-stone-900">{quest.title}</div>
-                  <p className="mt-1 line-clamp-3 text-sm text-stone-500">{quest.description}</p>
-                  <div className="mt-3 flex items-center justify-between text-xs text-stone-400">
+                  <div className="mt-3 font-semibold text-foreground">{quest.title}</div>
+                  <p className="mt-1 line-clamp-3 text-sm text-muted-foreground">
+                    {quest.description}
+                  </p>
+                  <div className="mt-3 flex items-center justify-between text-xs text-muted-foreground/60">
                     <span>{quest.timeEstimate}</span>
                     <span>{done ? 'Done' : 'Open'}</span>
                   </div>

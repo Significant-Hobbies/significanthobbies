@@ -52,7 +52,7 @@ export function LikeButton({ timelineId, initialLiked, initialCount, isAuthentic
         'inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-sm font-medium transition-colors',
         liked
           ? 'border-rose-200 bg-rose-50 text-rose-600 hover:bg-rose-100'
-          : 'border-stone-200 bg-white text-stone-500 hover:bg-rose-50 hover:border-rose-200 hover:text-rose-500',
+          : 'border-border bg-card text-muted-foreground hover:bg-rose-50 hover:border-rose-200 hover:text-rose-500',
         isPending ? 'opacity-60 cursor-not-allowed' : 'cursor-pointer',
       ].join(' ')}
     >

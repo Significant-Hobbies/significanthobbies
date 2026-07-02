@@ -346,11 +346,11 @@ export function HobbyQuiz() {
       {/* Header */}
       {!isResults && (
         <div className="mb-10 text-center">
-          <p className="mb-2 text-xs font-semibold uppercase tracking-widest text-emerald-600">
+          <p className="mb-2 text-xs font-semibold uppercase tracking-widest text-lumi-400">
             Free Hobby Quiz
           </p>
-          <h1 className="text-3xl font-bold text-stone-900">Find Your Perfect Hobby</h1>
-          <p className="mt-3 text-stone-500">
+          <h1 className="text-3xl font-bold text-foreground">Find Your Perfect Hobby</h1>
+          <p className="mt-3 text-muted-foreground">
             Answer 5 quick questions and get personalized hobby recommendations.
           </p>
         </div>
@@ -364,10 +364,10 @@ export function HobbyQuiz() {
               key={i}
               className={`h-2 rounded-full transition-all duration-300 ${
                 i < step
-                  ? 'w-8 bg-emerald-500'
+                  ? 'w-8 bg-lumi-500/100'
                   : i === step
-                    ? 'w-8 bg-emerald-300'
-                    : 'w-4 bg-stone-200'
+                    ? 'w-8 bg-lumi-500/60'
+                    : 'w-4 bg-foreground/10'
               }`}
             />
           ))}
@@ -377,10 +377,10 @@ export function HobbyQuiz() {
       {/* Quiz question */}
       {!isResults && currentQuestion && (
         <div key={step} className="animate-in fade-in slide-in-from-right-4 duration-300">
-          <div className="mb-2 text-center text-sm text-stone-400">
+          <div className="mb-2 text-center text-sm text-muted-foreground/60">
             Question {step + 1} of {QUESTIONS.length}
           </div>
-          <h2 className="mb-6 text-center text-xl font-semibold text-stone-800">
+          <h2 className="mb-6 text-center text-xl font-semibold text-foreground">
             {currentQuestion.question}
           </h2>
 
@@ -391,16 +391,16 @@ export function HobbyQuiz() {
                 <button
                   key={i}
                   onClick={() => handleSelect(i)}
-                  className={`flex items-center gap-3 rounded-xl border-2 p-4 text-left transition-all duration-150 hover:border-emerald-300 hover:bg-emerald-50 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:ring-offset-2 ${
+                  className={`flex items-center gap-3 rounded-xl border-2 p-4 text-left transition-all duration-150 hover:border-lumi-500/40 hover:bg-lumi-500/10 focus:outline-none focus:ring-2 focus:ring-lumi-500/80 focus:ring-offset-2 ${
                     isSelected
-                      ? 'border-emerald-500 bg-emerald-50 shadow-sm'
-                      : 'border-stone-200 bg-white'
+                      ? 'border-lumi-500/60 bg-lumi-500/10 shadow-sm'
+                      : 'border-border bg-card'
                   }`}
                 >
                   <span className="text-2xl">{option.emoji}</span>
                   <span
                     className={`text-sm font-medium ${
-                      isSelected ? 'text-emerald-800' : 'text-stone-700'
+                      isSelected ? 'text-lumi-600' : 'text-foreground'
                     }`}
                   >
                     {option.label}
@@ -416,8 +416,8 @@ export function HobbyQuiz() {
               disabled={selectedOption === null}
               className={`rounded-lg px-8 py-3 text-sm font-semibold transition-all duration-150 ${
                 selectedOption !== null
-                  ? 'bg-emerald-600 text-white hover:bg-emerald-700 shadow-sm hover:shadow-md'
-                  : 'cursor-not-allowed bg-stone-100 text-stone-400'
+                  ? 'bg-primary text-primary-foreground hover:bg-lumi-300 shadow-sm hover:shadow-md'
+                  : 'cursor-not-allowed bg-foreground/5 text-muted-foreground/60'
               }`}
             >
               {step === QUESTIONS.length - 1 ? 'See my results →' : 'Next →'}
@@ -430,13 +430,13 @@ export function HobbyQuiz() {
       {isResults && archetype && (
         <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
           {/* Archetype reveal */}
-          <div className="mb-10 rounded-2xl border border-emerald-100 bg-gradient-to-br from-emerald-50 to-white p-8 text-center shadow-sm">
+          <div className="mb-10 rounded-2xl border border-lumi-500/20 bg-gradient-to-br from-lumi-500/10 to-white p-8 text-center shadow-sm">
             <div className="mb-4 text-6xl">{archetype.emoji}</div>
-            <p className="mb-1 text-xs font-semibold uppercase tracking-widest text-emerald-600">
+            <p className="mb-1 text-xs font-semibold uppercase tracking-widest text-lumi-400">
               Your Hobby Archetype
             </p>
-            <h1 className="mb-3 text-3xl font-bold text-stone-900">{archetype.title}</h1>
-            <p className="text-stone-600">{archetype.description}</p>
+            <h1 className="mb-3 text-3xl font-bold text-foreground">{archetype.title}</h1>
+            <p className="text-muted-foreground">{archetype.description}</p>
 
             {topCats.length > 1 && (
               <div className="mt-4 flex flex-wrap justify-center gap-2">
@@ -445,7 +445,7 @@ export function HobbyQuiz() {
                   return (
                     <span
                       key={cat}
-                      className="inline-flex items-center gap-1 rounded-full bg-emerald-100 px-3 py-1 text-xs font-medium text-emerald-700"
+                      className="inline-flex items-center gap-1 rounded-full bg-lumi-500/15 px-3 py-1 text-xs font-medium text-lumi-400"
                     >
                       {a?.emoji} {cat}
                     </span>
@@ -457,8 +457,8 @@ export function HobbyQuiz() {
 
           {/* Recommended hobbies */}
           <div className="mb-8">
-            <h2 className="mb-1 text-lg font-semibold text-stone-900">Hobbies picked for you</h2>
-            <p className="mb-4 text-sm text-stone-500">
+            <h2 className="mb-1 text-lg font-semibold text-foreground">Hobbies picked for you</h2>
+            <p className="mb-4 text-sm text-muted-foreground">
               Based on your archetype — click any to explore community timelines.
             </p>
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
@@ -468,7 +468,7 @@ export function HobbyQuiz() {
                   <Link
                     key={hobby}
                     href={`/hobbies/${hobbySlug(hobby)}`}
-                    className="flex flex-col items-center gap-1 rounded-xl border border-stone-200 bg-white p-4 text-center text-sm font-medium text-stone-700 transition-all hover:border-emerald-400 hover:bg-emerald-50 hover:text-emerald-700 hover:shadow-sm"
+                    className="flex flex-col items-center gap-1 rounded-xl border border-border bg-card p-4 text-center text-sm font-medium text-foreground transition-all hover:border-lumi-500/50 hover:bg-lumi-500/10 hover:text-lumi-400 hover:shadow-sm"
                   >
                     <span className="text-2xl">{cat?.emoji ?? '✨'}</span>
                     <span>{hobby}</span>
@@ -479,17 +479,17 @@ export function HobbyQuiz() {
           </div>
 
           {/* Guided hobby experiments */}
-          <div className="mb-8 rounded-2xl border border-stone-200 bg-white p-5 shadow-sm">
+          <div className="mb-8 rounded-2xl border border-border bg-card p-5 shadow-sm">
             <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
               <div>
-                <h2 className="text-lg font-semibold text-stone-900">Try one tiny experiment</h2>
-                <p className="text-sm text-stone-500">
+                <h2 className="text-lg font-semibold text-foreground">Try one tiny experiment</h2>
+                <p className="text-sm text-muted-foreground">
                   Pick the lowest-friction test before committing to a whole new identity.
                 </p>
               </div>
               <button
                 onClick={handleSaveExperimentPlan}
-                className="rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-2 text-sm font-semibold text-emerald-700 transition-colors hover:border-emerald-300 hover:bg-emerald-100"
+                className="rounded-lg border border-lumi-500/30 bg-lumi-500/10 px-4 py-2 text-sm font-semibold text-lumi-400 transition-colors hover:border-lumi-500/40 hover:bg-lumi-500/15"
               >
                 {savedExperimentPlan ? 'Plan saved' : 'Save plan'}
               </button>
@@ -500,21 +500,21 @@ export function HobbyQuiz() {
                 return (
                   <div
                     key={experiment.hobby}
-                    className="rounded-xl border border-stone-200 bg-stone-50 p-4"
+                    className="rounded-xl border border-border bg-card/40 p-4"
                   >
                     <div className="mb-3 flex items-start justify-between gap-3">
                       <div>
-                        <p className="text-sm font-semibold text-stone-900">
+                        <p className="text-sm font-semibold text-foreground">
                           {category?.emoji ?? '✨'} {experiment.hobby}
                         </p>
-                        <p className="mt-1 text-xs text-stone-500">{experiment.reason}</p>
+                        <p className="mt-1 text-xs text-muted-foreground">{experiment.reason}</p>
                       </div>
-                      <div className="flex shrink-0 flex-col items-end gap-1 text-[11px] font-medium text-stone-500">
+                      <div className="flex shrink-0 flex-col items-end gap-1 text-[11px] font-medium text-muted-foreground">
                         <span>{experiment.time}</span>
                         <span>{experiment.cost}</span>
                       </div>
                     </div>
-                    <p className="rounded-lg bg-white px-3 py-2 text-sm text-stone-700">
+                    <p className="rounded-lg bg-card px-3 py-2 text-sm text-foreground">
                       {experiment.firstStep}
                     </p>
                   </div>
@@ -522,7 +522,7 @@ export function HobbyQuiz() {
               })}
             </div>
             {savedExperimentPlan && (
-              <p className="mt-3 text-center text-xs font-medium text-emerald-700">
+              <p className="mt-3 text-center text-xs font-medium text-lumi-400">
                 Saved on this device. Turn the experiment into a timeline when you are ready.
               </p>
             )}
@@ -532,13 +532,13 @@ export function HobbyQuiz() {
           <div className="flex flex-col gap-3 sm:flex-row">
             <Link
               href="/timeline/new"
-              className="flex-1 rounded-lg bg-emerald-600 px-6 py-3 text-center text-sm font-semibold text-white shadow-sm transition-colors hover:bg-emerald-700"
+              className="flex-1 rounded-lg bg-primary px-6 py-3 text-center text-sm font-semibold text-primary-foreground shadow-sm transition-colors hover:bg-lumi-300"
             >
               Build your hobby timeline →
             </Link>
             <Link
               href="/hobbies"
-              className="flex-1 rounded-lg border border-stone-300 bg-white px-6 py-3 text-center text-sm font-semibold text-stone-700 transition-colors hover:border-stone-400 hover:bg-stone-50"
+              className="flex-1 rounded-lg border border-border bg-card px-6 py-3 text-center text-sm font-semibold text-foreground transition-colors hover:border-border hover:bg-card/40"
             >
               Explore all hobbies
             </Link>
@@ -547,20 +547,20 @@ export function HobbyQuiz() {
           <div className="mt-4 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
             <button
               onClick={handleShare}
-              className="flex items-center gap-2 rounded-lg border border-stone-200 bg-white px-5 py-2.5 text-sm font-medium text-stone-600 transition-colors hover:border-stone-300 hover:bg-stone-50"
+              className="flex items-center gap-2 rounded-lg border border-border bg-card px-5 py-2.5 text-sm font-medium text-muted-foreground transition-colors hover:border-border hover:bg-card/40"
             >
               <span>🔗</span> Share your result
             </button>
             <button
               onClick={handleDownloadCard}
               disabled={isDownloading}
-              className="flex items-center gap-2 rounded-lg border border-stone-200 bg-white px-5 py-2.5 text-sm font-medium text-stone-600 transition-colors hover:border-stone-300 hover:bg-stone-50 disabled:opacity-50"
+              className="flex items-center gap-2 rounded-lg border border-border bg-card px-5 py-2.5 text-sm font-medium text-muted-foreground transition-colors hover:border-border hover:bg-card/40 disabled:opacity-50"
             >
               <span>⬇️</span> {isDownloading ? 'Downloading...' : 'Download Card'}
             </button>
             <button
               onClick={handleRestart}
-              className="text-sm text-stone-400 underline-offset-2 hover:text-stone-600 hover:underline"
+              className="text-sm text-muted-foreground/60 underline-offset-2 hover:text-muted-foreground hover:underline"
             >
               Retake quiz
             </button>
@@ -577,11 +577,11 @@ export function HobbyQuiz() {
             />
           </div>
 
-          <div className="mt-8 rounded-xl border border-stone-200 bg-stone-50 p-6 text-center">
-            <p className="font-medium text-stone-800 mb-2">
+          <div className="mt-8 rounded-xl border border-border bg-card/40 p-6 text-center">
+            <p className="font-medium text-foreground mb-2">
               Want hobby recommendations in your inbox?
             </p>
-            <p className="text-sm text-stone-500 mb-4">
+            <p className="text-sm text-muted-foreground mb-4">
               Weekly inspiration — no spam, unsubscribe anytime.
             </p>
             <EmailCapture source="quiz" />

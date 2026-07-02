@@ -83,7 +83,7 @@ export function ExportButton({ timeline }: Props) {
           onClick={handleExport}
           disabled={isExporting}
           variant="outline"
-          className="border-stone-300 text-stone-600 hover:text-stone-900"
+          className="border-border text-muted-foreground hover:text-foreground"
         >
           {isExporting ? (
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -98,7 +98,7 @@ export function ExportButton({ timeline }: Props) {
           onClick={handleCopyLink}
           variant="outline"
           size="sm"
-          className="border-stone-300 text-stone-600 hover:text-stone-900"
+          className="border-border text-muted-foreground hover:text-foreground"
         >
           <Link2 className="mr-1.5 h-4 w-4" />
           <span className="hidden sm:inline">Copy link</span>
@@ -109,7 +109,7 @@ export function ExportButton({ timeline }: Props) {
           onClick={handleTwitterShare}
           variant="outline"
           size="sm"
-          className="border-stone-300 text-stone-600 hover:text-stone-900 px-2.5"
+          className="border-border text-muted-foreground hover:text-foreground px-2.5"
           title="Share on X / Twitter"
         >
           <span className="text-base font-bold leading-none">𝕏</span>
@@ -119,7 +119,7 @@ export function ExportButton({ timeline }: Props) {
           onClick={handleWhatsAppShare}
           variant="outline"
           size="sm"
-          className="border-stone-300 text-stone-600 hover:text-stone-900 px-2.5"
+          className="border-border text-muted-foreground hover:text-foreground px-2.5"
           title="Share on WhatsApp"
         >
           <span className="text-xs font-bold leading-none">WA</span>

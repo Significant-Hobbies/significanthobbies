@@ -7,7 +7,7 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
+  --font-sans: var(--font-sans);
   --font-mono: var(--font-geist-mono);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
@@ -45,83 +45,98 @@
   --radius-2xl: calc(var(--radius) + 8px);
   --radius-3xl: calc(var(--radius) + 12px);
   --radius-4xl: calc(var(--radius) + 16px);
-  /* Brand colors — emerald (hobbies / timelines) */
-  --color-brand: #10b981;
-  --color-brand-50: #ecfdf5;
-  --color-brand-100: #d1fae5;
-  --color-brand-500: #10b981;
-  --color-brand-600: #059669;
-  --color-brand-700: #047857;
-  --color-brand-900: #064e3b;
-  /* Lumi colors — coral (bucket list accent) */
-  --color-lumi: oklch(0.62 0.20 27);
-  --color-lumi-50: oklch(0.97 0.02 27);
-  --color-lumi-100: oklch(0.94 0.05 27);
-  --color-lumi-200: oklch(0.88 0.10 27);
-  --color-lumi-300: oklch(0.78 0.16 27);
-  --color-lumi-400: oklch(0.70 0.20 27);
-  --color-lumi-500: oklch(0.62 0.20 27);
-  --color-lumi-600: oklch(0.52 0.19 27);
-  --color-lumi-700: oklch(0.43 0.17 27);
-  /* Hero surface — near-black with very slight cool tint */
-  --color-hero: oklch(0.11 0.008 240);
-  --color-hero-surface: oklch(0.15 0.008 240);
+  /* Brand — gold (Lumi guiding light, primary actions) */
+  --color-brand: oklch(0.82 0.13 88);
+  --color-brand-50: oklch(0.97 0.03 88);
+  --color-brand-100: oklch(0.93 0.06 88);
+  --color-brand-500: oklch(0.82 0.13 88);
+  --color-brand-600: oklch(0.72 0.14 88);
+  --color-brand-700: oklch(0.60 0.13 88);
+  --color-brand-900: oklch(0.40 0.10 88);
+  /* Lumi — amber/gold guiding light (per PRODUCT.md) */
+  --color-lumi: oklch(0.82 0.13 88);
+  --color-lumi-50: oklch(0.97 0.03 88);
+  --color-lumi-100: oklch(0.93 0.06 88);
+  --color-lumi-200: oklch(0.88 0.09 88);
+  --color-lumi-300: oklch(0.84 0.12 88);
+  --color-lumi-400: oklch(0.82 0.13 88);
+  --color-lumi-500: oklch(0.72 0.14 88);
+  --color-lumi-600: oklch(0.60 0.13 88);
+  --color-lumi-700: oklch(0.48 0.11 88);
+  /* Growth — sage green (practice / stamps / progress) */
+  --color-growth: oklch(0.72 0.13 150);
+  --color-growth-soft: oklch(0.72 0.13 150 / 0.16);
+  /* Hero surface — deepest teal */
+  --color-hero: oklch(0.12 0.022 178);
+  --color-hero-surface: oklch(0.15 0.024 178);
 }
 
-/* Core palette */
+/* ─── Deep Study palette ────────────────────────────────────────────────────
+   Saturated deep-teal body, cream ink, gold (Lumi) accents. The surface IS
+   the mood — a darkened study lit by a single warm lamp. Warmth lives in the
+   gold accent + Fraunces display serif, NOT in a tinted near-white bg (that's
+   the AI cream-default tell). All values OKLCH.
+*/
 :root {
-  --radius: 0.75rem;
-  /* Pure white — no warm tint */
-  --background: oklch(1.0 0 0);
-  --foreground: oklch(0.13 0.01 240);
-  /* card */
-  --card: oklch(1.0 0 0);
-  --card-foreground: oklch(0.13 0.01 240);
+  --radius: 0.875rem;
+  /* Deep teal body — not black, a real saturated dark green-teal */
+  --background: oklch(0.16 0.025 178);
+  --foreground: oklch(0.94 0.018 85);
+  /* card — lifted a step from the body, same hue */
+  --card: oklch(0.195 0.024 178);
+  --card-foreground: oklch(0.94 0.018 85);
   /* popover */
-  --popover: oklch(1.0 0 0);
-  --popover-foreground: oklch(0.13 0.01 240);
-  /* emerald primary */
-  --primary: oklch(0.52 0.16 162);
-  --primary-foreground: oklch(1.0 0 0);
-  /* neutral secondary */
-  --secondary: oklch(0.96 0 0);
-  --secondary-foreground: oklch(0.25 0.01 240);
-  /* muted — ≥4.5:1 on white */
-  --muted: oklch(0.96 0 0);
-  --muted-foreground: oklch(0.45 0.01 240);
-  /* accent */
-  --accent: oklch(0.96 0 0);
-  --accent-foreground: oklch(0.25 0.01 240);
-  /* destructive */
-  --destructive: oklch(0.52 0.19 27);
-  /* border */
-  --border: oklch(0.90 0 0);
-  --input: oklch(0.90 0 0);
-  --ring: oklch(0.52 0.16 162);
-  /* charts — brighter for light background */
-  --chart-1: oklch(0.55 0.17 162);
-  --chart-2: oklch(0.55 0.12 185);
-  --chart-3: oklch(0.5 0.12 240);
-  --chart-4: oklch(0.7 0.18 84);
-  --chart-5: oklch(0.65 0.18 70);
-  /* sidebar */
-  --sidebar: oklch(0.97 0.01 80);
-  --sidebar-foreground: oklch(0.15 0.02 60);
-  --sidebar-primary: oklch(0.55 0.17 162);
-  --sidebar-primary-foreground: oklch(0.99 0 0);
-  --sidebar-accent: oklch(0.94 0.01 80);
-  --sidebar-accent-foreground: oklch(0.25 0.02 60);
-  --sidebar-border: oklch(0.88 0.02 80);
-  --sidebar-ring: oklch(0.55 0.17 162);
+  --popover: oklch(0.195 0.024 178);
+  --popover-foreground: oklch(0.94 0.018 85);
+  /* gold primary — Lumi guiding light. Dark teal text on gold for contrast */
+  --primary: oklch(0.82 0.13 88);
+  --primary-foreground: oklch(0.16 0.025 178);
+  /* secondary — muted teal surface */
+  --secondary: oklch(0.235 0.022 178);
+  --secondary-foreground: oklch(0.94 0.018 85);
+  /* muted — surface for panels; foreground tuned for ≥4.5:1 on dark teal */
+  --muted: oklch(0.235 0.02 178);
+  --muted-foreground: oklch(0.78 0.018 85);
+  /* accent — slightly warmer/lifted teal for hover states */
+  --accent: oklch(0.26 0.026 178);
+  --accent-foreground: oklch(0.94 0.018 85);
+  /* destructive — warm red, tuned for dark bg */
+  --destructive: oklch(0.65 0.20 25);
+  /* border — subtle teal hairline */
+  --border: oklch(0.30 0.022 178);
+  --input: oklch(0.30 0.022 178);
+  --ring: oklch(0.82 0.13 88);
+  /* charts — gold + sage + cream family for the dark surface */
+  --chart-1: oklch(0.82 0.13 88);
+  --chart-2: oklch(0.72 0.13 150);
+  --chart-3: oklch(0.78 0.10 200);
+  --chart-4: oklch(0.70 0.15 50);
+  --chart-5: oklch(0.80 0.08 320);
+  /* sidebar — same study, marginally deeper */
+  --sidebar: oklch(0.14 0.024 178);
+  --sidebar-foreground: oklch(0.94 0.018 85);
+  --sidebar-primary: oklch(0.82 0.13 88);
+  --sidebar-primary-foreground: oklch(0.16 0.025 178);
+  --sidebar-accent: oklch(0.22 0.024 178);
+  --sidebar-accent-foreground: oklch(0.94 0.018 85);
+  --sidebar-border: oklch(0.28 0.022 178);
+  --sidebar-ring: oklch(0.82 0.13 88);
 }
 
 @layer base {
   * {
     @apply border-border outline-ring/50;
   }
+  html {
+    color-scheme: dark;
+  }
   body {
     @apply bg-background text-foreground;
     font-feature-settings: "rlig" 1, "calt" 1;
+  }
+  ::selection {
+    background: oklch(0.82 0.13 88 / 0.25);
+    color: oklch(0.97 0.02 85);
   }
 }
 
@@ -216,13 +231,17 @@
 }
 
 @keyframes glowPulse {
-  0%, 100% { box-shadow: 0 0 20px rgba(16, 185, 129, 0.2), 0 0 40px rgba(16, 185, 129, 0.08); }
-  50%       { box-shadow: 0 0 32px rgba(16, 185, 129, 0.35), 0 0 64px rgba(16, 185, 129, 0.15); }
+  0%, 100% { box-shadow: 0 0 20px oklch(0.82 0.13 88 / 0.20), 0 0 40px oklch(0.82 0.13 88 / 0.08); }
+  50%       { box-shadow: 0 0 32px oklch(0.82 0.13 88 / 0.35), 0 0 64px oklch(0.82 0.13 88 / 0.15); }
 }
 
 @keyframes shinePass {
   0%   { left: -100%; }
   100% { left: 200%; }
+}
+
+@keyframes border-beam {
+  to { transform: rotate(360deg); }
 }
 
 /* ─── Scroll-triggered reveal (CSS-only, no JS needed) ───────────────────────── */
@@ -406,8 +425,8 @@
   animation: float2 9s ease-in-out infinite;
 }
 @keyframes lumiGlowPulse {
-  0%, 100% { filter: drop-shadow(0 0 12px oklch(0.62 0.20 27 / 0.55)); }
-  50%       { filter: drop-shadow(0 0 28px oklch(0.62 0.20 27 / 0.85)); }
+  0%, 100% { filter: drop-shadow(0 0 12px oklch(0.82 0.13 88 / 0.55)); }
+  50%       { filter: drop-shadow(0 0 28px oklch(0.82 0.13 88 / 0.85)); }
 }
 .animate-lumi-glow {
   animation: lumiGlowPulse 3s ease-in-out infinite;
@@ -415,6 +434,8 @@
 @media (prefers-reduced-motion: reduce) {
   .animate-lumi-float,
   .animate-lumi-glow { animation: none; }
+  [class*="animate-[border-beam"]::before,
+  .before\:animate-\[border-beam { animation: none !important; }
 }
 
 /* ─── Bucket list micro-interactions ─────────────────────────────────────── */

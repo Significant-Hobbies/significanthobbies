@@ -50,7 +50,7 @@ export function LumiWeeklyReview({ initialReflection }: Props) {
             <Lumi size={40} glow float />
             <div>
               <div className="flex items-center gap-2">
-                <h3 className="font-bold text-stone-900">Weekly check-in with Lumi</h3>
+                <h3 className="font-bold text-foreground">Weekly check-in with Lumi</h3>
                 {showStreak && (
                   <span className="inline-flex items-center gap-1 rounded-full bg-orange-100 px-2 py-0.5 text-xs font-semibold text-orange-600">
                     <Flame className="h-3 w-3" />
@@ -58,7 +58,7 @@ export function LumiWeeklyReview({ initialReflection }: Props) {
                   </span>
                 )}
               </div>
-              <p className="text-xs text-stone-500">
+              <p className="text-xs text-muted-foreground">
                 {isAI ? 'AI-powered reflection' : 'Reflection'}
                 {' · '}
                 {new Date(reflection.generatedAt).toLocaleDateString('en-US', {
@@ -71,7 +71,7 @@ export function LumiWeeklyReview({ initialReflection }: Props) {
           <button
             onClick={handleRefresh}
             disabled={isPending}
-            className="inline-flex items-center gap-1.5 rounded-full border border-stone-200 bg-white px-3 py-1.5 text-xs text-stone-600 hover:border-[#f0a090] hover:text-[#c94420] transition-colors disabled:opacity-50"
+            className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3 py-1.5 text-xs text-muted-foreground hover:border-[#f0a090] hover:text-[#c94420] transition-colors disabled:opacity-50"
             aria-label="Refresh reflection"
           >
             <RefreshCw className={`h-3 w-3 ${isPending ? 'animate-spin' : ''}`} />
@@ -81,10 +81,10 @@ export function LumiWeeklyReview({ initialReflection }: Props) {
 
         {/* Due badge */}
         {showDueBadge && (
-          <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-[#e05533] px-3 py-1 text-xs font-semibold text-white">
+          <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-[#e05533] px-3 py-1 text-xs font-semibold text-foreground">
             <span className="relative flex h-2 w-2">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-white opacity-75" />
-              <span className="relative inline-flex h-2 w-2 rounded-full bg-white" />
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-card opacity-75" />
+              <span className="relative inline-flex h-2 w-2 rounded-full bg-card" />
             </span>
             {daysSince === null
               ? "Your first check-in — let's start"
@@ -93,27 +93,27 @@ export function LumiWeeklyReview({ initialReflection }: Props) {
         )}
 
         {/* Greeting */}
-        <p className="text-lg font-semibold text-stone-900 mb-2">{reflection.greeting}</p>
+        <p className="text-lg font-semibold text-foreground mb-2">{reflection.greeting}</p>
 
         {/* Reflection */}
-        <p className="text-sm text-stone-700 leading-relaxed mb-4">{reflection.reflection}</p>
+        <p className="text-sm text-foreground leading-relaxed mb-4">{reflection.reflection}</p>
 
         {/* Questions */}
         <div className="space-y-2 mb-4">
           {reflection.questions.map((q, i) => (
             <div key={i} className="flex items-start gap-2">
               <span className="text-[#e05533] mt-0.5 shrink-0">→</span>
-              <p className="text-sm text-stone-700 leading-relaxed">{q}</p>
+              <p className="text-sm text-foreground leading-relaxed">{q}</p>
             </div>
           ))}
         </div>
 
         {/* Suggestion */}
-        <div className="rounded-xl bg-white/70 border border-[#f0a090]/50 px-4 py-3 mb-4">
+        <div className="rounded-xl bg-card/70 border border-[#f0a090]/50 px-4 py-3 mb-4">
           <p className="text-xs font-semibold uppercase tracking-wide text-[#c94420] mb-1">
             This week
           </p>
-          <p className="text-sm text-stone-700">{reflection.suggestion}</p>
+          <p className="text-sm text-foreground">{reflection.suggestion}</p>
         </div>
 
         {/* Mark as done — the ritual action */}
@@ -124,8 +124,8 @@ export function LumiWeeklyReview({ initialReflection }: Props) {
               disabled={justMarked}
               className={`inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold transition-all ${
                 justMarked
-                  ? 'bg-emerald-100 text-emerald-700 cursor-default'
-                  : 'bg-[#e05533] text-white hover:bg-[#c94420]'
+                  ? 'bg-lumi-500/15 text-lumi-400 cursor-default'
+                  : 'bg-[#e05533] text-foreground hover:bg-[#c94420]'
               }`}
             >
               <Check className="h-4 w-4" />
@@ -136,7 +136,7 @@ export function LumiWeeklyReview({ initialReflection }: Props) {
                 : "I've reviewed this week"}
             </button>
             {justMarked && streak > 1 && (
-              <span className="text-xs text-stone-500">
+              <span className="text-xs text-muted-foreground">
                 Come back in 7 days to keep your streak alive.
               </span>
             )}

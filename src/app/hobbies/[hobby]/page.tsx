@@ -131,13 +131,13 @@ export default async function HobbyDetailPage({ params }: Props) {
       />
       {/* Guest CTA banner */}
       {!isLoggedIn && (
-        <div className="mb-6 flex items-center justify-between gap-4 rounded-xl border border-emerald-300 bg-emerald-50 px-5 py-3">
-          <p className="text-sm text-stone-700">
-            Track your <span className="font-semibold text-emerald-600">{hobbyName}</span> journey
+        <div className="mb-6 flex items-center justify-between gap-4 rounded-xl border border-lumi-500/40 bg-lumi-500/10 px-5 py-3">
+          <p className="text-sm text-foreground">
+            Track your <span className="font-semibold text-lumi-400">{hobbyName}</span> journey
           </p>
           <Link
             href="/timeline/new"
-            className="shrink-0 text-sm font-medium text-emerald-600 hover:text-emerald-700 transition-colors"
+            className="shrink-0 text-sm font-medium text-lumi-400 hover:text-lumi-400 transition-colors"
           >
             Start now →
           </Link>
@@ -146,23 +146,23 @@ export default async function HobbyDetailPage({ params }: Props) {
 
       {/* Header */}
       <div className="mb-2">
-        <Link href="/hobbies" className="text-sm text-stone-500 hover:text-stone-700">
+        <Link href="/hobbies" className="text-sm text-muted-foreground hover:text-foreground">
           ← All hobbies
         </Link>
       </div>
       <div className="mb-8 flex items-center gap-3">
         <span className="text-4xl">{category.emoji}</span>
         <div>
-          <h1 className="text-3xl font-bold text-stone-900">{hobbyName}</h1>
-          <p className="text-stone-500 text-sm">{category.name}</p>
+          <h1 className="text-3xl font-bold text-foreground">{hobbyName}</h1>
+          <p className="text-muted-foreground text-sm">{category.name}</p>
         </div>
       </div>
 
       {/* Popularity */}
       <div className="mb-8 flex items-center gap-3">
-        <div className="rounded-xl border border-stone-200 bg-white px-5 py-3 flex items-center gap-3">
-          <span className="text-2xl font-bold text-emerald-600">{popularityCount}</span>
-          <span className="text-sm text-stone-600">
+        <div className="rounded-xl border border-border bg-card px-5 py-3 flex items-center gap-3">
+          <span className="text-2xl font-bold text-lumi-400">{popularityCount}</span>
+          <span className="text-sm text-muted-foreground">
             {popularityCount === 1 ? (
               'public timeline features this hobby'
             ) : popularityCount === 0 ? (
@@ -170,7 +170,7 @@ export default async function HobbyDetailPage({ params }: Props) {
                 public timelines yet —{' '}
                 <Link
                   href="/timeline/new"
-                  className="text-emerald-600 hover:text-emerald-700 transition-colors"
+                  className="text-lumi-400 hover:text-lumi-400 transition-colors"
                 >
                   be the first!
                 </Link>
@@ -190,7 +190,7 @@ export default async function HobbyDetailPage({ params }: Props) {
       {/* Resources */}
       {resources.length > 0 && (
         <div className="mb-8">
-          <h2 className="mb-4 text-sm font-medium uppercase tracking-wide text-stone-500">
+          <h2 className="mb-4 text-sm font-medium uppercase tracking-wide text-muted-foreground">
             Tools & resources for {hobbyName}
           </h2>
           <div className="space-y-3">
@@ -200,7 +200,7 @@ export default async function HobbyDetailPage({ params }: Props) {
                 href={r.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className={`group flex items-center gap-4 rounded-xl border border-stone-200 bg-white transition-all hover:border-emerald-400 hover:shadow-sm ${
+                className={`group flex items-center gap-4 rounded-xl border border-border bg-card transition-all hover:border-lumi-500/50 hover:shadow-sm ${
                   i === 0 ? 'p-5' : 'px-5 py-3'
                 }`}
               >
@@ -208,26 +208,26 @@ export default async function HobbyDetailPage({ params }: Props) {
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
                     <span
-                      className={`font-semibold text-stone-800 group-hover:text-emerald-600 transition-colors ${i === 0 ? 'text-base' : 'text-sm'}`}
+                      className={`font-semibold text-foreground group-hover:text-lumi-400 transition-colors ${i === 0 ? 'text-base' : 'text-sm'}`}
                     >
                       {r.name}
                     </span>
                     {r.type === 'own' && (
-                      <span className="rounded-full bg-emerald-50 border border-emerald-200 px-2 py-0.5 text-[10px] font-medium text-emerald-700">
+                      <span className="rounded-full bg-lumi-500/10 border border-lumi-500/30 px-2 py-0.5 text-[10px] font-medium text-lumi-400">
                         by SignificantHobbies
                       </span>
                     )}
                     {r.type === 'sponsored' && (
-                      <span className="rounded-full bg-amber-50 border border-amber-200 px-2 py-0.5 text-[10px] font-medium text-amber-700">
+                      <span className="rounded-full bg-amber-400/10 border border-amber-400/30 px-2 py-0.5 text-[10px] font-medium text-lumi-400">
                         sponsored
                       </span>
                     )}
                   </div>
-                  <p className={`text-stone-500 ${i === 0 ? 'text-sm mt-0.5' : 'text-xs'}`}>
+                  <p className={`text-muted-foreground ${i === 0 ? 'text-sm mt-0.5' : 'text-xs'}`}>
                     {r.description}
                   </p>
                 </div>
-                <span className="text-stone-300 group-hover:text-emerald-500 transition-colors text-sm">
+                <span className="text-muted-foreground/40 group-hover:text-lumi-400 transition-colors text-sm">
                   ↗
                 </span>
               </a>
@@ -239,20 +239,22 @@ export default async function HobbyDetailPage({ params }: Props) {
       {/* Related articles */}
       {relatedPosts.length > 0 && (
         <div className="mb-8">
-          <h2 className="mb-4 text-sm font-medium uppercase tracking-wide text-stone-500">
+          <h2 className="mb-4 text-sm font-medium uppercase tracking-wide text-muted-foreground">
             Related articles
           </h2>
           <div className="space-y-3">
             {relatedPosts.map((post) => (
               <Link key={post.slug} href={`/blog/${post.slug}`}>
-                <div className="group rounded-xl border border-stone-200 bg-white p-4 transition-colors hover:border-emerald-400">
+                <div className="group rounded-xl border border-border bg-card p-4 transition-colors hover:border-lumi-500/50">
                   <div className="flex items-center gap-3">
                     <span className="text-2xl">{post.emoji}</span>
                     <div>
-                      <h3 className="font-medium text-stone-800 group-hover:text-emerald-600 transition-colors">
+                      <h3 className="font-medium text-foreground group-hover:text-lumi-400 transition-colors">
                         {post.title}
                       </h3>
-                      <p className="text-xs text-stone-500 mt-0.5">{post.readTime} min read</p>
+                      <p className="text-xs text-muted-foreground mt-0.5">
+                        {post.readTime} min read
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -264,7 +266,7 @@ export default async function HobbyDetailPage({ params }: Props) {
 
       {/* Community timelines */}
       <div className="mb-12">
-        <h2 className="mb-4 text-sm font-medium uppercase tracking-wide text-stone-500">
+        <h2 className="mb-4 text-sm font-medium uppercase tracking-wide text-muted-foreground">
           Community timelines featuring {hobbyName}
         </h2>
         {matchingTimelines.length > 0 ? (
@@ -282,16 +284,16 @@ export default async function HobbyDetailPage({ params }: Props) {
                     user: t.userUsername ? { username: t.userUsername } : null,
                   })}
                 >
-                  <div className="group rounded-xl border border-stone-200 bg-white p-4 transition-colors hover:border-emerald-400">
-                    <h3 className="font-medium text-stone-800 group-hover:text-emerald-600 transition-colors">
+                  <div className="group rounded-xl border border-border bg-card p-4 transition-colors hover:border-lumi-500/50">
+                    <h3 className="font-medium text-foreground group-hover:text-lumi-400 transition-colors">
                       {t.title ?? 'Hobby Timeline'}
                     </h3>
                     {t.userName && (
-                      <p className="text-xs text-stone-500 mt-0.5">
+                      <p className="text-xs text-muted-foreground mt-0.5">
                         @{t.userUsername ?? t.userName}
                       </p>
                     )}
-                    <p className="text-xs text-stone-400 mt-1.5">
+                    <p className="text-xs text-muted-foreground/60 mt-1.5">
                       {phases.length} phases · {totalHobbies} hobbies
                     </p>
                   </div>
@@ -300,10 +302,10 @@ export default async function HobbyDetailPage({ params }: Props) {
             })}
           </div>
         ) : (
-          <div className="rounded-xl border border-stone-200 bg-stone-50 p-8 text-center">
-            <p className="text-stone-500">No public timelines feature {hobbyName} yet.</p>
+          <div className="rounded-xl border border-border bg-card/40 p-8 text-center">
+            <p className="text-muted-foreground">No public timelines feature {hobbyName} yet.</p>
             <Link href="/timeline/new">
-              <button className="mt-3 text-sm text-emerald-600 hover:text-emerald-700">
+              <button className="mt-3 text-sm text-lumi-400 hover:text-lumi-400">
                 Be the first →
               </button>
             </Link>
@@ -314,7 +316,7 @@ export default async function HobbyDetailPage({ params }: Props) {
       {/* Related hobbies in same category */}
       {otherHobbies.length > 0 && (
         <div className="mb-8">
-          <h2 className="mb-4 text-sm font-medium uppercase tracking-wide text-stone-500">
+          <h2 className="mb-4 text-sm font-medium uppercase tracking-wide text-muted-foreground">
             {category.emoji} Other {category.name.toLowerCase()} hobbies
           </h2>
           <div className="flex flex-wrap gap-2">
@@ -325,7 +327,7 @@ export default async function HobbyDetailPage({ params }: Props) {
               >
                 <Badge
                   variant="outline"
-                  className="border-stone-200 text-stone-500 hover:border-emerald-400 hover:text-emerald-600 cursor-pointer transition-colors"
+                  className="border-border text-muted-foreground hover:border-lumi-500/50 hover:text-lumi-400 cursor-pointer transition-colors"
                 >
                   {category.emoji} {h}
                 </Badge>
@@ -338,10 +340,10 @@ export default async function HobbyDetailPage({ params }: Props) {
       {/* Cross-category related hobbies */}
       {crossCategoryHobbies.length > 0 && (
         <div>
-          <h2 className="mb-1 text-sm font-medium uppercase tracking-wide text-stone-500">
+          <h2 className="mb-1 text-sm font-medium uppercase tracking-wide text-muted-foreground">
             You might also like
           </h2>
-          <p className="mb-4 text-xs text-stone-400">
+          <p className="mb-4 text-xs text-muted-foreground/60">
             Hobbies people pair with {hobbyName.toLowerCase()}, often from a completely different
             direction.
           </p>
@@ -353,15 +355,15 @@ export default async function HobbyDetailPage({ params }: Props) {
                 <Link
                   key={affinity.name}
                   href={`/hobbies/${encodeURIComponent(slug)}`}
-                  className="group block rounded-xl border border-stone-200 bg-white p-4 transition-colors hover:border-emerald-400"
+                  className="group block rounded-xl border border-border bg-card p-4 transition-colors hover:border-lumi-500/50"
                 >
                   <div className="flex items-center gap-2 mb-1">
                     <span className="text-lg">{affinityCategory?.emoji ?? '🎯'}</span>
-                    <span className="font-semibold text-stone-800 text-sm group-hover:text-emerald-600 transition-colors">
+                    <span className="font-semibold text-foreground text-sm group-hover:text-lumi-400 transition-colors">
                       {affinity.name}
                     </span>
                   </div>
-                  <p className="text-xs text-stone-500 leading-relaxed">{affinity.reason}</p>
+                  <p className="text-xs text-muted-foreground leading-relaxed">{affinity.reason}</p>
                 </Link>
               );
             })}

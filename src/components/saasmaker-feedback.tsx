@@ -68,9 +68,9 @@ export function SaaSMakerTestimonialsSection() {
   if (status !== 'ready') return null;
 
   return (
-    <section className="border-t border-stone-100 px-4 py-16" style={{ background: '#FAFAFA' }}>
+    <section className="border-t border-border px-4 py-16" style={{ background: '#FAFAFA' }}>
       <div className="mx-auto max-w-4xl">
-        <h2 className="mb-8 text-center text-3xl font-bold text-stone-900">
+        <h2 className="mb-8 text-center text-3xl font-bold text-foreground">
           What people are saying
         </h2>
         <SaaSMakerTestimonials />
@@ -90,9 +90,9 @@ export function SaaSMakerChangelogSection() {
   if (status !== 'ready') return null;
 
   return (
-    <section className="border-t border-stone-100 px-4 py-16 bg-stone-50">
+    <section className="border-t border-border px-4 py-16 bg-card/40">
       <div className="mx-auto max-w-2xl">
-        <h2 className="mb-8 text-center text-3xl font-bold text-stone-900">Changelog</h2>
+        <h2 className="mb-8 text-center text-3xl font-bold text-foreground">Changelog</h2>
         <SaaSMakerChangelog />
       </div>
     </section>

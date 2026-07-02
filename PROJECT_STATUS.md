@@ -4,15 +4,15 @@ Last updated: 2026-07-02
 
 ## Why / What
 
-Significant Hobbies is a hobby timeline and discovery app. It helps users map hobby history across life phases, understand patterns, share public journeys, and discover meaningful next hobbies.
+A life planner with two dimensions. **Daily** (private): one daily ritual page — AM/PM prompts, habit check-ins, compulsory journal entry. **Living** (opt-in public): hobbies, bucket lists, side quests, timelines. The mortality frame (life grid, manifesto) connects both. The journal is the bridge between daily practice and life aspirations.
 
 **Users:** Signed-in users via Google OAuth; guest timeline builders with auto-save; visitors browsing public journeys and hobby directory.
 
 **Constraints:** Deployed on Cloudflare Workers at `significanthobbies.com`; **Astro owns `GET /`** (static overlay + `run_worker_first` bypass); Next.js handles all app/SEO/API routes. Single primary discovery UX not yet chosen.
 
-**IN scope:** Timeline builder, public sharing, hobby directory/SEO pages, discovery tools, Turso persistence, Astro anon `/` overlay, PR preview env.
+**IN scope:** Timeline builder, public sharing, hobby directory/SEO pages, discovery tools, Turso persistence, Astro anon `/` overlay, PR preview env, daily ritual (habits + journal + AM/PM prompts), manifesto.
 
-**OUT of scope:** Broad social network, paid coaching/marketplace/creator monetization, large SEO expansion until core journey loop sharpens, coherent XP/badges progression until follow-through value proven.
+**OUT of scope:** Broad social network, paid coaching/marketplace/creator monetization, large SEO expansion until core journey loop sharpens, coherent XP/badges progression until follow-through value proven, scoring/streaks (no gamification of daily practice), focus timer, productivity tracking.
 
 ## Dependencies
 
@@ -54,6 +54,7 @@ Build pipeline (`scripts/cf-build.mjs`): Next build → patch sparse pnpm store 
 
 ## Timeline
 
+- **2026-07-02** — Merged today-little-log into significanthobbies. Added daily ritual (`/daily`), 4 new DB tables (habits, habit_logs, journal_entries, daily_checkins), dashboard integration (habits + journal summary), nav/footer/manifesto updated to reflect two dimensions (Daily + Living).
 - **2026-07-02** — Added global try/catch error handler to OpenNext worker (`worker.mjs`).
 - **2026-06-20 — Hybrid Astro `/`:** Full static landing in `landing-astro/` (hero + below-fold sections); overlaid into `.open-next/assets`; Worker skips invocation on `GET /`; Next `page.tsx` is auth-only fallback; demo timelines moved to `GET /api/demo-timelines`.
 - **Platform hardening:** Custom `cf-build.mjs` fixes OpenNext + pnpm monorepo sparse-store resolution; PR preview environment without prod route conflicts; dependency hygiene (removed unused `lighthouse` devDependency).
@@ -94,15 +95,20 @@ Build pipeline (`scripts/cf-build.mjs`): Next build → patch sparse pnpm store 
 
 ### Core product routes
 
+- **Daily ritual**: `/daily` — AM/PM prompts, habit check-ins, compulsory journal entry. Private by default.
 - **Timeline**: `/timeline/new`, `/timeline/[id]`, `/timeline/[id]/edit`, `/timelines/recent`.
 - **Public sharing**: `/u/[username]`, `/u/[username]/[slug]` public journeys.
 - **Discovery**: `/explore`, `/hobbies`, `/hobbies/[hobby]`, `/hobbies/category/[category]`, `/hobbies/random`, `/find-your-hobby`, `/search`.
 - **Content/SEO**: bucket lists, side quests, compare journeys, hobby guides (`hobbies-for-resume`, mental health, adults, cheap hobbies, etc.).
 - **Tools**: time calculator, cost calculator.
 - **Account**: `/dashboard`, `/settings`, `/login`, `/get-started`.
+- **Manifesto**: `/manifesto` — mortality frame as mission, not feature.
 
 ### Features shipped
 
+- **Daily ritual** (`/daily`): AM/PM prompts, habit check-ins (simple, no scoring), compulsory journal entry, inline habit management. Merged from today-little-log.
+- **Dashboard integration**: today's habits summary + journal prompt alongside commitments and life grid.
+- **Manifesto** (`/manifesto`): mortality frame as mission, two dimensions (Daily + Living), journal as bridge.
 - Timeline builder with drag/drop phases and hobbies.
 - Insights: rekindled hobbies, persistence tracking, phase-by-phase changes.
 - PNG/JSON export of timelines.
@@ -114,10 +120,12 @@ Build pipeline (`scripts/cf-build.mjs`): Next build → patch sparse pnpm store 
 
 ### Planned
 
-1. Tighten timeline creation and sharing loop so a first-time user can produce a meaningful public journey quickly.
-2. Decide which discovery path is primary: taxonomy browsing, recommendations, quiz, or famous journey inspiration.
-3. Turn side quests, XP, and badges into a coherent progression system only if they improve hobby follow-through.
-4. Review raw HTML rendering paths before making them user-sourced.
+1. **Decommission today-little-log** — redirect `today-little-log.pages.dev` to `significanthobbies.com`, archive TLL repo. No data migration needed (single user, no import). Requires operator action (domain redirect + repo archive).
+2. Tighten timeline creation and sharing loop so a first-time user can produce a meaningful public journey quickly.
+3. Decide which discovery path is primary: taxonomy browsing, recommendations, quiz, or famous journey inspiration.
+4. Turn side quests, XP, and badges into a coherent progression system only if they improve hobby follow-through.
+5. Review raw HTML rendering paths before making them user-sourced.
+6. Wire habits and commitments — allow a habit to be linked to a commitment (e.g. "practice guitar" habit auto-stamps the commitment).
 
 ### Deferred
 

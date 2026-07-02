@@ -186,22 +186,22 @@ export function BucketListSection({ initialItems }: Props) {
         <div className="flex items-center gap-3">
           <Lumi size={44} glow />
           <div>
-            <h2 className="text-xl font-bold text-stone-900">Your bucket list</h2>
+            <h2 className="text-xl font-bold text-foreground">Your bucket list</h2>
             {total > 0 ? (
-              <p className="text-sm text-stone-500">
+              <p className="text-sm text-muted-foreground">
                 <span className="font-semibold text-[#e05533]">{done}</span> done
                 {inProgress > 0 && (
                   <>
                     {' · '}
-                    <span className="font-semibold text-amber-600">{inProgress}</span> in progress
+                    <span className="font-semibold text-lumi-400">{inProgress}</span> in progress
                   </>
                 )}
                 {publicCount > 0 && (
-                  <span className="ml-1 text-stone-400">· {publicCount} public</span>
+                  <span className="ml-1 text-muted-foreground/60">· {publicCount} public</span>
                 )}
               </p>
             ) : (
-              <p className="text-sm text-stone-500">A life list, one check at a time.</p>
+              <p className="text-sm text-muted-foreground">A life list, one check at a time.</p>
             )}
           </div>
         </div>
@@ -223,7 +223,7 @@ export function BucketListSection({ initialItems }: Props) {
                   style={{ transition: 'stroke-dashoffset 0.7s cubic-bezier(0.22,1,0.36,1)' }}
                 />
               </svg>
-              <span className="absolute inset-0 flex items-center justify-center text-xs font-bold text-stone-700">
+              <span className="absolute inset-0 flex items-center justify-center text-xs font-bold text-foreground">
                 {pct}%
               </span>
             </div>
@@ -242,7 +242,7 @@ export function BucketListSection({ initialItems }: Props) {
         <div className="grid gap-3 sm:grid-cols-2">
           {archetype && (
             <div
-              className={`relative overflow-hidden rounded-2xl p-5 text-white shadow-sm ${archetype.color}`}
+              className={`relative overflow-hidden rounded-2xl p-5 text-foreground shadow-sm ${archetype.color}`}
             >
               <div className="absolute -right-6 -top-6 text-7xl opacity-20 select-none">
                 {archetype.emoji}
@@ -261,13 +261,13 @@ export function BucketListSection({ initialItems }: Props) {
           )}
           {celebrity && (
             <div className="rounded-2xl border border-[#f0a090] bg-[#fff6f2] p-5">
-              <p className="text-sm text-stone-600 mb-1.5">You&apos;re most like</p>
+              <p className="text-sm text-muted-foreground mb-1.5">You&apos;re most like</p>
               <div className="flex items-center gap-2.5">
                 <span className="text-3xl leading-none">{celebrity.emoji}</span>
                 <div>
                   <a
                     href={`/bucket-lists/${celebrity.slug}`}
-                    className="font-bold text-stone-900 hover:text-[#c94420] transition-colors"
+                    className="font-bold text-foreground hover:text-[#c94420] transition-colors"
                   >
                     {celebrity.name}
                   </a>
@@ -286,7 +286,9 @@ export function BucketListSection({ initialItems }: Props) {
                   </div>
                 </div>
               </div>
-              <p className="mt-2 text-xs text-stone-500 line-clamp-2">{celebrity.knownFor}</p>
+              <p className="mt-2 text-xs text-muted-foreground line-clamp-2">
+                {celebrity.knownFor}
+              </p>
             </div>
           )}
         </div>
@@ -296,11 +298,11 @@ export function BucketListSection({ initialItems }: Props) {
       {suggestions.length > 0 && (
         <div className="space-y-2.5">
           <div className="flex items-center justify-between">
-            <p className="text-sm font-medium text-stone-600">Lumi suggests</p>
+            <p className="text-sm font-medium text-muted-foreground">Lumi suggests</p>
             <button
               type="button"
               onClick={() => setSuggestionSeed((s) => s + 1)}
-              className="inline-flex items-center gap-1 text-xs text-stone-400 hover:text-[#e05533] transition-colors"
+              className="inline-flex items-center gap-1 text-xs text-muted-foreground/60 hover:text-[#e05533] transition-colors"
               aria-label="Refresh suggestions"
             >
               <span className="text-base leading-none">↻</span> shuffle
@@ -312,11 +314,11 @@ export function BucketListSection({ initialItems }: Props) {
                 key={`${s.title}-${i}`}
                 onClick={() => handleAddSuggestion(s.title, s.category)}
                 disabled={isPending}
-                className="group inline-flex items-center gap-1.5 rounded-full border border-stone-200 bg-white px-3 py-1.5 text-xs text-stone-700 hover:border-[#f0a090] hover:bg-[#fff6f2] hover:text-[#c94420] hover:-translate-y-0.5 transition-all disabled:opacity-50 disabled:hover:translate-y-0"
+                className="group inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3 py-1.5 text-xs text-foreground hover:border-[#f0a090] hover:bg-[#fff6f2] hover:text-[#c94420] hover:-translate-y-0.5 transition-all disabled:opacity-50 disabled:hover:translate-y-0"
               >
                 <span>{s.emoji}</span>
                 <span className="line-clamp-1 max-w-[180px]">{s.title}</span>
-                <span className="text-stone-300 group-hover:text-[#e05533] transition-colors">
+                <span className="text-muted-foreground/40 group-hover:text-[#e05533] transition-colors">
                   +
                 </span>
               </button>
@@ -334,23 +336,23 @@ export function BucketListSection({ initialItems }: Props) {
             onChange={(e) => setNewTitle(e.target.value)}
             onFocus={() => setShowAddOptions(true)}
             placeholder="Add your own bucket list item…"
-            className="flex-1 rounded-xl border border-stone-200 bg-white px-4 py-2.5 text-sm text-stone-900 placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-[#f0a090] focus:border-transparent"
+            className="flex-1 rounded-xl border border-border bg-card px-4 py-2.5 text-sm text-foreground placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-[#f0a090] focus:border-transparent"
           />
           <button
             type="submit"
             disabled={isPending || !newTitle.trim()}
-            className="rounded-xl bg-[#e05533] px-5 py-2.5 text-sm font-semibold text-white hover:bg-[#c94420] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            className="rounded-xl bg-[#e05533] px-5 py-2.5 text-sm font-semibold text-foreground hover:bg-[#c94420] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
             Add
           </button>
         </div>
         {showAddOptions && (
-          <div className="flex flex-wrap items-center gap-2 pl-1 text-xs text-stone-500">
-            <span className="text-stone-400">Optional:</span>
+          <div className="flex flex-wrap items-center gap-2 pl-1 text-xs text-muted-foreground">
+            <span className="text-muted-foreground/60">Optional:</span>
             <select
               value={newCategory}
               onChange={(e) => setNewCategory(e.target.value)}
-              className="rounded-lg border border-stone-200 bg-white px-2.5 py-1.5 text-xs text-stone-700 focus:outline-none focus:ring-2 focus:ring-[#f0a090]"
+              className="rounded-lg border border-border bg-card px-2.5 py-1.5 text-xs text-foreground focus:outline-none focus:ring-2 focus:ring-[#f0a090]"
               aria-label="Category"
             >
               <option value="">No category</option>
@@ -368,7 +370,7 @@ export function BucketListSection({ initialItems }: Props) {
               placeholder="by year"
               min={1900}
               max={2200}
-              className="w-24 rounded-lg border border-stone-200 bg-white px-2.5 py-1.5 text-xs text-stone-700 placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-[#f0a090]"
+              className="w-24 rounded-lg border border-border bg-card px-2.5 py-1.5 text-xs text-foreground placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-[#f0a090]"
               aria-label="Target year"
             />
           </div>
@@ -380,15 +382,15 @@ export function BucketListSection({ initialItems }: Props) {
         <div className="rounded-2xl border border-dashed border-[#f0a090] bg-[#fff6f2]/60 py-14 text-center space-y-4">
           <Lumi size={64} glow className="mx-auto" />
           <div>
-            <p className="font-semibold text-stone-800">Your bucket list is waiting.</p>
-            <p className="text-sm text-stone-500 mt-1 max-w-sm mx-auto">
+            <p className="font-semibold text-foreground">Your bucket list is waiting.</p>
+            <p className="text-sm text-muted-foreground mt-1 max-w-sm mx-auto">
               Lumi will help you fill it. Browse famous lists for inspiration, or add your own
               above.
             </p>
           </div>
           <Link
             href="/bucket-lists"
-            className="inline-flex items-center gap-2 rounded-full bg-[#e05533] px-5 py-2 text-sm font-semibold text-white hover:bg-[#c94420] transition-colors"
+            className="inline-flex items-center gap-2 rounded-full bg-[#e05533] px-5 py-2 text-sm font-semibold text-foreground hover:bg-[#c94420] transition-colors"
           >
             Browse famous bucket lists →
           </Link>
@@ -413,8 +415,8 @@ export function BucketListSection({ initialItems }: Props) {
                   isDone
                     ? 'border-[#f0a090] bg-[#fff6f2]/70'
                     : isInProgress
-                      ? 'border-amber-200 bg-amber-50/60'
-                      : 'border-stone-200 bg-white hover:border-stone-300 hover:shadow-sm'
+                      ? 'border-amber-400/30 bg-amber-400/10/60'
+                      : 'border-border bg-card hover:border-border hover:shadow-sm'
                 }`}
               >
                 {/* Celebration sparkle */}
@@ -435,18 +437,18 @@ export function BucketListSection({ initialItems }: Props) {
                       ? 'border-[#e05533] bg-[#e05533] hover:bg-[#c94420] hover:border-[#c94420]'
                       : isInProgress
                         ? 'border-amber-400 bg-amber-400/40 hover:bg-amber-400/60'
-                        : 'border-stone-300 hover:border-[#e05533] hover:scale-110'
+                        : 'border-border hover:border-[#e05533] hover:scale-110'
                   }`}
                   aria-label={`Status: ${STATUS_LABEL[status]}. Click to advance.`}
                   title={STATUS_LABEL[status]}
                 >
                   {isDone && (
-                    <span className="animate-bucket-check-pop text-white text-[10px] font-bold leading-none">
+                    <span className="animate-bucket-check-pop text-foreground text-[10px] font-bold leading-none">
                       ✓
                     </span>
                   )}
                   {isInProgress && (
-                    <span className="text-amber-600 text-[10px] font-bold leading-none">●</span>
+                    <span className="text-lumi-400 text-[10px] font-bold leading-none">●</span>
                   )}
                 </button>
 
@@ -454,14 +456,14 @@ export function BucketListSection({ initialItems }: Props) {
                 <div className="flex-1 min-w-0">
                   <span
                     className={`block text-sm font-medium truncate ${
-                      isDone ? 'line-through text-stone-400' : 'text-stone-800'
+                      isDone ? 'line-through text-muted-foreground/60' : 'text-foreground'
                     }`}
                   >
                     {item.title}
                     {item.sourceSlug && (
                       <a
                         href={`/bucket-lists/${item.sourceSlug}`}
-                        className="ml-1.5 text-xs text-stone-300 hover:text-[#e05533] transition-colors no-underline"
+                        className="ml-1.5 text-xs text-muted-foreground/40 hover:text-[#e05533] transition-colors no-underline"
                         onClick={(e) => e.stopPropagation()}
                         title="From this famous list"
                       >
@@ -472,12 +474,14 @@ export function BucketListSection({ initialItems }: Props) {
                   {(cat || item.targetYear) && (
                     <div className="flex items-center gap-2 mt-0.5">
                       {cat && (
-                        <span className="text-xs text-stone-400">
+                        <span className="text-xs text-muted-foreground/60">
                           {cat.emoji} {cat.label}
                         </span>
                       )}
                       {item.targetYear && (
-                        <span className="text-xs text-stone-400">· by {item.targetYear}</span>
+                        <span className="text-xs text-muted-foreground/60">
+                          · by {item.targetYear}
+                        </span>
                       )}
                     </div>
                   )}
@@ -489,7 +493,9 @@ export function BucketListSection({ initialItems }: Props) {
                   <button
                     onClick={() => handleToggleVisibility(item.id, item.visibility)}
                     className={`text-base transition-colors ${
-                      isPublic ? 'text-[#e05533]' : 'text-stone-300 hover:text-stone-400'
+                      isPublic
+                        ? 'text-[#e05533]'
+                        : 'text-muted-foreground/40 hover:text-muted-foreground/60'
                     }`}
                     title={
                       isPublic
@@ -502,7 +508,7 @@ export function BucketListSection({ initialItems }: Props) {
                   </button>
                   <button
                     onClick={() => handleRemove(item.id)}
-                    className="text-stone-300 hover:text-red-400 transition-colors text-lg leading-none"
+                    className="text-muted-foreground/40 hover:text-destructive transition-colors text-lg leading-none"
                     aria-label="Remove"
                   >
                     ×
@@ -515,7 +521,7 @@ export function BucketListSection({ initialItems }: Props) {
       )}
 
       {total > 0 && publicCount === 0 && (
-        <p className="text-center text-xs text-stone-400">
+        <p className="text-center text-xs text-muted-foreground/60">
           Items are private by default. Hover an item and click 🔒 to share it on your public
           profile.
         </p>
@@ -558,7 +564,7 @@ function YearEditor({
           min={1900}
           max={2200}
           placeholder="year"
-          className="w-16 rounded-md border border-stone-200 px-1.5 py-0.5 text-xs text-stone-700 focus:outline-none focus:ring-2 focus:ring-[#f0a090]"
+          className="w-16 rounded-md border border-border px-1.5 py-0.5 text-xs text-foreground focus:outline-none focus:ring-2 focus:ring-[#f0a090]"
           aria-label="Target year"
         />
         <button
@@ -578,7 +584,7 @@ function YearEditor({
         setValue(year ? String(year) : '');
         setEditing(true);
       }}
-      className="text-base text-stone-300 hover:text-[#e05533] transition-colors"
+      className="text-base text-muted-foreground/40 hover:text-[#e05533] transition-colors"
       title={year ? `Target: ${year} — click to edit` : 'Set a target year'}
       aria-label="Set target year"
     >

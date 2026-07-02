@@ -32,12 +32,12 @@ export function UsernameForm() {
   }
 
   return (
-    <Card className="border-stone-200 bg-white">
+    <Card className="border-border bg-card">
       <CardContent className="pt-6">
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <div className="flex items-center rounded-md border border-stone-300 bg-stone-50 px-3 focus-within:border-emerald-500 transition-colors">
-              <span className="text-stone-400 text-sm select-none">@</span>
+            <div className="flex items-center rounded-md border border-border bg-card/40 px-3 focus-within:border-lumi-500/60 transition-colors">
+              <span className="text-muted-foreground/60 text-sm select-none">@</span>
               <Input
                 value={value}
                 onChange={(e) => setValue(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ''))}
@@ -48,13 +48,13 @@ export function UsernameForm() {
                 required
               />
             </div>
-            <p className="mt-1.5 text-xs text-stone-400">
+            <p className="mt-1.5 text-xs text-muted-foreground/60">
               Lowercase letters, numbers, hyphens only
             </p>
           </div>
           <Button
             type="submit"
-            className="w-full bg-emerald-600 hover:bg-emerald-700"
+            className="w-full bg-primary hover:bg-lumi-300"
             disabled={loading || !isValid}
           >
             {loading ? 'Saving...' : 'Claim username'}

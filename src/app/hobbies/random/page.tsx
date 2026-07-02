@@ -26,7 +26,7 @@ export default function RandomHobby() {
 
   return (
     <main className="flex min-h-screen items-center justify-center p-8">
-      <p className="font-mono text-sm text-stone-500">{msg}</p>
+      <p className="font-mono text-sm text-muted-foreground">{msg}</p>
     </main>
   );
 }

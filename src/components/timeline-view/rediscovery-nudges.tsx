@@ -19,20 +19,20 @@ export function RediscoveryNudges({ phases }: Props) {
   if (items.length === 0) return null;
 
   return (
-    <div className="rounded-xl border border-stone-200 bg-white p-5 space-y-4">
+    <div className="rounded-xl border border-border bg-card p-5 space-y-4">
       <div className="flex items-center gap-2">
-        <RotateCcw className="h-4 w-4 text-stone-400" />
-        <h2 className="text-lg font-semibold text-stone-800">Rediscover</h2>
+        <RotateCcw className="h-4 w-4 text-muted-foreground/60" />
+        <h2 className="text-lg font-semibold text-foreground">Rediscover</h2>
       </div>
 
       <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3">
         {items.map((item) => (
           <div
             key={item.name}
-            className="rounded-lg border border-stone-100 bg-stone-50 p-3 flex flex-col gap-1.5"
+            className="rounded-lg border border-border bg-card/40 p-3 flex flex-col gap-1.5"
           >
             <div className="flex items-center justify-between gap-2">
-              <span className="text-sm font-semibold text-stone-800 capitalize truncate">
+              <span className="text-sm font-semibold text-foreground capitalize truncate">
                 {item.name}
               </span>
               {item.type === 'rekindle' ? (
@@ -40,12 +40,12 @@ export function RediscoveryNudges({ phases }: Props) {
                   rekindle
                 </Badge>
               ) : (
-                <Badge className="shrink-0 bg-red-50 text-red-600 border border-red-200 text-[10px] px-1.5 py-0">
+                <Badge className="shrink-0 bg-destructive/10 text-destructive border border-destructive/30 text-[10px] px-1.5 py-0">
                   dropped
                 </Badge>
               )}
             </div>
-            <p className="text-xs text-stone-500 leading-tight">
+            <p className="text-xs text-muted-foreground leading-tight">
               {item.totalPhases > 1
                 ? `Appeared in ${item.totalPhases} phases`
                 : `Last seen in ${item.lastSeenPhase}`}

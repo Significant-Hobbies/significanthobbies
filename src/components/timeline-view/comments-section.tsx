@@ -50,13 +50,13 @@ function Avatar({ user }: { user: Comment['user'] }) {
         alt={user.name ?? 'User'}
         width={32}
         height={32}
-        className="h-8 w-8 rounded-full object-cover shrink-0 border border-stone-200"
+        className="h-8 w-8 rounded-full object-cover shrink-0 border border-border"
       />
     );
   }
   const initial = (user.name ?? user.username ?? '?')[0]?.toUpperCase() ?? '?';
   return (
-    <div className="h-8 w-8 rounded-full bg-stone-200 flex items-center justify-center shrink-0 text-xs font-semibold text-stone-600 border border-stone-200">
+    <div className="h-8 w-8 rounded-full bg-foreground/10 flex items-center justify-center shrink-0 text-xs font-semibold text-muted-foreground border border-border">
       {initial}
     </div>
   );
@@ -119,8 +119,8 @@ export function CommentsSectionWithOwn({
   }
 
   return (
-    <div className="rounded-xl border border-stone-200 bg-white p-6">
-      <h2 className="mb-4 text-base font-semibold text-stone-800">Comments ({comments.length})</h2>
+    <div className="rounded-xl border border-border bg-card p-6">
+      <h2 className="mb-4 text-base font-semibold text-foreground">Comments ({comments.length})</h2>
 
       {/* Comment form */}
       {isAuthenticated ? (
@@ -130,26 +130,29 @@ export function CommentsSectionWithOwn({
             onChange={(e) => setBody(e.target.value.slice(0, 280))}
             placeholder="Share your thoughts..."
             rows={3}
-            className="w-full resize-none rounded-lg border border-stone-200 bg-stone-50 px-3 py-2 text-sm text-stone-800 placeholder:text-stone-400 focus:border-emerald-400 focus:bg-white focus:outline-none focus:ring-1 focus:ring-emerald-400 transition-colors"
+            className="w-full resize-none rounded-lg border border-border bg-card/40 px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground/60 focus:border-lumi-500/50 focus:bg-card focus:outline-none focus:ring-1 focus:ring-lumi-500/80 transition-colors"
           />
           <div className="mt-1.5 flex items-center justify-between">
             <span
-              className={['text-xs', remaining < 20 ? 'text-rose-500' : 'text-stone-400'].join(' ')}
+              className={[
+                'text-xs',
+                remaining < 20 ? 'text-rose-500' : 'text-muted-foreground/60',
+              ].join(' ')}
             >
               {remaining} left
             </span>
             <button
               onClick={handlePost}
               disabled={isPosting || !body.trim()}
-              className="rounded-lg bg-emerald-600 px-4 py-1.5 text-sm font-medium text-white transition-colors hover:bg-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="rounded-lg bg-primary px-4 py-1.5 text-sm font-medium text-primary-foreground transition-colors hover:bg-lumi-300 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isPosting ? 'Posting...' : 'Post'}
             </button>
           </div>
         </div>
       ) : (
-        <div className="mb-6 rounded-lg border border-stone-100 bg-stone-50 px-4 py-3 text-sm text-stone-500">
-          <Link href="/api/auth/signin" className="text-emerald-600 hover:underline font-medium">
+        <div className="mb-6 rounded-lg border border-border bg-card/40 px-4 py-3 text-sm text-muted-foreground">
+          <Link href="/api/auth/signin" className="text-lumi-400 hover:underline font-medium">
             Sign in
           </Link>{' '}
           to join the conversation
@@ -158,7 +161,7 @@ export function CommentsSectionWithOwn({
 
       {/* Comments list */}
       {comments.length === 0 ? (
-        <p className="text-center text-sm text-stone-400 py-6">Be the first to comment</p>
+        <p className="text-center text-sm text-muted-foreground/60 py-6">Be the first to comment</p>
       ) : (
         <ul className="space-y-4">
           {comments.map((comment) => (
@@ -166,22 +169,26 @@ export function CommentsSectionWithOwn({
               <Avatar user={comment.user} />
               <div className="flex-1 min-w-0">
                 <div className="flex items-baseline gap-2 flex-wrap">
-                  <span className="text-sm font-medium text-stone-800">
+                  <span className="text-sm font-medium text-foreground">
                     {comment.user.name ?? comment.user.username ?? 'Anonymous'}
                   </span>
                   {comment.user.username && (
-                    <span className="text-xs text-stone-400">@{comment.user.username}</span>
+                    <span className="text-xs text-muted-foreground/60">
+                      @{comment.user.username}
+                    </span>
                   )}
-                  <span className="text-xs text-stone-400">{timeAgo(comment.createdAt)}</span>
+                  <span className="text-xs text-muted-foreground/60">
+                    {timeAgo(comment.createdAt)}
+                  </span>
                 </div>
-                <p className="mt-0.5 text-sm text-stone-700 break-words">{comment.body}</p>
+                <p className="mt-0.5 text-sm text-foreground break-words">{comment.body}</p>
               </div>
               {isOwn(comment.id) && (
                 <button
                   onClick={() => handleDelete(comment.id)}
                   disabled={deletingId === comment.id}
                   aria-label="Delete comment"
-                  className="shrink-0 self-start mt-0.5 rounded p-1 text-stone-300 transition-colors hover:bg-rose-50 hover:text-rose-500 disabled:opacity-40"
+                  className="shrink-0 self-start mt-0.5 rounded p-1 text-muted-foreground/40 transition-colors hover:bg-rose-50 hover:text-rose-500 disabled:opacity-40"
                 >
                   <Trash2 className="h-3.5 w-3.5" />
                 </button>

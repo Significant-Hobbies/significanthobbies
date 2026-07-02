@@ -14,13 +14,13 @@ export default function JourneysPage() {
     <div className="mx-auto max-w-5xl px-4 py-12">
       {/* Header */}
       <div className="scroll-reveal mb-10">
-        <h1 className="text-3xl font-bold text-stone-900">Famous Hobby Journeys</h1>
-        <p className="mt-2 text-stone-500">
+        <h1 className="text-3xl font-bold text-foreground">Famous Hobby Journeys</h1>
+        <p className="mt-2 text-muted-foreground">
           How the world&apos;s most interesting people spent their free time
         </p>
-        <p className="mt-3 text-sm text-stone-400">
-          <span className="font-medium text-stone-600">{FAMOUS_JOURNEYS.length}</span> remarkable
-          people
+        <p className="mt-3 text-sm text-muted-foreground/60">
+          <span className="font-medium text-muted-foreground">{FAMOUS_JOURNEYS.length}</span>{' '}
+          remarkable people
         </p>
       </div>
 
@@ -30,9 +30,9 @@ export default function JourneysPage() {
           const totalHobbies = person.phases.reduce((sum, phase) => sum + phase.hobbies.length, 0);
           return (
             <Link key={person.slug} href={`/journeys/${person.slug}`} className="group block">
-              <div className="relative flex h-full flex-col overflow-hidden rounded-xl border border-stone-200 bg-white p-5 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-emerald-300 hover:shadow-md">
+              <div className="relative flex h-full flex-col overflow-hidden rounded-xl border border-border bg-card p-5 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-lumi-500/40 hover:shadow-md">
                 {/* Hover accent bar */}
-                <div className="absolute inset-x-0 top-0 h-0.5 origin-left scale-x-0 bg-gradient-to-r from-emerald-400 to-emerald-300 transition-transform duration-300 group-hover:scale-x-100 rounded-t-xl" />
+                <div className="absolute inset-x-0 top-0 h-0.5 origin-left scale-x-0 bg-gradient-to-r from-lumi-400 to-lumi-500/60 transition-transform duration-300 group-hover:scale-x-100 rounded-t-xl" />
 
                 {/* Emoji + name */}
                 <div className="mb-3 flex items-center gap-3">
@@ -40,27 +40,29 @@ export default function JourneysPage() {
                     {person.emoji}
                   </span>
                   <div>
-                    <h2 className="font-bold text-stone-900 transition-colors group-hover:text-emerald-700 leading-tight">
+                    <h2 className="font-bold text-foreground transition-colors group-hover:text-lumi-400 leading-tight">
                       {person.name}
                     </h2>
-                    <p className="text-xs text-stone-400">{person.born}</p>
+                    <p className="text-xs text-muted-foreground/60">{person.born}</p>
                   </div>
                 </div>
 
                 {/* Known for */}
-                <p className="mb-4 flex-1 text-xs leading-relaxed text-stone-500 line-clamp-2">
+                <p className="mb-4 flex-1 text-xs leading-relaxed text-muted-foreground line-clamp-2">
                   {person.knownFor}
                 </p>
 
                 {/* Stats row */}
-                <div className="flex items-center justify-between border-t border-stone-100 pt-3">
-                  <span className="text-xs text-stone-400">
-                    <span className="font-semibold text-stone-600">{totalHobbies}</span> hobbies
-                    across{' '}
-                    <span className="font-semibold text-stone-600">{person.phases.length}</span>{' '}
+                <div className="flex items-center justify-between border-t border-border pt-3">
+                  <span className="text-xs text-muted-foreground/60">
+                    <span className="font-semibold text-muted-foreground">{totalHobbies}</span>{' '}
+                    hobbies across{' '}
+                    <span className="font-semibold text-muted-foreground">
+                      {person.phases.length}
+                    </span>{' '}
                     phases
                   </span>
-                  <span className="text-xs font-semibold text-emerald-600 opacity-0 transition-opacity group-hover:opacity-100">
+                  <span className="text-xs font-semibold text-lumi-400 opacity-0 transition-opacity group-hover:opacity-100">
                     Explore →
                   </span>
                 </div>
@@ -71,14 +73,14 @@ export default function JourneysPage() {
       </div>
 
       {/* CTA section */}
-      <div className="mt-16 rounded-xl border border-stone-200 bg-emerald-50 p-8 text-center">
-        <h2 className="mb-2 text-lg font-bold text-stone-900">What&apos;s your hobby story?</h2>
-        <p className="mb-5 text-sm text-stone-600">
+      <div className="mt-16 rounded-xl border border-border bg-lumi-500/10 p-8 text-center">
+        <h2 className="mb-2 text-lg font-bold text-foreground">What&apos;s your hobby story?</h2>
+        <p className="mb-5 text-sm text-muted-foreground">
           Map your own journey — from childhood pastimes to current obsessions.
         </p>
         <Link
           href="/timeline/new"
-          className="inline-flex items-center gap-1.5 rounded-full bg-emerald-600 px-6 py-2.5 text-sm font-semibold text-white shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:bg-emerald-700 hover:shadow-md"
+          className="inline-flex items-center gap-1.5 rounded-full bg-primary px-6 py-2.5 text-sm font-semibold text-primary-foreground shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:bg-lumi-300 hover:shadow-md"
         >
           Start your timeline →
         </Link>

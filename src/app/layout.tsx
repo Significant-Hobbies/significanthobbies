@@ -11,7 +11,7 @@ import { SaaSMakerFeedback } from '~/components/saasmaker-feedback';
 import { SiteFooter } from '~/components/site-footer';
 import { VitalsReporter } from '~/components/VitalsReporter';
 
-const geist = Geist({ subsets: ['latin'], display: 'swap' });
+const geist = Geist({ subsets: ['latin'], display: 'swap', variable: '--font-sans' });
 
 export const metadata: Metadata = {
   title: {
@@ -51,13 +51,13 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: '#059669',
+  themeColor: '#0c2b29',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
-      <body className={`${geist.className} min-h-screen bg-white text-stone-900`}>
+    <html lang="en" className={geist.variable}>
+      <body className="min-h-screen bg-background text-foreground font-sans antialiased">
         <JsonLd
           data={{
             '@context': 'https://schema.org',

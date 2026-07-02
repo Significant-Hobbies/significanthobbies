@@ -384,18 +384,18 @@ const REGION_STYLES: Record<
     dot: 'bg-sky-400',
   },
   red: {
-    bg: 'bg-red-50',
-    border: 'border-red-200',
-    text: 'text-red-700',
-    badge: 'bg-red-100 text-red-700 border-red-200',
-    dot: 'bg-red-400',
+    bg: 'bg-destructive/10',
+    border: 'border-destructive/30',
+    text: 'text-destructive',
+    badge: 'bg-destructive/15 text-destructive border-destructive/30',
+    dot: 'bg-destructive/80',
   },
   emerald: {
-    bg: 'bg-emerald-50',
-    border: 'border-emerald-200',
-    text: 'text-emerald-700',
-    badge: 'bg-emerald-100 text-emerald-700 border-emerald-200',
-    dot: 'bg-emerald-400',
+    bg: 'bg-lumi-500/10',
+    border: 'border-lumi-500/30',
+    text: 'text-lumi-400',
+    badge: 'bg-lumi-500/15 text-lumi-400 border-lumi-500/30',
+    dot: 'bg-lumi-400',
   },
   coral: {
     bg: 'bg-[#fff0ec]',
@@ -449,11 +449,11 @@ export default function TravelBucketListPage() {
   const totalDestinations = REGIONS.reduce((sum, r) => sum + r.items.length, 0);
 
   return (
-    <main className="bg-white">
+    <main className="bg-card">
       <JsonLd data={faqSchema} />
 
       {/* ── Hero ─────────────────────────────────────────────────── */}
-      <section className="bg-white pt-16 pb-10 px-4">
+      <section className="bg-card pt-16 pb-10 px-4">
         <div className="mx-auto max-w-4xl">
           <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6 mb-8">
             <Lumi size={88} glow float className="shrink-0" />
@@ -461,24 +461,24 @@ export default function TravelBucketListPage() {
               <p className="text-[#e05533] text-sm font-semibold uppercase tracking-widest">
                 Guided by Lumi · {totalDestinations} destinations across 5 regions
               </p>
-              <h1 className="text-4xl sm:text-5xl font-bold leading-tight text-stone-900 text-balance">
+              <h1 className="text-4xl sm:text-5xl font-bold leading-tight text-foreground text-balance">
                 The Ultimate Travel Bucket List{' '}
                 <span className="text-[#e05533]">(75 Destinations)</span>
               </h1>
-              <p className="text-stone-500 text-lg max-w-xl">
+              <p className="text-muted-foreground text-lg max-w-xl">
                 From Stonehenge to the Serengeti to Antarctica — 75 places organized by region, with
                 notes on why each one belongs on every serious list.
               </p>
               <div className="flex flex-wrap gap-3 justify-center sm:justify-start">
                 <Link
                   href="/dashboard"
-                  className="inline-flex items-center gap-2 rounded-full bg-[#e05533] px-6 py-3 text-sm font-semibold text-white hover:bg-[#c94420] transition-colors shadow-md"
+                  className="inline-flex items-center gap-2 rounded-full bg-[#e05533] px-6 py-3 text-sm font-semibold text-foreground hover:bg-[#c94420] transition-colors shadow-md"
                 >
                   Build my travel list
                 </Link>
                 <Link
                   href="/bucket-lists"
-                  className="inline-flex items-center gap-2 rounded-full border border-stone-300 px-6 py-3 text-sm font-medium text-stone-600 hover:border-[#e05533] hover:text-[#e05533] transition-colors"
+                  className="inline-flex items-center gap-2 rounded-full border border-border px-6 py-3 text-sm font-medium text-muted-foreground hover:border-[#e05533] hover:text-[#e05533] transition-colors"
                 >
                   See famous lists →
                 </Link>
@@ -489,7 +489,7 @@ export default function TravelBucketListPage() {
       </section>
 
       {/* ── Region nav ───────────────────────────────────────────── */}
-      <div className="sticky top-14 z-30 border-b border-stone-200 bg-white/90 backdrop-blur-sm">
+      <div className="sticky top-14 z-30 border-b border-border bg-card/90 backdrop-blur-sm">
         <div className="mx-auto max-w-5xl px-4 overflow-x-auto">
           <div className="flex gap-1 py-2 min-w-max">
             {REGIONS.map((region) => {
@@ -522,7 +522,9 @@ export default function TravelBucketListPage() {
                   {region.emoji}
                 </div>
                 <div>
-                  <h2 className="text-2xl font-bold text-stone-900 text-balance">{region.label}</h2>
+                  <h2 className="text-2xl font-bold text-foreground text-balance">
+                    {region.label}
+                  </h2>
                   <p className={`text-sm ${s.text} font-medium`}>
                     {region.items.length} destinations
                   </p>
@@ -542,13 +544,15 @@ export default function TravelBucketListPage() {
                         <div className="space-y-1 min-w-0">
                           <div className="flex items-center gap-2">
                             <span className={`text-xs font-bold ${s.text}`}>{counter}</span>
-                            <h3 className="font-semibold text-stone-900 text-sm leading-snug">
+                            <h3 className="font-semibold text-foreground text-sm leading-snug">
                               {dest.name}
                             </h3>
                           </div>
-                          <p className="text-stone-600 text-sm leading-relaxed">{dest.why}</p>
+                          <p className="text-muted-foreground text-sm leading-relaxed">
+                            {dest.why}
+                          </p>
                           {dest.famous && (
-                            <p className="text-xs text-stone-500">
+                            <p className="text-xs text-muted-foreground">
                               <Link
                                 href={`/bucket-lists/${dest.famous.slug}`}
                                 className={`font-medium ${s.text} hover:underline transition-colors`}
@@ -570,19 +574,19 @@ export default function TravelBucketListPage() {
       </div>
 
       {/* ── FAQ ──────────────────────────────────────────────────── */}
-      <section className="bg-stone-50 border-t border-stone-200">
+      <section className="bg-card/40 border-t border-border">
         <div className="mx-auto max-w-3xl px-4 py-16 space-y-8">
-          <h2 className="text-2xl font-bold text-stone-900 text-balance">
+          <h2 className="text-2xl font-bold text-foreground text-balance">
             Frequently asked questions
           </h2>
           <div className="space-y-6">
             {FAQ_ITEMS.map((item) => (
               <div
                 key={item.q}
-                className="rounded-xl border border-stone-200 bg-white px-6 py-5 space-y-3"
+                className="rounded-xl border border-border bg-card px-6 py-5 space-y-3"
               >
-                <h3 className="font-semibold text-stone-900">{item.q}</h3>
-                <p className="text-stone-600 text-sm leading-relaxed">{item.a}</p>
+                <h3 className="font-semibold text-foreground">{item.q}</h3>
+                <p className="text-muted-foreground text-sm leading-relaxed">{item.a}</p>
               </div>
             ))}
           </div>
@@ -593,21 +597,21 @@ export default function TravelBucketListPage() {
       <section className="bg-[#fff0ec] border-t border-[#f0a090]">
         <div className="mx-auto max-w-3xl px-4 py-16 text-center space-y-6">
           <Lumi size={64} glow float className="mx-auto" />
-          <h2 className="text-3xl font-bold text-stone-900 text-balance">Ready to build yours?</h2>
-          <p className="text-stone-600 max-w-md mx-auto">
+          <h2 className="text-3xl font-bold text-foreground text-balance">Ready to build yours?</h2>
+          <p className="text-muted-foreground max-w-md mx-auto">
             Lumi tracks your travel bucket list, shows your progress across regions, and matches
             your ambitions to the famous people who share them.
           </p>
           <div className="flex flex-wrap gap-3 justify-center">
             <Link
               href="/dashboard"
-              className="inline-flex items-center gap-2 rounded-full bg-[#e05533] px-6 py-3 text-sm font-semibold text-white hover:bg-[#c94420] transition-colors shadow-md"
+              className="inline-flex items-center gap-2 rounded-full bg-[#e05533] px-6 py-3 text-sm font-semibold text-foreground hover:bg-[#c94420] transition-colors shadow-md"
             >
               Build my bucket list
             </Link>
             <Link
               href="/bucket-lists"
-              className="inline-flex items-center gap-2 rounded-full border border-stone-300 bg-white px-6 py-3 text-sm font-medium text-stone-700 hover:border-[#e05533] transition-colors"
+              className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-6 py-3 text-sm font-medium text-foreground hover:border-[#e05533] transition-colors"
             >
               Browse famous lists →
             </Link>

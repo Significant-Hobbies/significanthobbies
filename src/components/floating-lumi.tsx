@@ -45,7 +45,7 @@ export function FloatingLumi() {
       <div
         className="
           flex flex-col gap-1 rounded-2xl border border-[#f0a090]
-          bg-white/95 backdrop-blur-sm shadow-xl
+          bg-card/95 backdrop-blur-sm shadow-xl
           overflow-hidden
           max-h-0 opacity-0 scale-95 origin-bottom-right
           group-hover:max-h-64 group-hover:opacity-100 group-hover:scale-100
@@ -62,7 +62,7 @@ export function FloatingLumi() {
           <Link
             key={href}
             href={href}
-            className="mx-2 mb-1 rounded-xl px-3 py-2.5 text-sm font-medium text-stone-700 hover:bg-[#fff0ec] hover:text-[#e05533] transition-colors"
+            className="mx-2 mb-1 rounded-xl px-3 py-2.5 text-sm font-medium text-foreground hover:bg-[#fff0ec] hover:text-[#e05533] transition-colors"
           >
             {label}
           </Link>
@@ -93,10 +93,10 @@ export function FloatingLumi() {
           className="
             absolute -top-1.5 -right-1.5
             flex h-5 w-5 items-center justify-center
-            rounded-full bg-stone-200 text-stone-500
+            rounded-full bg-foreground/10 text-muted-foreground
             text-[10px] font-bold leading-none
             opacity-0 group-hover:opacity-100
-            hover:bg-stone-300 hover:text-stone-700
+            hover:bg-foreground/15 hover:text-foreground
             transition-opacity duration-200
             focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#e05533]
           "

@@ -40,17 +40,17 @@ export default async function SettingsPage() {
       {user.username && (
         <Link
           href={`/u/${user.username}`}
-          className="mb-6 inline-flex items-center gap-1.5 text-sm text-stone-500 hover:text-stone-700 transition-colors"
+          className="mb-6 inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors"
         >
           <ArrowLeft className="h-3.5 w-3.5" />
           Back to profile
         </Link>
       )}
 
-      <h1 className="mb-8 text-2xl font-bold text-stone-900">Settings</h1>
+      <h1 className="mb-8 text-2xl font-bold text-foreground">Settings</h1>
 
-      <div className="rounded-2xl border border-stone-200 bg-white p-6 shadow-sm">
-        <h2 className="mb-5 text-base font-semibold text-stone-800">Edit profile</h2>
+      <div className="rounded-2xl border border-border bg-card p-6 shadow-sm">
+        <h2 className="mb-5 text-base font-semibold text-foreground">Edit profile</h2>
         <ProfileForm
           initialName={user.name ?? ''}
           initialBio={user.bio ?? ''}

@@ -97,8 +97,8 @@ export default async function ExplorePage() {
       {/* Page header */}
       <div className="scroll-reveal mb-8 grid gap-5 md:grid-cols-[minmax(0,1fr)_22rem] md:items-end">
         <div>
-          <h1 className="text-3xl font-bold text-stone-900">Explore timelines</h1>
-          <p className="mt-2 text-stone-500">
+          <h1 className="text-3xl font-bold text-foreground">Explore timelines</h1>
+          <p className="mt-2 text-muted-foreground">
             Discover how people spend their time — across life phases, hobbies, and chapters.
           </p>
         </div>
@@ -112,7 +112,7 @@ export default async function ExplorePage() {
       {/* Trending hobbies */}
       {trendingHobbies.length > 0 && (
         <div className="mb-8">
-          <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-stone-400">
+          <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground/60">
             Trending
           </p>
           <div className="flex flex-wrap gap-2">
@@ -121,11 +121,11 @@ export default async function ExplorePage() {
                 key={name}
                 href={`/hobbies/${encodeURIComponent(name.toLowerCase().replace(/\s+/g, '-'))}`}
                 prefetch={false}
-                className="inline-flex items-center gap-1 rounded-full border border-stone-200 bg-stone-50 px-3 py-1 text-xs text-stone-600 hover:border-emerald-400 hover:text-emerald-600 transition-colors"
+                className="inline-flex items-center gap-1 rounded-full border border-border bg-card/40 px-3 py-1 text-xs text-muted-foreground hover:border-lumi-500/50 hover:text-lumi-400 transition-colors"
               >
                 <span>{emoji}</span>
                 <span>{name}</span>
-                <span className="text-stone-400">({count})</span>
+                <span className="text-muted-foreground/60">({count})</span>
               </Link>
             ))}
           </div>
@@ -139,9 +139,11 @@ export default async function ExplorePage() {
 
 function ExploreStat({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-xl border border-stone-200 bg-white px-3 py-2">
-      <p className="text-[10px] font-semibold uppercase tracking-wider text-stone-400">{label}</p>
-      <p className="mt-1 text-lg font-bold text-stone-900">{value}</p>
+    <div className="rounded-xl border border-border bg-card px-3 py-2">
+      <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/60">
+        {label}
+      </p>
+      <p className="mt-1 text-lg font-bold text-foreground">{value}</p>
     </div>
   );
 }

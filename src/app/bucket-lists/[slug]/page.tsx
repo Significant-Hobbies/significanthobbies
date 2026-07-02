@@ -65,7 +65,7 @@ export default async function FamousBucketListPage({ params }: Props) {
   };
 
   return (
-    <main className="bg-white">
+    <main className="bg-card">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
@@ -75,7 +75,7 @@ export default async function FamousBucketListPage({ params }: Props) {
       <div className="bg-[#e05533] h-1" />
 
       {/* ── Light header ─────────────────────────────────────────────── */}
-      <section className="bg-white border-b border-stone-100">
+      <section className="bg-card border-b border-border">
         <div className="mx-auto max-w-3xl px-4 py-10 space-y-6">
           <Link
             href="/bucket-lists"
@@ -88,7 +88,7 @@ export default async function FamousBucketListPage({ params }: Props) {
             {/* Big emoji */}
             <div className="text-6xl sm:text-7xl shrink-0">{list.emoji}</div>
             <div className="flex-1 space-y-2">
-              <h1 className="text-3xl sm:text-4xl font-bold text-stone-900 text-balance">
+              <h1 className="text-3xl sm:text-4xl font-bold text-foreground text-balance">
                 {list.name}
               </h1>
               <p className="text-sm text-[#e05533] font-medium">{list.knownFor}</p>
@@ -109,25 +109,25 @@ export default async function FamousBucketListPage({ params }: Props) {
                   strokeDashoffset={offset}
                 />
               </svg>
-              <p className="text-center text-xs text-stone-500 mt-1">{pct}% done</p>
+              <p className="text-center text-xs text-muted-foreground mt-1">{pct}% done</p>
             </div>
           </div>
 
           {/* Progress bar — mobile */}
           <div className="sm:hidden space-y-1">
-            <div className="flex justify-between text-xs text-stone-500">
+            <div className="flex justify-between text-xs text-muted-foreground">
               <span>
                 {done} of {total} completed
               </span>
               <span>{pct}%</span>
             </div>
-            <div className="h-1.5 rounded-full bg-stone-100 overflow-hidden">
+            <div className="h-1.5 rounded-full bg-foreground/5 overflow-hidden">
               <div className="h-full rounded-full bg-[#e05533]" style={{ width: `${pct}%` }} />
             </div>
           </div>
 
           {list.quote && (
-            <blockquote className="border-l-4 border-[#e05533] pl-4 italic text-stone-500 text-sm">
+            <blockquote className="border-l-4 border-[#e05533] pl-4 italic text-muted-foreground text-sm">
               &ldquo;{list.quote.text}&rdquo;
             </blockquote>
           )}
@@ -139,7 +139,7 @@ export default async function FamousBucketListPage({ params }: Props) {
         {!isLoggedIn && (
           <div className="flex items-center gap-3 rounded-xl border border-[#f0a090] bg-[#fff0ec] px-5 py-3">
             <Lumi size={36} float />
-            <p className="text-sm text-stone-700">
+            <p className="text-sm text-foreground">
               <a href="/login" className="font-semibold text-[#e05533] hover:underline">
                 Sign in
               </a>{' '}
@@ -159,7 +159,7 @@ export default async function FamousBucketListPage({ params }: Props) {
                 className={`group rounded-2xl border p-5 transition-all duration-200 ${
                   isDone
                     ? 'border-[#f0a090] bg-[#fff0ec]'
-                    : 'border-stone-200 bg-white hover:border-stone-300 hover:shadow-sm'
+                    : 'border-border bg-card hover:border-border hover:shadow-sm'
                 }`}
               >
                 <div className="flex items-start gap-4">
@@ -167,8 +167,8 @@ export default async function FamousBucketListPage({ params }: Props) {
                   <div
                     className={`mt-0.5 h-6 w-6 shrink-0 rounded-full border-2 flex items-center justify-center text-xs font-bold ${
                       isDone
-                        ? 'border-[#e05533] bg-[#e05533] text-white'
-                        : 'border-stone-200 text-transparent'
+                        ? 'border-[#e05533] bg-[#e05533] text-foreground'
+                        : 'border-border text-transparent'
                     }`}
                   >
                     ✓
@@ -177,7 +177,7 @@ export default async function FamousBucketListPage({ params }: Props) {
                   <div className="flex-1 min-w-0">
                     <div className="flex items-start justify-between gap-3 flex-wrap">
                       <h3
-                        className={`font-semibold text-stone-900 ${isDone ? 'line-through text-stone-500' : ''}`}
+                        className={`font-semibold text-foreground ${isDone ? 'line-through text-muted-foreground' : ''}`}
                       >
                         {item.title}
                       </h3>
@@ -186,7 +186,7 @@ export default async function FamousBucketListPage({ params }: Props) {
                           className={`shrink-0 text-xs rounded-full px-2.5 py-1 font-medium border ${
                             isDone
                               ? 'border-[#f0a090] text-[#e05533] bg-[#fff0ec]'
-                              : 'border-stone-200 text-stone-500 bg-stone-50'
+                              : 'border-border text-muted-foreground bg-card/40'
                           }`}
                         >
                           {cat.emoji} {cat.label}
@@ -194,7 +194,7 @@ export default async function FamousBucketListPage({ params }: Props) {
                       )}
                     </div>
 
-                    <p className="mt-1.5 text-sm text-stone-500 leading-relaxed">
+                    <p className="mt-1.5 text-sm text-muted-foreground leading-relaxed">
                       {item.description}
                     </p>
 
@@ -227,12 +227,14 @@ export default async function FamousBucketListPage({ params }: Props) {
 
         {/* Sources */}
         {list.sources && list.sources.length > 0 && (
-          <div className="rounded-xl border border-stone-200 bg-stone-50 px-5 py-4 space-y-2">
-            <p className="text-xs font-semibold uppercase tracking-wider text-stone-500">Sources</p>
+          <div className="rounded-xl border border-border bg-card/40 px-5 py-4 space-y-2">
+            <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+              Sources
+            </p>
             <ul className="space-y-1">
               {list.sources.map((s, i) => (
-                <li key={i} className="text-xs text-stone-500 flex items-start gap-2">
-                  <span className="text-stone-300 mt-0.5">·</span>
+                <li key={i} className="text-xs text-muted-foreground flex items-start gap-2">
+                  <span className="text-muted-foreground/40 mt-0.5">·</span>
                   <a
                     href={s.url}
                     target="_blank"
@@ -244,17 +246,17 @@ export default async function FamousBucketListPage({ params }: Props) {
                 </li>
               ))}
             </ul>
-            <p className="text-xs text-stone-500 italic">
+            <p className="text-xs text-muted-foreground italic">
               Only items with verified public sources are included.
             </p>
           </div>
         )}
 
         {/* Back to all */}
-        <div className="flex items-center justify-between pt-6 border-t border-stone-100">
+        <div className="flex items-center justify-between pt-6 border-t border-border">
           <Link
             href="/bucket-lists"
-            className="text-sm text-stone-500 hover:text-[#e05533] transition-colors"
+            className="text-sm text-muted-foreground hover:text-[#e05533] transition-colors"
           >
             ← Browse all famous lists
           </Link>

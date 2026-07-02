@@ -161,14 +161,14 @@ export function TimeCalculatorClient() {
         }}
       >
         <div className="relative mx-auto max-w-2xl text-center">
-          <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-4 py-1.5 text-xs font-semibold uppercase tracking-widest text-emerald-700">
-            <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+          <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-lumi-500/30 bg-lumi-500/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-widest text-lumi-400">
+            <span className="h-1.5 w-1.5 rounded-full bg-lumi-500/100" />
             Free Tool
           </div>
-          <h1 className="mb-4 text-4xl font-bold tracking-tight text-stone-900 sm:text-5xl">
+          <h1 className="mb-4 text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
             Hobby Time Calculator
           </h1>
-          <p className="mx-auto max-w-xl text-lg text-stone-500">
+          <p className="mx-auto max-w-xl text-lg text-muted-foreground">
             Find out how many hours you actually have for hobbies each week — and where your time is
             really going.
           </p>
@@ -179,8 +179,8 @@ export function TimeCalculatorClient() {
       <section className="px-4 py-12">
         <div className="mx-auto max-w-2xl space-y-8">
           {/* Sliders */}
-          <div className="rounded-2xl border border-stone-200 bg-white p-6 shadow-sm sm:p-8">
-            <h2 className="mb-6 text-lg font-bold text-stone-900">Your weekly schedule</h2>
+          <div className="rounded-2xl border border-border bg-card p-6 shadow-sm sm:p-8">
+            <h2 className="mb-6 text-lg font-bold text-foreground">Your weekly schedule</h2>
             <div className="space-y-6">
               {INPUTS.map((inp) => {
                 const val = values[inp.id] ?? inp.default;
@@ -189,14 +189,16 @@ export function TimeCalculatorClient() {
                 return (
                   <div key={inp.id}>
                     <div className="mb-2 flex items-center justify-between gap-2">
-                      <label className="flex flex-wrap items-center gap-2 text-sm font-medium text-stone-700">
+                      <label className="flex flex-wrap items-center gap-2 text-sm font-medium text-foreground">
                         <span className="text-base">{inp.emoji}</span>
                         {inp.label}
                         {sleepNote && (
-                          <span className="text-xs font-normal text-stone-400">{sleepNote}</span>
+                          <span className="text-xs font-normal text-muted-foreground/60">
+                            {sleepNote}
+                          </span>
                         )}
                       </label>
-                      <span className="shrink-0 min-w-[3.5rem] text-right text-sm font-bold text-stone-900">
+                      <span className="shrink-0 min-w-[3.5rem] text-right text-sm font-bold text-foreground">
                         {val}h/wk
                       </span>
                     </div>
@@ -206,13 +208,13 @@ export function TimeCalculatorClient() {
                       max={inp.max}
                       value={val}
                       onChange={(e) => handleChange(inp.id, parseInt(e.target.value, 10))}
-                      className="w-full cursor-pointer appearance-none rounded-full bg-stone-100 outline-none"
+                      className="w-full cursor-pointer appearance-none rounded-full bg-foreground/5 outline-none"
                       style={{
                         height: '6px',
                         accentColor: inp.color,
                       }}
                     />
-                    <div className="mt-1 flex justify-between text-xs text-stone-300">
+                    <div className="mt-1 flex justify-between text-xs text-muted-foreground/40">
                       <span>{inp.min}h</span>
                       <span>{inp.max}h</span>
                     </div>
@@ -225,35 +227,37 @@ export function TimeCalculatorClient() {
           {/* Big number result */}
           <div
             className={`rounded-2xl border p-8 text-center shadow-sm ${
-              overBudget ? 'border-red-200 bg-red-50' : 'border-emerald-200 bg-emerald-50'
+              overBudget
+                ? 'border-destructive/30 bg-destructive/10'
+                : 'border-lumi-500/30 bg-lumi-500/10'
             }`}
           >
             {overBudget ? (
               <>
-                <p className="mb-1 text-sm font-semibold uppercase tracking-wider text-red-500">
+                <p className="mb-1 text-sm font-semibold uppercase tracking-wider text-destructive">
                   Over budget
                 </p>
-                <p className="text-5xl font-black text-red-600 sm:text-6xl">
+                <p className="text-5xl font-black text-destructive sm:text-6xl">
                   {used - TOTAL_HOURS}h
                 </p>
-                <p className="mt-2 text-base font-medium text-red-700">
+                <p className="mt-2 text-base font-medium text-destructive">
                   over 168 hours — try reducing some categories
                 </p>
               </>
             ) : (
               <>
-                <p className="mb-1 text-sm font-semibold uppercase tracking-wider text-emerald-600">
+                <p className="mb-1 text-sm font-semibold uppercase tracking-wider text-lumi-400">
                   Your weekly hobby time
                 </p>
-                <p className="text-6xl font-black text-emerald-700 sm:text-7xl">
+                <p className="text-6xl font-black text-lumi-400 sm:text-7xl">
                   {freeTime}
                   <span className="text-3xl font-bold">h</span>
                 </p>
-                <p className="mt-2 text-base font-medium text-stone-600">
+                <p className="mt-2 text-base font-medium text-muted-foreground">
                   per week available for hobbies
                 </p>
                 {freeTime > 0 && (
-                  <p className="mt-1 text-sm text-stone-400">
+                  <p className="mt-1 text-sm text-muted-foreground/60">
                     That&apos;s {Math.round((freeTime / 7) * 10) / 10}h per day
                   </p>
                 )}
@@ -263,8 +267,8 @@ export function TimeCalculatorClient() {
 
           {/* Time bar */}
           {!overBudget && (
-            <div className="rounded-2xl border border-stone-200 bg-white p-6 shadow-sm">
-              <h3 className="mb-4 text-xs font-bold uppercase tracking-wider text-stone-400">
+            <div className="rounded-2xl border border-border bg-card p-6 shadow-sm">
+              <h3 className="mb-4 text-xs font-bold uppercase tracking-wider text-muted-foreground/60">
                 Where your 168 hours go
               </h3>
               <div className="flex h-8 w-full overflow-hidden rounded-full">
@@ -283,7 +287,10 @@ export function TimeCalculatorClient() {
               </div>
               <div className="mt-4 flex flex-wrap gap-3">
                 {barSegments.map((seg) => (
-                  <div key={seg.id} className="flex items-center gap-1.5 text-xs text-stone-600">
+                  <div
+                    key={seg.id}
+                    className="flex items-center gap-1.5 text-xs text-muted-foreground"
+                  >
                     <div
                       className="h-2.5 w-2.5 shrink-0 rounded-sm"
                       style={{ backgroundColor: seg.color }}
@@ -300,15 +307,15 @@ export function TimeCalculatorClient() {
           {!overBudget && freeTime > 0 && (
             <>
               {hobbyFits.length > 0 && (
-                <div className="rounded-2xl border border-stone-200 bg-white p-6 shadow-sm">
+                <div className="rounded-2xl border border-border bg-card p-6 shadow-sm">
                   <div className="mb-3 flex items-center gap-2">
                     <span className="text-xl">✨</span>
-                    <h3 className="font-bold text-stone-900">That&apos;s enough time for:</h3>
+                    <h3 className="font-bold text-foreground">That&apos;s enough time for:</h3>
                   </div>
                   <ul className="space-y-1.5">
                     {hobbyFits.map((h) => (
-                      <li key={h} className="flex items-center gap-2 text-sm text-stone-600">
-                        <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-400" />
+                      <li key={h} className="flex items-center gap-2 text-sm text-muted-foreground">
+                        <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-lumi-400" />
                         {h}
                       </li>
                     ))}
@@ -317,14 +324,14 @@ export function TimeCalculatorClient() {
               )}
 
               {screenTime > 0 && (
-                <div className="rounded-2xl border border-amber-200 bg-amber-50 p-6 shadow-sm">
+                <div className="rounded-2xl border border-amber-400/30 bg-amber-400/10 p-6 shadow-sm">
                   <div className="mb-2 flex items-center gap-2">
                     <span className="text-xl">📱</span>
-                    <h3 className="font-bold text-stone-900">Screen time swap</h3>
+                    <h3 className="font-bold text-foreground">Screen time swap</h3>
                   </div>
-                  <p className="text-sm text-stone-600">
+                  <p className="text-sm text-muted-foreground">
                     Cut your screen time in half and you&apos;d gain{' '}
-                    <span className="font-bold text-amber-700">{screenSaving} more hours</span> per
+                    <span className="font-bold text-lumi-400">{screenSaving} more hours</span> per
                     week — that&apos;s{' '}
                     <span className="font-semibold">{freeTime + screenSaving}h total</span> for
                     hobbies.
@@ -335,9 +342,9 @@ export function TimeCalculatorClient() {
               <div className="rounded-2xl border border-blue-200 bg-blue-50 p-6 shadow-sm">
                 <div className="mb-2 flex items-center gap-2">
                   <span className="text-xl">⏱️</span>
-                  <h3 className="font-bold text-stone-900">The 30-minute rule</h3>
+                  <h3 className="font-bold text-foreground">The 30-minute rule</h3>
                 </div>
-                <p className="text-sm text-stone-600">
+                <p className="text-sm text-muted-foreground">
                   Even 30 minutes a day ={' '}
                   <span className="font-bold text-blue-700">3.5 hours/week</span> of hobby time.
                   Consistency beats marathon sessions every time.
@@ -347,18 +354,20 @@ export function TimeCalculatorClient() {
           )}
 
           {/* CTAs */}
-          <div className="rounded-2xl border border-stone-200 bg-stone-50 p-6 text-center">
-            <p className="mb-4 text-sm font-medium text-stone-600">Ready to use your hobby time?</p>
+          <div className="rounded-2xl border border-border bg-card/40 p-6 text-center">
+            <p className="mb-4 text-sm font-medium text-muted-foreground">
+              Ready to use your hobby time?
+            </p>
             <div className="flex flex-col gap-3 sm:flex-row sm:justify-center">
               <Link
                 href="/timeline/new"
-                className="inline-flex items-center justify-center gap-2 rounded-full bg-emerald-600 px-6 py-3 text-sm font-semibold text-white shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:bg-emerald-700 hover:shadow-md"
+                className="inline-flex items-center justify-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:bg-lumi-300 hover:shadow-md"
               >
                 Start your hobby journey →
               </Link>
               <Link
                 href="/find-your-hobby"
-                className="inline-flex items-center justify-center gap-2 rounded-full border border-stone-300 bg-white px-6 py-3 text-sm font-semibold text-stone-700 transition-all duration-200 hover:-translate-y-0.5 hover:border-emerald-300 hover:text-emerald-700"
+                className="inline-flex items-center justify-center gap-2 rounded-full border border-border bg-card px-6 py-3 text-sm font-semibold text-foreground transition-all duration-200 hover:-translate-y-0.5 hover:border-lumi-500/40 hover:text-lumi-400"
               >
                 Find your perfect hobby →
               </Link>

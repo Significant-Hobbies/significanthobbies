@@ -62,8 +62,8 @@ function TemplatePicker({ onPick }: { onPick: (template: TimelineTemplate) => vo
   return (
     <div className="mx-auto max-w-2xl">
       <div className="mb-6 text-center">
-        <h2 className="text-xl font-bold text-stone-900">Choose a starting point</h2>
-        <p className="mt-1 text-sm text-stone-500">
+        <h2 className="text-xl font-bold text-foreground">Choose a starting point</h2>
+        <p className="mt-1 text-sm text-muted-foreground">
           Pick a template to pre-fill phases, or start blank and build your own.
         </p>
       </div>
@@ -73,19 +73,21 @@ function TemplatePicker({ onPick }: { onPick: (template: TimelineTemplate) => vo
             key={template.id}
             type="button"
             onClick={() => onPick(template)}
-            className="group rounded-xl border border-stone-200 bg-white p-5 text-left transition-all hover:border-emerald-400 hover:bg-emerald-50 hover:shadow-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2"
+            className="group rounded-xl border border-border bg-card p-5 text-left transition-all hover:border-lumi-500/50 hover:bg-lumi-500/10 hover:shadow-sm focus:outline-none focus:ring-2 focus:ring-lumi-500 focus:ring-offset-2"
           >
             <div className="mb-3 text-3xl">{template.emoji}</div>
-            <h3 className="mb-1 text-sm font-semibold text-stone-800 group-hover:text-emerald-700 transition-colors leading-tight">
+            <h3 className="mb-1 text-sm font-semibold text-foreground group-hover:text-lumi-400 transition-colors leading-tight">
               {template.name}
             </h3>
-            <p className="mb-3 text-xs text-stone-500 leading-snug">{template.description}</p>
+            <p className="mb-3 text-xs text-muted-foreground leading-snug">
+              {template.description}
+            </p>
             {template.phases.length > 0 ? (
-              <span className="inline-flex items-center rounded-full bg-stone-100 px-2 py-0.5 text-xs text-stone-500 group-hover:bg-emerald-100 group-hover:text-emerald-600 transition-colors">
+              <span className="inline-flex items-center rounded-full bg-foreground/5 px-2 py-0.5 text-xs text-muted-foreground group-hover:bg-lumi-500/15 group-hover:text-lumi-400 transition-colors">
                 {template.phases.length} phases
               </span>
             ) : (
-              <span className="inline-flex items-center rounded-full bg-stone-100 px-2 py-0.5 text-xs text-stone-400 group-hover:bg-emerald-100 group-hover:text-emerald-600 transition-colors">
+              <span className="inline-flex items-center rounded-full bg-foreground/5 px-2 py-0.5 text-xs text-muted-foreground/60 group-hover:bg-lumi-500/15 group-hover:text-lumi-400 transition-colors">
                 empty
               </span>
             )}
@@ -235,7 +237,7 @@ export function TimelineBuilder({ existing }: Props) {
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           placeholder="Timeline title (optional)"
-          className="h-11 border-stone-300 bg-white text-lg font-medium placeholder:text-stone-400"
+          className="h-11 border-border bg-card text-lg font-medium placeholder:text-muted-foreground/60"
         />
       </div>
 
@@ -243,13 +245,13 @@ export function TimelineBuilder({ existing }: Props) {
       <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5">
         <span
           className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
-            allEmpty ? 'bg-stone-100 text-stone-500' : 'bg-emerald-100 text-emerald-700'
+            allEmpty ? 'bg-foreground/5 text-muted-foreground' : 'bg-lumi-500/15 text-lumi-400'
           }`}
         >
           {phasesWithHobbies}/{totalPhases} phases have hobbies
         </span>
         {allEmpty && (
-          <span className="text-xs text-stone-400">
+          <span className="text-xs text-muted-foreground/60">
             Tip: Add hobbies to each phase to unlock insights
           </span>
         )}
@@ -257,7 +259,7 @@ export function TimelineBuilder({ existing }: Props) {
           <button
             type="button"
             onClick={() => setTemplatePicked(false)}
-            className="ml-auto text-xs text-stone-400 hover:text-stone-600 transition-colors"
+            className="ml-auto text-xs text-muted-foreground/60 hover:text-muted-foreground transition-colors"
           >
             Change template
           </button>
@@ -278,7 +280,7 @@ export function TimelineBuilder({ existing }: Props) {
                 />
                 {index === 0 && phases.length > 1 && (
                   <p
-                    className="mt-1.5 text-center text-xs text-stone-400"
+                    className="mt-1.5 text-center text-xs text-muted-foreground/60"
                     style={{
                       animation: 'fadeOut 0.5s ease 3s forwards',
                     }}
@@ -297,7 +299,7 @@ export function TimelineBuilder({ existing }: Props) {
         <Button
           type="button"
           variant="outline"
-          className="border-stone-300 text-stone-600 hover:text-stone-900"
+          className="border-border text-muted-foreground hover:text-foreground"
           onClick={addPhase}
         >
           <Plus className="mr-1.5 h-4 w-4" />
@@ -307,7 +309,7 @@ export function TimelineBuilder({ existing }: Props) {
         <Button
           onClick={handleSave}
           disabled={isPending}
-          className="bg-emerald-600 px-6 text-white hover:bg-emerald-700"
+          className="bg-primary px-6 text-primary-foreground hover:bg-lumi-300"
         >
           {isPending ? (
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />

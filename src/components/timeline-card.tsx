@@ -26,13 +26,15 @@ export function TimelineCard({ timeline, showVisibility = false, likeCount }: Pr
 
   return (
     <Link href={getTimelineUrl(timeline)}>
-      <div className="group rounded-xl border border-stone-200 bg-white p-5 transition-colors hover:border-emerald-400 hover:bg-stone-50">
+      <div className="group rounded-xl border border-border bg-card p-5 transition-colors hover:border-lumi-500/50 hover:bg-card/40">
         {/* Title row */}
         <div className="mb-3 flex items-start justify-between gap-2">
-          <h3 className="font-medium text-stone-800 group-hover:text-emerald-600 transition-colors leading-tight">
+          <h3 className="font-medium text-foreground group-hover:text-lumi-400 transition-colors leading-tight">
             {timeline.title ?? 'Hobby Timeline'}
           </h3>
-          {showVisibility && <VisIcon className="h-3.5 w-3.5 text-stone-400 shrink-0 mt-0.5" />}
+          {showVisibility && (
+            <VisIcon className="h-3.5 w-3.5 text-muted-foreground/60 shrink-0 mt-0.5" />
+          )}
         </div>
 
         {/* Phase badges */}
@@ -41,13 +43,16 @@ export function TimelineCard({ timeline, showVisibility = false, likeCount }: Pr
             <Badge
               key={p.id}
               variant="outline"
-              className="border-stone-200 text-xs text-stone-500 py-0"
+              className="border-border text-xs text-muted-foreground py-0"
             >
               {p.label}
             </Badge>
           ))}
           {phases.length > 4 && (
-            <Badge variant="outline" className="border-stone-200 text-xs text-stone-400 py-0">
+            <Badge
+              variant="outline"
+              className="border-border text-xs text-muted-foreground/60 py-0"
+            >
               +{phases.length - 4}
             </Badge>
           )}
@@ -55,7 +60,7 @@ export function TimelineCard({ timeline, showVisibility = false, likeCount }: Pr
 
         {/* Stats */}
         <div className="flex items-center justify-between">
-          <p className="text-xs text-stone-400">
+          <p className="text-xs text-muted-foreground/60">
             {phases.length} phases · {totalHobbies} hobbies
           </p>
           {likeCount !== undefined && likeCount > 0 && (

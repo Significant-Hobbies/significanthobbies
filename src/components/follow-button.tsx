@@ -56,15 +56,15 @@ export function FollowButton({
           'rounded-full px-4 py-1.5 text-sm font-medium transition-all duration-150 disabled:opacity-60 cursor-pointer',
           following
             ? showUnfollow
-              ? 'border border-red-300 bg-red-50 text-red-600 hover:bg-red-100'
-              : 'border border-stone-300 bg-white text-stone-700 hover:border-stone-400'
-            : 'bg-emerald-600 text-white hover:bg-emerald-700 border border-emerald-600',
+              ? 'border border-destructive/40 bg-destructive/10 text-destructive hover:bg-destructive/15'
+              : 'border border-border bg-card text-foreground hover:border-border'
+            : 'bg-primary text-primary-foreground hover:bg-lumi-300 border border-lumi-600',
         ].join(' ')}
       >
         {following ? (showUnfollow ? 'Unfollow' : 'Following') : 'Follow'}
       </button>
-      <span className="text-sm text-stone-500">
-        <span className="font-semibold text-stone-700">{followerCount}</span>{' '}
+      <span className="text-sm text-muted-foreground">
+        <span className="font-semibold text-foreground">{followerCount}</span>{' '}
         {followerCount === 1 ? 'follower' : 'followers'}
       </span>
     </div>

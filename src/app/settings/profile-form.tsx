@@ -62,21 +62,21 @@ export function ProfileForm({
     <form onSubmit={handleSubmit} className="space-y-5">
       {/* Toast */}
       {toast && (
-        <div className="rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-2.5 text-sm font-medium text-emerald-700">
+        <div className="rounded-lg border border-lumi-500/30 bg-lumi-500/10 px-4 py-2.5 text-sm font-medium text-lumi-400">
           Profile updated!
         </div>
       )}
 
       {/* Error */}
       {error && (
-        <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-2.5 text-sm text-red-600">
+        <div className="rounded-lg border border-destructive/30 bg-destructive/10 px-4 py-2.5 text-sm text-destructive">
           {error}
         </div>
       )}
 
       {/* Display name */}
       <div>
-        <label htmlFor="name" className="mb-1.5 block text-sm font-medium text-stone-700">
+        <label htmlFor="name" className="mb-1.5 block text-sm font-medium text-foreground">
           Display name
         </label>
         <input
@@ -86,13 +86,13 @@ export function ProfileForm({
           onChange={(e) => setName(e.target.value)}
           placeholder="Your display name"
           maxLength={60}
-          className="w-full rounded-lg border border-stone-300 bg-stone-50 px-3.5 py-2 text-sm text-stone-900 placeholder-stone-400 outline-none transition focus:border-emerald-400 focus:bg-white focus:ring-2 focus:ring-emerald-100"
+          className="w-full rounded-lg border border-border bg-card/40 px-3.5 py-2 text-sm text-foreground placeholder-stone-400 outline-none transition focus:border-lumi-500/50 focus:bg-card focus:ring-2 focus:ring-lumi-500/20"
         />
       </div>
 
       {/* Bio */}
       <div>
-        <label htmlFor="bio" className="mb-1.5 block text-sm font-medium text-stone-700">
+        <label htmlFor="bio" className="mb-1.5 block text-sm font-medium text-foreground">
           Bio
         </label>
         <textarea
@@ -101,12 +101,12 @@ export function ProfileForm({
           onChange={(e) => setBio(e.target.value.slice(0, BIO_MAX))}
           placeholder="Tell the world about your hobby journey..."
           rows={3}
-          className="w-full resize-none rounded-lg border border-stone-300 bg-stone-50 px-3.5 py-2 text-sm text-stone-900 placeholder-stone-400 outline-none transition focus:border-emerald-400 focus:bg-white focus:ring-2 focus:ring-emerald-100"
+          className="w-full resize-none rounded-lg border border-border bg-card/40 px-3.5 py-2 text-sm text-foreground placeholder-stone-400 outline-none transition focus:border-lumi-500/50 focus:bg-card focus:ring-2 focus:ring-lumi-500/20"
         />
         <p
           className={[
             'mt-1 text-right text-xs',
-            bioLength >= BIO_MAX ? 'text-red-500 font-medium' : 'text-stone-400',
+            bioLength >= BIO_MAX ? 'text-destructive font-medium' : 'text-muted-foreground/60',
           ].join(' ')}
         >
           {bioLength} / {BIO_MAX}
@@ -115,11 +115,11 @@ export function ProfileForm({
 
       {/* Website */}
       <div>
-        <label htmlFor="website" className="mb-1.5 block text-sm font-medium text-stone-700">
+        <label htmlFor="website" className="mb-1.5 block text-sm font-medium text-foreground">
           Website
         </label>
-        <div className="flex items-center rounded-lg border border-stone-300 bg-stone-50 px-3.5 py-2 transition focus-within:border-emerald-400 focus-within:bg-white focus-within:ring-2 focus-within:ring-emerald-100">
-          <span className="mr-1 select-none text-sm text-stone-400">https://</span>
+        <div className="flex items-center rounded-lg border border-border bg-card/40 px-3.5 py-2 transition focus-within:border-lumi-500/50 focus-within:bg-card focus-within:ring-2 focus-within:ring-lumi-500/20">
+          <span className="mr-1 select-none text-sm text-muted-foreground/60">https://</span>
           <input
             id="website"
             type="text"
@@ -133,10 +133,12 @@ export function ProfileForm({
               }
             }}
             placeholder="yoursite.com"
-            className="flex-1 bg-transparent text-sm text-stone-900 placeholder-stone-400 outline-none"
+            className="flex-1 bg-transparent text-sm text-foreground placeholder-stone-400 outline-none"
           />
         </div>
-        <p className="mt-1 text-xs text-stone-400">Include https:// — e.g. https://yoursite.com</p>
+        <p className="mt-1 text-xs text-muted-foreground/60">
+          Include https:// — e.g. https://yoursite.com
+        </p>
       </div>
 
       {/* Submit */}
@@ -144,7 +146,7 @@ export function ProfileForm({
         <button
           type="submit"
           disabled={isPending}
-          className="w-full rounded-lg bg-emerald-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-emerald-700 disabled:opacity-60 cursor-pointer disabled:cursor-not-allowed"
+          className="w-full rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground transition hover:bg-lumi-300 disabled:opacity-60 cursor-pointer disabled:cursor-not-allowed"
         >
           {isPending ? 'Saving...' : 'Save changes'}
         </button>

@@ -41,18 +41,18 @@ export default async function RecentTimelinesPage() {
 
   return (
     <main className="mx-auto max-w-3xl px-4 py-12">
-      <Link href="/" className="text-xs text-stone-500 hover:underline">
+      <Link href="/" className="text-xs text-muted-foreground hover:underline">
         ← Significant Hobbies
       </Link>
-      <h1 className="mt-3 text-3xl font-bold tracking-tight text-stone-900">
+      <h1 className="mt-3 text-3xl font-bold tracking-tight text-foreground">
         Recent public timelines
       </h1>
-      <p className="mt-2 text-sm text-stone-500">
+      <p className="mt-2 text-sm text-muted-foreground">
         Newest first. Browse how other people have mapped their hobby phases.
       </p>
 
       {rows.length === 0 ? (
-        <p className="mt-8 text-sm text-stone-500">
+        <p className="mt-8 text-sm text-muted-foreground">
           No public timelines yet — be the first to flip yours public from the timeline editor.
         </p>
       ) : (
@@ -68,26 +68,26 @@ export default async function RecentTimelinesPage() {
                 <div className="flex-1 min-w-0">
                   <Link
                     href={t.slug ? `/timeline/${t.slug}` : `/timeline/${t.id}`}
-                    className="block truncate text-base font-medium text-stone-900 hover:underline"
+                    className="block truncate text-base font-medium text-foreground hover:underline"
                   >
                     {t.title?.trim() || 'Untitled timeline'}
                   </Link>
                   {t.username && (
                     <Link
                       href={`/u/${t.username}`}
-                      className="text-xs text-stone-500 hover:underline"
+                      className="text-xs text-muted-foreground hover:underline"
                     >
                       @{t.username}
                     </Link>
                   )}
                   {labels.length > 0 && (
-                    <p className="mt-1 text-xs text-stone-500">
+                    <p className="mt-1 text-xs text-muted-foreground">
                       {labels.join(' · ')}
                       {phases.length > labels.length && ` (+${phases.length - labels.length})`}
                     </p>
                   )}
                 </div>
-                <span className="font-mono text-[10px] uppercase tracking-wide text-stone-400 tabular-nums">
+                <span className="font-mono text-[10px] uppercase tracking-wide text-muted-foreground/60 tabular-nums">
                   {(t.updatedAt instanceof Date
                     ? t.updatedAt
                     : new Date(Number(t.updatedAt) * 1000)

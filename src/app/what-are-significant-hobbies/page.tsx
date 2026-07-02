@@ -190,16 +190,16 @@ export default function WhatAreSignificantHobbiesPage() {
           </div>
 
           <div className="relative mx-auto max-w-3xl text-center">
-            <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-4 py-1.5 text-xs font-semibold uppercase tracking-widest text-emerald-700">
-              <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+            <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-lumi-500/30 bg-lumi-500/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-widest text-lumi-400">
+              <span className="h-1.5 w-1.5 rounded-full bg-lumi-500/100" />
               Defining the concept
             </div>
 
-            <h1 className="mb-6 text-4xl font-bold tracking-tight text-stone-900 sm:text-5xl md:text-6xl">
+            <h1 className="mb-6 text-4xl font-bold tracking-tight text-foreground sm:text-5xl md:text-6xl">
               What Are Significant Hobbies?
             </h1>
 
-            <p className="mx-auto max-w-2xl text-lg leading-relaxed text-stone-600 sm:text-xl">
+            <p className="mx-auto max-w-2xl text-lg leading-relaxed text-muted-foreground sm:text-xl">
               A significant hobby isn&apos;t just something you do on weekends. It&apos;s an
               interest that shaped who you became — the guitar phase in high school that taught you
               discipline, the running habit that carried you through your 30s, the cooking that
@@ -209,14 +209,14 @@ export default function WhatAreSignificantHobbiesPage() {
             <div className="mt-10 flex flex-wrap justify-center gap-4">
               <Link
                 href="/timeline/new"
-                className="inline-flex items-center gap-2 rounded-full bg-emerald-600 px-7 py-3 text-sm font-semibold text-white shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:bg-emerald-700 hover:shadow-md"
+                className="inline-flex items-center gap-2 rounded-full bg-primary px-7 py-3 text-sm font-semibold text-primary-foreground shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:bg-lumi-300 hover:shadow-md"
               >
                 Build your timeline
                 <span>→</span>
               </Link>
               <Link
                 href="/explore"
-                className="inline-flex items-center gap-2 rounded-full border border-stone-200 bg-white px-7 py-3 text-sm font-semibold text-stone-700 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-emerald-300 hover:text-emerald-700 hover:shadow-md"
+                className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-7 py-3 text-sm font-semibold text-foreground shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-lumi-500/40 hover:text-lumi-400 hover:shadow-md"
               >
                 See what others explore
               </Link>
@@ -228,10 +228,10 @@ export default function WhatAreSignificantHobbiesPage() {
         <div className="mx-auto max-w-3xl px-4 py-16">
           {/* Section 1: Why some hobbies matter more */}
           <section className="mb-16">
-            <h2 className="mb-5 text-2xl font-bold text-stone-900 sm:text-3xl">
+            <h2 className="mb-5 text-2xl font-bold text-foreground sm:text-3xl">
               Why Some Hobbies Matter More Than Others
             </h2>
-            <div className="space-y-4 text-base leading-relaxed text-stone-600 sm:text-lg">
+            <div className="space-y-4 text-base leading-relaxed text-muted-foreground sm:text-lg">
               <p>
                 Most of us have tried dozens of hobbies. Some lasted a week. Some became a part of
                 our identity for years. The difference between a fleeting interest and a significant
@@ -249,14 +249,14 @@ export default function WhatAreSignificantHobbiesPage() {
                 researchers ask people to describe themselves, hobbies and interests feature
                 prominently. We are, in part, what we choose to spend our discretionary time on.
                 This is the foundation of what we call your{' '}
-                <strong className="text-stone-800">hobby personality</strong> — the pattern of
+                <strong className="text-foreground">hobby personality</strong> — the pattern of
                 interests across your life that reveals something true about who you are.
               </p>
               <p>
                 Browse the{' '}
                 <Link
                   href="/hobbies"
-                  className="font-medium text-emerald-600 hover:text-emerald-700 underline underline-offset-2"
+                  className="font-medium text-lumi-400 hover:text-lumi-400 underline underline-offset-2"
                 >
                   hobby directory
                 </Link>{' '}
@@ -266,14 +266,14 @@ export default function WhatAreSignificantHobbiesPage() {
             </div>
           </section>
 
-          <div className="mb-16 h-px bg-gradient-to-r from-transparent via-stone-200 to-transparent" />
+          <div className="mb-16 h-px bg-gradient-to-r from-transparent via-foreground/10 to-transparent" />
 
           {/* Section 2: The science */}
           <section className="mb-16">
-            <h2 className="mb-5 text-2xl font-bold text-stone-900 sm:text-3xl">
+            <h2 className="mb-5 text-2xl font-bold text-foreground sm:text-3xl">
               The Science Behind Hobby Significance
             </h2>
-            <div className="space-y-4 text-base leading-relaxed text-stone-600 sm:text-lg">
+            <div className="space-y-4 text-base leading-relaxed text-muted-foreground sm:text-lg">
               <p>
                 There&apos;s real psychology behind why certain hobbies stick while others fade.
                 Three mechanisms stand out:
@@ -295,21 +295,20 @@ export default function WhatAreSignificantHobbiesPage() {
                   body: "Shared hobbies create unusually strong bonds. The people you climb with, play music with, or run with know a version of you that most people don't — the version that shows up for hard things. Research on friendship consistently finds that shared activity, not shared history, is what actually sustains relationships.",
                 },
               ].map(({ title, body }) => (
-                <div
-                  key={title}
-                  className="rounded-2xl border border-stone-100 bg-white p-6 shadow-sm"
-                >
-                  <h3 className="mb-2 text-base font-bold text-stone-900">{title}</h3>
-                  <p className="text-sm leading-relaxed text-stone-600 sm:text-base">{body}</p>
+                <div key={title} className="rounded-2xl border border-border bg-card p-6 shadow-sm">
+                  <h3 className="mb-2 text-base font-bold text-foreground">{title}</h3>
+                  <p className="text-sm leading-relaxed text-muted-foreground sm:text-base">
+                    {body}
+                  </p>
                 </div>
               ))}
             </div>
 
-            <p className="mt-6 text-sm text-stone-500">
+            <p className="mt-6 text-sm text-muted-foreground">
               Want to go deeper?{' '}
               <Link
                 href="/blog"
-                className="font-medium text-emerald-600 hover:text-emerald-700 underline underline-offset-2"
+                className="font-medium text-lumi-400 hover:text-lumi-400 underline underline-offset-2"
               >
                 Read the blog
               </Link>{' '}
@@ -317,14 +316,14 @@ export default function WhatAreSignificantHobbiesPage() {
             </p>
           </section>
 
-          <div className="mb-16 h-px bg-gradient-to-r from-transparent via-stone-200 to-transparent" />
+          <div className="mb-16 h-px bg-gradient-to-r from-transparent via-foreground/10 to-transparent" />
 
           {/* Section 3: Mapping */}
           <section className="mb-16">
-            <h2 className="mb-5 text-2xl font-bold text-stone-900 sm:text-3xl">
+            <h2 className="mb-5 text-2xl font-bold text-foreground sm:text-3xl">
               Mapping Your Significant Hobbies
             </h2>
-            <div className="space-y-4 text-base leading-relaxed text-stone-600 sm:text-lg">
+            <div className="space-y-4 text-base leading-relaxed text-muted-foreground sm:text-lg">
               <p>
                 One of the most revealing exercises you can do is build a hobby timeline — a visual
                 map of the interests you&apos;ve held across your life. Not just the ones you have
@@ -337,9 +336,9 @@ export default function WhatAreSignificantHobbiesPage() {
               </p>
             </div>
 
-            <div className="mt-8 overflow-hidden rounded-2xl border border-stone-100 bg-white shadow-sm">
-              <div className="border-b border-stone-100 px-6 py-4">
-                <p className="text-xs font-semibold uppercase tracking-widest text-stone-400">
+            <div className="mt-8 overflow-hidden rounded-2xl border border-border bg-card shadow-sm">
+              <div className="border-b border-border px-6 py-4">
+                <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground/60">
                   What you might discover
                 </p>
               </div>
@@ -369,40 +368,40 @@ export default function WhatAreSignificantHobbiesPage() {
                   },
                 ].map(({ phase, insight }) => (
                   <div key={phase} className="flex items-start gap-4 px-6 py-4">
-                    <span className="mt-0.5 rounded-full bg-emerald-50 px-2.5 py-0.5 text-xs font-semibold text-emerald-700 whitespace-nowrap">
+                    <span className="mt-0.5 rounded-full bg-lumi-500/10 px-2.5 py-0.5 text-xs font-semibold text-lumi-400 whitespace-nowrap">
                       {phase}
                     </span>
-                    <p className="text-sm leading-relaxed text-stone-600">{insight}</p>
+                    <p className="text-sm leading-relaxed text-muted-foreground">{insight}</p>
                   </div>
                 ))}
               </div>
             </div>
 
-            <div className="mt-8 rounded-2xl border border-emerald-100 bg-emerald-50 p-6">
-              <p className="mb-3 text-base font-semibold text-emerald-900">
+            <div className="mt-8 rounded-2xl border border-lumi-500/20 bg-lumi-500/10 p-6">
+              <p className="mb-3 text-base font-semibold text-lumi-600">
                 Ready to see your patterns?
               </p>
-              <p className="mb-4 text-sm text-emerald-700">
+              <p className="mb-4 text-sm text-lumi-400">
                 Build your hobby timeline in minutes. Add phases, drop in your hobbies, and watch
                 your story take shape.
               </p>
               <Link
                 href="/timeline/new"
-                className="inline-flex items-center gap-2 rounded-full bg-emerald-600 px-6 py-2.5 text-sm font-semibold text-white transition-all duration-200 hover:-translate-y-0.5 hover:bg-emerald-700"
+                className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-2.5 text-sm font-semibold text-primary-foreground transition-all duration-200 hover:-translate-y-0.5 hover:bg-lumi-300"
               >
                 Build your hobby timeline →
               </Link>
             </div>
           </section>
 
-          <div className="mb-16 h-px bg-gradient-to-r from-transparent via-stone-200 to-transparent" />
+          <div className="mb-16 h-px bg-gradient-to-r from-transparent via-foreground/10 to-transparent" />
 
           {/* Section 4: Hobby personality */}
           <section className="mb-16">
-            <h2 className="mb-5 text-2xl font-bold text-stone-900 sm:text-3xl">
+            <h2 className="mb-5 text-2xl font-bold text-foreground sm:text-3xl">
               Discover Your Hobby Personality
             </h2>
-            <div className="space-y-4 text-base leading-relaxed text-stone-600 sm:text-lg">
+            <div className="space-y-4 text-base leading-relaxed text-muted-foreground sm:text-lg">
               <p>
                 The hobbies you&apos;ve held — not just the ones you have now, but all of them —
                 reveal a consistent pattern. We call this your hobby personality. It&apos;s the
@@ -419,36 +418,36 @@ export default function WhatAreSignificantHobbiesPage() {
               {ARCHETYPES.map(({ name, emoji, description }) => (
                 <div
                   key={name}
-                  className="rounded-2xl border border-stone-100 bg-white p-5 shadow-sm transition-shadow hover:shadow-md"
+                  className="rounded-2xl border border-border bg-card p-5 shadow-sm transition-shadow hover:shadow-md"
                 >
                   <div className="mb-3 flex items-center gap-3">
                     <span className="text-2xl">{emoji}</span>
-                    <h3 className="text-sm font-bold text-stone-900">{name}</h3>
+                    <h3 className="text-sm font-bold text-foreground">{name}</h3>
                   </div>
-                  <p className="text-sm leading-relaxed text-stone-500">{description}</p>
+                  <p className="text-sm leading-relaxed text-muted-foreground">{description}</p>
                 </div>
               ))}
             </div>
 
-            <p className="mt-6 text-sm text-stone-500">
+            <p className="mt-6 text-sm text-muted-foreground">
               Your archetype is calculated from your timeline.{' '}
               <Link
                 href="/timeline/new"
-                className="font-medium text-emerald-600 hover:text-emerald-700 underline underline-offset-2"
+                className="font-medium text-lumi-400 hover:text-lumi-400 underline underline-offset-2"
               >
                 Build yours to find out which one you are.
               </Link>
             </p>
           </section>
 
-          <div className="mb-16 h-px bg-gradient-to-r from-transparent via-stone-200 to-transparent" />
+          <div className="mb-16 h-px bg-gradient-to-r from-transparent via-foreground/10 to-transparent" />
 
           {/* Section 5: Types of significant hobbies */}
           <section className="mb-16">
-            <h2 className="mb-5 text-2xl font-bold text-stone-900 sm:text-3xl">
+            <h2 className="mb-5 text-2xl font-bold text-foreground sm:text-3xl">
               Types of Significant Hobbies
             </h2>
-            <div className="space-y-4 text-base leading-relaxed text-stone-600 sm:text-lg">
+            <div className="space-y-4 text-base leading-relaxed text-muted-foreground sm:text-lg">
               <p>
                 Significant hobbies span every domain of human activity. Here are the five broad
                 categories — each attracts a different kind of person, though most people have
@@ -459,17 +458,17 @@ export default function WhatAreSignificantHobbiesPage() {
             <div className="mt-8 space-y-4">
               {HOBBY_TYPES.map(({ label, emoji, examples, description, href }) => (
                 <Link key={label} href={href} className="group block">
-                  <div className="flex items-start gap-5 rounded-2xl border border-stone-100 bg-white p-6 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-emerald-200 hover:shadow-md">
+                  <div className="flex items-start gap-5 rounded-2xl border border-border bg-card p-6 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-lumi-500/30 hover:shadow-md">
                     <span className="text-3xl">{emoji}</span>
                     <div className="flex-1">
                       <div className="mb-1 flex items-center gap-2">
-                        <h3 className="font-bold text-stone-900">{label} Hobbies</h3>
-                        <span className="text-xs font-semibold text-emerald-600 opacity-0 transition-opacity group-hover:opacity-100">
+                        <h3 className="font-bold text-foreground">{label} Hobbies</h3>
+                        <span className="text-xs font-semibold text-lumi-400 opacity-0 transition-opacity group-hover:opacity-100">
                           Explore →
                         </span>
                       </div>
-                      <p className="mb-1.5 text-sm text-stone-500">{description}</p>
-                      <p className="text-xs text-stone-400">{examples}</p>
+                      <p className="mb-1.5 text-sm text-muted-foreground">{description}</p>
+                      <p className="text-xs text-muted-foreground/60">{examples}</p>
                     </div>
                   </div>
                 </Link>
@@ -477,14 +476,14 @@ export default function WhatAreSignificantHobbiesPage() {
             </div>
           </section>
 
-          <div className="mb-16 h-px bg-gradient-to-r from-transparent via-stone-200 to-transparent" />
+          <div className="mb-16 h-px bg-gradient-to-r from-transparent via-foreground/10 to-transparent" />
 
           {/* Section 6: How to find your next hobby */}
           <section className="mb-16">
-            <h2 className="mb-5 text-2xl font-bold text-stone-900 sm:text-3xl">
+            <h2 className="mb-5 text-2xl font-bold text-foreground sm:text-3xl">
               How to Find Your Next Significant Hobby
             </h2>
-            <div className="space-y-4 text-base leading-relaxed text-stone-600 sm:text-lg">
+            <div className="space-y-4 text-base leading-relaxed text-muted-foreground sm:text-lg">
               <p>
                 The hardest part isn&apos;t sticking to a hobby — it&apos;s knowing which one to
                 try. Most people cycle through the same familiar categories rather than genuinely
@@ -512,13 +511,13 @@ export default function WhatAreSignificantHobbiesPage() {
               ].map(({ number, title, body }) => (
                 <div
                   key={number}
-                  className="flex gap-5 rounded-2xl border border-stone-100 bg-white p-6 shadow-sm"
+                  className="flex gap-5 rounded-2xl border border-border bg-card p-6 shadow-sm"
                 >
-                  <div className="shrink-0 text-2xl font-bold text-stone-200">{number}</div>
+                  <div className="shrink-0 text-2xl font-bold text-muted-foreground">{number}</div>
                   <div>
-                    <h3 className="mb-2 font-bold text-stone-900">{title}</h3>
+                    <h3 className="mb-2 font-bold text-foreground">{title}</h3>
                     <p
-                      className="text-sm leading-relaxed text-stone-600"
+                      className="text-sm leading-relaxed text-muted-foreground"
                       dangerouslySetInnerHTML={{ __html: body }}
                     />
                   </div>
@@ -527,27 +526,27 @@ export default function WhatAreSignificantHobbiesPage() {
             </div>
 
             <div className="mt-8">
-              <p className="mb-3 text-base text-stone-600">
+              <p className="mb-3 text-base text-muted-foreground">
                 See what the community is exploring right now — filter by category, sort by
                 trending, and get inspired by what others have picked up recently.
               </p>
               <Link
                 href="/explore"
-                className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-6 py-2.5 text-sm font-semibold text-emerald-700 transition-all duration-200 hover:-translate-y-0.5 hover:bg-emerald-100"
+                className="inline-flex items-center gap-2 rounded-full border border-lumi-500/30 bg-lumi-500/10 px-6 py-2.5 text-sm font-semibold text-lumi-400 transition-all duration-200 hover:-translate-y-0.5 hover:bg-lumi-500/15"
               >
                 See what others are exploring →
               </Link>
             </div>
           </section>
 
-          <div className="mb-16 h-px bg-gradient-to-r from-transparent via-stone-200 to-transparent" />
+          <div className="mb-16 h-px bg-gradient-to-r from-transparent via-foreground/10 to-transparent" />
 
           {/* Section 7: Start your journey */}
           <section className="mb-8">
-            <h2 className="mb-5 text-2xl font-bold text-stone-900 sm:text-3xl">
+            <h2 className="mb-5 text-2xl font-bold text-foreground sm:text-3xl">
               Start Your Journey
             </h2>
-            <p className="mb-8 text-base leading-relaxed text-stone-600 sm:text-lg">
+            <p className="mb-8 text-base leading-relaxed text-muted-foreground sm:text-lg">
               The best time to map your significant hobbies was when you first started noticing the
               patterns. The second best time is now. SignificantHobbies gives you the tools to do
               it: a timeline builder, a hobby directory, a community to explore alongside, and side
@@ -596,18 +595,20 @@ export default function WhatAreSignificantHobbiesPage() {
                   <div
                     className={`flex h-full items-start gap-4 rounded-2xl border p-6 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md ${
                       accent
-                        ? 'border-emerald-200 bg-emerald-600 text-white hover:bg-emerald-700'
-                        : 'border-stone-100 bg-white hover:border-emerald-200'
+                        ? 'border-lumi-500/30 bg-primary text-primary-foreground hover:bg-lumi-300'
+                        : 'border-border bg-card hover:border-lumi-500/30'
                     }`}
                   >
                     <span className="text-2xl">{emoji}</span>
                     <div>
-                      <p className={`mb-1 font-bold ${accent ? 'text-white' : 'text-stone-900'}`}>
+                      <p
+                        className={`mb-1 font-bold ${accent ? 'text-foreground' : 'text-foreground'}`}
+                      >
                         {label}
                       </p>
                       <p
                         className={`text-sm leading-relaxed ${
-                          accent ? 'text-emerald-100' : 'text-stone-500'
+                          accent ? 'text-lumi-200' : 'text-muted-foreground'
                         }`}
                       >
                         {description}

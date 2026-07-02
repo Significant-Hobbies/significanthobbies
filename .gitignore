@@ -64,3 +64,5 @@ cache.bin
 
 # CF Pages build output
 .cf-pages-bundle/
+screenshots/
+scripts/screenshot-daily.mjs

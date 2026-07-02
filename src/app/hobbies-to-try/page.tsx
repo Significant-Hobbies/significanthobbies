@@ -246,8 +246,8 @@ const SECTIONS: Section[] = [
     label: 'Start Tonight',
     subtitle: '10 hobbies that need no equipment, no class, no prep',
     hobbies: START_TONIGHT,
-    badgeColor: 'bg-emerald-100 text-emerald-800 border-emerald-200',
-    borderColor: 'border-emerald-300',
+    badgeColor: 'bg-lumi-500/15 text-lumi-600 border-lumi-500/30',
+    borderColor: 'border-lumi-500/40',
   },
   {
     id: 'this-weekend',
@@ -270,8 +270,8 @@ const SECTIONS: Section[] = [
     label: 'This Year',
     subtitle: '10 deep-dive hobbies for people ready to commit',
     hobbies: THIS_YEAR,
-    badgeColor: 'bg-amber-100 text-amber-800 border-amber-200',
-    borderColor: 'border-amber-300',
+    badgeColor: 'bg-amber-400/15 text-amber-300 border-amber-400/30',
+    borderColor: 'border-amber-400/40',
   },
 ];
 
@@ -291,18 +291,18 @@ export default function HobbiesToTryPage() {
       />
 
       <div className="mb-6">
-        <Link href="/hobbies" className="text-sm text-stone-500 hover:text-stone-700">
+        <Link href="/hobbies" className="text-sm text-muted-foreground hover:text-foreground">
           ← Hobby Directory
         </Link>
       </div>
 
-      <h1 className="text-3xl font-bold text-stone-900 mb-4">40 New Hobbies to Try in 2026</h1>
-      <p className="text-lg text-stone-500 mb-4 leading-relaxed">
+      <h1 className="text-3xl font-bold text-foreground mb-4">40 New Hobbies to Try in 2026</h1>
+      <p className="text-lg text-muted-foreground mb-4 leading-relaxed">
         The biggest barrier to starting a new hobby isn&apos;t motivation — it&apos;s friction. The
         gap between &ldquo;I want to try that&rdquo; and actually doing it is almost always about
         unclear next steps, not lack of interest.
       </p>
-      <p className="text-lg text-stone-500 mb-8 leading-relaxed">
+      <p className="text-lg text-muted-foreground mb-8 leading-relaxed">
         This list is organized by effort-to-entry, not by category. Find your current available
         bandwidth — tonight, this weekend, this month, or this year — and start from there.
       </p>
@@ -324,19 +324,19 @@ export default function HobbiesToTryPage() {
         {SECTIONS.map((section) => (
           <section key={section.id} id={section.id}>
             <div className={`border-l-4 ${section.borderColor} pl-4 mb-6`}>
-              <h2 className="text-2xl font-bold text-stone-900">{section.label}</h2>
-              <p className="text-stone-500 mt-1 text-sm">{section.subtitle}</p>
+              <h2 className="text-2xl font-bold text-foreground">{section.label}</h2>
+              <p className="text-muted-foreground mt-1 text-sm">{section.subtitle}</p>
             </div>
             <ul className="space-y-4">
               {section.hobbies.map((hobby) => (
                 <li
                   key={hobby.name}
-                  className="rounded-xl border border-stone-100 bg-white p-5 hover:border-emerald-200 transition-colors"
+                  className="rounded-xl border border-border bg-card p-5 hover:border-lumi-500/30 transition-colors"
                 >
                   <div className="flex items-start justify-between gap-4 flex-wrap">
                     <Link
                       href={`/hobbies/${hobbySlug(hobby.name)}`}
-                      className="text-base font-bold text-stone-900 hover:text-emerald-700 transition-colors"
+                      className="text-base font-bold text-foreground hover:text-lumi-400 transition-colors"
                     >
                       {hobby.name}
                     </Link>
@@ -346,7 +346,7 @@ export default function HobbiesToTryPage() {
                       {hobby.time}
                     </span>
                   </div>
-                  <p className="mt-2 text-sm text-stone-500 leading-relaxed">{hobby.what}</p>
+                  <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{hobby.what}</p>
                 </li>
               ))}
             </ul>
@@ -354,15 +354,15 @@ export default function HobbiesToTryPage() {
         ))}
       </div>
 
-      <div className="mt-12 rounded-xl bg-emerald-50 border border-emerald-200 p-8 text-center">
-        <h2 className="text-xl font-bold text-stone-900 mb-2">Find your perfect hobby</h2>
-        <p className="text-stone-500 mb-4">
+      <div className="mt-12 rounded-xl bg-lumi-500/10 border border-lumi-500/30 p-8 text-center">
+        <h2 className="text-xl font-bold text-foreground mb-2">Find your perfect hobby</h2>
+        <p className="text-muted-foreground mb-4">
           Not sure where to start? Our quiz asks about your schedule, personality, and what you want
           from a hobby — then gives you a personalized shortlist.
         </p>
         <Link
           href="/find-your-hobby"
-          className="inline-flex rounded-lg bg-emerald-600 px-6 py-2.5 text-sm font-semibold text-white hover:bg-emerald-700 transition-colors"
+          className="inline-flex rounded-lg bg-primary px-6 py-2.5 text-sm font-semibold text-primary-foreground hover:bg-lumi-300 transition-colors"
         >
           Take the Quiz →
         </Link>

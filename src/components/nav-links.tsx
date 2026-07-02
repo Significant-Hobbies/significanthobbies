@@ -16,7 +16,6 @@ export function NavLinks({ links }: NavLinksProps) {
     <>
       {links.map((link) => {
         const isActive = pathname === link.href || pathname.startsWith(`${link.href}/`);
-        const isBucketList = link.href === '/bucket-lists';
         return (
           <Link key={link.href} href={link.href}>
             <Button
@@ -24,12 +23,8 @@ export function NavLinks({ links }: NavLinksProps) {
               size="sm"
               className={
                 isActive
-                  ? isBucketList
-                    ? 'text-amber-700 font-semibold bg-amber-50'
-                    : 'text-emerald-700 font-semibold bg-emerald-50'
-                  : isBucketList
-                    ? 'text-stone-500 hover:text-amber-600'
-                    : 'text-stone-500 hover:text-stone-700'
+                  ? 'text-foreground font-medium bg-foreground/10'
+                  : 'text-muted-foreground hover:text-foreground'
               }
             >
               {link.label}

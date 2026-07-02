@@ -29,10 +29,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 // Phase color palette — cycling through visually distinct hues
 const PHASE_COLORS = [
   {
-    bg: 'bg-emerald-50',
-    border: 'border-emerald-300',
-    label: 'text-emerald-700',
-    pill: 'bg-emerald-100 text-emerald-800',
+    bg: 'bg-lumi-500/10',
+    border: 'border-lumi-500/40',
+    label: 'text-lumi-400',
+    pill: 'bg-lumi-500/15 text-lumi-600',
   },
   {
     bg: 'bg-blue-50',
@@ -47,10 +47,10 @@ const PHASE_COLORS = [
     pill: 'bg-violet-100 text-violet-800',
   },
   {
-    bg: 'bg-amber-50',
-    border: 'border-amber-300',
-    label: 'text-amber-700',
-    pill: 'bg-amber-100 text-amber-800',
+    bg: 'bg-amber-400/10',
+    border: 'border-amber-400/40',
+    label: 'text-lumi-400',
+    pill: 'bg-amber-400/15 text-amber-300',
   },
   {
     bg: 'bg-rose-50',
@@ -113,7 +113,7 @@ export default async function JourneyDetailPage({ params }: Props) {
         <div className="mb-8">
           <Link
             href="/journeys"
-            className="text-sm text-stone-400 transition-colors hover:text-stone-600"
+            className="text-sm text-muted-foreground/60 transition-colors hover:text-muted-foreground"
           >
             ← Famous Hobby Journeys
           </Link>
@@ -124,11 +124,11 @@ export default async function JourneyDetailPage({ params }: Props) {
           <div className="flex items-start gap-4">
             <span className="text-5xl">{person.emoji}</span>
             <div>
-              <h1 className="text-3xl font-bold text-stone-900">
+              <h1 className="text-3xl font-bold text-foreground">
                 {person.name}&apos;s Hobby Journey
               </h1>
-              <p className="mt-1 text-stone-400 text-sm">{person.born}</p>
-              <span className="mt-3 inline-block rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700">
+              <p className="mt-1 text-muted-foreground/60 text-sm">{person.born}</p>
+              <span className="mt-3 inline-block rounded-full border border-lumi-500/30 bg-lumi-500/10 px-3 py-1 text-xs font-semibold text-lumi-400">
                 {person.knownFor}
               </span>
             </div>
@@ -137,7 +137,7 @@ export default async function JourneyDetailPage({ params }: Props) {
 
         {/* Phase timeline */}
         <div className="scroll-reveal mb-10">
-          <h2 className="mb-5 text-xs font-semibold uppercase tracking-wider text-stone-400">
+          <h2 className="mb-5 text-xs font-semibold uppercase tracking-wider text-muted-foreground/60">
             Hobby Timeline
           </h2>
           <div className="space-y-4">
@@ -169,13 +169,13 @@ export default async function JourneyDetailPage({ params }: Props) {
 
         {/* Surprising hobbies */}
         <div className="scroll-reveal mb-10">
-          <h2 className="mb-4 text-lg font-bold text-stone-900">Surprising hobbies</h2>
-          <div className="rounded-xl border border-stone-200 bg-stone-50 p-5">
+          <h2 className="mb-4 text-lg font-bold text-foreground">Surprising hobbies</h2>
+          <div className="rounded-xl border border-border bg-card/40 p-5">
             <ul className="space-y-3">
               {person.surprisingHobbies.map((item) => (
                 <li key={item} className="flex items-start gap-3">
-                  <span className="mt-0.5 flex-shrink-0 text-emerald-500">✦</span>
-                  <span className="text-sm text-stone-600">{item}</span>
+                  <span className="mt-0.5 flex-shrink-0 text-lumi-400">✦</span>
+                  <span className="text-sm text-muted-foreground">{item}</span>
                 </li>
               ))}
             </ul>
@@ -184,26 +184,28 @@ export default async function JourneyDetailPage({ params }: Props) {
 
         {/* How hobbies shaped their career */}
         <div className="scroll-reveal mb-10">
-          <h2 className="mb-4 text-lg font-bold text-stone-900">How hobbies shaped their career</h2>
-          <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-5">
-            <p className="text-sm leading-relaxed text-stone-700">{person.hobbyInfluence}</p>
+          <h2 className="mb-4 text-lg font-bold text-foreground">
+            How hobbies shaped their career
+          </h2>
+          <div className="rounded-xl border border-lumi-500/30 bg-lumi-500/10 p-5">
+            <p className="text-sm leading-relaxed text-foreground">{person.hobbyInfluence}</p>
           </div>
         </div>
 
         {/* Quote */}
         {person.quote && (
           <div className="scroll-reveal mb-10">
-            <blockquote className="border-l-4 border-emerald-400 pl-5">
-              <p className="text-base italic leading-relaxed text-stone-600">
+            <blockquote className="border-l-4 border-lumi-500/50 pl-5">
+              <p className="text-base italic leading-relaxed text-muted-foreground">
                 &ldquo;{person.quote.text}&rdquo;
               </p>
               {person.quote.attribution && (
-                <footer className="mt-2 text-sm text-stone-400">
+                <footer className="mt-2 text-sm text-muted-foreground/60">
                   — {person.quote.attribution}
                 </footer>
               )}
               {!person.quote.attribution && (
-                <footer className="mt-2 text-sm text-stone-400">— {person.name}</footer>
+                <footer className="mt-2 text-sm text-muted-foreground/60">— {person.name}</footer>
               )}
             </blockquote>
           </div>
@@ -218,14 +220,14 @@ export default async function JourneyDetailPage({ params }: Props) {
             {prevPerson ? (
               <Link
                 href={`/journeys/${prevPerson.slug}`}
-                className="group flex items-center gap-3 rounded-xl border border-stone-200 bg-white p-4 transition-all hover:-translate-y-0.5 hover:border-emerald-300 hover:shadow-sm"
+                className="group flex items-center gap-3 rounded-xl border border-border bg-card p-4 transition-all hover:-translate-y-0.5 hover:border-lumi-500/40 hover:shadow-sm"
               >
                 <span className="text-2xl">{prevPerson.emoji}</span>
                 <div className="min-w-0 flex-1">
-                  <p className="text-[10px] font-semibold uppercase tracking-wider text-stone-400">
+                  <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/60">
                     ← Previous journey
                   </p>
-                  <p className="truncate text-sm font-semibold text-stone-800 group-hover:text-emerald-700">
+                  <p className="truncate text-sm font-semibold text-foreground group-hover:text-lumi-400">
                     {prevPerson.name}
                   </p>
                 </div>
@@ -236,14 +238,14 @@ export default async function JourneyDetailPage({ params }: Props) {
             {nextPerson ? (
               <Link
                 href={`/journeys/${nextPerson.slug}`}
-                className="group flex items-center gap-3 rounded-xl border border-stone-200 bg-white p-4 text-right transition-all hover:-translate-y-0.5 hover:border-emerald-300 hover:shadow-sm sm:flex-row-reverse sm:text-right"
+                className="group flex items-center gap-3 rounded-xl border border-border bg-card p-4 text-right transition-all hover:-translate-y-0.5 hover:border-lumi-500/40 hover:shadow-sm sm:flex-row-reverse sm:text-right"
               >
                 <span className="text-2xl">{nextPerson.emoji}</span>
                 <div className="min-w-0 flex-1">
-                  <p className="text-[10px] font-semibold uppercase tracking-wider text-stone-400">
+                  <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/60">
                     Next journey →
                   </p>
-                  <p className="truncate text-sm font-semibold text-stone-800 group-hover:text-emerald-700">
+                  <p className="truncate text-sm font-semibold text-foreground group-hover:text-lumi-400">
                     {nextPerson.name}
                   </p>
                 </div>
@@ -255,21 +257,21 @@ export default async function JourneyDetailPage({ params }: Props) {
         )}
 
         {/* CTA */}
-        <div className="scroll-reveal rounded-xl border border-stone-200 bg-emerald-50 p-6 text-center">
-          <h2 className="mb-2 text-base font-bold text-stone-900">Map your own hobby journey</h2>
-          <p className="mb-4 text-sm text-stone-600">
+        <div className="scroll-reveal rounded-xl border border-border bg-lumi-500/10 p-6 text-center">
+          <h2 className="mb-2 text-base font-bold text-foreground">Map your own hobby journey</h2>
+          <p className="mb-4 text-sm text-muted-foreground">
             What hobbies have shaped your life? Create your own timeline.
           </p>
           <Link
             href="/timeline/new"
-            className="inline-flex items-center gap-1.5 rounded-full bg-emerald-600 px-6 py-2.5 text-sm font-semibold text-white shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:bg-emerald-700 hover:shadow-md"
+            className="inline-flex items-center gap-1.5 rounded-full bg-primary px-6 py-2.5 text-sm font-semibold text-primary-foreground shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:bg-lumi-300 hover:shadow-md"
           >
             Start your timeline →
           </Link>
           <div className="mt-4">
             <Link
               href="/journeys"
-              className="text-sm text-stone-400 transition-colors hover:text-stone-600"
+              className="text-sm text-muted-foreground/60 transition-colors hover:text-muted-foreground"
             >
               ← See all famous journeys
             </Link>
