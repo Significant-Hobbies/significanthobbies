@@ -47,6 +47,7 @@ interface Props {
   firstName: string;
   today: string;
   isMorning: boolean;
+  weeksRemaining: number | null;
   habits: Habit[];
   habitLogs: HabitLog[];
   journalEntry: JournalEntry | null;
@@ -58,6 +59,7 @@ export function DailyRitual({
   firstName,
   today,
   isMorning,
+  weeksRemaining,
   habits: initialHabits,
   habitLogs: initialLogs,
   journalEntry: initialJournal,
@@ -145,6 +147,11 @@ export function DailyRitual({
             day: 'numeric',
           })}
         </p>
+        {weeksRemaining !== null && (
+          <p className="mt-2 text-sm text-muted-foreground/70">
+            {weeksRemaining.toLocaleString()} weeks left.
+          </p>
+        )}
       </div>
 
       {/* Ritual prompt */}
