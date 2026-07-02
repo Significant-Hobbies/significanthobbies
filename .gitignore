@@ -66,3 +66,4 @@ cache.bin
 .cf-pages-bundle/
 screenshots/
 scripts/screenshot-daily.mjs
+scripts/screenshot-review.mjs

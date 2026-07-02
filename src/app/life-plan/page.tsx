@@ -36,7 +36,7 @@ const CATEGORY_COLORS: Record<
   achievement: {
     bg: 'bg-amber-400/10',
     border: 'border-amber-400/30',
-    text: 'text-lumi-400',
+    text: 'text-amber-600',
     dot: 'bg-amber-400',
   },
   social: {
@@ -46,10 +46,10 @@ const CATEGORY_COLORS: Record<
     dot: 'bg-rose-400',
   },
   humanitarian: {
-    bg: 'bg-lumi-500/10',
-    border: 'border-lumi-500/30',
-    text: 'text-lumi-400',
-    dot: 'bg-lumi-400',
+    bg: 'bg-teal-50',
+    border: 'border-teal-200',
+    text: 'text-teal-700',
+    dot: 'bg-teal-400',
   },
 };
 
@@ -133,8 +133,8 @@ export default async function LifePlanPage() {
           </div>
         </div>
         {personality && (
-          <div className="rounded-xl border border-lumi-500/30 bg-lumi-500/10 px-4 py-2.5">
-            <p className="text-xs text-lumi-400 font-medium">Your archetype</p>
+          <div className="rounded-xl border border-border bg-card/50 px-4 py-2.5">
+            <p className="text-xs text-foreground font-medium">Your archetype</p>
             <p className="text-sm font-bold text-foreground">
               {personality.archetype.emoji} {personality.archetype.name}
             </p>
@@ -159,7 +159,7 @@ export default async function LifePlanPage() {
           label="In progress"
           value={totalInProgress}
           sub="right now"
-          accent="text-lumi-400"
+          accent="text-foreground"
         />
         <StatCard
           label="Planned"
@@ -224,7 +224,7 @@ export default async function LifePlanPage() {
                 {recentHobbies.map((hobby) => (
                   <span
                     key={hobby}
-                    className="inline-flex items-center rounded-full border border-lumi-500/30 bg-lumi-500/10 px-3 py-1 text-sm text-lumi-400"
+                    className="inline-flex items-center rounded-full border border-border bg-card px-3 py-1 text-sm text-foreground"
                   >
                     {hobby}
                   </span>
@@ -233,7 +233,7 @@ export default async function LifePlanPage() {
             ) : (
               <p className="text-sm text-muted-foreground/60">
                 No recent hobbies.{' '}
-                <Link href="/timeline/new" className="text-lumi-400 hover:underline">
+                <Link href="/timeline/new" className="text-foreground hover:underline">
                   Start a timeline →
                 </Link>
               </p>
@@ -260,7 +260,7 @@ export default async function LifePlanPage() {
             ) : (
               <p className="text-sm text-muted-foreground/60">
                 Nothing in progress yet.{' '}
-                <Link href="/dashboard" className="text-lumi-400 hover:underline">
+                <Link href="/dashboard" className="text-foreground hover:underline">
                   Move something forward →
                 </Link>
               </p>
@@ -322,7 +322,7 @@ export default async function LifePlanPage() {
           <h2 className="text-lg font-semibold text-foreground">Where you&apos;ve been</h2>
           <Link
             href="/timeline/new"
-            className="text-sm text-lumi-400 hover:text-lumi-400 transition-colors"
+            className="text-sm text-foreground hover:opacity-80 transition-opacity"
           >
             Add a phase →
           </Link>
@@ -367,7 +367,7 @@ export default async function LifePlanPage() {
             <p className="text-muted-foreground mb-3">No timelines yet.</p>
             <Link
               href="/timeline/new"
-              className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2 text-sm font-semibold text-primary-foreground hover:bg-lumi-300 transition-colors"
+              className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2 text-sm font-semibold text-primary-foreground hover:opacity-90 transition-opacity"
             >
               Build your first timeline →
             </Link>

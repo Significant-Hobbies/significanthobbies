@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useTransition } from 'react';
+import { useRouter } from 'next/navigation';
 import { Check, Plus, Trash2 } from 'lucide-react';
 
 import { Button } from '~/components/ui/button';
@@ -74,6 +75,7 @@ export function DailyRitual({
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [, startTransition] = useTransition();
+  const router = useRouter();
 
   const greeting = isMorning ? `Good morning, ${firstName}.` : `Good evening, ${firstName}.`;
   const prompt = isMorning ? 'What are you doing today?' : 'What happened today?';
@@ -101,8 +103,7 @@ export function DailyRitual({
     setNewHabit('');
     startTransition(async () => {
       await actions.createHabit(trimmed);
-      // Refetch habits by reloading — simplest correct path
-      window.location.reload();
+      router.refresh();
     });
   }
 

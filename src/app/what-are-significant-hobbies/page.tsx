@@ -190,11 +190,6 @@ export default function WhatAreSignificantHobbiesPage() {
           </div>
 
           <div className="relative mx-auto max-w-3xl text-center">
-            <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-lumi-500/30 bg-lumi-500/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-widest text-lumi-400">
-              <span className="h-1.5 w-1.5 rounded-full bg-lumi-500/100" />
-              Defining the concept
-            </div>
-
             <h1 className="mb-6 text-4xl font-bold tracking-tight text-foreground sm:text-5xl md:text-6xl">
               What Are Significant Hobbies?
             </h1>
@@ -209,14 +204,14 @@ export default function WhatAreSignificantHobbiesPage() {
             <div className="mt-10 flex flex-wrap justify-center gap-4">
               <Link
                 href="/timeline/new"
-                className="inline-flex items-center gap-2 rounded-full bg-primary px-7 py-3 text-sm font-semibold text-primary-foreground shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:bg-lumi-300 hover:shadow-md"
+                className="inline-flex items-center gap-2 rounded-full bg-primary px-7 py-3 text-sm font-semibold text-primary-foreground shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:opacity-90 hover:shadow-md"
               >
                 Build your timeline
                 <span>→</span>
               </Link>
               <Link
                 href="/explore"
-                className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-7 py-3 text-sm font-semibold text-foreground shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-lumi-500/40 hover:text-lumi-400 hover:shadow-md"
+                className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-7 py-3 text-sm font-semibold text-foreground shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-foreground/30 hover:text-foreground hover:shadow-md"
               >
                 See what others explore
               </Link>
@@ -256,7 +251,7 @@ export default function WhatAreSignificantHobbiesPage() {
                 Browse the{' '}
                 <Link
                   href="/hobbies"
-                  className="font-medium text-lumi-400 hover:text-lumi-400 underline underline-offset-2"
+                  className="font-medium text-foreground underline underline-offset-2 hover:opacity-80"
                 >
                   hobby directory
                 </Link>{' '}
@@ -308,7 +303,7 @@ export default function WhatAreSignificantHobbiesPage() {
               Want to go deeper?{' '}
               <Link
                 href="/blog"
-                className="font-medium text-lumi-400 hover:text-lumi-400 underline underline-offset-2"
+                className="font-medium text-foreground underline underline-offset-2 hover:opacity-80"
               >
                 Read the blog
               </Link>{' '}
@@ -368,7 +363,7 @@ export default function WhatAreSignificantHobbiesPage() {
                   },
                 ].map(({ phase, insight }) => (
                   <div key={phase} className="flex items-start gap-4 px-6 py-4">
-                    <span className="mt-0.5 rounded-full bg-lumi-500/10 px-2.5 py-0.5 text-xs font-semibold text-lumi-400 whitespace-nowrap">
+                    <span className="mt-0.5 rounded-full bg-foreground/10 px-2.5 py-0.5 text-xs font-semibold text-foreground whitespace-nowrap">
                       {phase}
                     </span>
                     <p className="text-sm leading-relaxed text-muted-foreground">{insight}</p>
@@ -377,17 +372,17 @@ export default function WhatAreSignificantHobbiesPage() {
               </div>
             </div>
 
-            <div className="mt-8 rounded-2xl border border-lumi-500/20 bg-lumi-500/10 p-6">
-              <p className="mb-3 text-base font-semibold text-lumi-600">
+            <div className="mt-8 rounded-xl border border-border bg-card/50 p-6">
+              <p className="mb-3 text-base font-semibold text-foreground">
                 Ready to see your patterns?
               </p>
-              <p className="mb-4 text-sm text-lumi-400">
+              <p className="mb-4 text-sm text-muted-foreground">
                 Build your hobby timeline in minutes. Add phases, drop in your hobbies, and watch
                 your story take shape.
               </p>
               <Link
                 href="/timeline/new"
-                className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-2.5 text-sm font-semibold text-primary-foreground transition-all duration-200 hover:-translate-y-0.5 hover:bg-lumi-300"
+                className="inline-flex items-center gap-2 rounded-lg bg-primary px-6 py-2.5 text-sm font-semibold text-primary-foreground hover:opacity-90"
               >
                 Build your hobby timeline →
               </Link>
@@ -433,7 +428,7 @@ export default function WhatAreSignificantHobbiesPage() {
               Your archetype is calculated from your timeline.{' '}
               <Link
                 href="/timeline/new"
-                className="font-medium text-lumi-400 hover:text-lumi-400 underline underline-offset-2"
+                className="font-medium text-foreground underline underline-offset-2 hover:opacity-80"
               >
                 Build yours to find out which one you are.
               </Link>
@@ -458,12 +453,12 @@ export default function WhatAreSignificantHobbiesPage() {
             <div className="mt-8 space-y-4">
               {HOBBY_TYPES.map(({ label, emoji, examples, description, href }) => (
                 <Link key={label} href={href} className="group block">
-                  <div className="flex items-start gap-5 rounded-2xl border border-border bg-card p-6 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-lumi-500/30 hover:shadow-md">
+                  <div className="flex items-start gap-5 rounded-2xl border border-border bg-card p-6 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-foreground/30 hover:shadow-md">
                     <span className="text-3xl">{emoji}</span>
                     <div className="flex-1">
                       <div className="mb-1 flex items-center gap-2">
                         <h3 className="font-bold text-foreground">{label} Hobbies</h3>
-                        <span className="text-xs font-semibold text-lumi-400 opacity-0 transition-opacity group-hover:opacity-100">
+                        <span className="text-xs font-semibold text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100">
                           Explore →
                         </span>
                       </div>
@@ -532,7 +527,7 @@ export default function WhatAreSignificantHobbiesPage() {
               </p>
               <Link
                 href="/explore"
-                className="inline-flex items-center gap-2 rounded-full border border-lumi-500/30 bg-lumi-500/10 px-6 py-2.5 text-sm font-semibold text-lumi-400 transition-all duration-200 hover:-translate-y-0.5 hover:bg-lumi-500/15"
+                className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-6 py-2.5 text-sm font-semibold text-foreground transition-all duration-200 hover:-translate-y-0.5 hover:border-foreground/30"
               >
                 See what others are exploring →
               </Link>
@@ -595,8 +590,8 @@ export default function WhatAreSignificantHobbiesPage() {
                   <div
                     className={`flex h-full items-start gap-4 rounded-2xl border p-6 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md ${
                       accent
-                        ? 'border-lumi-500/30 bg-primary text-primary-foreground hover:bg-lumi-300'
-                        : 'border-border bg-card hover:border-lumi-500/30'
+                        ? 'border-foreground/20 bg-primary text-primary-foreground hover:opacity-90'
+                        : 'border-border bg-card hover:border-foreground/30'
                     }`}
                   >
                     <span className="text-2xl">{emoji}</span>
@@ -608,7 +603,7 @@ export default function WhatAreSignificantHobbiesPage() {
                       </p>
                       <p
                         className={`text-sm leading-relaxed ${
-                          accent ? 'text-lumi-200' : 'text-muted-foreground'
+                          accent ? 'text-primary-foreground/80' : 'text-muted-foreground'
                         }`}
                       >
                         {description}
