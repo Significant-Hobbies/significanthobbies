@@ -30,9 +30,9 @@ export default function JourneysPage() {
           const totalHobbies = person.phases.reduce((sum, phase) => sum + phase.hobbies.length, 0);
           return (
             <Link key={person.slug} href={`/journeys/${person.slug}`} className="group block">
-              <div className="relative flex h-full flex-col overflow-hidden rounded-xl border border-border bg-card p-5 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-lumi-500/40 hover:shadow-md">
+              <div className="relative flex h-full flex-col overflow-hidden rounded-xl border border-border bg-card p-5 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-foreground/30 hover:shadow-md">
                 {/* Hover accent bar */}
-                <div className="absolute inset-x-0 top-0 h-0.5 origin-left scale-x-0 bg-gradient-to-r from-lumi-400 to-lumi-500/60 transition-transform duration-300 group-hover:scale-x-100 rounded-t-xl" />
+                <div className="absolute inset-x-0 top-0 h-0.5 origin-left scale-x-0 bg-gradient-to-r from-foreground/60 to-foreground/20 transition-transform duration-300 group-hover:scale-x-100 rounded-t-xl" />
 
                 {/* Emoji + name */}
                 <div className="mb-3 flex items-center gap-3">
@@ -40,7 +40,7 @@ export default function JourneysPage() {
                     {person.emoji}
                   </span>
                   <div>
-                    <h2 className="font-bold text-foreground transition-colors group-hover:text-lumi-400 leading-tight">
+                    <h2 className="font-bold text-foreground transition-colors group-hover:text-foreground leading-tight">
                       {person.name}
                     </h2>
                     <p className="text-xs text-muted-foreground/60">{person.born}</p>
@@ -62,7 +62,7 @@ export default function JourneysPage() {
                     </span>{' '}
                     phases
                   </span>
-                  <span className="text-xs font-semibold text-lumi-400 opacity-0 transition-opacity group-hover:opacity-100">
+                  <span className="text-xs font-semibold text-foreground opacity-0 transition-opacity group-hover:opacity-100">
                     Explore →
                   </span>
                 </div>
@@ -73,14 +73,14 @@ export default function JourneysPage() {
       </div>
 
       {/* CTA section */}
-      <div className="mt-16 rounded-xl border border-border bg-lumi-500/10 p-8 text-center">
+      <div className="mt-16 rounded-xl border border-border bg-foreground/10 p-8 text-center">
         <h2 className="mb-2 text-lg font-bold text-foreground">What&apos;s your hobby story?</h2>
         <p className="mb-5 text-sm text-muted-foreground">
           Map your own journey — from childhood pastimes to current obsessions.
         </p>
         <Link
           href="/timeline/new"
-          className="inline-flex items-center gap-1.5 rounded-full bg-primary px-6 py-2.5 text-sm font-semibold text-primary-foreground shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:bg-lumi-300 hover:shadow-md"
+          className="inline-flex items-center gap-1.5 rounded-full bg-primary px-6 py-2.5 text-sm font-semibold text-primary-foreground shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:opacity-90 hover:shadow-md"
         >
           Start your timeline →
         </Link>

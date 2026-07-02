@@ -131,13 +131,13 @@ export default async function HobbyDetailPage({ params }: Props) {
       />
       {/* Guest CTA banner */}
       {!isLoggedIn && (
-        <div className="mb-6 flex items-center justify-between gap-4 rounded-xl border border-lumi-500/40 bg-lumi-500/10 px-5 py-3">
+        <div className="mb-6 flex items-center justify-between gap-4 rounded-xl border border-foreground/30 bg-foreground/10 px-5 py-3">
           <p className="text-sm text-foreground">
-            Track your <span className="font-semibold text-lumi-400">{hobbyName}</span> journey
+            Track your <span className="font-semibold text-foreground">{hobbyName}</span> journey
           </p>
           <Link
             href="/timeline/new"
-            className="shrink-0 text-sm font-medium text-lumi-400 hover:text-lumi-400 transition-colors"
+            className="shrink-0 text-sm font-medium text-foreground hover:text-foreground transition-colors"
           >
             Start now →
           </Link>
@@ -161,7 +161,7 @@ export default async function HobbyDetailPage({ params }: Props) {
       {/* Popularity */}
       <div className="mb-8 flex items-center gap-3">
         <div className="rounded-xl border border-border bg-card px-5 py-3 flex items-center gap-3">
-          <span className="text-2xl font-bold text-lumi-400">{popularityCount}</span>
+          <span className="text-2xl font-bold text-foreground">{popularityCount}</span>
           <span className="text-sm text-muted-foreground">
             {popularityCount === 1 ? (
               'public timeline features this hobby'
@@ -170,7 +170,7 @@ export default async function HobbyDetailPage({ params }: Props) {
                 public timelines yet —{' '}
                 <Link
                   href="/timeline/new"
-                  className="text-lumi-400 hover:text-lumi-400 transition-colors"
+                  className="text-foreground hover:text-foreground transition-colors"
                 >
                   be the first!
                 </Link>
@@ -200,7 +200,7 @@ export default async function HobbyDetailPage({ params }: Props) {
                 href={r.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className={`group flex items-center gap-4 rounded-xl border border-border bg-card transition-all hover:border-lumi-500/50 hover:shadow-sm ${
+                className={`group flex items-center gap-4 rounded-xl border border-border bg-card transition-all hover:border-foreground/30 hover:shadow-sm ${
                   i === 0 ? 'p-5' : 'px-5 py-3'
                 }`}
               >
@@ -208,17 +208,17 @@ export default async function HobbyDetailPage({ params }: Props) {
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
                     <span
-                      className={`font-semibold text-foreground group-hover:text-lumi-400 transition-colors ${i === 0 ? 'text-base' : 'text-sm'}`}
+                      className={`font-semibold text-foreground group-hover:text-foreground transition-colors ${i === 0 ? 'text-base' : 'text-sm'}`}
                     >
                       {r.name}
                     </span>
                     {r.type === 'own' && (
-                      <span className="rounded-full bg-lumi-500/10 border border-lumi-500/30 px-2 py-0.5 text-[10px] font-medium text-lumi-400">
+                      <span className="rounded-full bg-foreground/10 border border-foreground/20 px-2 py-0.5 text-[10px] font-medium text-foreground">
                         by SignificantHobbies
                       </span>
                     )}
                     {r.type === 'sponsored' && (
-                      <span className="rounded-full bg-amber-400/10 border border-amber-400/30 px-2 py-0.5 text-[10px] font-medium text-lumi-400">
+                      <span className="rounded-full bg-amber-400/10 border border-amber-400/30 px-2 py-0.5 text-[10px] font-medium text-foreground">
                         sponsored
                       </span>
                     )}
@@ -227,7 +227,7 @@ export default async function HobbyDetailPage({ params }: Props) {
                     {r.description}
                   </p>
                 </div>
-                <span className="text-muted-foreground/40 group-hover:text-lumi-400 transition-colors text-sm">
+                <span className="text-muted-foreground/40 group-hover:text-foreground transition-colors text-sm">
                   ↗
                 </span>
               </a>
@@ -245,11 +245,11 @@ export default async function HobbyDetailPage({ params }: Props) {
           <div className="space-y-3">
             {relatedPosts.map((post) => (
               <Link key={post.slug} href={`/blog/${post.slug}`}>
-                <div className="group rounded-xl border border-border bg-card p-4 transition-colors hover:border-lumi-500/50">
+                <div className="group rounded-xl border border-border bg-card p-4 transition-colors hover:border-foreground/30">
                   <div className="flex items-center gap-3">
                     <span className="text-2xl">{post.emoji}</span>
                     <div>
-                      <h3 className="font-medium text-foreground group-hover:text-lumi-400 transition-colors">
+                      <h3 className="font-medium text-foreground group-hover:text-foreground transition-colors">
                         {post.title}
                       </h3>
                       <p className="text-xs text-muted-foreground mt-0.5">
@@ -284,8 +284,8 @@ export default async function HobbyDetailPage({ params }: Props) {
                     user: t.userUsername ? { username: t.userUsername } : null,
                   })}
                 >
-                  <div className="group rounded-xl border border-border bg-card p-4 transition-colors hover:border-lumi-500/50">
-                    <h3 className="font-medium text-foreground group-hover:text-lumi-400 transition-colors">
+                  <div className="group rounded-xl border border-border bg-card p-4 transition-colors hover:border-foreground/30">
+                    <h3 className="font-medium text-foreground group-hover:text-foreground transition-colors">
                       {t.title ?? 'Hobby Timeline'}
                     </h3>
                     {t.userName && (
@@ -305,7 +305,7 @@ export default async function HobbyDetailPage({ params }: Props) {
           <div className="rounded-xl border border-border bg-card/40 p-8 text-center">
             <p className="text-muted-foreground">No public timelines feature {hobbyName} yet.</p>
             <Link href="/timeline/new">
-              <button className="mt-3 text-sm text-lumi-400 hover:text-lumi-400">
+              <button className="mt-3 text-sm text-foreground hover:text-foreground">
                 Be the first →
               </button>
             </Link>
@@ -327,7 +327,7 @@ export default async function HobbyDetailPage({ params }: Props) {
               >
                 <Badge
                   variant="outline"
-                  className="border-border text-muted-foreground hover:border-lumi-500/50 hover:text-lumi-400 cursor-pointer transition-colors"
+                  className="border-border text-muted-foreground hover:border-foreground/30 hover:text-foreground cursor-pointer transition-colors"
                 >
                   {category.emoji} {h}
                 </Badge>
@@ -355,11 +355,11 @@ export default async function HobbyDetailPage({ params }: Props) {
                 <Link
                   key={affinity.name}
                   href={`/hobbies/${encodeURIComponent(slug)}`}
-                  className="group block rounded-xl border border-border bg-card p-4 transition-colors hover:border-lumi-500/50"
+                  className="group block rounded-xl border border-border bg-card p-4 transition-colors hover:border-foreground/30"
                 >
                   <div className="flex items-center gap-2 mb-1">
                     <span className="text-lg">{affinityCategory?.emoji ?? '🎯'}</span>
-                    <span className="font-semibold text-foreground text-sm group-hover:text-lumi-400 transition-colors">
+                    <span className="font-semibold text-foreground text-sm group-hover:text-foreground transition-colors">
                       {affinity.name}
                     </span>
                   </div>

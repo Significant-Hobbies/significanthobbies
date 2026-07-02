@@ -53,7 +53,7 @@ export default async function MyTimelinesPage() {
           </p>
         </div>
         <Link href="/timeline/new">
-          <Button className="bg-primary hover:bg-lumi-300 text-primary-foreground">
+          <Button className="bg-primary hover:opacity-90 text-primary-foreground">
             <Plus className="mr-1.5 h-4 w-4" />
             New Timeline
           </Button>
@@ -72,7 +72,7 @@ export default async function MyTimelinesPage() {
             your life.
           </p>
           <Link href="/timeline/new">
-            <Button className="bg-primary hover:bg-lumi-300 text-primary-foreground">
+            <Button className="bg-primary hover:opacity-90 text-primary-foreground">
               <Plus className="mr-1.5 h-4 w-4" />
               Build your first timeline
             </Button>

@@ -161,8 +161,8 @@ export function TimeCalculatorClient() {
         }}
       >
         <div className="relative mx-auto max-w-2xl text-center">
-          <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-lumi-500/30 bg-lumi-500/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-widest text-lumi-400">
-            <span className="h-1.5 w-1.5 rounded-full bg-lumi-500/100" />
+          <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-foreground/20 bg-foreground/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-widest text-foreground">
+            <span className="h-1.5 w-1.5 rounded-full bg-foreground" />
             Free Tool
           </div>
           <h1 className="mb-4 text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
@@ -229,7 +229,7 @@ export function TimeCalculatorClient() {
             className={`rounded-2xl border p-8 text-center shadow-sm ${
               overBudget
                 ? 'border-destructive/30 bg-destructive/10'
-                : 'border-lumi-500/30 bg-lumi-500/10'
+                : 'border-foreground/20 bg-foreground/10'
             }`}
           >
             {overBudget ? (
@@ -246,10 +246,10 @@ export function TimeCalculatorClient() {
               </>
             ) : (
               <>
-                <p className="mb-1 text-sm font-semibold uppercase tracking-wider text-lumi-400">
+                <p className="mb-1 text-sm font-semibold uppercase tracking-wider text-foreground">
                   Your weekly hobby time
                 </p>
-                <p className="text-6xl font-black text-lumi-400 sm:text-7xl">
+                <p className="text-6xl font-black text-foreground sm:text-7xl">
                   {freeTime}
                   <span className="text-3xl font-bold">h</span>
                 </p>
@@ -315,7 +315,7 @@ export function TimeCalculatorClient() {
                   <ul className="space-y-1.5">
                     {hobbyFits.map((h) => (
                       <li key={h} className="flex items-center gap-2 text-sm text-muted-foreground">
-                        <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-lumi-400" />
+                        <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-foreground" />
                         {h}
                       </li>
                     ))}
@@ -331,7 +331,7 @@ export function TimeCalculatorClient() {
                   </div>
                   <p className="text-sm text-muted-foreground">
                     Cut your screen time in half and you&apos;d gain{' '}
-                    <span className="font-bold text-lumi-400">{screenSaving} more hours</span> per
+                    <span className="font-bold text-foreground">{screenSaving} more hours</span> per
                     week — that&apos;s{' '}
                     <span className="font-semibold">{freeTime + screenSaving}h total</span> for
                     hobbies.
@@ -361,13 +361,13 @@ export function TimeCalculatorClient() {
             <div className="flex flex-col gap-3 sm:flex-row sm:justify-center">
               <Link
                 href="/timeline/new"
-                className="inline-flex items-center justify-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:bg-lumi-300 hover:shadow-md"
+                className="inline-flex items-center justify-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:opacity-90 hover:shadow-md"
               >
                 Start your hobby journey →
               </Link>
               <Link
                 href="/find-your-hobby"
-                className="inline-flex items-center justify-center gap-2 rounded-full border border-border bg-card px-6 py-3 text-sm font-semibold text-foreground transition-all duration-200 hover:-translate-y-0.5 hover:border-lumi-500/40 hover:text-lumi-400"
+                className="inline-flex items-center justify-center gap-2 rounded-full border border-border bg-card px-6 py-3 text-sm font-semibold text-foreground transition-all duration-200 hover:-translate-y-0.5 hover:border-foreground/30 hover:text-foreground"
               >
                 Find your perfect hobby →
               </Link>

@@ -46,7 +46,7 @@ export function VersionHistory({ versions, currentPhases }: Props) {
             className={`rounded-full px-3 py-1 text-xs font-medium transition-colors ${
               selectedVersion === i
                 ? 'bg-primary text-primary-foreground'
-                : 'border border-border bg-card text-muted-foreground hover:border-lumi-500/50'
+                : 'border border-border bg-card text-muted-foreground hover:border-foreground/30'
             }`}
           >
             {new Date(v.date).toLocaleDateString()}
@@ -62,12 +62,14 @@ export function VersionHistory({ versions, currentPhases }: Props) {
           </div>
           {added.length > 0 && (
             <div>
-              <span className="text-xs font-medium text-lumi-400 uppercase">Added since then:</span>
+              <span className="text-xs font-medium text-foreground uppercase">
+                Added since then:
+              </span>
               <div className="mt-1 flex flex-wrap gap-1">
                 {added.map((h) => (
                   <span
                     key={h}
-                    className="rounded-full bg-lumi-500/10 border border-lumi-500/30 px-2 py-0.5 text-xs text-lumi-400 capitalize"
+                    className="rounded-full bg-foreground/10 border border-foreground/20 px-2 py-0.5 text-xs text-foreground capitalize"
                   >
                     {h}
                   </span>

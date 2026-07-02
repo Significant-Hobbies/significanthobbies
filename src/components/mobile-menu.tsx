@@ -40,10 +40,10 @@ export function MobileMenu({ links, isLoggedIn }: MobileMenuProps) {
                   className={`rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${
                     isActive
                       ? isBucketList
-                        ? 'bg-amber-400/10 text-lumi-400'
-                        : 'bg-lumi-500/10 text-lumi-400'
+                        ? 'bg-amber-400/10 text-foreground'
+                        : 'bg-foreground/10 text-foreground'
                       : isBucketList
-                        ? 'text-muted-foreground hover:bg-amber-400/10 hover:text-lumi-400'
+                        ? 'text-muted-foreground hover:bg-amber-400/10 hover:text-foreground'
                         : 'text-muted-foreground hover:bg-card/40 hover:text-foreground'
                   }`}
                 >
@@ -57,7 +57,7 @@ export function MobileMenu({ links, isLoggedIn }: MobileMenuProps) {
               onClick={() => setOpen(false)}
               className={`flex items-center gap-2 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${
                 pathname === '/search'
-                  ? 'bg-lumi-500/10 text-lumi-400'
+                  ? 'bg-foreground/10 text-foreground'
                   : 'text-muted-foreground hover:bg-card/40 hover:text-foreground'
               }`}
             >
@@ -70,7 +70,7 @@ export function MobileMenu({ links, isLoggedIn }: MobileMenuProps) {
                 href="/timeline/new"
                 prefetch={false}
                 onClick={() => setOpen(false)}
-                className="rounded-lg bg-primary px-3 py-2.5 text-center text-sm font-semibold text-primary-foreground hover:bg-lumi-300 transition-colors"
+                className="rounded-lg bg-primary px-3 py-2.5 text-center text-sm font-semibold text-primary-foreground hover:opacity-90 transition-colors"
               >
                 New Timeline
               </Link>

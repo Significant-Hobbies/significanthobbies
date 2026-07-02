@@ -346,7 +346,7 @@ export function HobbyQuiz() {
       {/* Header */}
       {!isResults && (
         <div className="mb-10 text-center">
-          <p className="mb-2 text-xs font-semibold uppercase tracking-widest text-lumi-400">
+          <p className="mb-2 text-xs font-semibold uppercase tracking-widest text-foreground">
             Free Hobby Quiz
           </p>
           <h1 className="text-3xl font-bold text-foreground">Find Your Perfect Hobby</h1>
@@ -364,9 +364,9 @@ export function HobbyQuiz() {
               key={i}
               className={`h-2 rounded-full transition-all duration-300 ${
                 i < step
-                  ? 'w-8 bg-lumi-500/100'
+                  ? 'w-8 bg-foreground'
                   : i === step
-                    ? 'w-8 bg-lumi-500/60'
+                    ? 'w-8 bg-foreground/60'
                     : 'w-4 bg-foreground/10'
               }`}
             />
@@ -391,16 +391,16 @@ export function HobbyQuiz() {
                 <button
                   key={i}
                   onClick={() => handleSelect(i)}
-                  className={`flex items-center gap-3 rounded-xl border-2 p-4 text-left transition-all duration-150 hover:border-lumi-500/40 hover:bg-lumi-500/10 focus:outline-none focus:ring-2 focus:ring-lumi-500/80 focus:ring-offset-2 ${
+                  className={`flex items-center gap-3 rounded-xl border-2 p-4 text-left transition-all duration-150 hover:border-foreground/30 hover:bg-foreground/10 focus:outline-none focus:ring-2 focus:ring-foreground/30 focus:ring-offset-2 ${
                     isSelected
-                      ? 'border-lumi-500/60 bg-lumi-500/10 shadow-sm'
+                      ? 'border-foreground/30 bg-foreground/10 shadow-sm'
                       : 'border-border bg-card'
                   }`}
                 >
                   <span className="text-2xl">{option.emoji}</span>
                   <span
                     className={`text-sm font-medium ${
-                      isSelected ? 'text-lumi-600' : 'text-foreground'
+                      isSelected ? 'text-foreground' : 'text-foreground'
                     }`}
                   >
                     {option.label}
@@ -416,7 +416,7 @@ export function HobbyQuiz() {
               disabled={selectedOption === null}
               className={`rounded-lg px-8 py-3 text-sm font-semibold transition-all duration-150 ${
                 selectedOption !== null
-                  ? 'bg-primary text-primary-foreground hover:bg-lumi-300 shadow-sm hover:shadow-md'
+                  ? 'bg-primary text-primary-foreground hover:opacity-90 shadow-sm hover:shadow-md'
                   : 'cursor-not-allowed bg-foreground/5 text-muted-foreground/60'
               }`}
             >
@@ -430,9 +430,9 @@ export function HobbyQuiz() {
       {isResults && archetype && (
         <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
           {/* Archetype reveal */}
-          <div className="mb-10 rounded-2xl border border-lumi-500/20 bg-gradient-to-br from-lumi-500/10 to-white p-8 text-center shadow-sm">
+          <div className="mb-10 rounded-2xl border border-foreground/20 bg-gradient-to-br from-foreground/10 to-white p-8 text-center shadow-sm">
             <div className="mb-4 text-6xl">{archetype.emoji}</div>
-            <p className="mb-1 text-xs font-semibold uppercase tracking-widest text-lumi-400">
+            <p className="mb-1 text-xs font-semibold uppercase tracking-widest text-foreground">
               Your Hobby Archetype
             </p>
             <h1 className="mb-3 text-3xl font-bold text-foreground">{archetype.title}</h1>
@@ -445,7 +445,7 @@ export function HobbyQuiz() {
                   return (
                     <span
                       key={cat}
-                      className="inline-flex items-center gap-1 rounded-full bg-lumi-500/15 px-3 py-1 text-xs font-medium text-lumi-400"
+                      className="inline-flex items-center gap-1 rounded-full bg-foreground/10 px-3 py-1 text-xs font-medium text-foreground"
                     >
                       {a?.emoji} {cat}
                     </span>
@@ -468,7 +468,7 @@ export function HobbyQuiz() {
                   <Link
                     key={hobby}
                     href={`/hobbies/${hobbySlug(hobby)}`}
-                    className="flex flex-col items-center gap-1 rounded-xl border border-border bg-card p-4 text-center text-sm font-medium text-foreground transition-all hover:border-lumi-500/50 hover:bg-lumi-500/10 hover:text-lumi-400 hover:shadow-sm"
+                    className="flex flex-col items-center gap-1 rounded-xl border border-border bg-card p-4 text-center text-sm font-medium text-foreground transition-all hover:border-foreground/30 hover:bg-foreground/10 hover:text-foreground hover:shadow-sm"
                   >
                     <span className="text-2xl">{cat?.emoji ?? '✨'}</span>
                     <span>{hobby}</span>
@@ -489,7 +489,7 @@ export function HobbyQuiz() {
               </div>
               <button
                 onClick={handleSaveExperimentPlan}
-                className="rounded-lg border border-lumi-500/30 bg-lumi-500/10 px-4 py-2 text-sm font-semibold text-lumi-400 transition-colors hover:border-lumi-500/40 hover:bg-lumi-500/15"
+                className="rounded-lg border border-foreground/20 bg-foreground/10 px-4 py-2 text-sm font-semibold text-foreground transition-colors hover:border-foreground/30 hover:bg-foreground/10"
               >
                 {savedExperimentPlan ? 'Plan saved' : 'Save plan'}
               </button>
@@ -522,7 +522,7 @@ export function HobbyQuiz() {
               })}
             </div>
             {savedExperimentPlan && (
-              <p className="mt-3 text-center text-xs font-medium text-lumi-400">
+              <p className="mt-3 text-center text-xs font-medium text-foreground">
                 Saved on this device. Turn the experiment into a timeline when you are ready.
               </p>
             )}
@@ -532,7 +532,7 @@ export function HobbyQuiz() {
           <div className="flex flex-col gap-3 sm:flex-row">
             <Link
               href="/timeline/new"
-              className="flex-1 rounded-lg bg-primary px-6 py-3 text-center text-sm font-semibold text-primary-foreground shadow-sm transition-colors hover:bg-lumi-300"
+              className="flex-1 rounded-lg bg-primary px-6 py-3 text-center text-sm font-semibold text-primary-foreground shadow-sm transition-colors hover:opacity-90"
             >
               Build your hobby timeline →
             </Link>

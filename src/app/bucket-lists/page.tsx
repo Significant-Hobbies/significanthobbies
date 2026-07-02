@@ -21,7 +21,7 @@ const CATEGORY_BORDER_HOVER: Record<string, string> = {
   creative: 'hover:border-purple-300',
   achievement: 'hover:border-[#f0a090]',
   social: 'hover:border-rose-300',
-  humanitarian: 'hover:border-lumi-500/40',
+  humanitarian: 'hover:border-foreground/30',
 };
 
 function getDominantCategory(slug: string) {

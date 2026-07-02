@@ -124,7 +124,7 @@ export function LumiWeeklyReview({ initialReflection }: Props) {
               disabled={justMarked}
               className={`inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold transition-all ${
                 justMarked
-                  ? 'bg-lumi-500/15 text-lumi-400 cursor-default'
+                  ? 'bg-foreground/10 text-foreground cursor-default'
                   : 'bg-[#e05533] text-foreground hover:bg-[#c94420]'
               }`}
             >

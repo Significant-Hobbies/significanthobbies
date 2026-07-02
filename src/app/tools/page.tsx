@@ -57,8 +57,8 @@ const TOOLS: Tool[] = [
 ];
 
 const BADGE_STYLES: Record<string, string> = {
-  Popular: 'bg-lumi-500/10 text-lumi-400 border-lumi-500/30',
-  New: 'bg-amber-400/10 text-lumi-400 border-amber-400/30',
+  Popular: 'bg-foreground/10 text-foreground border-foreground/20',
+  New: 'bg-amber-400/10 text-foreground border-amber-400/30',
 };
 
 export default function ToolsPage() {
@@ -72,8 +72,8 @@ export default function ToolsPage() {
         }}
       >
         <div className="relative mx-auto max-w-3xl text-center">
-          <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-lumi-500/30 bg-lumi-500/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-widest text-lumi-400">
-            <span className="h-1.5 w-1.5 rounded-full bg-lumi-500/100" />
+          <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-foreground/20 bg-foreground/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-widest text-foreground">
+            <span className="h-1.5 w-1.5 rounded-full bg-foreground" />
             Free Tools
           </div>
           <h1 className="mb-4 text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
@@ -93,10 +93,10 @@ export default function ToolsPage() {
               <Link
                 key={tool.href}
                 href={tool.href}
-                className="group relative flex flex-col overflow-hidden rounded-2xl border border-border bg-card p-6 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-lumi-500/40 hover:shadow-[0_8px_32px_rgba(16,185,129,0.10)]"
+                className="group relative flex flex-col overflow-hidden rounded-2xl border border-border bg-card p-6 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-foreground/30 hover:shadow-[0_8px_32px_rgba(16,185,129,0.10)]"
               >
                 {/* Top accent */}
-                <div className="absolute inset-x-0 top-0 h-0.5 origin-left scale-x-0 rounded-t-2xl bg-gradient-to-r from-lumi-400 to-lumi-500/60 transition-transform duration-300 group-hover:scale-x-100" />
+                <div className="absolute inset-x-0 top-0 h-0.5 origin-left scale-x-0 rounded-t-2xl bg-gradient-to-r from-foreground to-foreground/60 transition-transform duration-300 group-hover:scale-x-100" />
 
                 {/* Badge */}
                 {tool.badge && (
@@ -115,7 +115,7 @@ export default function ToolsPage() {
                 </div>
 
                 {/* Content */}
-                <h2 className="mb-2 text-lg font-bold text-foreground transition-colors group-hover:text-lumi-400">
+                <h2 className="mb-2 text-lg font-bold text-foreground transition-colors group-hover:text-foreground">
                   {tool.title}
                 </h2>
                 <p className="flex-1 text-sm leading-relaxed text-muted-foreground">
@@ -123,7 +123,7 @@ export default function ToolsPage() {
                 </p>
 
                 {/* CTA */}
-                <div className="mt-5 flex items-center gap-1 text-sm font-semibold text-lumi-400 transition-all duration-200 group-hover:gap-2">
+                <div className="mt-5 flex items-center gap-1 text-sm font-semibold text-foreground transition-all duration-200 group-hover:gap-2">
                   Try it
                   <span className="transition-transform duration-200 group-hover:translate-x-0.5">
                     →

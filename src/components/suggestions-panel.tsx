@@ -62,7 +62,7 @@ export function SuggestionsPanel({ existingHobbies }: Props) {
               {group.hobbies.map((hobby) => (
                 <span
                   key={hobby}
-                  className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3 py-1 text-xs text-muted-foreground hover:border-lumi-500/50 hover:text-lumi-400 transition-colors cursor-default"
+                  className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3 py-1 text-xs text-muted-foreground hover:border-foreground/30 hover:text-foreground transition-colors cursor-default"
                 >
                   {hobby}
                 </span>

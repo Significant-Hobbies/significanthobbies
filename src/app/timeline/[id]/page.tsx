@@ -229,7 +229,7 @@ export default async function TimelinePage({ params }: Props) {
           <p className="text-muted-foreground">No phases yet.</p>
           {isOwner && (
             <Link href={`/timeline/${timeline.id}/edit`}>
-              <Button className="mt-4 bg-primary text-primary-foreground hover:bg-lumi-300">
+              <Button className="mt-4 bg-primary text-primary-foreground hover:opacity-90">
                 Add phases
               </Button>
             </Link>

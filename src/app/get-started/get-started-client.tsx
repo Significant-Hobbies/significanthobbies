@@ -107,7 +107,7 @@ export function GetStartedClient() {
       <section className="mx-auto max-w-xl px-4 pb-12">
         <div className="rounded-2xl border border-border bg-card p-6 shadow-sm">
           {/* Input row */}
-          <div className="flex items-center overflow-hidden rounded-xl border border-border bg-card/40 focus-within:border-lumi-500/60 focus-within:ring-2 focus-within:ring-lumi-500/20 transition-all">
+          <div className="flex items-center overflow-hidden rounded-xl border border-border bg-card/40 focus-within:border-foreground/30 focus-within:ring-2 focus-within:ring-foreground/20 transition-all">
             <span className="select-none whitespace-nowrap px-4 py-4 text-base text-muted-foreground/60 font-medium">
               significanthobbies.com/u/
             </span>
@@ -154,7 +154,7 @@ export function GetStartedClient() {
 
             {state === 'available' && (
               <div>
-                <div className="flex items-center gap-2 text-lumi-400">
+                <div className="flex items-center gap-2 text-foreground">
                   <svg
                     className="h-5 w-5"
                     fill="none"
@@ -168,7 +168,7 @@ export function GetStartedClient() {
                 </div>
                 <Link
                   href={`/login?callbackUrl=/setup&username=${encodeURIComponent(input)}`}
-                  className="mt-3 inline-flex items-center gap-2 rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow-sm hover:bg-lumi-300 transition-colors"
+                  className="mt-3 inline-flex items-center gap-2 rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow-sm hover:opacity-90 transition-colors"
                 >
                   Sign up with Google
                   <svg
@@ -212,7 +212,7 @@ export function GetStartedClient() {
             )}
 
             {state === 'invalid' && validationError && (
-              <div className="flex items-start gap-2 text-lumi-400">
+              <div className="flex items-start gap-2 text-foreground">
                 <svg
                   className="mt-0.5 h-4 w-4 shrink-0"
                   fill="none"
@@ -242,9 +242,9 @@ export function GetStartedClient() {
               <Link
                 key={handle}
                 href={`/u/${handle}`}
-                className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-muted-foreground hover:bg-foreground/5 hover:text-lumi-400 transition-colors"
+                className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-muted-foreground hover:bg-foreground/5 hover:text-foreground transition-colors"
               >
-                <span className="font-mono text-lumi-400">/u/</span>
+                <span className="font-mono text-foreground">/u/</span>
                 <span>{handle}</span>
                 <span className="ml-auto text-xs text-muted-foreground/60">{display}</span>
               </Link>

@@ -148,9 +148,9 @@ export default async function SearchPage({ searchParams }: Props) {
                 const username = t.user?.username ?? t.user?.name;
                 return (
                   <Link key={t.id} href={getTimelineUrl(t)}>
-                    <div className="group flex items-center justify-between rounded-xl border border-border bg-card px-4 py-3.5 transition-all hover:border-lumi-500/50 hover:bg-card/40">
+                    <div className="group flex items-center justify-between rounded-xl border border-border bg-card px-4 py-3.5 transition-all hover:border-foreground/30 hover:bg-card/40">
                       <div>
-                        <p className="font-medium text-foreground group-hover:text-lumi-400 transition-colors">
+                        <p className="font-medium text-foreground group-hover:text-foreground transition-colors">
                           {t.title ?? 'Hobby Timeline'}
                         </p>
                         {username && (
@@ -186,13 +186,13 @@ export default async function SearchPage({ searchParams }: Props) {
             <div className="space-y-2">
               {userWithCounts.map((user) => (
                 <Link key={user.id} href={user.username ? `/u/${user.username}` : '#'}>
-                  <div className="group flex items-center gap-3 rounded-xl border border-border bg-card px-4 py-3 transition-all hover:border-lumi-500/50 hover:bg-card/40">
+                  <div className="group flex items-center gap-3 rounded-xl border border-border bg-card px-4 py-3 transition-all hover:border-foreground/30 hover:bg-card/40">
                     {/* Avatar */}
                     <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-foreground/5 text-sm font-semibold text-muted-foreground border border-border">
                       {(user.name ?? user.username ?? '?').charAt(0).toUpperCase()}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="font-medium text-foreground group-hover:text-lumi-400 transition-colors truncate">
+                      <p className="font-medium text-foreground group-hover:text-foreground transition-colors truncate">
                         {user.name ?? user.username}
                       </p>
                       {user.username && (
@@ -230,7 +230,7 @@ export default async function SearchPage({ searchParams }: Props) {
                   key={hobby}
                   href={`/hobbies/${encodeURIComponent(hobby.toLowerCase().replace(/\s+/g, '-'))}`}
                 >
-                  <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3.5 py-1.5 text-sm text-muted-foreground transition-colors hover:border-lumi-500/50 hover:text-lumi-400">
+                  <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3.5 py-1.5 text-sm text-muted-foreground transition-colors hover:border-foreground/30 hover:text-foreground">
                     <span>{emoji}</span>
                     {hobby}
                     <span className="text-muted-foreground/60 text-xs">{category}</span>

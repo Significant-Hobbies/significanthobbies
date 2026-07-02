@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 };
 
 const CATEGORY_STYLES: Record<string, string> = {
-  Creative: 'border-lumi-500/40 bg-lumi-500/10 text-lumi-600',
+  Creative: 'border-foreground/30 bg-foreground/10 text-foreground',
   Outdoor: 'border-teal-300 bg-teal-50 text-teal-800',
   Physical: 'border-blue-300 bg-blue-50 text-blue-800',
   Intellectual: 'border-purple-300 bg-purple-50 text-purple-800',
@@ -43,7 +43,7 @@ export default function StarterKitsPage() {
       </div>
 
       <section className="mb-10 max-w-3xl">
-        <p className="mb-3 text-sm font-semibold uppercase tracking-wide text-lumi-400">
+        <p className="mb-3 text-sm font-semibold uppercase tracking-wide text-foreground">
           Starter kits
         </p>
         <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
@@ -93,7 +93,7 @@ export default function StarterKitsPage() {
               {STARTER_KITS.filter((kit) => kit.category === category).map((kit) => (
                 <article
                   key={kit.slug}
-                  className="rounded-xl border border-border bg-card p-5 shadow-sm transition-colors hover:border-lumi-500/30"
+                  className="rounded-xl border border-border bg-card p-5 shadow-sm transition-colors hover:border-foreground/30"
                 >
                   <div className="mb-4 flex flex-wrap items-start justify-between gap-3">
                     <div>
@@ -135,7 +135,7 @@ export default function StarterKitsPage() {
                       <ul className="mt-2 space-y-1 text-sm text-muted-foreground">
                         {kit.supplies.map((item) => (
                           <li key={item} className="flex gap-2">
-                            <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-lumi-500/100" />
+                            <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-foreground" />
                             <span>{item}</span>
                           </li>
                         ))}
@@ -169,7 +169,7 @@ export default function StarterKitsPage() {
                       <Link
                         key={hobby}
                         href={`/hobbies/${hobbySlug(hobby)}`}
-                        className="rounded-full border border-border px-3 py-1 text-xs font-medium text-muted-foreground transition-colors hover:border-lumi-500/40 hover:text-lumi-400"
+                        className="rounded-full border border-border px-3 py-1 text-xs font-medium text-muted-foreground transition-colors hover:border-foreground/30 hover:text-foreground"
                       >
                         {hobby}
                       </Link>
@@ -182,7 +182,7 @@ export default function StarterKitsPage() {
         ))}
       </div>
 
-      <section className="mt-12 rounded-xl border border-lumi-500/30 bg-lumi-500/10 p-6 text-center">
+      <section className="mt-12 rounded-xl border border-foreground/20 bg-foreground/10 p-6 text-center">
         <h2 className="text-xl font-bold text-foreground">Want a more personal shortlist?</h2>
         <p className="mx-auto mt-2 max-w-2xl text-sm leading-relaxed text-muted-foreground">
           Take the hobby quiz first, then use the starter kit closest to your recommended hobby as a
@@ -190,7 +190,7 @@ export default function StarterKitsPage() {
         </p>
         <Link
           href="/find-your-hobby"
-          className="mt-4 inline-flex rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground transition-colors hover:bg-lumi-300"
+          className="mt-4 inline-flex rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground transition-colors hover:opacity-90"
         >
           Take the quiz
         </Link>

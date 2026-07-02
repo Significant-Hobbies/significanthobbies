@@ -91,13 +91,13 @@ export function AccountabilityCircles({ completedQuestIds }: { completedQuestIds
       <aside className="rounded-2xl border border-border bg-card p-4 shadow-sm">
         <div className="mb-3 flex items-center justify-between">
           <div className="flex items-center gap-2 font-semibold text-foreground">
-            <Users className="h-4 w-4 text-lumi-400" />
+            <Users className="h-4 w-4 text-foreground" />
             Circles
           </div>
           <button
             type="button"
             onClick={addCircle}
-            className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-border text-muted-foreground hover:border-lumi-500/40 hover:text-lumi-400"
+            className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-border text-muted-foreground hover:border-foreground/30 hover:text-foreground"
             aria-label="Add circle"
           >
             <Plus className="h-4 w-4" />
@@ -112,7 +112,7 @@ export function AccountabilityCircles({ completedQuestIds }: { completedQuestIds
               onClick={() => setSelectedId(circle.id)}
               className={`w-full rounded-xl border px-3 py-2 text-left transition-all ${
                 selectedCircle.id === circle.id
-                  ? 'border-lumi-500/40 bg-lumi-500/10'
+                  ? 'border-foreground/30 bg-foreground/10'
                   : 'border-border hover:border-border'
               }`}
             >
@@ -134,7 +134,7 @@ export function AccountabilityCircles({ completedQuestIds }: { completedQuestIds
               <input
                 value={selectedCircle.name}
                 onChange={(event) => updateCircle(selectedCircle.id, { name: event.target.value })}
-                className="w-full rounded-xl border border-border px-3 py-2 text-sm outline-none focus:border-lumi-500/50"
+                className="w-full rounded-xl border border-border px-3 py-2 text-sm outline-none focus:border-foreground/30"
               />
             </label>
             <label className="space-y-1.5">
@@ -146,7 +146,7 @@ export function AccountabilityCircles({ completedQuestIds }: { completedQuestIds
                     focus: event.target.value as QuestCategory | 'balanced',
                   })
                 }
-                className="w-full rounded-xl border border-border px-3 py-2 text-sm outline-none focus:border-lumi-500/50"
+                className="w-full rounded-xl border border-border px-3 py-2 text-sm outline-none focus:border-foreground/30"
               >
                 <option value="balanced">Balanced</option>
                 {QUEST_CATEGORIES.map((category) => (
@@ -165,7 +165,7 @@ export function AccountabilityCircles({ completedQuestIds }: { completedQuestIds
                     cadence: event.target.value as CircleCadence,
                   })
                 }
-                className="w-full rounded-xl border border-border px-3 py-2 text-sm outline-none focus:border-lumi-500/50"
+                className="w-full rounded-xl border border-border px-3 py-2 text-sm outline-none focus:border-foreground/30"
               >
                 <option value="weekly">Weekly</option>
                 <option value="weekend">Weekend</option>
@@ -182,7 +182,7 @@ export function AccountabilityCircles({ completedQuestIds }: { completedQuestIds
                   })
                 }
                 rows={2}
-                className="w-full resize-none rounded-xl border border-border px-3 py-2 text-sm outline-none focus:border-lumi-500/50"
+                className="w-full resize-none rounded-xl border border-border px-3 py-2 text-sm outline-none focus:border-foreground/30"
               />
             </label>
           </div>
@@ -200,7 +200,7 @@ export function AccountabilityCircles({ completedQuestIds }: { completedQuestIds
             <button
               type="button"
               onClick={copyPrompt}
-              className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-4 py-2 text-sm font-medium text-muted-foreground transition-all hover:border-lumi-500/40 hover:text-lumi-400"
+              className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-4 py-2 text-sm font-medium text-muted-foreground transition-all hover:border-foreground/30 hover:text-foreground"
             >
               <Copy className="h-4 w-4" />
               {copied ? 'Copied' : 'Copy check-in'}
@@ -216,8 +216,8 @@ export function AccountabilityCircles({ completedQuestIds }: { completedQuestIds
                   href={`/side-quests?q=${quest.id}`}
                   className={`rounded-xl border p-4 transition-all hover:-translate-y-0.5 ${
                     done
-                      ? 'border-lumi-500/30 bg-lumi-500/10'
-                      : 'border-border bg-card/40 hover:border-lumi-500/40'
+                      ? 'border-foreground/20 bg-foreground/10'
+                      : 'border-border bg-card/40 hover:border-foreground/30'
                   }`}
                 >
                   <div className="text-3xl">{quest.emoji}</div>

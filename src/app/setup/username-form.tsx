@@ -36,7 +36,7 @@ export function UsernameForm() {
       <CardContent className="pt-6">
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <div className="flex items-center rounded-md border border-border bg-card/40 px-3 focus-within:border-lumi-500/60 transition-colors">
+            <div className="flex items-center rounded-md border border-border bg-card/40 px-3 focus-within:border-foreground/30 transition-colors">
               <span className="text-muted-foreground/60 text-sm select-none">@</span>
               <Input
                 value={value}
@@ -54,7 +54,7 @@ export function UsernameForm() {
           </div>
           <Button
             type="submit"
-            className="w-full bg-primary hover:bg-lumi-300"
+            className="w-full bg-primary hover:opacity-90"
             disabled={loading || !isValid}
           >
             {loading ? 'Saving...' : 'Claim username'}

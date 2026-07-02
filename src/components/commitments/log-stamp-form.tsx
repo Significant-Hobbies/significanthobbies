@@ -53,7 +53,7 @@ export function LogStampForm({ commitmentId, hobbyName, defaultOpen = false }: P
       <Button
         onClick={() => setOpen(true)}
         size="sm"
-        className="bg-primary text-primary-foreground hover:bg-lumi-300 gap-1.5"
+        className="bg-primary text-primary-foreground hover:opacity-90 gap-1.5"
       >
         <Stamp className="h-3.5 w-3.5" />
         Stamp today
@@ -79,7 +79,7 @@ export function LogStampForm({ commitmentId, hobbyName, defaultOpen = false }: P
           value={proofUrl}
           onChange={(e) => setProofUrl(e.target.value)}
           placeholder="https://youtube.com/watch?v=… or any URL"
-          className="w-full rounded-md border border-border bg-card px-2.5 py-1.5 text-sm text-foreground focus:border-lumi-500 focus:outline-none focus:ring-1 focus:ring-lumi-500"
+          className="w-full rounded-md border border-border bg-card px-2.5 py-1.5 text-sm text-foreground focus:border-foreground/30 focus:outline-none focus:ring-1 focus:ring-foreground/30"
           autoFocus
         />
       </div>
@@ -93,12 +93,12 @@ export function LogStampForm({ commitmentId, hobbyName, defaultOpen = false }: P
           onChange={(e) => setNote(e.target.value)}
           placeholder="What did you work on?"
           maxLength={500}
-          className="w-full rounded-md border border-border bg-card px-2.5 py-1.5 text-sm text-foreground focus:border-lumi-500 focus:outline-none focus:ring-1 focus:ring-lumi-500"
+          className="w-full rounded-md border border-border bg-card px-2.5 py-1.5 text-sm text-foreground focus:border-foreground/30 focus:outline-none focus:ring-1 focus:ring-foreground/30"
         />
       </div>
       {error && <p className="text-xs text-destructive">{error}</p>}
       {justEarned && justEarned.length > 0 && (
-        <p className="text-xs text-lumi-400">
+        <p className="text-xs text-foreground">
           New badge{justEarned.length > 1 ? 's' : ''} earned: {justEarned.join(', ')} 🎉
         </p>
       )}
@@ -107,7 +107,7 @@ export function LogStampForm({ commitmentId, hobbyName, defaultOpen = false }: P
           type="submit"
           disabled={submitting}
           size="sm"
-          className="bg-primary text-primary-foreground hover:bg-lumi-300 gap-1.5"
+          className="bg-primary text-primary-foreground hover:opacity-90 gap-1.5"
         >
           <Stamp className="h-3.5 w-3.5" />
           {submitting ? 'Stamping…' : 'Stamp today'}

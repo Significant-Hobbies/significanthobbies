@@ -226,11 +226,11 @@ const MAKING: Hobby[] = [
 
 function HobbyCard({ hobby }: { hobby: Hobby }) {
   return (
-    <li className="flex gap-4 rounded-lg border border-border bg-card p-4 hover:border-lumi-500/30 transition-colors">
+    <li className="flex gap-4 rounded-lg border border-border bg-card p-4 hover:border-foreground/30 transition-colors">
       <div className="flex-1">
         <Link
           href={`/hobbies/${hobbySlug(hobby.name)}`}
-          className="font-semibold text-foreground hover:text-lumi-400 transition-colors"
+          className="font-semibold text-foreground hover:text-foreground transition-colors"
         >
           {hobby.name}
         </Link>
@@ -317,7 +317,7 @@ export default function HobbiesForAdultsPage() {
       </p>
 
       <Section title="Creative" hobbies={CREATIVE} color="text-purple-700" />
-      <Section title="Physical" hobbies={PHYSICAL} color="text-lumi-400" />
+      <Section title="Physical" hobbies={PHYSICAL} color="text-foreground" />
 
       <div className="my-8 rounded-xl bg-card/40 border border-border p-6">
         <p className="text-muted-foreground text-sm leading-relaxed">
@@ -330,9 +330,9 @@ export default function HobbiesForAdultsPage() {
       <Section title="Intellectual" hobbies={INTELLECTUAL} color="text-blue-700" />
       <Section title="Social" hobbies={SOCIAL} color="text-orange-700" />
       <Section title="Outdoor" hobbies={OUTDOOR} color="text-teal-700" />
-      <Section title="Making" hobbies={MAKING} color="text-lumi-400" />
+      <Section title="Making" hobbies={MAKING} color="text-foreground" />
 
-      <div className="mt-12 rounded-xl bg-lumi-500/10 border border-lumi-500/30 p-8 text-center">
+      <div className="mt-12 rounded-xl bg-foreground/10 border border-foreground/20 p-8 text-center">
         <h2 className="text-xl font-bold text-foreground mb-2">Not sure which fits you best?</h2>
         <p className="text-muted-foreground mb-4">
           Take our 2-minute quiz — answer a few questions about your personality and schedule, and
@@ -340,7 +340,7 @@ export default function HobbiesForAdultsPage() {
         </p>
         <Link
           href="/find-your-hobby"
-          className="inline-flex rounded-lg bg-primary px-6 py-2.5 text-sm font-semibold text-primary-foreground hover:bg-lumi-300 transition-colors"
+          className="inline-flex rounded-lg bg-primary px-6 py-2.5 text-sm font-semibold text-primary-foreground hover:opacity-90 transition-colors"
         >
           Take the Quiz →
         </Link>

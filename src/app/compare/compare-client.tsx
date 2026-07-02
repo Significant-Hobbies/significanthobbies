@@ -16,8 +16,8 @@ function toSlug(name: string) {
 
 function CostBadge({ cost }: { cost: HobbyDetail['cost'] }) {
   const map: Record<HobbyDetail['cost'], { label: string; className: string }> = {
-    free: { label: 'Free', className: 'bg-lumi-500/15 text-lumi-400 border-lumi-500/30' },
-    low: { label: 'Low ($)', className: 'bg-lumi-500/15 text-lumi-400 border-lumi-500/30' },
+    free: { label: 'Free', className: 'bg-foreground/10 text-foreground border-foreground/20' },
+    low: { label: 'Low ($)', className: 'bg-foreground/10 text-foreground border-foreground/20' },
     medium: { label: 'Medium ($$)', className: 'bg-orange-100 text-orange-700 border-orange-200' },
     high: {
       label: 'High ($$$)',
@@ -42,7 +42,7 @@ function DifficultyDots({ level }: { level: HobbyDetail['difficulty'] }) {
         <span
           key={i}
           className={`inline-block h-2.5 w-2.5 rounded-full border ${
-            i <= filled ? 'border-lumi-500/60 bg-lumi-500/100' : 'border-border bg-transparent'
+            i <= filled ? 'border-foreground/30 bg-foreground' : 'border-border bg-transparent'
           }`}
         />
       ))}
@@ -62,7 +62,7 @@ function PhysicalBar({ level }: { level: HobbyDetail['physical'] }) {
     <span className="flex items-center gap-2">
       <span className="relative h-2 w-24 overflow-hidden rounded-full bg-foreground/10">
         <span
-          className={`absolute left-0 top-0 h-full rounded-full bg-lumi-500/100 transition-all ${widthMap[level]}`}
+          className={`absolute left-0 top-0 h-full rounded-full bg-foreground transition-all ${widthMap[level]}`}
         />
       </span>
       <span className="text-muted-foreground capitalize">{level === 'none' ? 'None' : level}</span>
@@ -153,7 +153,7 @@ function HobbyCombobox({ label, value, onChange, exclude }: HobbyComboboxProps) 
       </p>
 
       {value ? (
-        <div className="flex items-center justify-between rounded-xl border border-lumi-500/40 bg-card px-4 py-3">
+        <div className="flex items-center justify-between rounded-xl border border-foreground/30 bg-card px-4 py-3">
           <span className="font-medium text-foreground">
             {category?.emoji} {value}
           </span>
@@ -306,7 +306,7 @@ function ComparisonCard({ a, b }: { a: HobbyDetail; b: HobbyDetail }) {
         <div className="flex justify-end">
           <Link
             href={`/hobbies/${toSlug(a.name)}`}
-            className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-card px-3.5 py-2 text-sm font-medium text-foreground hover:border-lumi-500/50 hover:text-lumi-400 transition-colors"
+            className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-card px-3.5 py-2 text-sm font-medium text-foreground hover:border-foreground/30 hover:text-foreground transition-colors"
           >
             {a.name} detail
             <ArrowRight className="h-3.5 w-3.5" />
@@ -315,7 +315,7 @@ function ComparisonCard({ a, b }: { a: HobbyDetail; b: HobbyDetail }) {
         <div className="flex items-center justify-center">
           <Link
             href="/timeline/new"
-            className="rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:bg-lumi-300 transition-colors"
+            className="rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:opacity-90 transition-colors"
           >
             Try both
           </Link>
@@ -323,7 +323,7 @@ function ComparisonCard({ a, b }: { a: HobbyDetail; b: HobbyDetail }) {
         <div className="flex justify-start">
           <Link
             href={`/hobbies/${toSlug(b.name)}`}
-            className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-card px-3.5 py-2 text-sm font-medium text-foreground hover:border-lumi-500/50 hover:text-lumi-400 transition-colors"
+            className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-card px-3.5 py-2 text-sm font-medium text-foreground hover:border-foreground/30 hover:text-foreground transition-colors"
           >
             {b.name} detail
             <ArrowRight className="h-3.5 w-3.5" />
@@ -401,7 +401,7 @@ export function CompareClient() {
                   setHobbyA(a);
                   setHobbyB(b);
                 }}
-                className="rounded-full border border-border bg-card px-3.5 py-1.5 text-sm text-muted-foreground hover:border-lumi-500/50 hover:text-lumi-400 transition-colors"
+                className="rounded-full border border-border bg-card px-3.5 py-1.5 text-sm text-muted-foreground hover:border-foreground/30 hover:text-foreground transition-colors"
               >
                 {a} vs {b}
               </button>

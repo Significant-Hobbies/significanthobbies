@@ -50,7 +50,7 @@ export function StartCommitmentForm({ suggestions = [], weeksRemaining }: Props)
     return (
       <Button
         onClick={() => setOpen(true)}
-        className="bg-primary text-primary-foreground hover:bg-lumi-300 gap-1.5"
+        className="bg-primary text-primary-foreground hover:opacity-90 gap-1.5"
       >
         <Flame className="h-4 w-4" />
         Start a commitment

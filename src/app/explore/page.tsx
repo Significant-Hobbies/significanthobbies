@@ -121,7 +121,7 @@ export default async function ExplorePage() {
                 key={name}
                 href={`/hobbies/${encodeURIComponent(name.toLowerCase().replace(/\s+/g, '-'))}`}
                 prefetch={false}
-                className="inline-flex items-center gap-1 rounded-full border border-border bg-card/40 px-3 py-1 text-xs text-muted-foreground hover:border-lumi-500/50 hover:text-lumi-400 transition-colors"
+                className="inline-flex items-center gap-1 rounded-full border border-border bg-card/40 px-3 py-1 text-xs text-muted-foreground hover:border-foreground/30 hover:text-foreground transition-colors"
               >
                 <span>{emoji}</span>
                 <span>{name}</span>

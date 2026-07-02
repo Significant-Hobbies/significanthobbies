@@ -26,10 +26,10 @@ export function TimelineCard({ timeline, showVisibility = false, likeCount }: Pr
 
   return (
     <Link href={getTimelineUrl(timeline)}>
-      <div className="group rounded-xl border border-border bg-card p-5 transition-colors hover:border-lumi-500/50 hover:bg-card/40">
+      <div className="group rounded-xl border border-border bg-card p-5 transition-colors hover:border-foreground/30 hover:bg-card/40">
         {/* Title row */}
         <div className="mb-3 flex items-start justify-between gap-2">
-          <h3 className="font-medium text-foreground group-hover:text-lumi-400 transition-colors leading-tight">
+          <h3 className="font-medium text-foreground group-hover:text-foreground transition-colors leading-tight">
             {timeline.title ?? 'Hobby Timeline'}
           </h3>
           {showVisibility && (

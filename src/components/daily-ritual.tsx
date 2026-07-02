@@ -80,7 +80,7 @@ export function DailyRitual({
   const router = useRouter();
 
   const greeting = isMorning ? `Good morning, ${firstName}.` : `Good evening, ${firstName}.`;
-  const prompt = isMorning ? 'What are you doing today?' : 'What happened today?';
+  const prompt = isMorning ? 'What are you doing with this day?' : 'What did this day amount to?';
 
   function isHabitDone(habitId: string): boolean {
     return logs.some((l) => l.habitId === habitId && l.completed);
@@ -160,7 +160,11 @@ export function DailyRitual({
         <textarea
           value={isMorning ? amEntry : pmEntry}
           onChange={(e) => (isMorning ? setAmEntry(e.target.value) : setPmEntry(e.target.value))}
-          placeholder={isMorning ? 'Today I want to…' : 'Today I…'}
+          placeholder={
+            isMorning
+              ? 'The one thing that would make today worth living…'
+              : 'Be honest. What happened, and what did it mean?'
+          }
           className="w-full min-h-[120px] rounded-lg border border-border bg-background px-4 py-3 text-sm text-foreground leading-relaxed focus:border-foreground/40 focus:outline-none focus:ring-1 focus:ring-foreground/40 resize-none"
         />
       </div>

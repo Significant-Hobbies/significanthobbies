@@ -130,7 +130,7 @@ export function CommentsSectionWithOwn({
             onChange={(e) => setBody(e.target.value.slice(0, 280))}
             placeholder="Share your thoughts..."
             rows={3}
-            className="w-full resize-none rounded-lg border border-border bg-card/40 px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground/60 focus:border-lumi-500/50 focus:bg-card focus:outline-none focus:ring-1 focus:ring-lumi-500/80 transition-colors"
+            className="w-full resize-none rounded-lg border border-border bg-card/40 px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground/60 focus:border-foreground/30 focus:bg-card focus:outline-none focus:ring-1 focus:ring-foreground/30 transition-colors"
           />
           <div className="mt-1.5 flex items-center justify-between">
             <span
@@ -144,7 +144,7 @@ export function CommentsSectionWithOwn({
             <button
               onClick={handlePost}
               disabled={isPosting || !body.trim()}
-              className="rounded-lg bg-primary px-4 py-1.5 text-sm font-medium text-primary-foreground transition-colors hover:bg-lumi-300 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="rounded-lg bg-primary px-4 py-1.5 text-sm font-medium text-primary-foreground transition-colors hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isPosting ? 'Posting...' : 'Post'}
             </button>
@@ -152,7 +152,7 @@ export function CommentsSectionWithOwn({
         </div>
       ) : (
         <div className="mb-6 rounded-lg border border-border bg-card/40 px-4 py-3 text-sm text-muted-foreground">
-          <Link href="/api/auth/signin" className="text-lumi-400 hover:underline font-medium">
+          <Link href="/api/auth/signin" className="text-foreground hover:underline font-medium">
             Sign in
           </Link>{' '}
           to join the conversation

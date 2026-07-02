@@ -21,9 +21,9 @@ import {
 
 const CATEGORY_COLORS: Record<QuestCategory, { border: string; bg: string; text: string }> = {
   sensory: {
-    border: 'border-lumi-500/30',
-    bg: 'bg-lumi-500/10',
-    text: 'text-lumi-400',
+    border: 'border-foreground/20',
+    bg: 'bg-foreground/10',
+    text: 'text-foreground',
   },
   creative: {
     border: 'border-purple-200',
@@ -33,7 +33,7 @@ const CATEGORY_COLORS: Record<QuestCategory, { border: string; bg: string; text:
   culinary: {
     border: 'border-amber-400/30',
     bg: 'bg-amber-400/10',
-    text: 'text-lumi-400',
+    text: 'text-foreground',
   },
   social: {
     border: 'border-blue-200',
@@ -163,14 +163,14 @@ function QuestCard({
             className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card/40 px-5 py-2.5 text-sm font-medium text-muted-foreground transition-all hover:border-border hover:bg-foreground/5"
           >
             Completed
-            <span className="text-lumi-400">&#10003;</span>
+            <span className="text-foreground">&#10003;</span>
             <span className="ml-1 text-xs text-muted-foreground/60">(undo)</span>
           </button>
         ) : (
           <button
             type="button"
             onClick={() => onComplete(quest.id)}
-            className="inline-flex items-center gap-1.5 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow-sm transition-all hover:-translate-y-0.5 hover:bg-lumi-300 hover:shadow-md"
+            className="inline-flex items-center gap-1.5 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow-sm transition-all hover:-translate-y-0.5 hover:opacity-90 hover:shadow-md"
           >
             Mark Complete &#10003;
           </button>
@@ -180,7 +180,7 @@ function QuestCard({
           <button
             type="button"
             onClick={onRollAgain}
-            className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-5 py-2.5 text-sm font-medium text-foreground transition-all hover:border-lumi-500/40 hover:text-lumi-400"
+            className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-5 py-2.5 text-sm font-medium text-foreground transition-all hover:border-foreground/30 hover:text-foreground"
           >
             {rollLabel ?? 'Roll Again'} &#127922;
           </button>
@@ -222,7 +222,7 @@ function FilterPills<T extends string>({
           className={`rounded-full px-3.5 py-1.5 text-sm font-medium transition-all ${
             selected === opt.value
               ? 'bg-primary text-primary-foreground shadow-sm'
-              : 'border border-border bg-card text-muted-foreground hover:border-lumi-500/40 hover:text-lumi-400'
+              : 'border border-border bg-card text-muted-foreground hover:border-foreground/30 hover:text-foreground'
           }`}
         >
           {opt.label}
@@ -244,7 +244,7 @@ function ProgressBar({ completed, total }: { completed: number; total: number })
       </div>
       <div className="h-3 w-full overflow-hidden rounded-full bg-foreground/5">
         <div
-          className="h-full rounded-full bg-lumi-500/100 transition-all duration-500"
+          className="h-full rounded-full bg-foreground transition-all duration-500"
           style={{ width: `${pct}%` }}
         />
       </div>
@@ -446,8 +446,8 @@ function SideQuestsInner() {
         </div>
 
         <div className="relative mx-auto max-w-5xl text-center">
-          <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-lumi-500/30 bg-lumi-500/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-widest text-lumi-400">
-            <span className="h-1.5 w-1.5 rounded-full bg-lumi-500/100" />
+          <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-foreground/20 bg-foreground/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-widest text-foreground">
+            <span className="h-1.5 w-1.5 rounded-full bg-foreground" />
             Side Quests
           </div>
 
@@ -463,7 +463,7 @@ function SideQuestsInner() {
             {[...Array(5)].map((_, i) => (
               <div
                 key={i}
-                className="h-1.5 w-1.5 rounded-full bg-lumi-500/60"
+                className="h-1.5 w-1.5 rounded-full bg-foreground/60"
                 style={{ opacity: 0.4 + i * 0.12 }}
               />
             ))}
@@ -481,13 +481,13 @@ function SideQuestsInner() {
               onClick={() => setActiveTab(tab.id)}
               className={`relative px-5 py-3.5 text-sm font-medium transition-all ${
                 activeTab === tab.id
-                  ? 'text-lumi-400'
+                  ? 'text-foreground'
                   : 'text-muted-foreground hover:text-foreground'
               }`}
             >
               <span>{tab.label}</span>
               {activeTab === tab.id && (
-                <span className="absolute inset-x-2 bottom-0 h-0.5 rounded-full bg-lumi-500/100" />
+                <span className="absolute inset-x-2 bottom-0 h-0.5 rounded-full bg-foreground" />
               )}
             </button>
           ))}
@@ -586,7 +586,10 @@ function SideQuestsInner() {
                   <p className="text-sm text-foreground">
                     <span className="mr-1">&#128190;</span> Save your progress — sign in to keep
                     your quests across devices.{' '}
-                    <Link href="/login" className="font-semibold text-lumi-400 hover:text-lumi-400">
+                    <Link
+                      href="/login"
+                      className="font-semibold text-foreground hover:text-foreground"
+                    >
                       Sign in
                     </Link>
                   </p>
@@ -625,7 +628,7 @@ function SideQuestsInner() {
                           <div
                             key={quest.id}
                             className={`rounded-xl border bg-card transition-all ${
-                              done ? 'border-lumi-500/30 bg-lumi-500/10/30' : 'border-border'
+                              done ? 'border-foreground/20 bg-foreground/10' : 'border-border'
                             }`}
                           >
                             <div className="flex items-start gap-3 p-4">
@@ -638,8 +641,8 @@ function SideQuestsInner() {
                                 }}
                                 className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded transition-all ${
                                   done
-                                    ? 'bg-lumi-500/100 text-primary-foreground'
-                                    : 'border-2 border-border hover:border-lumi-500/50'
+                                    ? 'bg-foreground text-primary-foreground'
+                                    : 'border-2 border-border hover:border-foreground/30'
                                 }`}
                                 aria-label={
                                   done ? `Uncomplete ${quest.title}` : `Complete ${quest.title}`
@@ -701,7 +704,7 @@ function SideQuestsInner() {
                                 </div>
                                 <Link
                                   href="/timeline/new"
-                                  className="mt-3 inline-flex items-center gap-1 text-xs font-semibold text-lumi-400 hover:text-lumi-400"
+                                  className="mt-3 inline-flex items-center gap-1 text-xs font-semibold text-foreground hover:text-foreground"
                                 >
                                   Add to timeline
                                   <span>&#8594;</span>

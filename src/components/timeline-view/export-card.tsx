@@ -39,7 +39,7 @@ export function ExportCard({ timeline, exportRef }: Props) {
       <div className="relative mb-6">
         <div className="flex items-start justify-between">
           <div>
-            <p className="text-xs font-medium uppercase tracking-widest text-lumi-400 mb-1">
+            <p className="text-xs font-medium uppercase tracking-widest text-foreground mb-1">
               significanthobbies
             </p>
             <h1 className="text-2xl font-bold text-slate-100">
@@ -50,7 +50,7 @@ export function ExportCard({ timeline, exportRef }: Props) {
             )}
           </div>
           <div className="text-right">
-            <div className="text-3xl font-black text-lumi-400">{totalHobbies}</div>
+            <div className="text-3xl font-black text-foreground">{totalHobbies}</div>
             <div className="text-xs text-slate-500">hobbies</div>
           </div>
         </div>
@@ -102,7 +102,7 @@ export function ExportCard({ timeline, exportRef }: Props) {
         <div className="mb-6 rounded-lg bg-slate-800/40 border border-slate-700/50 px-4 py-3">
           <div className="flex items-center gap-2 mb-1">
             <span className="text-xl leading-none">{personality.archetype.emoji}</span>
-            <span className="font-bold text-lumi-400">{personality.archetype.name}</span>
+            <span className="font-bold text-foreground">{personality.archetype.name}</span>
           </div>
           <p className="text-xs text-slate-400 leading-relaxed">{personality.narrative}</p>
         </div>

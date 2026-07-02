@@ -391,11 +391,11 @@ const REGION_STYLES: Record<
     dot: 'bg-destructive/80',
   },
   emerald: {
-    bg: 'bg-lumi-500/10',
-    border: 'border-lumi-500/30',
-    text: 'text-lumi-400',
-    badge: 'bg-lumi-500/15 text-lumi-400 border-lumi-500/30',
-    dot: 'bg-lumi-400',
+    bg: 'bg-foreground/10',
+    border: 'border-foreground/20',
+    text: 'text-foreground',
+    badge: 'bg-foreground/10 text-foreground border-foreground/20',
+    dot: 'bg-foreground',
   },
   coral: {
     bg: 'bg-[#fff0ec]',

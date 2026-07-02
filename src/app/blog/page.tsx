@@ -11,10 +11,10 @@ export const metadata: Metadata = {
 };
 
 const CATEGORY_COLORS: Record<string, { bg: string; text: string; border: string }> = {
-  Wellbeing: { bg: 'bg-lumi-500/10', text: 'text-lumi-400', border: 'border-lumi-500/30' },
+  Wellbeing: { bg: 'bg-foreground/10', text: 'text-foreground', border: 'border-foreground/20' },
   'Getting Started': {
     bg: 'bg-amber-400/10',
-    text: 'text-lumi-400',
+    text: 'text-foreground',
     border: 'border-amber-400/30',
   },
   Psychology: { bg: 'bg-violet-50', text: 'text-violet-700', border: 'border-violet-200' },
@@ -38,7 +38,7 @@ function PostCard({ post, featured = false }: { post: BlogPost; featured?: boole
   return (
     <Link href={`/blog/${post.slug}`} className="group block h-full">
       <div
-        className={`relative flex h-full overflow-hidden border border-border bg-card shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-lumi-500/40 ${
+        className={`relative flex h-full overflow-hidden border border-border bg-card shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-foreground/30 ${
           featured
             ? 'flex-col gap-6 rounded-3xl p-8 hover:shadow-[0_12px_40px_rgba(16,185,129,0.12)] sm:flex-row sm:items-center sm:gap-12 sm:p-10'
             : 'flex-col rounded-2xl hover:shadow-[0_8px_32px_rgba(16,185,129,0.10)]'
@@ -46,7 +46,7 @@ function PostCard({ post, featured = false }: { post: BlogPost; featured?: boole
       >
         {/* Top accent */}
         <div
-          className={`absolute inset-x-0 top-0 origin-left scale-x-0 bg-gradient-to-r from-lumi-400 to-lumi-500/60 transition-transform duration-300 group-hover:scale-x-100 ${
+          className={`absolute inset-x-0 top-0 origin-left scale-x-0 bg-gradient-to-r from-foreground to-foreground/60 transition-transform duration-300 group-hover:scale-x-100 ${
             featured ? 'h-1 rounded-t-3xl' : 'h-0.5'
           }`}
         />
@@ -77,11 +77,11 @@ function PostCard({ post, featured = false }: { post: BlogPost; featured?: boole
 
           {/* Title */}
           {featured ? (
-            <h2 className="mb-3 text-2xl font-bold leading-snug text-foreground transition-colors group-hover:text-lumi-400 sm:text-3xl">
+            <h2 className="mb-3 text-2xl font-bold leading-snug text-foreground transition-colors group-hover:text-foreground sm:text-3xl">
               {post.title}
             </h2>
           ) : (
-            <h3 className="mb-2 text-lg font-bold leading-snug text-foreground transition-colors group-hover:text-lumi-400">
+            <h3 className="mb-2 text-lg font-bold leading-snug text-foreground transition-colors group-hover:text-foreground">
               {post.title}
             </h3>
           )}
@@ -97,7 +97,7 @@ function PostCard({ post, featured = false }: { post: BlogPost; featured?: boole
 
           {/* Footer */}
           {featured ? (
-            <div className="mt-5 inline-flex items-center gap-1 text-sm font-semibold text-lumi-400 transition-all duration-200 group-hover:gap-2">
+            <div className="mt-5 inline-flex items-center gap-1 text-sm font-semibold text-foreground transition-all duration-200 group-hover:gap-2">
               Read article
               <span className="transition-transform duration-200 group-hover:translate-x-0.5">
                 →
@@ -106,7 +106,7 @@ function PostCard({ post, featured = false }: { post: BlogPost; featured?: boole
           ) : (
             <div className="mt-4 flex items-center justify-between border-t border-border pt-4">
               <span className="text-xs text-muted-foreground/60">{post.readTime} min read</span>
-              <span className="text-xs font-semibold text-lumi-400 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
+              <span className="text-xs font-semibold text-foreground opacity-0 transition-opacity duration-200 group-hover:opacity-100">
                 Read →
               </span>
             </div>
@@ -154,8 +154,8 @@ export default function BlogPage() {
         </div>
 
         <div className="relative mx-auto max-w-5xl text-center">
-          <div className="scroll-reveal mb-5 inline-flex items-center gap-2 rounded-full border border-lumi-500/30 bg-lumi-500/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-widest text-lumi-400">
-            <span className="h-1.5 w-1.5 rounded-full bg-lumi-500/100" />
+          <div className="scroll-reveal mb-5 inline-flex items-center gap-2 rounded-full border border-foreground/20 bg-foreground/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-widest text-foreground">
+            <span className="h-1.5 w-1.5 rounded-full bg-foreground" />
             The Hobby Journal
           </div>
 
@@ -172,7 +172,7 @@ export default function BlogPage() {
             {[...Array(5)].map((_, i) => (
               <div
                 key={i}
-                className="h-1.5 w-1.5 rounded-full bg-lumi-500/60"
+                className="h-1.5 w-1.5 rounded-full bg-foreground/60"
                 style={{ opacity: 0.4 + i * 0.12 }}
               />
             ))}
@@ -233,7 +233,7 @@ export default function BlogPage() {
           <p className="mb-3 text-sm text-muted-foreground">Ready to map your own hobby story?</p>
           <Link
             href="/timeline/new"
-            className="inline-flex items-center gap-1.5 rounded-full bg-primary px-6 py-2.5 text-sm font-semibold text-primary-foreground shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:bg-lumi-300 hover:shadow-md"
+            className="inline-flex items-center gap-1.5 rounded-full bg-primary px-6 py-2.5 text-sm font-semibold text-primary-foreground shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:opacity-90 hover:shadow-md"
           >
             Build your timeline
             <span>→</span>

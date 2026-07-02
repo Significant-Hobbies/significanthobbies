@@ -58,7 +58,7 @@ export function FollowButton({
             ? showUnfollow
               ? 'border border-destructive/40 bg-destructive/10 text-destructive hover:bg-destructive/15'
               : 'border border-border bg-card text-foreground hover:border-border'
-            : 'bg-primary text-primary-foreground hover:bg-lumi-300 border border-lumi-600',
+            : 'bg-primary text-primary-foreground hover:opacity-90 border border-foreground/40',
         ].join(' ')}
       >
         {following ? (showUnfollow ? 'Unfollow' : 'Following') : 'Follow'}

@@ -38,7 +38,7 @@ function getStalenessInfo(updatedAt: Date): {
     return { label: `${daysSince}d ago`, colorClass: 'text-growth', isStale: false };
   }
   if (daysSince < 30) {
-    return { label: `${daysSince}d ago`, colorClass: 'text-lumi-400', isStale: false };
+    return { label: `${daysSince}d ago`, colorClass: 'text-foreground', isStale: false };
   }
   return { label: `${daysSince}d ago`, colorClass: 'text-destructive', isStale: true };
 }

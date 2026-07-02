@@ -81,7 +81,6 @@ export const users = sqliteTable('User', {
   image: text('image'),
   username: text('username').unique(),
   birthYear: integer('birthYear'),
-  dob: text('dob'),
   bio: text('bio'),
   website: text('website'),
   completedQuests: text('completedQuests').notNull().default('[]'),

@@ -73,21 +73,21 @@ function TemplatePicker({ onPick }: { onPick: (template: TimelineTemplate) => vo
             key={template.id}
             type="button"
             onClick={() => onPick(template)}
-            className="group rounded-xl border border-border bg-card p-5 text-left transition-all hover:border-lumi-500/50 hover:bg-lumi-500/10 hover:shadow-sm focus:outline-none focus:ring-2 focus:ring-lumi-500 focus:ring-offset-2"
+            className="group rounded-xl border border-border bg-card p-5 text-left transition-all hover:border-foreground/30 hover:bg-foreground/10 hover:shadow-sm focus:outline-none focus:ring-2 focus:ring-foreground focus:ring-offset-2"
           >
             <div className="mb-3 text-3xl">{template.emoji}</div>
-            <h3 className="mb-1 text-sm font-semibold text-foreground group-hover:text-lumi-400 transition-colors leading-tight">
+            <h3 className="mb-1 text-sm font-semibold text-foreground group-hover:text-foreground transition-colors leading-tight">
               {template.name}
             </h3>
             <p className="mb-3 text-xs text-muted-foreground leading-snug">
               {template.description}
             </p>
             {template.phases.length > 0 ? (
-              <span className="inline-flex items-center rounded-full bg-foreground/5 px-2 py-0.5 text-xs text-muted-foreground group-hover:bg-lumi-500/15 group-hover:text-lumi-400 transition-colors">
+              <span className="inline-flex items-center rounded-full bg-foreground/5 px-2 py-0.5 text-xs text-muted-foreground group-hover:bg-foreground/10 group-hover:text-foreground transition-colors">
                 {template.phases.length} phases
               </span>
             ) : (
-              <span className="inline-flex items-center rounded-full bg-foreground/5 px-2 py-0.5 text-xs text-muted-foreground/60 group-hover:bg-lumi-500/15 group-hover:text-lumi-400 transition-colors">
+              <span className="inline-flex items-center rounded-full bg-foreground/5 px-2 py-0.5 text-xs text-muted-foreground/60 group-hover:bg-foreground/10 group-hover:text-foreground transition-colors">
                 empty
               </span>
             )}
@@ -245,7 +245,7 @@ export function TimelineBuilder({ existing }: Props) {
       <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5">
         <span
           className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
-            allEmpty ? 'bg-foreground/5 text-muted-foreground' : 'bg-lumi-500/15 text-lumi-400'
+            allEmpty ? 'bg-foreground/5 text-muted-foreground' : 'bg-foreground/10 text-foreground'
           }`}
         >
           {phasesWithHobbies}/{totalPhases} phases have hobbies
@@ -309,7 +309,7 @@ export function TimelineBuilder({ existing }: Props) {
         <Button
           onClick={handleSave}
           disabled={isPending}
-          className="bg-primary px-6 text-primary-foreground hover:bg-lumi-300"
+          className="bg-primary px-6 text-primary-foreground hover:opacity-90"
         >
           {isPending ? (
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />

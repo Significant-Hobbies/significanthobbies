@@ -10,7 +10,7 @@ interface Props {
 const CATEGORY_COLORS: Record<string, string> = {
   Creative: 'bg-pink-400',
   Music: 'bg-violet-400',
-  Physical: 'bg-lumi-500/100',
+  Physical: 'bg-foreground',
   Intellectual: 'bg-blue-500',
   Gaming: 'bg-indigo-400',
   Outdoor: 'bg-green-400',
@@ -27,7 +27,7 @@ function TraitBar({ label, value }: { label: string; value: number }) {
     <div className="flex items-center gap-2">
       <span className="w-20 shrink-0 text-xs text-muted-foreground">{label}</span>
       <div className="flex-1 h-1.5 rounded-full bg-foreground/5 overflow-hidden">
-        <div className="h-full rounded-full bg-lumi-400" style={{ width: `${pct}%` }} />
+        <div className="h-full rounded-full bg-foreground" style={{ width: `${pct}%` }} />
       </div>
       <span className="w-7 text-right text-xs text-muted-foreground/60">{pct}%</span>
     </div>
@@ -57,7 +57,7 @@ export function PersonalityCard({ phases }: Props) {
       </div>
 
       {/* Narrative */}
-      <blockquote className="border-l-2 border-lumi-500/50 pl-3 text-sm italic text-muted-foreground">
+      <blockquote className="border-l-2 border-foreground/40 pl-3 text-sm italic text-muted-foreground">
         {narrative}
       </blockquote>
 

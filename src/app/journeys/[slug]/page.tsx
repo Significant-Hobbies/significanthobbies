@@ -29,10 +29,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 // Phase color palette — cycling through visually distinct hues
 const PHASE_COLORS = [
   {
-    bg: 'bg-lumi-500/10',
-    border: 'border-lumi-500/40',
-    label: 'text-lumi-400',
-    pill: 'bg-lumi-500/15 text-lumi-600',
+    bg: 'bg-foreground/10',
+    border: 'border-foreground/30',
+    label: 'text-foreground',
+    pill: 'bg-foreground/10 text-foreground',
   },
   {
     bg: 'bg-blue-50',
@@ -49,7 +49,7 @@ const PHASE_COLORS = [
   {
     bg: 'bg-amber-400/10',
     border: 'border-amber-400/40',
-    label: 'text-lumi-400',
+    label: 'text-foreground',
     pill: 'bg-amber-400/15 text-amber-300',
   },
   {
@@ -128,7 +128,7 @@ export default async function JourneyDetailPage({ params }: Props) {
                 {person.name}&apos;s Hobby Journey
               </h1>
               <p className="mt-1 text-muted-foreground/60 text-sm">{person.born}</p>
-              <span className="mt-3 inline-block rounded-full border border-lumi-500/30 bg-lumi-500/10 px-3 py-1 text-xs font-semibold text-lumi-400">
+              <span className="mt-3 inline-block rounded-full border border-foreground/20 bg-foreground/10 px-3 py-1 text-xs font-semibold text-foreground">
                 {person.knownFor}
               </span>
             </div>
@@ -174,7 +174,7 @@ export default async function JourneyDetailPage({ params }: Props) {
             <ul className="space-y-3">
               {person.surprisingHobbies.map((item) => (
                 <li key={item} className="flex items-start gap-3">
-                  <span className="mt-0.5 flex-shrink-0 text-lumi-400">✦</span>
+                  <span className="mt-0.5 flex-shrink-0 text-foreground">✦</span>
                   <span className="text-sm text-muted-foreground">{item}</span>
                 </li>
               ))}
@@ -187,7 +187,7 @@ export default async function JourneyDetailPage({ params }: Props) {
           <h2 className="mb-4 text-lg font-bold text-foreground">
             How hobbies shaped their career
           </h2>
-          <div className="rounded-xl border border-lumi-500/30 bg-lumi-500/10 p-5">
+          <div className="rounded-xl border border-foreground/20 bg-foreground/10 p-5">
             <p className="text-sm leading-relaxed text-foreground">{person.hobbyInfluence}</p>
           </div>
         </div>
@@ -195,7 +195,7 @@ export default async function JourneyDetailPage({ params }: Props) {
         {/* Quote */}
         {person.quote && (
           <div className="scroll-reveal mb-10">
-            <blockquote className="border-l-4 border-lumi-500/50 pl-5">
+            <blockquote className="border-l-4 border-foreground/30 pl-5">
               <p className="text-base italic leading-relaxed text-muted-foreground">
                 &ldquo;{person.quote.text}&rdquo;
               </p>
@@ -220,14 +220,14 @@ export default async function JourneyDetailPage({ params }: Props) {
             {prevPerson ? (
               <Link
                 href={`/journeys/${prevPerson.slug}`}
-                className="group flex items-center gap-3 rounded-xl border border-border bg-card p-4 transition-all hover:-translate-y-0.5 hover:border-lumi-500/40 hover:shadow-sm"
+                className="group flex items-center gap-3 rounded-xl border border-border bg-card p-4 transition-all hover:-translate-y-0.5 hover:border-foreground/30 hover:shadow-sm"
               >
                 <span className="text-2xl">{prevPerson.emoji}</span>
                 <div className="min-w-0 flex-1">
                   <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/60">
                     ← Previous journey
                   </p>
-                  <p className="truncate text-sm font-semibold text-foreground group-hover:text-lumi-400">
+                  <p className="truncate text-sm font-semibold text-foreground group-hover:text-foreground">
                     {prevPerson.name}
                   </p>
                 </div>
@@ -238,14 +238,14 @@ export default async function JourneyDetailPage({ params }: Props) {
             {nextPerson ? (
               <Link
                 href={`/journeys/${nextPerson.slug}`}
-                className="group flex items-center gap-3 rounded-xl border border-border bg-card p-4 text-right transition-all hover:-translate-y-0.5 hover:border-lumi-500/40 hover:shadow-sm sm:flex-row-reverse sm:text-right"
+                className="group flex items-center gap-3 rounded-xl border border-border bg-card p-4 text-right transition-all hover:-translate-y-0.5 hover:border-foreground/30 hover:shadow-sm sm:flex-row-reverse sm:text-right"
               >
                 <span className="text-2xl">{nextPerson.emoji}</span>
                 <div className="min-w-0 flex-1">
                   <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/60">
                     Next journey →
                   </p>
-                  <p className="truncate text-sm font-semibold text-foreground group-hover:text-lumi-400">
+                  <p className="truncate text-sm font-semibold text-foreground group-hover:text-foreground">
                     {nextPerson.name}
                   </p>
                 </div>
@@ -257,14 +257,14 @@ export default async function JourneyDetailPage({ params }: Props) {
         )}
 
         {/* CTA */}
-        <div className="scroll-reveal rounded-xl border border-border bg-lumi-500/10 p-6 text-center">
+        <div className="scroll-reveal rounded-xl border border-border bg-foreground/10 p-6 text-center">
           <h2 className="mb-2 text-base font-bold text-foreground">Map your own hobby journey</h2>
           <p className="mb-4 text-sm text-muted-foreground">
             What hobbies have shaped your life? Create your own timeline.
           </p>
           <Link
             href="/timeline/new"
-            className="inline-flex items-center gap-1.5 rounded-full bg-primary px-6 py-2.5 text-sm font-semibold text-primary-foreground shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:bg-lumi-300 hover:shadow-md"
+            className="inline-flex items-center gap-1.5 rounded-full bg-primary px-6 py-2.5 text-sm font-semibold text-primary-foreground shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:opacity-90 hover:shadow-md"
           >
             Start your timeline →
           </Link>

@@ -98,7 +98,7 @@ export default function HobbiesPage() {
               <div className="mb-4 flex items-center gap-2">
                 <span className="text-2xl">{category.emoji}</span>
                 <Link href={`/hobbies/category/${catSlug}`}>
-                  <h2 className="text-xl font-semibold text-foreground hover:text-lumi-400 transition-colors">
+                  <h2 className="text-xl font-semibold text-foreground hover:text-foreground transition-colors">
                     {category.name}
                   </h2>
                 </Link>
@@ -113,7 +113,7 @@ export default function HobbiesPage() {
                     href={`/hobbies/${encodeURIComponent(hobby.toLowerCase().replace(/\s+/g, '-'))}`}
                     title={`${category.emoji} ${category.name}`}
                   >
-                    <span className="inline-block rounded-full border border-border bg-card px-4 py-1.5 text-sm text-muted-foreground transition-colors hover:border-lumi-500/50 hover:text-lumi-400 cursor-pointer">
+                    <span className="inline-block rounded-full border border-border bg-card px-4 py-1.5 text-sm text-muted-foreground transition-colors hover:border-foreground/30 hover:text-foreground cursor-pointer">
                       {hobby}
                     </span>
                   </Link>
@@ -125,12 +125,15 @@ export default function HobbiesPage() {
       </div>
 
       {/* Famous Hobby Journeys link */}
-      <div className="mt-12 rounded-xl border border-border bg-lumi-500/10 p-6 text-center">
+      <div className="mt-12 rounded-xl border border-border bg-foreground/10 p-6 text-center">
         <h2 className="text-lg font-bold text-foreground mb-2">Famous Hobby Journeys</h2>
         <p className="text-sm text-muted-foreground mb-4">
           See how remarkable people&apos;s hobbies shaped who they became.
         </p>
-        <Link href="/journeys" className="text-sm font-semibold text-lumi-400 hover:text-lumi-400">
+        <Link
+          href="/journeys"
+          className="text-sm font-semibold text-foreground hover:text-foreground"
+        >
           Explore journeys →
         </Link>
       </div>

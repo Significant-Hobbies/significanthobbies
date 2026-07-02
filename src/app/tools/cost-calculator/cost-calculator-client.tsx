@@ -122,7 +122,7 @@ export default function CostCalculatorClient() {
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-10">
-      <div className="mb-2 inline-flex items-center gap-2 rounded-full border border-lumi-500/30 bg-lumi-500/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-lumi-400">
+      <div className="mb-2 inline-flex items-center gap-2 rounded-full border border-foreground/20 bg-foreground/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-foreground">
         Free tool
       </div>
       <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
@@ -140,7 +140,7 @@ export default function CostCalculatorClient() {
             key={name}
             type="button"
             onClick={() => loadPreset(name)}
-            className="rounded-full border border-border bg-card px-3 py-1 font-medium text-foreground hover:border-lumi-500/40 hover:bg-lumi-500/10"
+            className="rounded-full border border-border bg-card px-3 py-1 font-medium text-foreground hover:border-foreground/30 hover:bg-foreground/10"
           >
             {name}
           </button>
@@ -154,7 +154,7 @@ export default function CostCalculatorClient() {
         <input
           value={hobbyName}
           onChange={(e) => setHobbyName(e.target.value)}
-          className="mt-1 w-full rounded-lg border border-border px-3 py-2 text-base focus:border-lumi-500/50 focus:outline-none"
+          className="mt-1 w-full rounded-lg border border-border px-3 py-2 text-base focus:border-foreground/30 focus:outline-none"
           placeholder="e.g. Watercolor painting"
         />
 
@@ -205,7 +205,7 @@ export default function CostCalculatorClient() {
         <button
           type="button"
           onClick={addItem}
-          className="mt-3 text-sm font-semibold text-lumi-400 hover:text-lumi-400"
+          className="mt-3 text-sm font-semibold text-foreground hover:text-foreground"
         >
           + Add line item
         </button>
@@ -249,7 +249,7 @@ function Stat({
   return (
     <div
       className={`rounded-xl border p-4 ${
-        emphasize ? 'border-lumi-500/40 bg-lumi-500/10' : 'border-border bg-card'
+        emphasize ? 'border-foreground/30 bg-foreground/10' : 'border-border bg-card'
       }`}
     >
       <div className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
@@ -257,7 +257,7 @@ function Stat({
       </div>
       <div
         className={`mt-1 text-2xl font-bold tabular-nums ${
-          emphasize ? 'text-lumi-400' : 'text-foreground'
+          emphasize ? 'text-foreground' : 'text-foreground'
         }`}
       >
         {value}

@@ -193,7 +193,7 @@ export function BucketListSection({ initialItems }: Props) {
                 {inProgress > 0 && (
                   <>
                     {' · '}
-                    <span className="font-semibold text-lumi-400">{inProgress}</span> in progress
+                    <span className="font-semibold text-foreground">{inProgress}</span> in progress
                   </>
                 )}
                 {publicCount > 0 && (
@@ -448,7 +448,7 @@ export function BucketListSection({ initialItems }: Props) {
                     </span>
                   )}
                   {isInProgress && (
-                    <span className="text-lumi-400 text-[10px] font-bold leading-none">●</span>
+                    <span className="text-foreground text-[10px] font-bold leading-none">●</span>
                   )}
                 </button>
 

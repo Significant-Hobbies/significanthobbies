@@ -77,7 +77,7 @@ export function CompareJourneysClient({ userA, userB, paramA, paramB }: Props) {
           />
           <Button
             type="submit"
-            className="bg-primary text-primary-foreground hover:bg-lumi-300 shrink-0"
+            className="bg-primary text-primary-foreground hover:opacity-90 shrink-0"
             disabled={!inputA.trim() || !inputB.trim()}
           >
             Compare
@@ -180,7 +180,7 @@ export function CompareJourneysClient({ userA, userB, paramA, paramB }: Props) {
       {/* Header */}
       <div className="flex items-center justify-between flex-wrap gap-4">
         <h2 className="text-2xl font-bold text-foreground">
-          <span className="text-lumi-400">@{userA?.username}</span>
+          <span className="text-foreground">@{userA?.username}</span>
           <span className="mx-3 text-muted-foreground/60">vs</span>
           <span className="text-foreground">@{userB?.username}</span>
         </h2>
@@ -222,18 +222,20 @@ export function CompareJourneysClient({ userA, userB, paramA, paramB }: Props) {
           </div>
 
           {/* Shared — highlighted */}
-          <div className="rounded-xl border border-lumi-500/40 bg-lumi-500/10 p-4 shadow-sm">
-            <p className="mb-3 text-xs font-semibold uppercase tracking-wide text-lumi-400 text-center">
+          <div className="rounded-xl border border-foreground/30 bg-foreground/10 p-4 shadow-sm">
+            <p className="mb-3 text-xs font-semibold uppercase tracking-wide text-foreground text-center">
               Shared ({shared.length})
             </p>
             {shared.length === 0 ? (
-              <p className="text-center text-xs text-lumi-400/60 py-4">No shared hobbies yet</p>
+              <p className="text-center text-xs text-muted-foreground/60 py-4">
+                No shared hobbies yet
+              </p>
             ) : (
               <div className="flex flex-wrap gap-1.5 justify-center">
                 {shared.map((h) => (
                   <span
                     key={h}
-                    className="inline-flex rounded-full border border-lumi-500/40 bg-card px-2.5 py-1 text-xs font-medium text-lumi-600"
+                    className="inline-flex rounded-full border border-foreground/30 bg-card px-2.5 py-1 text-xs font-medium text-foreground"
                   >
                     {h}
                   </span>
@@ -268,7 +270,9 @@ export function CompareJourneysClient({ userA, userB, paramA, paramB }: Props) {
       {/* Stats comparison */}
       <div className="rounded-xl border border-border bg-card p-6">
         <div className="grid grid-cols-3 mb-3">
-          <div className="text-sm font-semibold text-lumi-400 text-center">@{userA?.username}</div>
+          <div className="text-sm font-semibold text-foreground text-center">
+            @{userA?.username}
+          </div>
           <div className="text-xs text-muted-foreground/60 text-center uppercase tracking-wide">
             Stat
           </div>
@@ -287,8 +291,8 @@ export function CompareJourneysClient({ userA, userB, paramA, paramB }: Props) {
       </div>
 
       {/* Combined personality */}
-      <div className="rounded-xl border border-lumi-500/30 bg-gradient-to-br from-lumi-500/10 to-card/40 p-6">
-        <h3 className="mb-1 text-sm font-medium uppercase tracking-wide text-lumi-400">
+      <div className="rounded-xl border border-foreground/20 bg-gradient-to-br from-foreground/10 to-card/40 p-6">
+        <h3 className="mb-1 text-sm font-medium uppercase tracking-wide text-foreground">
           Combined personality
         </h3>
         <p className="text-xs text-muted-foreground mb-4">

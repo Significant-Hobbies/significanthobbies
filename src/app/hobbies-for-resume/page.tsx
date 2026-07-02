@@ -106,9 +106,9 @@ const CATEGORIES: Category[] = [
     title: 'Discipline & Consistency',
     description:
       'These demonstrate the ability to commit, practice deliberately, and improve over time.',
-    color: 'text-lumi-400',
-    bgColor: 'bg-lumi-500/10',
-    borderColor: 'border-lumi-500/30',
+    color: 'text-foreground',
+    bgColor: 'bg-foreground/10',
+    borderColor: 'border-foreground/20',
     hobbies: [
       {
         name: 'Running',
@@ -324,12 +324,12 @@ export default function HobbiesForResumePage() {
               {cat.hobbies.map((hobby) => (
                 <li
                   key={hobby.name}
-                  className="flex gap-4 rounded-lg border border-border bg-card p-4 hover:border-lumi-500/30 transition-colors"
+                  className="flex gap-4 rounded-lg border border-border bg-card p-4 hover:border-foreground/30 transition-colors"
                 >
                   <div className="flex-1">
                     <Link
                       href={`/hobbies/${hobbySlug(hobby.name)}`}
-                      className="font-semibold text-foreground hover:text-lumi-400 transition-colors"
+                      className="font-semibold text-foreground hover:text-foreground transition-colors"
                     >
                       {hobby.name}
                     </Link>
@@ -345,7 +345,7 @@ export default function HobbiesForResumePage() {
         ))}
       </div>
 
-      <div className="mt-12 rounded-xl bg-lumi-500/10 border border-lumi-500/30 p-8 text-center">
+      <div className="mt-12 rounded-xl bg-foreground/10 border border-foreground/20 p-8 text-center">
         <h2 className="text-xl font-bold text-foreground mb-2">Build your hobby timeline</h2>
         <p className="text-muted-foreground mb-4">
           Track your hobbies over time — a visual record of the skills, communities, and experiences
@@ -353,7 +353,7 @@ export default function HobbiesForResumePage() {
         </p>
         <Link
           href="/timeline/new"
-          className="inline-flex rounded-lg bg-primary px-6 py-2.5 text-sm font-semibold text-primary-foreground hover:bg-lumi-300 transition-colors"
+          className="inline-flex rounded-lg bg-primary px-6 py-2.5 text-sm font-semibold text-primary-foreground hover:opacity-90 transition-colors"
         >
           Build your timeline →
         </Link>

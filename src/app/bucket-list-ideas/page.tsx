@@ -233,10 +233,10 @@ const CATEGORY_STYLES = {
   },
   rose: { bg: 'bg-rose-50', border: 'border-rose-200', text: 'text-rose-700', dot: 'bg-rose-400' },
   emerald: {
-    bg: 'bg-lumi-500/10',
-    border: 'border-lumi-500/30',
-    text: 'text-lumi-400',
-    dot: 'bg-lumi-400',
+    bg: 'bg-foreground/10',
+    border: 'border-foreground/20',
+    text: 'text-foreground',
+    dot: 'bg-foreground',
   },
 };
 

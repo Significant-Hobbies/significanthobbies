@@ -79,7 +79,7 @@ export function HobbyRoadmapCard({ roadmap }: { roadmap: HobbyRoadmap }) {
   const allDone = doneCount === total;
 
   return (
-    <div className="rounded-2xl border border-lumi-500/30 bg-lumi-500/10/40 p-5">
+    <div className="rounded-2xl border border-foreground/20 bg-foreground/10 p-5">
       <div className="mb-4 flex flex-wrap items-baseline justify-between gap-2">
         <div>
           <h2 className="text-base font-semibold text-foreground">
@@ -90,7 +90,7 @@ export function HobbyRoadmapCard({ roadmap }: { roadmap: HobbyRoadmap }) {
             this device.
           </p>
         </div>
-        <span className="text-xs font-medium text-lumi-400">
+        <span className="text-xs font-medium text-foreground">
           {hydrated ? `${doneCount}/${total} done` : `${total} steps`}
         </span>
       </div>
@@ -103,8 +103,8 @@ export function HobbyRoadmapCard({ roadmap }: { roadmap: HobbyRoadmap }) {
               <label
                 className={`flex cursor-pointer items-start gap-3 rounded-xl border bg-card p-4 transition-colors ${
                   isDone
-                    ? 'border-lumi-500/40 bg-lumi-500/10'
-                    : 'border-border hover:border-lumi-500/40'
+                    ? 'border-foreground/30 bg-foreground/10'
+                    : 'border-border hover:border-foreground/30'
                 }`}
               >
                 <input
@@ -116,7 +116,7 @@ export function HobbyRoadmapCard({ roadmap }: { roadmap: HobbyRoadmap }) {
                 />
                 <div className="min-w-0 flex-1">
                   <div className="flex items-baseline gap-2">
-                    <span className="text-[11px] font-semibold uppercase tracking-wide text-lumi-400">
+                    <span className="text-[11px] font-semibold uppercase tracking-wide text-foreground">
                       {step.horizon}
                     </span>
                     <span className="text-xs text-muted-foreground/60">Step {i + 1}</span>
@@ -145,7 +145,7 @@ export function HobbyRoadmapCard({ roadmap }: { roadmap: HobbyRoadmap }) {
           onChange={(e) => updateNotes(e.target.value)}
           rows={3}
           placeholder="What worked, what didn't, what to try next…"
-          className="mt-1.5 w-full resize-none rounded-xl border border-border bg-card px-3 py-2 text-sm outline-none focus:border-lumi-500/50"
+          className="mt-1.5 w-full resize-none rounded-xl border border-border bg-card px-3 py-2 text-sm outline-none focus:border-foreground/30"
         />
         {hydrated && progress.updatedAt && (
           <p className="mt-1 text-[11px] text-muted-foreground/60">
@@ -157,7 +157,7 @@ export function HobbyRoadmapCard({ roadmap }: { roadmap: HobbyRoadmap }) {
       <div className="mt-4 flex flex-wrap items-center gap-3">
         <Link
           href="/timeline/new"
-          className="rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition-colors hover:bg-lumi-300"
+          className="rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition-colors hover:opacity-90"
         >
           {allDone ? 'Log it in a timeline →' : 'Track this in a timeline →'}
         </Link>

@@ -29,10 +29,10 @@ export async function generateMetadata({
 /* ─── Category color helper ──────────────────────────────────────────────────── */
 
 const CATEGORY_COLORS: Record<string, { bg: string; text: string; border: string }> = {
-  Wellbeing: { bg: 'bg-lumi-500/10', text: 'text-lumi-400', border: 'border-lumi-500/30' },
+  Wellbeing: { bg: 'bg-foreground/10', text: 'text-foreground', border: 'border-foreground/20' },
   'Getting Started': {
     bg: 'bg-amber-400/10',
-    text: 'text-lumi-400',
+    text: 'text-foreground',
     border: 'border-amber-400/30',
   },
   Psychology: { bg: 'bg-violet-50', text: 'text-violet-700', border: 'border-violet-200' },
@@ -89,7 +89,7 @@ function BlogContent({ blocks }: { blocks: ContentBlock[] }) {
               <ul key={idx} className="scroll-reveal mb-5 space-y-2">
                 {block.items.map((item, i) => (
                   <li key={i} className="flex items-start gap-3 text-lg text-foreground">
-                    <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-lumi-500/100" />
+                    <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-foreground" />
                     <span className="leading-relaxed">{item}</span>
                   </li>
                 ))}
@@ -122,7 +122,7 @@ function BlogContent({ blocks }: { blocks: ContentBlock[] }) {
             return (
               <blockquote
                 key={idx}
-                className="scroll-reveal-blur my-8 border-l-4 border-lumi-500/50 py-1 pl-6"
+                className="scroll-reveal-blur my-8 border-l-4 border-foreground/40 py-1 pl-6"
               >
                 <p className="text-lg italic leading-relaxed text-muted-foreground">
                   &ldquo;{block.text}&rdquo;
@@ -176,7 +176,7 @@ function RelatedCard({ post }: { post: BlogPost }) {
 
   return (
     <Link href={`/blog/${post.slug}`} className="group block">
-      <div className="flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-card p-6 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-lumi-500/40 hover:shadow-[0_8px_32px_rgba(16,185,129,0.10)]">
+      <div className="flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-card p-6 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-foreground/30 hover:shadow-[0_8px_32px_rgba(16,185,129,0.10)]">
         <div className="mb-3 text-3xl transition-transform duration-300 group-hover:scale-110">
           {post.emoji}
         </div>
@@ -185,7 +185,7 @@ function RelatedCard({ post }: { post: BlogPost }) {
         >
           {post.category}
         </span>
-        <h3 className="mb-2 text-base font-bold leading-snug text-foreground transition-colors group-hover:text-lumi-400">
+        <h3 className="mb-2 text-base font-bold leading-snug text-foreground transition-colors group-hover:text-foreground">
           {post.title}
         </h3>
         <p className="line-clamp-2 flex-1 text-sm leading-relaxed text-muted-foreground">
@@ -193,7 +193,7 @@ function RelatedCard({ post }: { post: BlogPost }) {
         </p>
         <div className="mt-4 flex items-center justify-between border-t border-border pt-3">
           <span className="text-xs text-muted-foreground/60">{post.readTime} min read</span>
-          <span className="text-xs font-semibold text-lumi-400 opacity-0 transition-opacity group-hover:opacity-100">
+          <span className="text-xs font-semibold text-foreground opacity-0 transition-opacity group-hover:opacity-100">
             Read →
           </span>
         </div>
@@ -340,7 +340,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
           </p>
           <Link
             href="/timeline/new"
-            className="inline-flex items-center gap-2 rounded-full bg-primary px-7 py-3 text-sm font-semibold text-primary-foreground shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:bg-lumi-300 hover:shadow-md"
+            className="inline-flex items-center gap-2 rounded-full bg-primary px-7 py-3 text-sm font-semibold text-primary-foreground shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:opacity-90 hover:shadow-md"
           >
             Build your timeline →
           </Link>

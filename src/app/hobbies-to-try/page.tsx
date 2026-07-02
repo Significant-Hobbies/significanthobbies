@@ -246,8 +246,8 @@ const SECTIONS: Section[] = [
     label: 'Start Tonight',
     subtitle: '10 hobbies that need no equipment, no class, no prep',
     hobbies: START_TONIGHT,
-    badgeColor: 'bg-lumi-500/15 text-lumi-600 border-lumi-500/30',
-    borderColor: 'border-lumi-500/40',
+    badgeColor: 'bg-foreground/10 text-foreground border-foreground/20',
+    borderColor: 'border-foreground/30',
   },
   {
     id: 'this-weekend',
@@ -331,12 +331,12 @@ export default function HobbiesToTryPage() {
               {section.hobbies.map((hobby) => (
                 <li
                   key={hobby.name}
-                  className="rounded-xl border border-border bg-card p-5 hover:border-lumi-500/30 transition-colors"
+                  className="rounded-xl border border-border bg-card p-5 hover:border-foreground/30 transition-colors"
                 >
                   <div className="flex items-start justify-between gap-4 flex-wrap">
                     <Link
                       href={`/hobbies/${hobbySlug(hobby.name)}`}
-                      className="text-base font-bold text-foreground hover:text-lumi-400 transition-colors"
+                      className="text-base font-bold text-foreground hover:text-foreground transition-colors"
                     >
                       {hobby.name}
                     </Link>
@@ -354,7 +354,7 @@ export default function HobbiesToTryPage() {
         ))}
       </div>
 
-      <div className="mt-12 rounded-xl bg-lumi-500/10 border border-lumi-500/30 p-8 text-center">
+      <div className="mt-12 rounded-xl bg-foreground/10 border border-foreground/20 p-8 text-center">
         <h2 className="text-xl font-bold text-foreground mb-2">Find your perfect hobby</h2>
         <p className="text-muted-foreground mb-4">
           Not sure where to start? Our quiz asks about your schedule, personality, and what you want
@@ -362,7 +362,7 @@ export default function HobbiesToTryPage() {
         </p>
         <Link
           href="/find-your-hobby"
-          className="inline-flex rounded-lg bg-primary px-6 py-2.5 text-sm font-semibold text-primary-foreground hover:bg-lumi-300 transition-colors"
+          className="inline-flex rounded-lg bg-primary px-6 py-2.5 text-sm font-semibold text-primary-foreground hover:opacity-90 transition-colors"
         >
           Take the Quiz →
         </Link>

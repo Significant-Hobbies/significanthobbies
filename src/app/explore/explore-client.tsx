@@ -21,7 +21,7 @@ import type { TimelineData } from '~/lib/types';
 
 // Phase strip colors cycling through warm/cool hues
 const PHASE_COLORS = [
-  'bg-lumi-400',
+  'bg-foreground',
   'bg-blue-400',
   'bg-purple-400',
   'bg-orange-400',
@@ -88,7 +88,7 @@ function ExploreTimelineCard({ timeline }: { timeline: TimelineData & { likeCoun
 
   return (
     <Link href={getTimelineUrl(timeline)} prefetch={false}>
-      <div className="group flex h-full flex-col rounded-xl border border-border bg-card p-5 transition-all hover:-translate-y-0.5 hover:border-lumi-500/50 hover:shadow-sm">
+      <div className="group flex h-full flex-col rounded-xl border border-border bg-card p-5 transition-all hover:-translate-y-0.5 hover:border-foreground/30 hover:shadow-sm">
         {/* Phase color strip */}
         {phases.length > 0 && (
           <div className="mb-4 flex h-1.5 w-full overflow-hidden rounded-full gap-px">
@@ -103,7 +103,7 @@ function ExploreTimelineCard({ timeline }: { timeline: TimelineData & { likeCoun
 
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
-            <h3 className="font-semibold leading-tight text-foreground transition-colors group-hover:text-lumi-400">
+            <h3 className="font-semibold leading-tight text-foreground transition-colors group-hover:text-foreground">
               {timeline.title ?? 'Hobby Timeline'}
             </h3>
             {username && <p className="mt-1 text-xs text-muted-foreground/60">@{username}</p>}
@@ -183,7 +183,7 @@ function ExploreTimelineCard({ timeline }: { timeline: TimelineData & { likeCoun
             {categories.map((category) => (
               <span
                 key={category.name}
-                className="rounded-full bg-lumi-500/10 px-2.5 py-1 text-xs font-medium text-lumi-400"
+                className="rounded-full bg-foreground/10 px-2.5 py-1 text-xs font-medium text-foreground"
               >
                 {category.emoji} {category.name}
               </span>
@@ -200,7 +200,7 @@ function ExploreTimelineCard({ timeline }: { timeline: TimelineData & { likeCoun
               day: 'numeric',
             })}
           </span>
-          <span className="inline-flex items-center gap-1 font-medium text-lumi-400">
+          <span className="inline-flex items-center gap-1 font-medium text-foreground">
             View{' '}
             <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
           </span>
@@ -249,11 +249,11 @@ function ExploreBackfill({ hasResults }: { hasResults: boolean }) {
           key={item.title}
           href={item.href}
           prefetch={false}
-          className="group rounded-xl border border-border bg-card p-5 transition-colors hover:border-lumi-500/50"
+          className="group rounded-xl border border-border bg-card p-5 transition-colors hover:border-foreground/30"
         >
           <h3 className="font-semibold text-foreground">{item.title}</h3>
           <p className="mt-2 text-sm leading-6 text-muted-foreground">{item.body}</p>
-          <p className="mt-4 inline-flex items-center gap-1 text-sm font-medium text-lumi-400">
+          <p className="mt-4 inline-flex items-center gap-1 text-sm font-medium text-foreground">
             {item.cta}
             <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
           </p>
@@ -267,7 +267,7 @@ function ExploreFooter() {
   return (
     <section className="mt-10 rounded-xl border border-border bg-foreground/90 px-5 py-6 text-foreground md:flex md:items-center md:justify-between md:gap-6">
       <div>
-        <p className="text-xs font-semibold uppercase tracking-wider text-lumi-300">
+        <p className="text-xs font-semibold uppercase tracking-wider text-foreground">
           Community signal
         </p>
         <h2 className="mt-2 text-xl font-semibold">Explore grows with every public phase.</h2>
@@ -279,7 +279,7 @@ function ExploreFooter() {
       <Link
         href="/timeline/new"
         prefetch={false}
-        className="mt-5 inline-flex items-center justify-center gap-2 rounded-lg bg-lumi-500/100 px-4 py-2 text-sm font-semibold text-primary-foreground transition-colors hover:bg-lumi-400 md:mt-0"
+        className="mt-5 inline-flex items-center justify-center gap-2 rounded-lg bg-foreground px-4 py-2 text-sm font-semibold text-primary-foreground transition-colors hover:opacity-90 md:mt-0"
       >
         Build your timeline
         <ArrowRight className="h-4 w-4" />
@@ -371,7 +371,7 @@ export function ExploreClient({ timelines }: ExploreClientProps) {
             className={`rounded-full px-3.5 py-1.5 text-sm font-medium transition-colors ${
               sort === opt.value
                 ? 'bg-primary text-primary-foreground'
-                : 'border border-border bg-card text-muted-foreground hover:border-lumi-500/50 hover:text-lumi-400'
+                : 'border border-border bg-card text-muted-foreground hover:border-foreground/30 hover:text-foreground'
             }`}
           >
             {opt.label}
@@ -432,7 +432,7 @@ export function ExploreClient({ timelines }: ExploreClientProps) {
             <Link
               href="/timeline/new"
               prefetch={false}
-              className="mt-5 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-lumi-300 transition-colors"
+              className="mt-5 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:opacity-90 transition-colors"
             >
               Build your timeline
             </Link>

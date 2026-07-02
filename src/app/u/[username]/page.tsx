@@ -40,8 +40,8 @@ const CATEGORY_BADGE_COLORS: Record<string, string> = {
   Physical: 'border-orange-400/30 bg-orange-400/10 text-orange-300',
   Intellectual: 'border-blue-400/30 bg-blue-400/10 text-blue-300',
   Gaming: 'border-violet-400/30 bg-violet-400/10 text-violet-300',
-  Outdoor: 'border-lumi-500/30 bg-lumi-500/10 text-lumi-400',
-  Culinary: 'border-lumi-500/50/30 bg-lumi-400/10 text-lumi-300',
+  Outdoor: 'border-foreground/20 bg-foreground/10 text-foreground',
+  Culinary: 'border-foreground/20 bg-foreground/10 text-foreground',
   Collecting: 'border-border bg-foreground/5 text-muted-foreground',
   Making: 'border-amber-400/30 bg-amber-400/10 text-amber-300',
   Social: 'border-teal-400/30 bg-teal-400/10 text-teal-300',
@@ -174,7 +174,7 @@ export default async function ProfilePage({ params }: Props) {
         <div
           className={
             isOwner
-              ? 'rounded-full p-0.5 bg-gradient-to-br from-lumi-400/40 via-lumi-600/20 to-transparent ring-2 ring-lumi-500/30 shadow-[0_0_18px_2px_oklch(0.82_0.13_88/0.15)]'
+              ? 'rounded-full p-0.5 bg-gradient-to-br from-foreground/40 via-foreground/20 to-transparent ring-2 ring-foreground/30 shadow-[0_0_18px_2px_oklch(0.82_0.13_88/0.15)]'
               : ''
           }
         >
@@ -199,7 +199,7 @@ export default async function ProfilePage({ params }: Props) {
             {isOwner && (
               <Link
                 href="/settings"
-                className="inline-flex items-center gap-1 text-xs text-muted-foreground/60 hover:text-lumi-400 transition-colors"
+                className="inline-flex items-center gap-1 text-xs text-muted-foreground/60 hover:text-foreground transition-colors"
               >
                 <Pencil className="h-3 w-3" />
                 Edit profile
@@ -221,7 +221,7 @@ export default async function ProfilePage({ params }: Props) {
               href={user.website}
               target="_blank"
               rel="noopener noreferrer"
-              className="mt-1.5 inline-flex items-center gap-1 text-xs text-lumi-400 hover:text-lumi-400 hover:underline transition-colors"
+              className="mt-1.5 inline-flex items-center gap-1 text-xs text-foreground hover:text-foreground hover:underline transition-colors"
             >
               <ExternalLink className="h-3 w-3" />
               {user.website.replace(/^https?:\/\//, '')}
@@ -231,29 +231,29 @@ export default async function ProfilePage({ params }: Props) {
           {/* Stats bar */}
           <div className="mt-3 flex flex-wrap gap-2">
             <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card/40 px-3 py-1 text-xs text-foreground">
-              <span className="text-lumi-400 font-semibold">{timelineList.length}</span>
+              <span className="text-foreground font-semibold">{timelineList.length}</span>
               <span className="text-muted-foreground">
                 timeline{timelineList.length !== 1 ? 's' : ''}
               </span>
             </span>
             <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card/40 px-3 py-1 text-xs text-foreground">
-              <span className="text-lumi-400 font-semibold">{allHobbies.length}</span>
+              <span className="text-foreground font-semibold">{allHobbies.length}</span>
               <span className="text-muted-foreground">
                 unique hobbie{allHobbies.length !== 1 ? 's' : ''}
               </span>
             </span>
             <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card/40 px-3 py-1 text-xs text-foreground">
-              <span className="text-lumi-400 font-semibold">{totalPhases}</span>
+              <span className="text-foreground font-semibold">{totalPhases}</span>
               <span className="text-muted-foreground">phase{totalPhases !== 1 ? 's' : ''}</span>
             </span>
             <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card/40 px-3 py-1 text-xs text-foreground">
-              <span className="text-lumi-400 font-semibold">{followerCount}</span>
+              <span className="text-foreground font-semibold">{followerCount}</span>
               <span className="text-muted-foreground">
                 follower{followerCount !== 1 ? 's' : ''}
               </span>
             </span>
             <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card/40 px-3 py-1 text-xs text-foreground">
-              <span className="text-lumi-400 font-semibold">{followingCount}</span>
+              <span className="text-foreground font-semibold">{followingCount}</span>
               <span className="text-muted-foreground">following</span>
             </span>
           </div>
@@ -275,7 +275,7 @@ export default async function ProfilePage({ params }: Props) {
             <div className="mt-3">
               <Link
                 href="/login"
-                className="inline-flex items-center gap-1.5 rounded-full bg-primary px-4 py-1.5 text-sm font-medium text-primary-foreground hover:bg-lumi-300 transition-colors"
+                className="inline-flex items-center gap-1.5 rounded-full bg-primary px-4 py-1.5 text-sm font-medium text-primary-foreground hover:opacity-90 transition-colors"
               >
                 Follow
               </Link>
@@ -289,7 +289,7 @@ export default async function ProfilePage({ params }: Props) {
 
         {isOwner && (
           <Link href="/timeline/new">
-            <Button className="bg-primary text-primary-foreground hover:bg-lumi-300">
+            <Button className="bg-primary text-primary-foreground hover:opacity-90">
               <Plus className="mr-1.5 h-4 w-4" />
               New timeline
             </Button>
@@ -313,7 +313,7 @@ export default async function ProfilePage({ params }: Props) {
               {isOwner && (
                 <a
                   href="/commitments"
-                  className="text-xs text-lumi-400 hover:text-lumi-400 transition-colors"
+                  className="text-xs text-foreground hover:text-foreground transition-colors"
                 >
                   Manage →
                 </a>
@@ -351,7 +351,7 @@ export default async function ProfilePage({ params }: Props) {
                   <Link
                     key={hobbyName}
                     href={`/hobbies/${encodeURIComponent(hobbyName.toLowerCase().replace(/\s+/g, '-'))}`}
-                    className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-medium transition-colors hover:ring-1 hover:ring-lumi-500/40 ${colorClass}`}
+                    className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-medium transition-colors hover:ring-1 hover:ring-foreground/30 ${colorClass}`}
                   >
                     {cat && <span>{cat.emoji}</span>}
                     {hobbyName}
@@ -369,7 +369,7 @@ export default async function ProfilePage({ params }: Props) {
             {isOwner && earnedBadgeIds.length === 0 && (
               <p className="mt-2 text-xs text-muted-foreground/60">
                 Complete{' '}
-                <a href="/side-quests" className="text-lumi-400 hover:underline">
+                <a href="/side-quests" className="text-foreground hover:underline">
                   side quests
                 </a>{' '}
                 to earn badges!
@@ -402,7 +402,7 @@ export default async function ProfilePage({ params }: Props) {
             </p>
             {isOwner ? (
               <Link href="/timeline/new">
-                <Button className="mt-4 bg-primary text-primary-foreground hover:bg-lumi-300">
+                <Button className="mt-4 bg-primary text-primary-foreground hover:opacity-90">
                   Build your first timeline
                 </Button>
               </Link>
@@ -410,13 +410,13 @@ export default async function ProfilePage({ params }: Props) {
               <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
                 <Link
                   href="/explore"
-                  className="inline-flex items-center gap-1.5 rounded-full bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition-colors hover:bg-lumi-300"
+                  className="inline-flex items-center gap-1.5 rounded-full bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition-colors hover:opacity-90"
                 >
                   Explore timelines
                 </Link>
                 <Link
                   href="/journeys"
-                  className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-4 py-2 text-sm font-medium text-foreground transition-colors hover:border-lumi-500/50 hover:text-lumi-400"
+                  className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-4 py-2 text-sm font-medium text-foreground transition-colors hover:border-foreground/30 hover:text-foreground"
                 >
                   Famous journeys
                 </Link>
@@ -433,7 +433,7 @@ export default async function ProfilePage({ params }: Props) {
               {isOwner && (
                 <a
                   href="/dashboard"
-                  className="text-xs text-lumi-400 hover:text-lumi-400 transition-colors"
+                  className="text-xs text-foreground hover:text-foreground transition-colors"
                 >
                   Manage →
                 </a>
@@ -451,7 +451,7 @@ export default async function ProfilePage({ params }: Props) {
                     key={item.id}
                     className={`flex items-start gap-3 rounded-lg border px-4 py-3 ${
                       isDone
-                        ? 'border-lumi-500/40 bg-lumi-500/10'
+                        ? 'border-foreground/30 bg-foreground/10'
                         : isInProgress
                           ? 'border-amber-400/40 bg-amber-400/10'
                           : 'border-border bg-card/40'
@@ -460,7 +460,7 @@ export default async function ProfilePage({ params }: Props) {
                     <span
                       className={`mt-0.5 h-4.5 w-4.5 shrink-0 rounded-full border-2 flex items-center justify-center text-[9px] font-bold ${
                         isDone
-                          ? 'border-lumi-500 bg-lumi-500 text-primary-foreground'
+                          ? 'border-foreground bg-foreground text-primary-foreground'
                           : isInProgress
                             ? 'border-amber-400 bg-amber-400/40 text-amber-300'
                             : 'border-border'

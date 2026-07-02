@@ -34,7 +34,7 @@ export function EmailCapture({ source }: Props) {
 
   if (status === 'success') {
     return (
-      <p className="text-sm font-medium text-lumi-400">
+      <p className="text-sm font-medium text-foreground">
         You&apos;re in! Check your inbox for a welcome note.
       </p>
     );
@@ -53,7 +53,7 @@ export function EmailCapture({ source }: Props) {
       <Button
         type="submit"
         disabled={status === 'loading'}
-        className="bg-primary text-primary-foreground hover:bg-lumi-300 shrink-0"
+        className="bg-primary text-primary-foreground hover:opacity-90 shrink-0"
       >
         {status === 'loading' ? '...' : 'Subscribe'}
       </Button>

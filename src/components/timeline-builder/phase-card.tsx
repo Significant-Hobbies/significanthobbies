@@ -160,7 +160,7 @@ export function PhaseCard({ phase, onChange, onDelete, isOnly }: Props) {
           <div className="space-y-1.5">
             <Label className="text-xs text-muted-foreground">
               Hobbies{' '}
-              <span className={hasHobbies ? 'text-lumi-400' : 'text-muted-foreground/60'}>
+              <span className={hasHobbies ? 'text-foreground' : 'text-muted-foreground/60'}>
                 ({phase.hobbies.length})
               </span>
             </Label>

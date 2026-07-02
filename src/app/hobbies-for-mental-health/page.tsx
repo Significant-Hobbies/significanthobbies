@@ -171,21 +171,21 @@ export default function HobbiesForMentalHealthPage() {
         {HOBBIES.map((hobby, i) => (
           <div
             key={hobby.name}
-            className="rounded-xl border border-border bg-card p-6 hover:border-lumi-500/30 transition-colors"
+            className="rounded-xl border border-border bg-card p-6 hover:border-foreground/30 transition-colors"
           >
             <div className="flex items-start gap-4">
-              <span className="flex-shrink-0 w-8 h-8 rounded-full bg-lumi-500/15 text-lumi-400 text-sm font-bold flex items-center justify-center">
+              <span className="flex-shrink-0 w-8 h-8 rounded-full bg-foreground/10 text-foreground text-sm font-bold flex items-center justify-center">
                 {i + 1}
               </span>
               <div className="flex-1">
                 <div className="flex items-center flex-wrap gap-3 mb-2">
                   <Link
                     href={`/hobbies/${hobbySlug(hobby.name)}`}
-                    className="text-lg font-bold text-foreground hover:text-lumi-400 transition-colors"
+                    className="text-lg font-bold text-foreground hover:text-foreground transition-colors"
                   >
                     {hobby.name}
                   </Link>
-                  <span className="inline-block rounded-full bg-lumi-500/10 border border-lumi-500/30 px-3 py-0.5 text-xs font-medium text-lumi-400">
+                  <span className="inline-block rounded-full bg-foreground/10 border border-foreground/20 px-3 py-0.5 text-xs font-medium text-foreground">
                     {hobby.benefit}
                   </span>
                 </div>
@@ -206,7 +206,7 @@ export default function HobbiesForMentalHealthPage() {
         </p>
       </div>
 
-      <div className="mt-12 rounded-xl bg-lumi-500/10 border border-lumi-500/30 p-8 text-center">
+      <div className="mt-12 rounded-xl bg-foreground/10 border border-foreground/20 p-8 text-center">
         <h2 className="text-xl font-bold text-foreground mb-2">Find your perfect hobby</h2>
         <p className="text-muted-foreground mb-4">
           Take our 2-minute quiz for personalized recommendations based on your personality,
@@ -214,7 +214,7 @@ export default function HobbiesForMentalHealthPage() {
         </p>
         <Link
           href="/find-your-hobby"
-          className="inline-flex rounded-lg bg-primary px-6 py-2.5 text-sm font-semibold text-primary-foreground hover:bg-lumi-300 transition-colors"
+          className="inline-flex rounded-lg bg-primary px-6 py-2.5 text-sm font-semibold text-primary-foreground hover:opacity-90 transition-colors"
         >
           Take the Quiz →
         </Link>

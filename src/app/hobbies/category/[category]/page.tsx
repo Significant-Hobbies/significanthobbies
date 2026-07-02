@@ -168,8 +168,8 @@ export default async function CategoryPage({ params }: Props) {
             const hobbySlug = hobby.toLowerCase().replace(/\s+/g, '-');
             return (
               <Link key={hobby} href={`/hobbies/${encodeURIComponent(hobbySlug)}`}>
-                <div className="group rounded-xl border border-border bg-card p-4 transition-all hover:border-lumi-500/50 hover:shadow-sm cursor-pointer">
-                  <span className="font-medium text-foreground group-hover:text-lumi-400 transition-colors text-sm">
+                <div className="group rounded-xl border border-border bg-card p-4 transition-all hover:border-foreground/30 hover:shadow-sm cursor-pointer">
+                  <span className="font-medium text-foreground group-hover:text-foreground transition-colors text-sm">
                     {hobby}
                   </span>
                 </div>
@@ -199,8 +199,8 @@ export default async function CategoryPage({ params }: Props) {
                     user: t.userUsername ? { username: t.userUsername } : null,
                   })}
                 >
-                  <div className="group rounded-xl border border-border bg-card p-4 transition-colors hover:border-lumi-500/50">
-                    <h3 className="font-medium text-foreground group-hover:text-lumi-400 transition-colors">
+                  <div className="group rounded-xl border border-border bg-card p-4 transition-colors hover:border-foreground/30">
+                    <h3 className="font-medium text-foreground group-hover:text-foreground transition-colors">
                       {t.title ?? 'Hobby Timeline'}
                     </h3>
                     {t.userName && (
@@ -222,7 +222,7 @@ export default async function CategoryPage({ params }: Props) {
               No public timelines for {cat.name.toLowerCase()} hobbies yet.
             </p>
             <Link href="/timeline/new">
-              <button className="mt-3 text-sm text-lumi-400 hover:text-lumi-400">
+              <button className="mt-3 text-sm text-foreground hover:text-foreground">
                 Be the first →
               </button>
             </Link>
@@ -231,7 +231,7 @@ export default async function CategoryPage({ params }: Props) {
       </div>
 
       {/* CTA */}
-      <div className="mb-12 rounded-xl border border-lumi-500/30 bg-lumi-500/10 p-6 flex items-center justify-between gap-4">
+      <div className="mb-12 rounded-xl border border-foreground/20 bg-foreground/10 p-6 flex items-center justify-between gap-4">
         <div>
           <p className="font-semibold text-foreground">
             Track your {cat.name.toLowerCase()} journey
@@ -242,7 +242,7 @@ export default async function CategoryPage({ params }: Props) {
         </div>
         <Link
           href="/timeline/new"
-          className="shrink-0 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-lumi-300 transition-colors"
+          className="shrink-0 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:opacity-90 transition-colors"
         >
           Start now →
         </Link>
@@ -258,7 +258,7 @@ export default async function CategoryPage({ params }: Props) {
               <Link key={c.name} href={`/hobbies/category/${catSlug}`}>
                 <Badge
                   variant="outline"
-                  className="border-border text-muted-foreground hover:border-lumi-500/50 hover:text-lumi-400 cursor-pointer transition-colors py-1 px-3"
+                  className="border-border text-muted-foreground hover:border-foreground/30 hover:text-foreground cursor-pointer transition-colors py-1 px-3"
                 >
                   {c.emoji} {c.name}
                 </Badge>

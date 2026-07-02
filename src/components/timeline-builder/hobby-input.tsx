@@ -65,14 +65,14 @@ export function HobbyInput({ hobbies, onChange }: Props) {
             <Badge
               key={hobby.name}
               variant="secondary"
-              className="bg-lumi-500/15 text-lumi-400 border border-lumi-500/30 py-1 pl-2.5 pr-1 flex items-center gap-1 text-xs"
+              className="bg-foreground/10 text-foreground border border-foreground/20 py-1 pl-2.5 pr-1 flex items-center gap-1 text-xs"
             >
               {hobby.name}
               {/* Remove button — padded so it's a comfortable touch target. */}
               <button
                 type="button"
                 onClick={() => removeHobby(hobby.name)}
-                className="-mr-0.5 flex h-7 w-7 items-center justify-center rounded-full hover:bg-lumi-500/20 hover:text-lumi-600"
+                className="-mr-0.5 flex h-7 w-7 items-center justify-center rounded-full hover:bg-foreground/20 hover:text-foreground"
                 aria-label={`Remove ${hobby.name}`}
               >
                 <X className="h-3.5 w-3.5" />

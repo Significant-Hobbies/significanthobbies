@@ -386,7 +386,7 @@ function ProgressDots({ current, total }: { current: number; total: number }) {
             i === current
               ? 'w-7 h-2.5 bg-primary'
               : i < current
-                ? 'w-2.5 h-2.5 bg-lumi-500/60'
+                ? 'w-2.5 h-2.5 bg-foreground/40'
                 : 'w-2.5 h-2.5 bg-foreground/10'
           }`}
           style={i === current ? { boxShadow: '0 0 8px rgba(5,150,105,0.5)' } : {}}
@@ -739,7 +739,7 @@ export function OnboardingFlow({ user }: { user: OnboardingUser }) {
                   <span className="relative inline-block">
                     {firstName}!
                     <span
-                      className="absolute left-0 right-0 bottom-0 h-0.5 rounded-full bg-lumi-400"
+                      className="absolute left-0 right-0 bottom-0 h-0.5 rounded-full bg-foreground"
                       style={{
                         animation: 'nameUnderline 0.6s 0.4s cubic-bezier(0.16,1,0.3,1) both',
                         transformOrigin: 'left center',
@@ -847,7 +847,7 @@ export function OnboardingFlow({ user }: { user: OnboardingUser }) {
                     />
                     {isUsernameValid && (
                       <div className="relative flex items-center justify-center">
-                        <span className="text-lumi-400 text-lg font-bold">✓</span>
+                        <span className="text-foreground text-lg font-bold">✓</span>
                         {/* Burst dots */}
                         {[0, 60, 120, 180, 240, 300].map((angle, i) => (
                           <div
@@ -924,7 +924,7 @@ export function OnboardingFlow({ user }: { user: OnboardingUser }) {
                     />
                   </svg>
                   {/* Green secure dot */}
-                  <div className="h-1.5 w-1.5 rounded-full bg-lumi-500/100 flex-shrink-0" />
+                  <div className="h-1.5 w-1.5 rounded-full bg-foreground flex-shrink-0" />
                   <span className="text-xs truncate" style={{ color: '#A8A29E' }}>
                     significanthobbies.com/u/
                   </span>
