@@ -1,23 +1,49 @@
-<section class="relative bg-background px-6 py-24 text-center lg:px-12">
+---
+const statParts = ['108 hobbies', '10 categories', '50 side quests', 'Free forever'];
+---
+
+<section class="relative overflow-hidden bg-background px-6 py-28 text-center lg:px-12 lg:py-36">
   <div class="grid-bg pointer-events-none absolute inset-0" aria-hidden="true" />
+  <!-- Radial gold glow behind the text -->
+  <div
+    class="pointer-events-none absolute inset-0"
+    aria-hidden="true"
+    style="background: radial-gradient(ellipse 50% 50% at 50% 45%, oklch(0.82 0.13 88 / 0.12), transparent 70%);"
+  />
+
   <div class="relative mx-auto max-w-3xl">
-    <h2 class="text-3xl font-medium text-foreground sm:text-4xl">Your hobbies are your story.</h2>
-    <p class="mt-4 text-muted-foreground">
+    <h2 class="font-serif text-4xl font-medium tracking-tight sm:text-5xl lg:text-6xl" style="line-height: 1.1;">
+      <span class="shimmer-text">Your hobbies are your story.</span>
+    </h2>
+    <p class="mx-auto mt-5 max-w-xl text-lg text-muted-foreground">
       Map what shaped you. Discover what to try next. No sign-up required to start.
     </p>
-    <div class="mt-8 flex flex-wrap justify-center gap-4">
+
+    <div class="mt-9 flex flex-wrap justify-center gap-4">
       <a
         href="/timeline/new"
-        class="rounded-full bg-primary px-7 py-3 text-sm font-semibold text-primary-foreground no-underline transition-opacity hover:opacity-90 focus-visible:ring-2 focus-visible:ring-foreground/50 focus-visible:outline-none"
+        class="shadow-glow rounded-full bg-primary px-8 py-3.5 text-sm font-semibold text-primary-foreground no-underline transition-opacity hover:opacity-90 focus-visible:ring-2 focus-visible:ring-foreground/50 focus-visible:outline-none"
       >
         Start your hobby map →
       </a>
       <a
         href="/explore"
-        class="rounded-full border border-border px-7 py-3 text-sm font-semibold text-foreground no-underline transition-colors hover:border-muted-foreground focus-visible:ring-2 focus-visible:ring-foreground/50 focus-visible:outline-none"
+        class="rounded-full border border-border px-8 py-3.5 text-sm font-semibold text-foreground no-underline transition-colors hover:border-muted-foreground focus-visible:ring-2 focus-visible:ring-foreground/50 focus-visible:outline-none"
       >
         Explore journeys →
       </a>
+    </div>
+
+    <!-- Stats row -->
+    <div class="mt-12 flex flex-wrap items-center justify-center gap-x-3 gap-y-2 text-sm text-muted-foreground">
+      {
+        statParts.map((part, i) => (
+          <>
+            {i > 0 && <span class="text-border">·</span>}
+            <span class="font-medium text-foreground/80">{part}</span>
+          </>
+        ))
+      }
     </div>
   </div>
 </section>

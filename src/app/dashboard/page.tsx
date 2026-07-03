@@ -1,12 +1,14 @@
 import { and, desc, eq } from 'drizzle-orm';
-import { Check, Clock, Plus } from 'lucide-react';
+import { Check, Clock, Compass, Plus, Sparkles, Sunrise, Sunset } from 'lucide-react';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 
-import { FadeIn, GridBackground } from '~/components/aceternity';
+import { FadeIn, GradientMesh, GridBackground } from '~/components/aceternity';
 import { BucketListSection } from '~/components/bucket-list-section';
 import { CommitmentCard } from '~/components/commitments/commitment-card';
 import { DashboardStats } from '~/components/dashboard/dashboard-stats';
+import { EmptyStateCard } from '~/components/dashboard/empty-state-card';
+import { HabitHeatmap } from '~/components/dashboard/habit-heatmap';
 import { LifeGrid } from '~/components/life-grid';
 import { LumiWeeklyReview } from '~/components/lumi-weekly-review';
 import { TimelineCard } from '~/components/timeline-card';
@@ -52,37 +54,47 @@ export default async function DashboardPage() {
   const today = new Date().toISOString().slice(0, 10);
   const isMorning = new Date().getHours() < 12;
 
-  const [rawTimelines, rawBucketItems, myCommitments, me, myHabits, myHabitLogs, myJournal] =
-    await Promise.all([
-      db
-        .select()
-        .from(timelines)
-        .where(eq(timelines.userId, session.user.id))
-        .orderBy(desc(timelines.updatedAt)),
-      db
-        .select()
-        .from(bucketListItems)
-        .where(eq(bucketListItems.userId, session.user.id))
-        .orderBy(desc(bucketListItems.createdAt)),
-      getMyCommitments(),
-      db.query.users.findFirst({
-        where: eq(users.id, session.user.id),
-        columns: { birthYear: true },
-      }),
-      db
-        .select()
-        .from(habits)
-        .where(and(eq(habits.userId, session.user.id), eq(habits.status, 'active'))),
-      db
-        .select()
-        .from(habitLogs)
-        .where(and(eq(habitLogs.userId, session.user.id), eq(habitLogs.dayDate, today))),
-      db
-        .select()
-        .from(journalEntries)
-        .where(and(eq(journalEntries.userId, session.user.id), eq(journalEntries.dayDate, today)))
-        .limit(1),
-    ]);
+  const [
+    rawTimelines,
+    rawBucketItems,
+    myCommitments,
+    me,
+    myHabits,
+    myHabitLogs,
+    allHabitLogs,
+    myJournal,
+  ] = await Promise.all([
+    db
+      .select()
+      .from(timelines)
+      .where(eq(timelines.userId, session.user.id))
+      .orderBy(desc(timelines.updatedAt)),
+    db
+      .select()
+      .from(bucketListItems)
+      .where(eq(bucketListItems.userId, session.user.id))
+      .orderBy(desc(bucketListItems.createdAt)),
+    getMyCommitments(),
+    db.query.users.findFirst({
+      where: eq(users.id, session.user.id),
+      columns: { birthYear: true },
+    }),
+    db
+      .select()
+      .from(habits)
+      .where(and(eq(habits.userId, session.user.id), eq(habits.status, 'active'))),
+    db
+      .select()
+      .from(habitLogs)
+      .where(and(eq(habitLogs.userId, session.user.id), eq(habitLogs.dayDate, today))),
+    // All habit logs for the heatmap + streak computation
+    db.select().from(habitLogs).where(eq(habitLogs.userId, session.user.id)),
+    db
+      .select()
+      .from(journalEntries)
+      .where(and(eq(journalEntries.userId, session.user.id), eq(journalEntries.dayDate, today)))
+      .limit(1),
+  ]);
 
   const todayJournal = myJournal[0] ?? null;
   const habitsDone = myHabitLogs.filter((l) => l.completed).length;
@@ -137,6 +149,14 @@ export default async function DashboardPage() {
 
   const firstName = session.user.name?.split(' ')[0] ?? 'there';
 
+  // Editorial date string
+  const dateString = new Date().toLocaleDateString('en-US', {
+    weekday: 'long',
+    month: 'long',
+    day: 'numeric',
+    year: 'numeric',
+  });
+
   // Choose the primary CTA based on what the user is missing.
   const primaryCta =
     timelineList.length === 0
@@ -165,23 +185,30 @@ export default async function DashboardPage() {
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-10 sm:py-14 space-y-16">
-      {/* Life grid — the spine. Quiet, not preachy. */}
-      <section className="relative space-y-6">
-        <GridBackground />
+      {/* ─── Hero header — gradient mesh + editorial greeting ─── */}
+      <section className="relative space-y-6 overflow-hidden rounded-2xl border border-border/50 p-6 sm:p-8">
+        <GradientMesh variant="gold" />
+        <GridBackground size={24} />
         <div className="relative">
-          <h1 className="font-serif text-3xl font-semibold tracking-tight text-foreground">
+          <p className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground/60">
+            {dateString}
+          </p>
+          <h1 className="mt-3 font-serif text-4xl font-semibold tracking-tight text-foreground sm:text-5xl">
             {isMorning ? 'Good morning' : 'Good evening'}, {firstName}
           </h1>
           {hasBirthYear && (
-            <p className="mt-1.5 text-sm text-muted-foreground">
+            <p className="mt-2 text-sm text-muted-foreground">
               {lifeGrid.weeksLived.toLocaleString()} weeks lived ·{' '}
-              {lifeGrid.weeksRemaining.toLocaleString()} remaining of ~
-              {lifeGrid.totalWeeks.toLocaleString()}
+              <span className="text-primary">
+                {lifeGrid.weeksRemaining.toLocaleString()} remaining
+              </span>{' '}
+              of ~{lifeGrid.totalWeeks.toLocaleString()}
             </p>
           )}
         </div>
 
-        <FadeIn className="relative">
+        {/* Life grid — the visual centerpiece */}
+        <FadeIn className="relative" delay={0.1}>
           {hasBirthYear ? (
             <LifeGrid grid={lifeGrid} />
           ) : (
@@ -212,15 +239,33 @@ export default async function DashboardPage() {
         primaryCta={primaryCta}
       />
 
-      {/* Today's practice */}
+      {/* ─── Habit heatmap — visual streak display ─── */}
+      {habitsTotal > 0 && (
+        <FadeIn className="space-y-4">
+          <div className="flex items-baseline justify-between gap-3">
+            <h2 className="font-serif text-xl font-semibold text-foreground">Practice rhythm</h2>
+            <span className="text-xs text-muted-foreground/60">Last 12 weeks</span>
+          </div>
+          <div className="rounded-xl border border-border bg-card p-5 shadow-soft">
+            <HabitHeatmap allHabitLogs={allHabitLogs} weeks={12} />
+          </div>
+        </FadeIn>
+      )}
+
+      {/* ─── Today's practice — commitments with progress ─── */}
       <FadeIn className="space-y-4">
         <div className="flex items-baseline justify-between gap-3">
           <h2 className="font-serif text-xl font-semibold text-foreground">
             Today&apos;s practice
           </h2>
-          <Link href="/commitments" className="text-sm text-muted-foreground hover:text-foreground">
-            All commitments →
-          </Link>
+          {activeCommitments.length > 0 && (
+            <Link
+              href="/commitments"
+              className="text-sm text-muted-foreground hover:text-foreground"
+            >
+              All commitments →
+            </Link>
+          )}
         </div>
 
         {activeCommitments.length > 0 ? (
@@ -246,25 +291,17 @@ export default async function DashboardPage() {
             </div>
           </>
         ) : (
-          <div className="rounded-xl border border-border bg-card p-6 shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-            <div className="max-w-md">
-              <p className="text-sm text-foreground font-medium">Start a commitment</p>
-              <p className="mt-1 text-sm text-muted-foreground">
-                Pick a hobby, show up daily, stamp each day with proof. A 30-day commitment spends
-                roughly 4 of your remaining weeks.
-              </p>
-            </div>
-            <Link
-              href="/commitments"
-              className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:opacity-90 shrink-0"
-            >
-              Begin →
-            </Link>
-          </div>
+          <EmptyStateCard
+            icon={Compass}
+            title="Start a commitment"
+            description="Pick a hobby, show up daily, stamp each day with proof. A 30-day commitment spends roughly 4 of your remaining weeks."
+            ctaLabel="Begin"
+            href="/commitments"
+          />
         )}
       </FadeIn>
 
-      {/* Daily ritual — the other dimension */}
+      {/* ─── Daily ritual — the other dimension ─── */}
       <FadeIn className="space-y-4">
         <div className="flex items-baseline justify-between gap-3">
           <h2 className="font-serif text-xl font-semibold text-foreground">
@@ -277,11 +314,21 @@ export default async function DashboardPage() {
 
         <div className="grid gap-4 sm:grid-cols-2">
           {/* Habits summary */}
-          <div className="rounded-xl border border-border bg-card p-5 shadow-sm">
-            <p className="text-sm font-medium text-foreground">Habits</p>
+          <div className="rounded-xl border border-border bg-card p-5 shadow-soft">
+            <div className="flex items-center gap-2">
+              <Check className="h-4 w-4 text-primary" />
+              <p className="text-sm font-medium text-foreground">Habits</p>
+            </div>
             {habitsTotal > 0 ? (
               <>
-                <p className="mt-1 text-sm text-muted-foreground">
+                {/* Progress bar */}
+                <div className="mt-3 h-1.5 w-full overflow-hidden rounded-full bg-foreground/10">
+                  <div
+                    className="h-full rounded-full bg-primary transition-all duration-500"
+                    style={{ width: `${(habitsDone / habitsTotal) * 100}%` }}
+                  />
+                </div>
+                <p className="mt-2 text-sm text-muted-foreground">
                   {habitsDone} of {habitsTotal} done today
                 </p>
                 <div className="mt-3 flex flex-wrap gap-1.5">
@@ -292,7 +339,7 @@ export default async function DashboardPage() {
                         key={h.id}
                         className={`inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5 text-xs ${
                           done
-                            ? 'border-foreground/20 bg-foreground/5 text-foreground'
+                            ? 'border-primary/30 bg-primary/10 text-primary'
                             : 'border-border text-muted-foreground'
                         }`}
                       >
@@ -304,7 +351,7 @@ export default async function DashboardPage() {
                 </div>
               </>
             ) : (
-              <p className="mt-1 text-sm text-muted-foreground">
+              <p className="mt-2 text-sm text-muted-foreground">
                 No habits yet.{' '}
                 <Link href="/daily" className="text-foreground underline underline-offset-2">
                   Add some →
@@ -314,16 +361,23 @@ export default async function DashboardPage() {
           </div>
 
           {/* Journal summary */}
-          <div className="rounded-xl border border-border bg-card p-5 shadow-sm">
-            <p className="text-sm font-medium text-foreground">Journal</p>
+          <div className="rounded-xl border border-border bg-card p-5 shadow-soft">
+            <div className="flex items-center gap-2">
+              {isMorning ? (
+                <Sunrise className="h-4 w-4 text-primary" />
+              ) : (
+                <Sunset className="h-4 w-4 text-primary" />
+              )}
+              <p className="text-sm font-medium text-foreground">Journal</p>
+            </div>
             {todayJournal ? (
-              <p className="mt-1 text-sm text-muted-foreground line-clamp-3">
+              <p className="mt-3 text-sm text-muted-foreground line-clamp-3 leading-relaxed">
                 {isMorning
                   ? (todayJournal.pmEntry ?? todayJournal.amEntry ?? '—')
                   : (todayJournal.pmEntry ?? todayJournal.amEntry ?? '—')}
               </p>
             ) : (
-              <p className="mt-1 text-sm text-muted-foreground">
+              <p className="mt-3 text-sm text-muted-foreground">
                 {isMorning ? 'What are you doing today?' : 'What happened today?'}
               </p>
             )}
@@ -339,7 +393,7 @@ export default async function DashboardPage() {
 
       {weeklyReflection && <LumiWeeklyReview initialReflection={weeklyReflection} />}
 
-      {/* Archetype */}
+      {/* ─── Archetype ─── */}
       {personality && (
         <FadeIn className="space-y-3">
           <div className="flex items-start gap-4">
@@ -375,7 +429,7 @@ export default async function DashboardPage() {
         </FadeIn>
       )}
 
-      {/* Timelines */}
+      {/* ─── Timelines ─── */}
       <FadeIn className="space-y-4">
         <div className="flex items-center justify-between gap-3">
           <h2 className="font-serif text-xl font-semibold text-foreground">Your timelines</h2>
@@ -388,12 +442,13 @@ export default async function DashboardPage() {
         </div>
 
         {timelineList.length === 0 ? (
-          <div className="rounded-xl border border-dashed border-border p-10 text-center">
-            <p className="text-sm text-muted-foreground mb-4">No timelines yet.</p>
-            <Link href="/timeline/new">
-              <Button>Build your first timeline</Button>
-            </Link>
-          </div>
+          <EmptyStateCard
+            icon={Sparkles}
+            title="No timelines yet"
+            description="Sketch the arc of a hobby — phases, milestones, and proof. Your first timeline takes about two minutes."
+            ctaLabel="Build your first timeline"
+            href="/timeline/new"
+          />
         ) : (
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {timelineList.map((timeline) => {

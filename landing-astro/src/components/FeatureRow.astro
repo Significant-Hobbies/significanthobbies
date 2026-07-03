@@ -2,63 +2,98 @@
 const journeyPhases = [
   {
     label: 'Childhood',
-    color: 'oklch(0.72 0.13 150)',   /* sage */
+    color: 'oklch(0.72 0.13 150)',
     bg: 'oklch(0.72 0.13 150 / 0.12)',
     border: 'oklch(0.72 0.13 150 / 0.35)',
-    hobbies: ['lego', 'swimming', 'chess', 'drawing'],
+    img: 'https://source.unsplash.com/300x200/?lego',
+    hobbies: ['Lego', 'Swimming', 'Chess', 'Drawing'],
   },
   {
     label: 'Teen Years',
-    color: 'oklch(0.82 0.13 88)',    /* gold */
+    color: 'oklch(0.82 0.13 88)',
     bg: 'oklch(0.82 0.13 88 / 0.12)',
     border: 'oklch(0.82 0.13 88 / 0.35)',
-    hobbies: ['guitar', 'skateboarding', 'video games'],
+    img: 'https://source.unsplash.com/300x200/?guitar',
+    hobbies: ['Guitar', 'Skateboarding', 'Video games'],
   },
   {
     label: 'College',
-    color: 'oklch(0.78 0.10 200)',   /* slate-blue */
+    color: 'oklch(0.78 0.10 200)',
     bg: 'oklch(0.78 0.10 200 / 0.12)',
     border: 'oklch(0.78 0.10 200 / 0.35)',
-    hobbies: ['hiking', 'photography', 'coding'],
+    img: 'https://source.unsplash.com/300x200/?hiking',
+    hobbies: ['Hiking', 'Photography', 'Coding'],
   },
   {
     label: 'Now',
-    color: 'oklch(0.80 0.08 320)',   /* mauve */
+    color: 'oklch(0.80 0.08 320)',
     bg: 'oklch(0.80 0.08 320 / 0.12)',
     border: 'oklch(0.80 0.08 320 / 0.35)',
-    hobbies: ['running', 'cooking', 'pottery'],
+    img: 'https://source.unsplash.com/300x200/?cooking',
+    hobbies: ['Running', 'Cooking', 'Pottery'],
   },
 ];
+
+const archetypeBars = [
+  { label: 'Explorer', value: 86, color: 'oklch(0.82 0.13 88)' },
+  { label: 'Maker', value: 64, color: 'oklch(0.72 0.13 150)' },
+  { label: 'Athlete', value: 42, color: 'oklch(0.78 0.10 200)' },
+  { label: 'Collector', value: 28, color: 'oklch(0.80 0.08 320)' },
+];
+
+const identityTags = ['Hiking', 'Photography', 'Cooking', 'Guitar', 'Pottery'];
 ---
 
 <section class="bg-background px-6 py-24 lg:px-12">
   <div class="mx-auto max-w-6xl">
-    <div class="grid grid-cols-1 gap-6 lg:grid-cols-5">
-      <div class="lg:col-span-3">
-        <h2 class="text-2xl font-medium text-foreground sm:text-3xl">
-          Every hobby you&apos;ve ever had, mapped across your life
-        </h2>
-        <p class="mt-2 text-muted-foreground">
-          Build life phases — childhood, teen years, college, career — and tag every interest you remember,
-          even the ones you only tried once.
-        </p>
-        <div class="mt-6 overflow-hidden rounded-2xl border border-border bg-card">
+    <!-- Section heading -->
+    <div class="mb-12 max-w-2xl">
+      <p class="mb-3 text-sm font-semibold uppercase tracking-wider text-primary">Features</p>
+      <h2 class="text-3xl font-medium text-foreground sm:text-4xl" style="line-height: 1.1;">
+        Everything you need to map,<br class="hidden sm:block" /> discover, and share your hobbies
+      </h2>
+    </div>
+
+    <!-- Bento grid: 3-col asymmetric -->
+    <div class="grid grid-cols-1 gap-5 md:grid-cols-3">
+      <!-- ═══ Card 1 (large, 2 cols) — Map your hobby journey ═══ -->
+      <div class="spotlight-card card-lift shadow-elevated md:col-span-2 overflow-hidden rounded-2xl border border-border bg-card p-6">
+        <div class="mb-5 flex items-center justify-between">
+          <div>
+            <h3 class="text-xl font-semibold text-foreground">Map your hobby journey</h3>
+            <p class="mt-1 text-sm text-muted-foreground">
+              Build life phases and tag every interest you remember — even the ones you only tried once.
+            </p>
+          </div>
+          <span class="hidden shrink-0 rounded-full bg-muted px-3 py-1 text-xs font-medium text-muted-foreground sm:inline-block">
+            Timeline view
+          </span>
+        </div>
+        <!-- Richer mock timeline with Unsplash thumbnails per phase -->
+        <div class="grid grid-cols-2 gap-3 sm:grid-cols-4">
           {
             journeyPhases.map((phase) => (
-              <div
-                class="flex items-start gap-3 border-b border-border px-5 py-3.5 last:border-0"
-                style={`background: ${phase.bg}`}
-              >
-                <div class="flex min-w-[80px] items-center gap-1.5 pt-0.5">
-                  <div class="h-2 w-2 shrink-0 rounded-full" style={`background: ${phase.color}`} />
-                  <span class="text-[11px] font-semibold" style={`color: ${phase.color}`}>
-                    {phase.label}
-                  </span>
+              <div class="overflow-hidden rounded-xl border border-border bg-background">
+                <div class="relative h-20 overflow-hidden">
+                  <img
+                    src={phase.img}
+                    alt={`${phase.label} hobbies`}
+                    loading="lazy"
+                    class="h-full w-full object-cover"
+                  />
+                  <div
+                    class="absolute inset-0"
+                    style={`background: linear-gradient(to top, ${phase.bg.replace('/ 0.12', '/ 0.55')}, transparent);`}
+                  />
+                  <div class="absolute bottom-1.5 left-2 flex items-center gap-1.5">
+                    <div class="h-2 w-2 rounded-full" style={`background: ${phase.color}`} />
+                    <span class="text-[11px] font-semibold text-foreground">{phase.label}</span>
+                  </div>
                 </div>
-                <div class="flex flex-wrap gap-1">
+                <div class="flex flex-wrap gap-1 p-2.5">
                   {phase.hobbies.map((h) => (
                     <span
-                      class="rounded-full border px-2 py-0.5 text-[11px] font-medium"
+                      class="rounded-full border px-1.5 py-0.5 text-[10px] font-medium"
                       style={`background: ${phase.bg}; border-color: ${phase.border}; color: ${phase.color}`}
                     >
                       {h}
@@ -68,30 +103,87 @@ const journeyPhases = [
               </div>
             ))
           }
-          <div class="px-5 py-3 text-center text-[10px] text-muted-foreground">
-            4 phases · 13 hobbies · your story will look different
+        </div>
+        <p class="mt-4 text-center text-[11px] text-muted-foreground">
+          4 phases · 13 hobbies · your story will look different
+        </p>
+      </div>
+
+      <!-- ═══ Card 2 (small) — Discover your archetype ═══ -->
+      <div class="spotlight-card card-lift shadow-elevated overflow-hidden rounded-2xl border border-border bg-card p-6">
+        <h3 class="text-base font-semibold text-foreground">Discover your archetype</h3>
+        <p class="mt-1.5 text-sm leading-relaxed text-muted-foreground">
+          See what stuck across decades and the personality your interests reveal.
+        </p>
+        <!-- Visual personality card mockup -->
+        <div class="mt-5 rounded-xl border border-border bg-background p-4">
+          <div class="mb-3 flex items-center justify-between">
+            <span class="text-xs font-medium text-muted-foreground">Your archetype</span>
+            <span class="rounded-full bg-primary/15 px-2 py-0.5 text-[10px] font-semibold text-primary">
+              Top match
+            </span>
+          </div>
+          <div class="mb-4 flex items-baseline gap-2">
+            <span class="font-serif text-2xl font-semibold gold-text">The Explorer</span>
+          </div>
+          <div class="flex flex-col gap-2.5">
+            {
+              archetypeBars.map((bar) => (
+                <div>
+                  <div class="mb-1 flex items-center justify-between text-[10px]">
+                    <span class="text-muted-foreground">{bar.label}</span>
+                    <span class="font-semibold text-foreground">{bar.value}%</span>
+                  </div>
+                  <div class="h-1.5 overflow-hidden rounded-full bg-muted">
+                    <div
+                      class="h-full rounded-full"
+                      style={`width: ${bar.value}%; background: ${bar.color};`}
+                    />
+                  </div>
+                </div>
+              ))
+            }
           </div>
         </div>
       </div>
 
-      <div class="flex flex-col gap-6 lg:col-span-2">
-        <div class="spotlight-card flex-1 rounded-2xl border border-border bg-card p-6">
-          <div class="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-muted text-lg text-primary">
-            ✦
+      <!-- ═══ Card 3 (small) — Share your identity card ═══ -->
+      <div class="spotlight-card card-lift shadow-elevated md:col-span-1 overflow-hidden rounded-2xl border border-border bg-card p-6">
+        <h3 class="text-base font-semibold text-foreground">Share your identity card</h3>
+        <p class="mt-1.5 text-sm leading-relaxed text-muted-foreground">
+          Export your whole hobby journey as a stunning card — ready to share anywhere.
+        </p>
+        <!-- Mock export card with gradient border -->
+        <div class="gradient-border mt-5 p-4">
+          <div class="mb-3 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <div class="flex h-7 w-7 items-center justify-center rounded-full bg-primary text-[11px] font-bold text-primary-foreground">
+                A
+              </div>
+              <span class="text-xs font-semibold text-foreground">@alex</span>
+            </div>
+            <span class="text-[10px] text-muted-foreground">5 hobbies</span>
           </div>
-          <h3 class="text-base font-semibold text-foreground">Discover your hobby archetype</h3>
-          <p class="mt-2 text-sm leading-relaxed text-muted-foreground">
-            See what stuck across decades, what you rekindled, and the personality archetype your interests reveal.
+          <p class="mb-3 font-serif text-sm text-foreground" style="line-height: 1.3;">
+            "My hobby journey, mapped."
           </p>
-        </div>
-        <div class="spotlight-card flex-1 rounded-2xl border border-border bg-card p-6">
-          <div class="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-muted text-lg text-primary">
-            ↗
+          <div class="flex flex-wrap gap-1.5">
+            {
+              identityTags.map((tag) => (
+                <span class="rounded-full border border-border bg-muted px-2 py-0.5 text-[10px] font-medium text-foreground">
+                  {tag}
+                </span>
+              ))
+            }
           </div>
-          <h3 class="text-base font-semibold text-foreground">Share a beautiful identity card</h3>
-          <p class="mt-2 text-sm leading-relaxed text-muted-foreground">
-            Export your whole hobby journey as a stunning card — ready to share anywhere.
-          </p>
+          <div class="mt-3 flex items-center gap-2 border-t border-border pt-3">
+            <span class="rounded-md bg-primary px-2 py-1 text-[9px] font-semibold text-primary-foreground">
+              Export PNG
+            </span>
+            <span class="rounded-md border border-border px-2 py-1 text-[9px] font-medium text-muted-foreground">
+              Share link
+            </span>
+          </div>
         </div>
       </div>
     </div>

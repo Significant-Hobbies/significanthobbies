@@ -9,11 +9,51 @@ import Layout from '@/layouts/Layout.astro';
 const TITLE = 'SignificantHobbies — Your Hobby Journey';
 const DESCRIPTION =
   'Map your hobby history across life phases. Discover what rekindled, what persisted, and what to explore next.';
+
+const heroPhases = [
+  {
+    label: 'Childhood',
+    color: 'oklch(0.72 0.13 150)',
+    bg: 'oklch(0.72 0.13 150 / 0.12)',
+    border: 'oklch(0.72 0.13 150 / 0.35)',
+    hobbies: ['Lego', 'Swimming', 'Chess', 'Drawing'],
+  },
+  {
+    label: 'Teen',
+    color: 'oklch(0.82 0.13 88)',
+    bg: 'oklch(0.82 0.13 88 / 0.12)',
+    border: 'oklch(0.82 0.13 88 / 0.35)',
+    hobbies: ['Guitar', 'Skate', 'Games'],
+  },
+  {
+    label: 'College',
+    color: 'oklch(0.78 0.10 200)',
+    bg: 'oklch(0.78 0.10 200 / 0.12)',
+    border: 'oklch(0.78 0.10 200 / 0.35)',
+    hobbies: ['Hiking', 'Photo', 'Coding'],
+  },
+  {
+    label: 'Now',
+    color: 'oklch(0.80 0.08 320)',
+    bg: 'oklch(0.80 0.08 320 / 0.12)',
+    border: 'oklch(0.80 0.08 320 / 0.35)',
+    hobbies: ['Running', 'Cooking', 'Pottery'],
+  },
+];
+
+const stats = [
+  { value: '108', label: 'hobbies' },
+  { value: '10', label: 'categories' },
+  { value: 'Free', label: 'forever' },
+];
 ---
 
 <Layout title={TITLE} description={DESCRIPTION}>
-  <!-- Full-bleed scenic hero. The photo IS the design. -->
-  <section class="relative flex min-h-svh flex-col justify-end overflow-hidden bg-background">
+  <!-- ════════════════════════════════════════════════════════════════
+       HERO — full-bleed photo + gradient mesh + centered content
+       + browser-window product mockup + trust indicators
+       ════════════════════════════════════════════════════════════════ -->
+  <section class="relative flex min-h-svh flex-col items-center justify-center overflow-hidden bg-background">
     <img
       src="/hero/dawn-valley-1920.webp"
       srcset="/hero/dawn-valley-640.webp 640w, /hero/dawn-valley-1280.webp 1280w, /hero/dawn-valley-1920.webp 1920w, /hero/dawn-valley-2560.webp 2560w"
@@ -22,45 +62,116 @@ const DESCRIPTION =
       class="absolute inset-0 h-full w-full object-cover"
       fetchpriority="high"
     />
-    <!-- Single darkening pass at the bottom for text legibility. Neutral charcoal, no teal. -->
+    <!-- Darkening pass for legibility — top + bottom -->
     <div
       class="pointer-events-none absolute inset-0"
       aria-hidden="true"
-      style="background: linear-gradient(to top, oklch(0.15 0.005 285 / 0.92) 0%, oklch(0.15 0.005 285 / 0.55) 35%, transparent 60%);"
+      style="background: linear-gradient(to top, oklch(0.15 0.005 285 / 0.92) 0%, oklch(0.15 0.005 285 / 0.55) 40%, oklch(0.15 0.005 285 / 0.35) 100%);"
     />
-    <!-- Grid background — Stripe/Linear style dot pattern with radial mask fade -->
+    <!-- Premium gradient mesh overlay — gold / sage / blue radial blooms -->
+    <div class="hero-mesh pointer-events-none absolute inset-0" aria-hidden="true" />
+    <!-- Dot grid texture -->
     <div class="grid-bg pointer-events-none absolute inset-0" aria-hidden="true" />
 
-    <div class="relative z-10 mx-auto w-full max-w-6xl px-6 pb-20 lg:px-12 lg:pb-28">
-      <div class="max-w-xl">
-        <h1
-          class="font-serif text-4xl font-medium tracking-tight text-foreground sm:text-5xl lg:text-6xl"
-          style="line-height: 1.1;"
+    <div class="relative z-10 mx-auto w-full max-w-5xl px-6 py-20 text-center lg:px-12 lg:py-24">
+      <!-- Eyebrow pill -->
+      <div class="mb-6 inline-flex items-center gap-2 rounded-full border border-border bg-card/60 px-4 py-1.5 text-xs font-medium text-muted-foreground backdrop-blur-sm">
+        <span class="h-1.5 w-1.5 rounded-full bg-primary" />
+        Your life in hobbies — mapped, remembered, shared
+      </div>
+
+      <h1
+        class="font-serif text-4xl font-medium tracking-tight text-foreground sm:text-5xl lg:text-6xl"
+        style="line-height: 1.08;"
+      >
+        The hobbies that shaped you.<br />
+        <span class="gold-text">The life you still want to live.</span>
+      </h1>
+
+      <p class="mx-auto mt-6 max-w-xl text-base text-muted-foreground sm:text-lg" style="line-height: 1.5;">
+        Map every hobby from childhood to now. Commit to daily practice.
+        See your life in weeks, and decide what the remaining ones are for.
+      </p>
+
+      <div class="mt-8 flex flex-wrap items-center justify-center gap-3">
+        <a
+          href="/timeline/new"
+          class="shadow-glow rounded-full bg-primary px-7 py-3 text-sm font-semibold text-primary-foreground no-underline transition-opacity hover:opacity-90 focus-visible:ring-2 focus-visible:ring-foreground/50 focus-visible:outline-none"
         >
-          The hobbies that shaped you. The life you still want to live.
-        </h1>
+          Start your hobby map
+        </a>
+        <a
+          href="/bucket-lists"
+          class="rounded-full border border-border bg-card/40 px-7 py-3 text-sm font-medium text-foreground no-underline backdrop-blur-sm transition-colors hover:border-muted-foreground focus-visible:ring-2 focus-visible:ring-foreground/50 focus-visible:outline-none"
+        >
+          Build your bucket list
+        </a>
+      </div>
 
-        <p class="mt-5 max-w-md text-base text-muted-foreground sm:text-lg" style="line-height: 1.5;">
-          Map every hobby from childhood to now. Commit to daily practice.
-          See your life in weeks, and decide what the remaining ones are for.
-        </p>
-
-        <div class="mt-8 flex flex-wrap items-center gap-3">
-          <a
-            href="/timeline/new"
-            class="rounded-full bg-primary px-6 py-2.5 text-sm font-semibold text-primary-foreground no-underline transition-opacity hover:opacity-90 focus-visible:ring-2 focus-visible:ring-foreground/50 focus-visible:outline-none"
-          >
-            Start your hobby map
-          </a>
-          <a
-            href="/bucket-lists"
-            class="rounded-full border border-border px-6 py-2.5 text-sm font-medium text-foreground no-underline transition-colors hover:border-muted-foreground focus-visible:ring-2 focus-visible:ring-foreground/50 focus-visible:outline-none"
-          >
-            Build your bucket list
-          </a>
+      <!-- ─── Product mockup: browser window + timeline UI ─── -->
+      <div class="relative mx-auto mt-14 max-w-4xl">
+        <!-- Gold glow behind the mockup -->
+        <div
+          class="pointer-events-none absolute -inset-x-8 -inset-y-6 z-0"
+          aria-hidden="true"
+          style="background: radial-gradient(ellipse 70% 60% at 50% 50%, oklch(0.82 0.13 88 / 0.18), transparent 70%);"
+        />
+        <div class="browser-mockup shadow-float relative z-10 text-left">
+          <!-- Browser chrome bar -->
+          <div class="browser-mockup-bar">
+            <span class="browser-dot" style="background: oklch(0.65 0.20 25);"></span>
+            <span class="browser-dot" style="background: oklch(0.82 0.13 88);"></span>
+            <span class="browser-dot" style="background: oklch(0.72 0.13 150);"></span>
+            <div class="ml-3 flex-1">
+              <div class="rounded-md bg-background/60 px-3 py-1 text-[11px] text-muted-foreground">
+                significanthobbies.com/timeline
+              </div>
+            </div>
+          </div>
+          <!-- Timeline content: 4 phase columns -->
+          <div class="grid grid-cols-2 gap-3 p-4 sm:grid-cols-4 sm:p-5">
+            {
+              heroPhases.map((phase) => (
+                <div class="rounded-xl border border-border bg-background/40 p-3">
+                  <div
+                    class="mb-2.5 flex items-center gap-1.5 rounded-md px-2 py-1"
+                    style={`background: ${phase.bg}`}
+                  >
+                    <div class="h-2 w-2 rounded-full" style={`background: ${phase.color}`} />
+                    <span class="text-[11px] font-semibold" style={`color: ${phase.color}`}>
+                      {phase.label}
+                    </span>
+                  </div>
+                  <div class="flex flex-col gap-1.5">
+                    {phase.hobbies.map((h) => (
+                      <span
+                        class="rounded-full border px-2 py-0.5 text-center text-[10px] font-medium"
+                        style={`background: ${phase.bg}; border-color: ${phase.border}; color: ${phase.color}`}
+                      >
+                        {h}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              ))
+            }
+          </div>
         </div>
+      </div>
 
-        <p class="mt-5 text-sm text-muted-foreground">No sign-up required to start</p>
+      <!-- ─── Trust indicators ─── -->
+      <div class="mt-10 flex flex-col items-center gap-4">
+        <p class="text-sm text-muted-foreground">No sign-up required to start</p>
+        <div class="flex flex-wrap items-center justify-center gap-3">
+          {
+            stats.map((s) => (
+              <div class="flex items-center gap-1.5 rounded-full border border-border bg-card/50 px-3 py-1 text-xs backdrop-blur-sm">
+                <span class="font-semibold text-foreground">{s.value}</span>
+                <span class="text-muted-foreground">{s.label}</span>
+              </div>
+            ))
+          }
+        </div>
       </div>
     </div>
   </section>

@@ -2,10 +2,13 @@
 
 import { useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
-import { Check, Flame, Plus, Trash2 } from 'lucide-react';
+import { Check, Flame, Plus, Sparkles, Sunrise, Sunset, Trash2 } from 'lucide-react';
 
+import { GradientMesh, SpotlightCard } from '~/components/aceternity';
+import { CircularProgress } from '~/components/dashboard/circular-progress';
 import { Button } from '~/components/ui/button';
 import { computeStreak, computeWeeklyProgress } from '~/lib/habit-utils';
+import { cn } from '~/lib/utils';
 
 interface Habit {
   id: string;
@@ -104,6 +107,16 @@ export function DailyRitual({
 
   const greeting = isMorning ? `Good morning, ${firstName}.` : `Good evening, ${firstName}.`;
   const prompt = isMorning ? "What's your focus today?" : 'How did your day go?';
+  const journalTitle = isMorning ? 'Morning Focus' : 'Evening Reflection';
+  const journalPlaceholder = isMorning
+    ? 'The one thing that would make today worth living…'
+    : 'Be honest. What happened, and what did it mean?';
+
+  const dateString = new Date().toLocaleDateString('en-US', {
+    weekday: 'long',
+    month: 'long',
+    day: 'numeric',
+  });
 
   function isHabitDone(habitId: string): boolean {
     return logs.some((l) => l.habitId === habitId && l.completed);
@@ -159,45 +172,92 @@ export function DailyRitual({
   }
 
   const canSave = isMorning ? amEntry.trim().length > 0 : pmEntry.trim().length > 0;
+  const currentEntry = isMorning ? amEntry : pmEntry;
+  const charCount = currentEntry.length;
+
+  // AM/PM completion for the rings
+  const amProgress = amCompleted ? 1 : 0;
+  const pmProgress = pmCompleted ? 1 : 0;
 
   return (
-    <div className="mx-auto max-w-2xl px-4 py-10 sm:py-16">
-      {/* Greeting */}
-      <div className="mb-8">
-        <h1 className="text-xl font-semibold text-foreground">{greeting}</h1>
-        <p className="mt-1 text-sm text-muted-foreground">
-          {new Date().toLocaleDateString('en-US', {
-            weekday: 'long',
-            month: 'long',
-            day: 'numeric',
-          })}
-        </p>
-        {weeksRemaining !== null && (
-          <p className="mt-2 text-sm text-muted-foreground/70">
-            {weeksRemaining.toLocaleString()} weeks left.
-          </p>
-        )}
-      </div>
+    <div className="mx-auto max-w-2xl px-4 py-10 sm:py-16 space-y-8">
+      {/* ─── Ritual header — gradient mesh + editorial greeting ─── */}
+      <section className="relative overflow-hidden rounded-2xl border border-border/50 p-6 sm:p-8">
+        <GradientMesh variant={isMorning ? 'gold' : 'sage'} />
+        <div className="relative">
+          <div className="flex items-center gap-2 text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground/60">
+            {isMorning ? (
+              <Sunrise className="h-3.5 w-3.5 text-primary" />
+            ) : (
+              <Sunset className="h-3.5 w-3.5 text-primary" />
+            )}
+            {dateString}
+          </div>
+          <h1 className="mt-3 font-serif text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
+            {greeting}
+          </h1>
+          {weeksRemaining !== null && (
+            <div className="mt-4 flex items-center gap-3">
+              <div className="flex items-center gap-2 rounded-lg border border-border/60 bg-card/50 px-3 py-1.5">
+                <div className="h-2 w-2 rounded-full bg-primary animate-pulse-soft" />
+                <span className="text-sm text-muted-foreground">
+                  <span className="font-serif font-medium tabular-nums text-foreground">
+                    {weeksRemaining.toLocaleString()}
+                  </span>{' '}
+                  weeks left
+                </span>
+              </div>
+            </div>
+          )}
+        </div>
+      </section>
 
-      {/* Ritual prompt */}
-      <div className="mb-8">
-        <p className="text-sm font-medium text-foreground mb-2">{prompt}</p>
-        <textarea
-          value={isMorning ? amEntry : pmEntry}
-          onChange={(e) => (isMorning ? setAmEntry(e.target.value) : setPmEntry(e.target.value))}
-          placeholder={
-            isMorning
-              ? 'The one thing that would make today worth living…'
-              : 'Be honest. What happened, and what did it mean?'
-          }
-          className="w-full min-h-[120px] rounded-lg border border-border bg-background px-4 py-3 text-sm text-foreground leading-relaxed focus:border-foreground/40 focus-visible:ring-2 focus-visible:ring-foreground/60 focus-visible:outline-none resize-none"
+      {/* ─── AM/PM check-in rings ─── */}
+      <div className="flex items-center justify-center gap-12 rounded-xl border border-border bg-card p-6 shadow-soft">
+        <CircularProgress
+          progress={amProgress}
+          label="AM"
+          sublabel="Focus"
+          icon={Sunrise}
+          size={72}
+        />
+        <div className="h-12 w-px bg-border" />
+        <CircularProgress
+          progress={pmProgress}
+          label="PM"
+          sublabel="Reflect"
+          icon={Sunset}
+          size={72}
         />
       </div>
 
-      {/* Habits */}
-      <div className="mb-8">
-        <div className="flex items-center justify-between mb-3">
-          <p className="text-sm font-medium text-foreground">Habits</p>
+      {/* ─── Journal — card with header + gradient focus border ─── */}
+      <div className="overflow-hidden rounded-xl border border-border bg-card shadow-soft transition-colors focus-within:border-primary/40">
+        <div className="flex items-center justify-between border-b border-border/60 px-5 py-3">
+          <div className="flex items-center gap-2">
+            {isMorning ? (
+              <Sunrise className="h-4 w-4 text-primary" />
+            ) : (
+              <Sunset className="h-4 w-4 text-primary" />
+            )}
+            <h3 className="font-serif text-sm font-medium text-foreground">{journalTitle}</h3>
+          </div>
+          <span className="text-[10px] tabular-nums text-muted-foreground/50">
+            {charCount} chars
+          </span>
+        </div>
+        <textarea
+          value={isMorning ? amEntry : pmEntry}
+          onChange={(e) => (isMorning ? setAmEntry(e.target.value) : setPmEntry(e.target.value))}
+          placeholder={journalPlaceholder}
+          className="w-full min-h-[140px] resize-none bg-transparent px-5 py-4 text-base leading-relaxed text-foreground placeholder:text-muted-foreground/50 focus-visible:outline-none"
+        />
+      </div>
+
+      {/* ─── Habits — SpotlightCards with streak + weekly progress ─── */}
+      <div className="space-y-3">
+        <div className="flex items-center justify-between">
+          <h3 className="font-serif text-sm font-medium text-foreground">Habits</h3>
           <button
             onClick={() => setShowHabitManager(!showHabitManager)}
             className="text-xs text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground/50 rounded px-1"
@@ -207,91 +267,123 @@ export function DailyRitual({
         </div>
 
         {habits.length === 0 && !showHabitManager ? (
-          <p className="text-sm text-muted-foreground">
-            No habits yet. Click "Manage" to add some.
-          </p>
+          <div className="rounded-xl border border-dashed border-border bg-card/50 p-8 text-center">
+            <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-xl border border-primary/20 bg-primary/5">
+              <Sparkles className="h-5 w-5 text-primary" />
+            </div>
+            <p className="text-sm text-muted-foreground">
+              No habits yet. Click <span className="text-foreground font-medium">Manage</span> to
+              add some.
+            </p>
+          </div>
         ) : (
-          <div className="space-y-2">
+          <div className="space-y-2.5">
             {habits.map((habit) => {
               const done = isHabitDone(habit.id);
               const streak = computeStreak(allHabitLogs, habit.id);
               const weekly = computeWeeklyProgress(allHabitLogs, habit.id);
               const freqLabel = FREQUENCY_LABELS[habit.targetFrequency] ?? 'Every day';
+              const weeklyPct = (weekly.completed / weekly.target) * 100;
 
               return (
-                <div
+                <SpotlightCard
                   key={habit.id}
-                  className="flex items-center gap-3 group rounded-lg px-2 py-1.5 hover:bg-muted/40 transition-colors"
+                  className={cn(
+                    'shadow-soft transition-colors',
+                    done && 'border-primary/30 bg-primary/5'
+                  )}
+                  innerClassName="flex items-center gap-4 p-4"
+                  spotlightColor={
+                    done ? 'oklch(0.82 0.13 88 / 0.10)' : 'oklch(0.82 0.13 88 / 0.06)'
+                  }
                 >
+                  {/* Toggle checkbox */}
                   <button
                     onClick={() => toggleHabit(habit.id)}
-                    className={`flex h-5 w-5 shrink-0 items-center justify-center rounded border transition-colors focus-visible:ring-2 focus-visible:ring-foreground/50 focus-visible:outline-none ${
+                    className={cn(
+                      'flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border-2 transition-all focus-visible:ring-2 focus-visible:ring-foreground/50 focus-visible:outline-none',
                       done
-                        ? 'border-foreground bg-foreground text-background'
-                        : 'border-border hover:border-foreground/40'
-                    }`}
+                        ? 'border-primary bg-primary text-primary-foreground'
+                        : 'border-border hover:border-primary/50'
+                    )}
                     aria-label={
                       done ? `Mark ${habit.name} as not done` : `Mark ${habit.name} as done`
                     }
                   >
-                    {done && <Check className="h-3 w-3" />}
+                    {done && <Check className="h-4 w-4" />}
                   </button>
 
-                  {habit.icon && <span className="text-base leading-none">{habit.icon}</span>}
-
-                  <span
-                    className={`text-sm flex-1 ${
-                      done ? 'text-muted-foreground line-through' : 'text-foreground'
-                    }`}
-                  >
-                    {habit.name}
-                  </span>
-
-                  {/* Frequency badge */}
-                  <span className="text-[10px] text-muted-foreground/70 uppercase tracking-wide hidden sm:inline">
-                    {freqLabel}
-                  </span>
-
-                  {/* Weekly progress dots */}
-                  <div
-                    className="flex gap-0.5"
-                    aria-label={`${weekly.completed} of 7 days this week`}
-                  >
-                    {Array.from({ length: 7 }).map((_, i) => (
-                      <div
-                        key={i}
-                        className={`h-1.5 w-1.5 rounded-full ${
-                          i < weekly.completed ? 'bg-primary' : 'bg-border'
-                        }`}
-                      />
-                    ))}
+                  {/* Icon + name */}
+                  <div className="flex min-w-0 flex-1 items-center gap-2.5">
+                    {habit.icon && <span className="text-lg leading-none">{habit.icon}</span>}
+                    <div className="min-w-0">
+                      <p
+                        className={cn(
+                          'text-sm font-medium truncate',
+                          done ? 'text-muted-foreground' : 'text-foreground'
+                        )}
+                      >
+                        {habit.name}
+                      </p>
+                      <p className="text-[10px] uppercase tracking-wide text-muted-foreground/60">
+                        {freqLabel}
+                      </p>
+                    </div>
                   </div>
 
-                  {/* Streak */}
+                  {/* Weekly progress dots */}
+                  <div className="hidden flex-col items-end gap-1.5 sm:flex">
+                    <div
+                      className="flex gap-1"
+                      aria-label={`${weekly.completed} of 7 days this week`}
+                    >
+                      {Array.from({ length: 7 }).map((_, i) => (
+                        <div
+                          key={i}
+                          className={cn(
+                            'h-2 w-2 rounded-full transition-colors',
+                            i < weekly.completed ? 'bg-primary' : 'bg-foreground/15'
+                          )}
+                        />
+                      ))}
+                    </div>
+                    {/* Weekly progress bar */}
+                    <div className="h-1 w-24 overflow-hidden rounded-full bg-foreground/10">
+                      <div
+                        className="h-full rounded-full bg-primary transition-all duration-500"
+                        style={{ width: `${weeklyPct}%` }}
+                      />
+                    </div>
+                  </div>
+
+                  {/* Streak counter */}
                   {streak > 0 && (
-                    <span className="flex items-center gap-0.5 text-xs text-primary tabular-nums">
-                      <Flame className="h-3 w-3" />
-                      {streak}
-                    </span>
+                    <div className="flex shrink-0 items-center gap-1 rounded-lg bg-primary/10 px-2 py-1">
+                      <Flame className="h-3.5 w-3.5 text-primary" />
+                      <span className="font-serif text-sm font-semibold tabular-nums text-primary">
+                        {streak}
+                      </span>
+                    </div>
                   )}
 
+                  {/* Delete (manage mode) */}
                   {showHabitManager && (
                     <button
                       onClick={() => handleDeleteHabit(habit.id)}
                       className="text-muted-foreground/40 hover:text-destructive transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-destructive/50 rounded"
                       aria-label={`Delete ${habit.name}`}
                     >
-                      <Trash2 className="h-3.5 w-3.5" />
+                      <Trash2 className="h-4 w-4" />
                     </button>
                   )}
-                </div>
+                </SpotlightCard>
               );
             })}
           </div>
         )}
 
         {showHabitManager && (
-          <div className="mt-4 space-y-3 rounded-lg border border-border bg-card p-4">
+          <div className="mt-4 space-y-3 rounded-xl border border-border bg-card p-4 shadow-soft">
             {/* Name input */}
             <div className="flex gap-2">
               <input
@@ -360,23 +452,53 @@ export function DailyRitual({
         )}
       </div>
 
-      {/* If it's evening, show the AM entry from the morning (read-only) */}
+      {/* ─── Morning entry (read-only, evening view) ─── */}
       {!isMorning && amEntry && (
-        <div className="mb-8 rounded-lg border border-border bg-card/50 p-4">
-          <p className="text-xs text-muted-foreground mb-1.5">This morning you wrote:</p>
+        <div className="rounded-xl border border-border bg-card/50 p-5 shadow-soft">
+          <div className="flex items-center gap-2 mb-2">
+            <Sunrise className="h-3.5 w-3.5 text-primary" />
+            <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+              This morning you wrote
+            </p>
+          </div>
           <p className="text-sm text-foreground/80 leading-relaxed whitespace-pre-wrap">
             {amEntry}
           </p>
         </div>
       )}
 
-      {/* Save */}
-      <div className="flex items-center gap-3">
-        <Button onClick={handleSave} disabled={saving || !canSave}>
+      {/* ─── Save — with circular checkmark animation ─── */}
+      <div className="flex items-center gap-4">
+        <Button onClick={handleSave} disabled={saving || !canSave} className="gap-2">
           {saving ? 'Saving…' : isMorning ? 'Save morning' : 'Save evening'}
         </Button>
-        {saved && <span className="text-sm text-muted-foreground">Saved.</span>}
-        {!canSave && (
+
+        {/* Circular checkmark animation when saved */}
+        {saved && (
+          <div className="flex items-center gap-2 animate-fade-in-up">
+            <div className="relative flex h-7 w-7 items-center justify-center">
+              <svg width="28" height="28" viewBox="0 0 28 28" className="-rotate-90">
+                <circle
+                  cx="14"
+                  cy="14"
+                  r="11"
+                  fill="none"
+                  strokeWidth="2.5"
+                  stroke="oklch(0.82 0.13 88)"
+                  strokeDasharray="69.12"
+                  strokeDashoffset="0"
+                  strokeLinecap="round"
+                  className="animate-[drawLine_0.5s_ease-out]"
+                  style={{ filter: 'drop-shadow(0 0 4px oklch(0.82 0.13 88 / 0.5))' }}
+                />
+              </svg>
+              <Check className="absolute h-3.5 w-3.5 text-primary" />
+            </div>
+            <span className="text-sm font-medium text-primary">Saved</span>
+          </div>
+        )}
+
+        {!canSave && !saved && (
           <span className="text-xs text-muted-foreground/60">
             {isMorning ? 'Add your focus to save.' : 'Add your entry to save.'}
           </span>

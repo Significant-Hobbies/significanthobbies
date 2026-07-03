@@ -65,14 +65,17 @@ export function DashboardStats({
       <Sparkles className="h-5 w-5" />
     );
 
+  const habitPct = habitsTotal > 0 ? (habitsDone / habitsTotal) * 100 : 0;
+  const lifePct = totalWeeks > 0 ? (weeksLived / totalWeeks) * 100 : 0;
+
   return (
     <StaggerContainer className="space-y-4">
       <StaggerItem>
-        <BentoGrid className="auto-rows-[10rem]">
-          {/* Weeks remaining — the mortality frame, hero stat */}
+        <BentoGrid className="auto-rows-[11rem]">
+          {/* Weeks remaining — the mortality frame, hero stat with progress bar */}
           {hasBirthYear && (
             <SpotlightCard
-              className="shadow-sm sm:col-span-2 lg:col-span-1"
+              className="shadow-soft sm:col-span-2 lg:col-span-1"
               innerClassName="flex h-full flex-col justify-between p-6"
             >
               <div className="flex items-center gap-3">
@@ -88,13 +91,20 @@ export function DashboardStats({
                 <p className="mt-1 text-xs text-muted-foreground">
                   of ~{totalWeeks.toLocaleString()} · {weeksLived.toLocaleString()} lived
                 </p>
+                {/* Life progress bar */}
+                <div className="mt-3 h-1 w-full overflow-hidden rounded-full bg-foreground/10">
+                  <div
+                    className="h-full rounded-full bg-primary transition-all duration-700"
+                    style={{ width: `${lifePct}%` }}
+                  />
+                </div>
               </div>
             </SpotlightCard>
           )}
 
           {/* Timelines */}
           <SpotlightCard
-            className="shadow-sm"
+            className="shadow-soft"
             innerClassName="flex h-full flex-col justify-between p-6"
           >
             <div className="flex items-center gap-3">
@@ -116,9 +126,9 @@ export function DashboardStats({
             </div>
           </SpotlightCard>
 
-          {/* Habits today */}
+          {/* Habits today — with progress bar */}
           <SpotlightCard
-            className="shadow-sm"
+            className="shadow-soft"
             innerClassName="flex h-full flex-col justify-between p-6"
           >
             <div className="flex items-center gap-3">
@@ -139,12 +149,24 @@ export function DashboardStats({
                     ? 'All done'
                     : `${habitsTotal - habitsDone} to go`}
               </p>
+              {/* Habit progress bar */}
+              {habitsTotal > 0 && (
+                <div className="mt-3 h-1 w-full overflow-hidden rounded-full bg-foreground/10">
+                  <div
+                    className={cn(
+                      'h-full rounded-full transition-all duration-700',
+                      habitsDone === habitsTotal ? 'bg-primary' : 'bg-primary/70'
+                    )}
+                    style={{ width: `${habitPct}%` }}
+                  />
+                </div>
+              )}
             </div>
           </SpotlightCard>
 
-          {/* Active commitments */}
+          {/* Active commitments — with progress indicator */}
           <SpotlightCard
-            className={cn('shadow-sm', hasBirthYear && 'sm:col-span-2')}
+            className={cn('shadow-soft', hasBirthYear && 'sm:col-span-2')}
             innerClassName="flex h-full flex-col justify-between p-6"
           >
             <div className="flex items-center gap-3">
@@ -156,7 +178,7 @@ export function DashboardStats({
               </h3>
             </div>
             <div className="flex items-end justify-between gap-3">
-              <div>
+              <div className="flex-1">
                 <p className="font-serif text-4xl font-semibold tabular-nums text-foreground">
                   <NumberTicker value={activeCommitments} />
                 </p>
@@ -167,6 +189,17 @@ export function DashboardStats({
                       ? `${dueToday} waiting for a stamp`
                       : 'All stamped today'}
                 </p>
+                {/* Commitment status bar — shows due vs done */}
+                {activeCommitments > 0 && (
+                  <div className="mt-3 flex h-1 w-full overflow-hidden rounded-full bg-foreground/10">
+                    <div
+                      className="h-full bg-primary"
+                      style={{
+                        width: `${((activeCommitments - dueToday) / activeCommitments) * 100}%`,
+                      }}
+                    />
+                  </div>
+                )}
               </div>
               <Link
                 href="/commitments"
@@ -179,8 +212,9 @@ export function DashboardStats({
 
           {/* Primary CTA — with animated border beam */}
           <SpotlightCard
-            className="relative shadow-sm sm:col-span-2 lg:col-span-3"
+            className="relative shadow-soft sm:col-span-2 lg:col-span-3"
             innerClassName="flex h-full flex-col justify-between p-6"
+            spotlightColor="oklch(0.82 0.13 88 / 0.12)"
           >
             <BorderBeam size={220} duration={14} />
             <div className="flex items-center gap-3">
@@ -201,7 +235,7 @@ export function DashboardStats({
               </p>
               <Link
                 href={primaryCta.href}
-                className="inline-flex shrink-0 items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90"
+                className="inline-flex shrink-0 items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-all hover:opacity-90 hover:shadow-glow"
               >
                 {primaryCta.label}
               </Link>
