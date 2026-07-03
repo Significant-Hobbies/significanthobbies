@@ -278,6 +278,7 @@ export default function CheapHobbiesPage() {
                 <Link
                   href={`/hobbies/${hobbySlug(hobby.name)}`}
                   className="text-base font-bold text-foreground hover:text-foreground transition-colors"
+                  prefetch={false}
                 >
                   {hobby.name}
                 </Link>
@@ -311,6 +312,7 @@ export default function CheapHobbiesPage() {
                 <Link
                   href={`/hobbies/${hobbySlug(hobby.name)}`}
                   className="text-base font-bold text-foreground hover:text-foreground transition-colors"
+                  prefetch={false}
                 >
                   {hobby.name}
                 </Link>

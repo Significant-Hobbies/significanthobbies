@@ -182,6 +182,7 @@ export default function HobbiesForMentalHealthPage() {
                   <Link
                     href={`/hobbies/${hobbySlug(hobby.name)}`}
                     className="text-lg font-bold text-foreground hover:text-foreground transition-colors"
+                    prefetch={false}
                   >
                     {hobby.name}
                   </Link>

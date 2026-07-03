@@ -452,7 +452,7 @@ export default function WhatAreSignificantHobbiesPage() {
 
             <div className="mt-8 space-y-4">
               {HOBBY_TYPES.map(({ label, emoji, examples, description, href }) => (
-                <Link key={label} href={href} className="group block">
+                <Link key={label} href={href} className="group block" prefetch={false}>
                   <div className="flex items-start gap-5 rounded-2xl border border-border bg-card p-6 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-foreground/30 hover:shadow-md">
                     <span className="text-3xl">{emoji}</span>
                     <div className="flex-1">
@@ -586,7 +586,7 @@ export default function WhatAreSignificantHobbiesPage() {
                   emoji: '⚔️',
                 },
               ].map(({ href, label, description, accent, emoji }) => (
-                <Link key={href} href={href} className="group block">
+                <Link key={href} href={href} className="group block" prefetch={false}>
                   <div
                     className={`flex h-full items-start gap-4 rounded-2xl border p-6 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md ${
                       accent

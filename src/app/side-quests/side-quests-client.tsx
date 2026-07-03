@@ -705,6 +705,7 @@ function SideQuestsInner() {
                                 <Link
                                   href="/timeline/new"
                                   className="mt-3 inline-flex items-center gap-1 text-xs font-semibold text-foreground hover:text-foreground"
+                                  prefetch={false}
                                 >
                                   Add to timeline
                                   <span>&#8594;</span>

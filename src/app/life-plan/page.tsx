@@ -334,6 +334,7 @@ export default async function LifePlanPage() {
                 key={tl.id}
                 href={`/timeline/${tl.id}`}
                 className="block rounded-xl border border-border bg-card p-4 hover:border-border hover:shadow-sm transition-all"
+                prefetch={false}
               >
                 <div className="flex items-center justify-between mb-2">
                   <span className="font-medium text-foreground">{tl.title}</span>

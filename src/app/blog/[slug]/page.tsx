@@ -175,7 +175,7 @@ function RelatedCard({ post }: { post: BlogPost }) {
   const style = categoryStyle(post.category);
 
   return (
-    <Link href={`/blog/${post.slug}`} className="group block">
+    <Link href={`/blog/${post.slug}`} className="group block" prefetch={false}>
       <div className="flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-card p-6 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-foreground/30 hover:shadow-[0_8px_32px_rgba(16,185,129,0.10)]">
         <div className="mb-3 text-3xl transition-transform duration-300 group-hover:scale-110">
           {post.emoji}

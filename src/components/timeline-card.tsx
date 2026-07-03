@@ -25,7 +25,7 @@ export function TimelineCard({ timeline, showVisibility = false, likeCount }: Pr
   const VisIcon = VISIBILITY_ICONS[timeline.visibility];
 
   return (
-    <Link href={getTimelineUrl(timeline)}>
+    <Link href={getTimelineUrl(timeline)} prefetch={false}>
       <div className="group rounded-xl border border-border bg-card p-5 transition-colors hover:border-foreground/30 hover:bg-card/40">
         {/* Title row */}
         <div className="mb-3 flex items-start justify-between gap-2">

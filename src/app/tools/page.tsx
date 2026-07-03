@@ -94,6 +94,7 @@ export default function ToolsPage() {
                 key={tool.href}
                 href={tool.href}
                 className="group relative flex flex-col overflow-hidden rounded-2xl border border-border bg-card p-6 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-foreground/30 hover:shadow-[0_8px_32px_rgba(16,185,129,0.10)]"
+                prefetch={false}
               >
                 {/* Top accent */}
                 <div className="absolute inset-x-0 top-0 h-0.5 origin-left scale-x-0 rounded-t-2xl bg-gradient-to-r from-foreground to-foreground/60 transition-transform duration-300 group-hover:scale-x-100" />

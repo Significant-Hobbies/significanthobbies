@@ -167,7 +167,7 @@ export default async function CategoryPage({ params }: Props) {
           {cat.hobbies.map((hobby) => {
             const hobbySlug = hobby.toLowerCase().replace(/\s+/g, '-');
             return (
-              <Link key={hobby} href={`/hobbies/${encodeURIComponent(hobbySlug)}`}>
+              <Link key={hobby} href={`/hobbies/${encodeURIComponent(hobbySlug)}`} prefetch={false}>
                 <div className="group rounded-xl border border-border bg-card p-4 transition-all hover:border-foreground/30 hover:shadow-sm cursor-pointer">
                   <span className="font-medium text-foreground group-hover:text-foreground transition-colors text-sm">
                     {hobby}
@@ -198,6 +198,7 @@ export default async function CategoryPage({ params }: Props) {
                     slug: t.slug,
                     user: t.userUsername ? { username: t.userUsername } : null,
                   })}
+                  prefetch={false}
                 >
                   <div className="group rounded-xl border border-border bg-card p-4 transition-colors hover:border-foreground/30">
                     <h3 className="font-medium text-foreground group-hover:text-foreground transition-colors">
@@ -255,7 +256,7 @@ export default async function CategoryPage({ params }: Props) {
           {relatedCategories.map((c) => {
             const catSlug = c.name.toLowerCase().replace(/\s+/g, '-');
             return (
-              <Link key={c.name} href={`/hobbies/category/${catSlug}`}>
+              <Link key={c.name} href={`/hobbies/category/${catSlug}`} prefetch={false}>
                 <Badge
                   variant="outline"
                   className="border-border text-muted-foreground hover:border-foreground/30 hover:text-foreground cursor-pointer transition-colors py-1 px-3"

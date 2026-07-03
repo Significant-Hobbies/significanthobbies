@@ -352,6 +352,7 @@ export default async function ProfilePage({ params }: Props) {
                     key={hobbyName}
                     href={`/hobbies/${encodeURIComponent(hobbyName.toLowerCase().replace(/\s+/g, '-'))}`}
                     className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-medium transition-colors hover:ring-1 hover:ring-foreground/30 ${colorClass}`}
+                    prefetch={false}
                   >
                     {cat && <span>{cat.emoji}</span>}
                     {hobbyName}

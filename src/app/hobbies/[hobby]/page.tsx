@@ -244,7 +244,7 @@ export default async function HobbyDetailPage({ params }: Props) {
           </h2>
           <div className="space-y-3">
             {relatedPosts.map((post) => (
-              <Link key={post.slug} href={`/blog/${post.slug}`}>
+              <Link key={post.slug} href={`/blog/${post.slug}`} prefetch={false}>
                 <div className="group rounded-xl border border-border bg-card p-4 transition-colors hover:border-foreground/30">
                   <div className="flex items-center gap-3">
                     <span className="text-2xl">{post.emoji}</span>
@@ -283,6 +283,7 @@ export default async function HobbyDetailPage({ params }: Props) {
                     slug: t.slug,
                     user: t.userUsername ? { username: t.userUsername } : null,
                   })}
+                  prefetch={false}
                 >
                   <div className="group rounded-xl border border-border bg-card p-4 transition-colors hover:border-foreground/30">
                     <h3 className="font-medium text-foreground group-hover:text-foreground transition-colors">
@@ -324,6 +325,7 @@ export default async function HobbyDetailPage({ params }: Props) {
               <Link
                 key={h}
                 href={`/hobbies/${encodeURIComponent(h.toLowerCase().replace(/\s+/g, '-'))}`}
+                prefetch={false}
               >
                 <Badge
                   variant="outline"
@@ -356,6 +358,7 @@ export default async function HobbyDetailPage({ params }: Props) {
                   key={affinity.name}
                   href={`/hobbies/${encodeURIComponent(slug)}`}
                   className="group block rounded-xl border border-border bg-card p-4 transition-colors hover:border-foreground/30"
+                  prefetch={false}
                 >
                   <div className="flex items-center gap-2 mb-1">
                     <span className="text-lg">{affinityCategory?.emoji ?? '🎯'}</span>

@@ -170,6 +170,7 @@ export default function StarterKitsPage() {
                         key={hobby}
                         href={`/hobbies/${hobbySlug(hobby)}`}
                         className="rounded-full border border-border px-3 py-1 text-xs font-medium text-muted-foreground transition-colors hover:border-foreground/30 hover:text-foreground"
+                        prefetch={false}
                       >
                         {hobby}
                       </Link>

@@ -469,6 +469,7 @@ export function HobbyQuiz() {
                     key={hobby}
                     href={`/hobbies/${hobbySlug(hobby)}`}
                     className="flex flex-col items-center gap-1 rounded-xl border border-border bg-card p-4 text-center text-sm font-medium text-foreground transition-all hover:border-foreground/30 hover:bg-foreground/10 hover:text-foreground hover:shadow-sm"
+                    prefetch={false}
                   >
                     <span className="text-2xl">{cat?.emoji ?? '✨'}</span>
                     <span>{hobby}</span>

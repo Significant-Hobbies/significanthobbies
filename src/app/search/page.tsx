@@ -147,7 +147,7 @@ export default async function SearchPage({ searchParams }: Props) {
                 ).size;
                 const username = t.user?.username ?? t.user?.name;
                 return (
-                  <Link key={t.id} href={getTimelineUrl(t)}>
+                  <Link key={t.id} href={getTimelineUrl(t)} prefetch={false}>
                     <div className="group flex items-center justify-between rounded-xl border border-border bg-card px-4 py-3.5 transition-all hover:border-foreground/30 hover:bg-card/40">
                       <div>
                         <p className="font-medium text-foreground group-hover:text-foreground transition-colors">
@@ -185,7 +185,11 @@ export default async function SearchPage({ searchParams }: Props) {
           {userWithCounts.length > 0 ? (
             <div className="space-y-2">
               {userWithCounts.map((user) => (
-                <Link key={user.id} href={user.username ? `/u/${user.username}` : '#'}>
+                <Link
+                  key={user.id}
+                  href={user.username ? `/u/${user.username}` : '#'}
+                  prefetch={false}
+                >
                   <div className="group flex items-center gap-3 rounded-xl border border-border bg-card px-4 py-3 transition-all hover:border-foreground/30 hover:bg-card/40">
                     {/* Avatar */}
                     <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-foreground/5 text-sm font-semibold text-muted-foreground border border-border">
@@ -229,6 +233,7 @@ export default async function SearchPage({ searchParams }: Props) {
                 <Link
                   key={hobby}
                   href={`/hobbies/${encodeURIComponent(hobby.toLowerCase().replace(/\s+/g, '-'))}`}
+                  prefetch={false}
                 >
                   <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3.5 py-1.5 text-sm text-muted-foreground transition-colors hover:border-foreground/30 hover:text-foreground">
                     <span>{emoji}</span>

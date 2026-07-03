@@ -53,7 +53,7 @@ export default function HobbiesPage() {
             const catSlug = category.name.toLowerCase().replace(/\s+/g, '-');
             const imgSrc = categoryImageSrc(category.name, 400);
             return (
-              <Link key={category.name} href={`/hobbies/category/${catSlug}`}>
+              <Link key={category.name} href={`/hobbies/category/${catSlug}`} prefetch={false}>
                 <div className="group overflow-hidden rounded-lg border border-border bg-card transition-colors hover:border-foreground/30">
                   {imgSrc ? (
                     <div className="relative h-20 w-full overflow-hidden">
@@ -97,7 +97,7 @@ export default function HobbiesPage() {
             <div key={category.name} className={`scroll-reveal border-l-2 pl-5 ${borderColor}`}>
               <div className="mb-4 flex items-center gap-2">
                 <span className="text-2xl">{category.emoji}</span>
-                <Link href={`/hobbies/category/${catSlug}`}>
+                <Link href={`/hobbies/category/${catSlug}`} prefetch={false}>
                   <h2 className="text-xl font-semibold text-foreground hover:text-foreground transition-colors">
                     {category.name}
                   </h2>
@@ -112,6 +112,7 @@ export default function HobbiesPage() {
                     key={hobby}
                     href={`/hobbies/${encodeURIComponent(hobby.toLowerCase().replace(/\s+/g, '-'))}`}
                     title={`${category.emoji} ${category.name}`}
+                    prefetch={false}
                   >
                     <span className="inline-block rounded-full border border-border bg-card px-4 py-1.5 text-sm text-muted-foreground transition-colors hover:border-foreground/30 hover:text-foreground cursor-pointer">
                       {hobby}

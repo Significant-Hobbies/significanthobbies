@@ -36,7 +36,7 @@ function PostCard({ post, featured = false }: { post: BlogPost; featured?: boole
   const style = categoryStyle(post.category);
 
   return (
-    <Link href={`/blog/${post.slug}`} className="group block h-full">
+    <Link href={`/blog/${post.slug}`} className="group block h-full" prefetch={false}>
       <div
         className={`relative flex h-full overflow-hidden border border-border bg-card shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-foreground/30 ${
           featured

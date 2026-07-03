@@ -358,6 +358,7 @@ export default function BucketListIdeasPage() {
                           key={p.slug}
                           href={`/bucket-lists/${p.slug}`}
                           className="inline-flex items-center gap-2 text-sm text-foreground hover:text-foreground font-medium transition-colors"
+                          prefetch={false}
                         >
                           <span>{p.emoji}</span>
                           <span>{p.name}</span>

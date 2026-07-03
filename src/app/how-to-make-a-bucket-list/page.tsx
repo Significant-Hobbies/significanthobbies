@@ -160,6 +160,7 @@ export default function HowToMakeABucketListPage() {
                     <Link
                       href={step.link.href}
                       className="mt-2 inline-flex items-center text-sm font-medium text-[#e05533] hover:text-[#c94420] transition-colors"
+                      prefetch={false}
                     >
                       {step.link.label}
                     </Link>

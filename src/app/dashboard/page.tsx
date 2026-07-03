@@ -361,6 +361,7 @@ export default async function DashboardPage() {
                       <Link
                         href={getTimelineUrl(timeline)}
                         className="ml-auto text-xs text-foreground hover:underline"
+                        prefetch={false}
                       >
                         Update?
                       </Link>

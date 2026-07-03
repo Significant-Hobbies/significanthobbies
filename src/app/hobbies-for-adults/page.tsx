@@ -231,6 +231,7 @@ function HobbyCard({ hobby }: { hobby: Hobby }) {
         <Link
           href={`/hobbies/${hobbySlug(hobby.name)}`}
           className="font-semibold text-foreground hover:text-foreground transition-colors"
+          prefetch={false}
         >
           {hobby.name}
         </Link>

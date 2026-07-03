@@ -556,6 +556,7 @@ export default function TravelBucketListPage() {
                               <Link
                                 href={`/bucket-lists/${dest.famous.slug}`}
                                 className={`font-medium ${s.text} hover:underline transition-colors`}
+                                prefetch={false}
                               >
                                 {dest.famous.name}
                               </Link>{' '}

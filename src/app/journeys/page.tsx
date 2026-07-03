@@ -29,7 +29,12 @@ export default function JourneysPage() {
         {FAMOUS_JOURNEYS.map((person) => {
           const totalHobbies = person.phases.reduce((sum, phase) => sum + phase.hobbies.length, 0);
           return (
-            <Link key={person.slug} href={`/journeys/${person.slug}`} className="group block">
+            <Link
+              key={person.slug}
+              href={`/journeys/${person.slug}`}
+              className="group block"
+              prefetch={false}
+            >
               <div className="relative flex h-full flex-col overflow-hidden rounded-xl border border-border bg-card p-5 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-foreground/30 hover:shadow-md">
                 {/* Hover accent bar */}
                 <div className="absolute inset-x-0 top-0 h-0.5 origin-left scale-x-0 bg-gradient-to-r from-foreground/60 to-foreground/20 transition-transform duration-300 group-hover:scale-x-100 rounded-t-xl" />

@@ -150,6 +150,7 @@ export default function BucketListsPage() {
                   key={person.slug}
                   href={`/bucket-lists/${person.slug}`}
                   className={`group relative flex flex-col rounded-2xl border border-border bg-card p-6 shadow-sm hover:shadow-md ${borderHover} hover:-translate-y-1 transition-all duration-200 overflow-hidden`}
+                  prefetch={false}
                 >
                   <div className="flex items-start justify-between gap-3 mb-4">
                     <span className="text-4xl leading-none">{person.emoji}</span>
