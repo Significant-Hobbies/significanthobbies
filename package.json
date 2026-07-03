@@ -45,6 +45,7 @@
     "@saas-maker/changelog-widget": "^0.2.1",
     "@saas-maker/feedback": "^0.2.1",
     "@saas-maker/testimonials": "^0.2.1",
+    "@tabler/icons-react": "^3.44.0",
     "better-auth": "1.6.9",
     "class-variance-authority": "0.7.1",
     "clsx": "2.1.1",

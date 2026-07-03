@@ -73,3 +73,52 @@ h1, h2, h3 {
   letter-spacing: -0.015em;
   text-wrap: balance;
 }
+
+/* Grid background — Stripe/Linear style */
+.grid-bg {
+  background-image: radial-gradient(oklch(0.97 0.003 285 / 0.04) 1px, transparent 1px);
+  background-size: 20px 20px;
+  -webkit-mask-image: radial-gradient(ellipse at center, black 30%, transparent 75%);
+  mask-image: radial-gradient(ellipse at center, black 30%, transparent 75%);
+}
+
+/* Spotlight card — mouse-following glow */
+.spotlight-card {
+  position: relative;
+  overflow: hidden;
+  transition: border-color 0.3s ease;
+}
+.spotlight-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(400px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), oklch(0.82 0.13 88 / 0.06), transparent 70%);
+  opacity: 0;
+  transition: opacity 0.3s;
+  pointer-events: none;
+  z-index: 1;
+}
+.spotlight-card > * {
+  position: relative;
+  z-index: 2;
+}
+.spotlight-card:hover::before {
+  opacity: 1;
+}
+.spotlight-card:hover {
+  border-color: oklch(0.82 0.13 88 / 0.3);
+}
+
+/* Shimmer text for hero */
+@keyframes shimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+.shimmer-text {
+  background: linear-gradient(90deg, oklch(0.97 0.003 285) 0%, oklch(0.82 0.13 88) 50%, oklch(0.97 0.003 285) 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shimmer 3s linear infinite;
+}

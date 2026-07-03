@@ -1,5 +1,12 @@
 import Link from 'next/link';
 
+import {
+  CardHoverEffect,
+  FadeIn,
+  GridBackground,
+  StaggerContainer,
+  StaggerItem,
+} from '~/components/aceternity';
 import { Badge } from '~/components/ui/badge';
 import { categoryImageSrc } from '~/lib/category-images';
 import { HOBBY_CATEGORIES } from '~/lib/hobbies';
@@ -16,65 +23,74 @@ export default function HobbiesPage() {
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-12">
-      <div className="scroll-reveal mb-10">
-        <h1 className="text-3xl font-bold text-foreground">Hobby directory</h1>
-        <p className="mt-2 text-muted-foreground">
-          Explore hobbies across every category. Click to see community timelines.
-        </p>
-        {/* Summary counts */}
-        <p className="mt-3 text-sm font-medium text-muted-foreground">
-          <span className="text-foreground">{totalCategories}</span>
-          <span className="text-muted-foreground/60"> categories</span>
-          <span className="mx-2 text-muted-foreground/40">·</span>
-          <span className="text-foreground">{totalHobbies}</span>
-          <span className="text-muted-foreground/60"> hobbies</span>
-        </p>
+      {/* Hero header with grid background */}
+      <div className="relative mb-10 overflow-hidden rounded-2xl">
+        <GridBackground variant="dots" size={22} />
+        <FadeIn className="relative px-2 pt-8 pb-6 sm:px-6">
+          <h1 className="text-3xl font-bold text-foreground">Hobby directory</h1>
+          <p className="mt-2 text-muted-foreground">
+            Explore hobbies across every category. Click to see community timelines.
+          </p>
+          {/* Summary counts */}
+          <p className="mt-3 text-sm font-medium text-muted-foreground">
+            <span className="text-foreground">{totalCategories}</span>
+            <span className="text-muted-foreground/60"> categories</span>
+            <span className="mx-2 text-muted-foreground/40">·</span>
+            <span className="text-foreground">{totalHobbies}</span>
+            <span className="text-muted-foreground/60"> hobbies</span>
+          </p>
+        </FadeIn>
       </div>
 
       {/* Browse by category */}
-      <div className="scroll-reveal mb-10">
+      <FadeIn className="mb-10" delay={0.1}>
         <h2 className="mb-4 text-sm font-medium text-foreground">Browse by category</h2>
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-5">
+        <StaggerContainer
+          className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-5"
+          staggerDelay={0.05}
+        >
           {HOBBY_CATEGORIES.map((category) => {
             const catSlug = category.name.toLowerCase().replace(/\s+/g, '-');
             const imgSrc = categoryImageSrc(category.name, 400);
             return (
-              <Link key={category.name} href={`/hobbies/category/${catSlug}`} prefetch={false}>
-                <div className="group overflow-hidden rounded-lg border border-border bg-card transition-colors hover:border-foreground/30">
-                  {imgSrc ? (
-                    <div className="relative h-20 w-full overflow-hidden">
-                      <img
-                        src={imgSrc}
-                        alt={`${category.name} hobbies`}
-                        className="absolute inset-0 h-full w-full object-cover transition-transform group-hover:scale-105"
-                        loading="lazy"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-background/70 to-transparent" />
-                      <span className="absolute top-1.5 left-1.5 text-xl">{category.emoji}</span>
+              <StaggerItem key={category.name}>
+                <Link href={`/hobbies/category/${catSlug}`} prefetch={false} className="block">
+                  <CardHoverEffect className="overflow-hidden rounded-lg p-0">
+                    {imgSrc ? (
+                      <div className="relative h-20 w-full overflow-hidden">
+                        <img
+                          src={imgSrc}
+                          alt={`${category.name} hobbies`}
+                          className="absolute inset-0 h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                          loading="lazy"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-background/70 to-transparent" />
+                        <span className="absolute top-1.5 left-1.5 text-xl">{category.emoji}</span>
+                      </div>
+                    ) : (
+                      <div className="flex h-20 w-full items-center justify-center bg-card">
+                        <span className="text-xl">{category.emoji}</span>
+                      </div>
+                    )}
+                    <div className="p-2.5">
+                      <p className="text-xs font-medium text-foreground">{category.name}</p>
+                      <p className="text-[10px] text-muted-foreground/60 mt-0.5">
+                        {category.hobbies.length} hobbies
+                      </p>
                     </div>
-                  ) : (
-                    <div className="flex h-20 w-full items-center justify-center bg-card">
-                      <span className="text-xl">{category.emoji}</span>
-                    </div>
-                  )}
-                  <div className="p-2.5">
-                    <p className="text-xs font-medium text-foreground">{category.name}</p>
-                    <p className="text-[10px] text-muted-foreground/60 mt-0.5">
-                      {category.hobbies.length} hobbies
-                    </p>
-                  </div>
-                </div>
-              </Link>
+                  </CardHoverEffect>
+                </Link>
+              </StaggerItem>
             );
           })}
-        </div>
-      </div>
+        </StaggerContainer>
+      </FadeIn>
 
-      <div className="space-y-10">
+      <StaggerContainer className="space-y-10" staggerDelay={0.08}>
         {HOBBY_CATEGORIES.map((category) => {
           const catSlug = category.name.toLowerCase().replace(/\s+/g, '-');
           return (
-            <div key={category.name} className="scroll-reveal">
+            <StaggerItem key={category.name}>
               <div className="mb-4 flex items-center gap-2">
                 <span className="text-2xl">{category.emoji}</span>
                 <Link href={`/hobbies/category/${catSlug}`} prefetch={false}>
@@ -100,10 +116,10 @@ export default function HobbiesPage() {
                   </Link>
                 ))}
               </div>
-            </div>
+            </StaggerItem>
           );
         })}
-      </div>
+      </StaggerContainer>
 
       {/* Famous Hobby Journeys link */}
       <div className="mt-12 rounded-xl border border-border bg-foreground/10 p-6 text-center">

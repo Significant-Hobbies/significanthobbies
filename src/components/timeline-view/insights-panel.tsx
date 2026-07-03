@@ -25,7 +25,7 @@ export function InsightsPanel({ phases }: Props) {
     .size;
 
   return (
-    <div className="rounded-xl border border-border bg-card p-5 space-y-5">
+    <div className="rounded-xl border border-border bg-card p-5 space-y-5 shadow-soft">
       <h2 className="text-lg font-semibold text-foreground">Insights</h2>
 
       {/* Stats row */}

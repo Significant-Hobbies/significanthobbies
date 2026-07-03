@@ -10,16 +10,16 @@ interface Props {
 const INTENSITY_LABELS = ['', 'Trying', 'Casual', 'Regular', 'Passionate', 'Core'];
 
 const PHASE_COLORS = [
-  { border: '#10b981', bg: 'rgba(16,185,129,0.06)' }, // emerald
-  { border: '#3b82f6', bg: 'rgba(59,130,246,0.06)' }, // blue
-  { border: '#8b5cf6', bg: 'rgba(139,92,246,0.06)' }, // violet
-  { border: '#f59e0b', bg: 'rgba(245,158,11,0.06)' }, // amber
-  { border: '#ec4899', bg: 'rgba(236,72,153,0.06)' }, // pink
-  { border: '#14b8a6', bg: 'rgba(20,184,166,0.06)' }, // teal
-  { border: '#f97316', bg: 'rgba(249,115,22,0.06)' }, // orange
-  { border: '#6366f1', bg: 'rgba(99,102,241,0.06)' }, // indigo
-  { border: '#06b6d4', bg: 'rgba(6,182,212,0.06)' }, // cyan
-  { border: '#e11d48', bg: 'rgba(225,29,72,0.06)' }, // rose
+  { border: 'oklch(0.72 0.13 150)', bg: 'oklch(0.72 0.13 150 / 0.06)' }, // sage
+  { border: 'oklch(0.70 0.13 250)', bg: 'oklch(0.70 0.13 250 / 0.06)' }, // blue
+  { border: 'oklch(0.65 0.15 290)', bg: 'oklch(0.65 0.15 290 / 0.06)' }, // violet
+  { border: 'oklch(0.82 0.13 88)', bg: 'oklch(0.82 0.13 88 / 0.06)' }, // gold
+  { border: 'oklch(0.70 0.15 350)', bg: 'oklch(0.70 0.15 350 / 0.06)' }, // pink
+  { border: 'oklch(0.72 0.11 200)', bg: 'oklch(0.72 0.11 200 / 0.06)' }, // teal
+  { border: 'oklch(0.72 0.16 55)', bg: 'oklch(0.72 0.16 55 / 0.06)' }, // orange
+  { border: 'oklch(0.65 0.14 270)', bg: 'oklch(0.65 0.14 270 / 0.06)' }, // indigo
+  { border: 'oklch(0.72 0.12 210)', bg: 'oklch(0.72 0.12 210 / 0.06)' }, // cyan
+  { border: 'oklch(0.65 0.18 15)', bg: 'oklch(0.65 0.18 15 / 0.06)' }, // rose
 ];
 
 export function PhaseSwimlane({ phases, pins = [] }: Props) {
@@ -34,8 +34,11 @@ export function PhaseSwimlane({ phases, pins = [] }: Props) {
           return (
             <div
               key={phase.id}
-              className="rounded-xl border border-border bg-card overflow-hidden"
-              style={{ borderLeft: `1px solid ${color.border}` }}
+              className="rounded-xl border border-border bg-card overflow-hidden shadow-soft"
+              style={{
+                borderLeft: `1px solid ${color.border}`,
+                ['--phase-color' as string]: color.border,
+              }}
             >
               <div className="px-4 py-3" style={{ background: color.bg }}>
                 <div className="flex items-center justify-between">
@@ -78,7 +81,7 @@ export function PhaseSwimlane({ phases, pins = [] }: Props) {
       {/* Desktop: horizontal grid */}
       <div className="hidden md:block overflow-x-auto">
         <div
-          className="grid gap-px bg-foreground/10 rounded-xl overflow-hidden border border-border"
+          className="grid gap-px bg-foreground/10 rounded-xl overflow-hidden border border-border shadow-soft"
           style={{ gridTemplateColumns: `repeat(${phases.length}, minmax(160px, 1fr))` }}
         >
           {phases.map((phase, index) => {

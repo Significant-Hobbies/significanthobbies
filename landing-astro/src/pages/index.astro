@@ -28,6 +28,8 @@ const DESCRIPTION =
       aria-hidden="true"
       style="background: linear-gradient(to top, oklch(0.15 0.005 285 / 0.92) 0%, oklch(0.15 0.005 285 / 0.55) 35%, transparent 60%);"
     />
+    <!-- Grid background — Stripe/Linear style dot pattern with radial mask fade -->
+    <div class="grid-bg pointer-events-none absolute inset-0" aria-hidden="true" />
 
     <div class="relative z-10 mx-auto w-full max-w-6xl px-6 pb-20 lg:px-12 lg:pb-28">
       <div class="max-w-xl">
@@ -69,3 +71,14 @@ const DESCRIPTION =
   <CommunitySamples />
   <FinalCta />
 </Layout>
+
+<script>
+  // Mouse-tracking for spotlight cards — sets --mouse-x/--mouse-y CSS vars
+  document.querySelectorAll('.spotlight-card').forEach((card) => {
+    card.addEventListener('mousemove', (e) => {
+      const rect = card.getBoundingClientRect();
+      card.style.setProperty('--mouse-x', `${e.clientX - rect.left}px`);
+      card.style.setProperty('--mouse-y', `${e.clientY - rect.top}px`);
+    });
+  });
+</script>

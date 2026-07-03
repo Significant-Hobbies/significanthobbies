@@ -3,8 +3,10 @@ import { Check, Clock, Plus } from 'lucide-react';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 
+import { FadeIn, GridBackground } from '~/components/aceternity';
 import { BucketListSection } from '~/components/bucket-list-section';
 import { CommitmentCard } from '~/components/commitments/commitment-card';
+import { DashboardStats } from '~/components/dashboard/dashboard-stats';
 import { LifeGrid } from '~/components/life-grid';
 import { LumiWeeklyReview } from '~/components/lumi-weekly-review';
 import { TimelineCard } from '~/components/timeline-card';
@@ -135,14 +137,43 @@ export default async function DashboardPage() {
 
   const firstName = session.user.name?.split(' ')[0] ?? 'there';
 
+  // Choose the primary CTA based on what the user is missing.
+  const primaryCta =
+    timelineList.length === 0
+      ? {
+          kind: 'timeline' as const,
+          href: '/timeline/new',
+          label: 'Build your first timeline →',
+          description:
+            'Sketch the arc of a hobby — phases, milestones, and proof. Your first timeline takes about two minutes.',
+        }
+      : activeCommitments.length === 0
+        ? {
+            kind: 'commitment' as const,
+            href: '/commitments',
+            label: 'Begin →',
+            description:
+              'Pick a hobby, show up daily, stamp each day with proof. A 30-day commitment spends roughly 4 of your remaining weeks.',
+          }
+        : {
+            kind: 'ritual' as const,
+            href: '/daily',
+            label: 'Open ritual →',
+            description:
+              'A quiet AM/PM page with habit check-ins and a compulsory journal entry. The other dimension of a life well-lived.',
+          };
+
   return (
     <div className="mx-auto max-w-5xl px-4 py-10 sm:py-14 space-y-16">
       {/* Life grid — the spine. Quiet, not preachy. */}
-      <section className="space-y-6">
-        <div>
-          <h1 className="text-2xl font-semibold text-foreground">{firstName}</h1>
+      <section className="relative space-y-6">
+        <GridBackground />
+        <div className="relative">
+          <h1 className="font-serif text-3xl font-semibold tracking-tight text-foreground">
+            {isMorning ? 'Good morning' : 'Good evening'}, {firstName}
+          </h1>
           {hasBirthYear && (
-            <p className="mt-1 text-sm text-muted-foreground">
+            <p className="mt-1.5 text-sm text-muted-foreground">
               {lifeGrid.weeksLived.toLocaleString()} weeks lived ·{' '}
               {lifeGrid.weeksRemaining.toLocaleString()} remaining of ~
               {lifeGrid.totalWeeks.toLocaleString()}
@@ -150,25 +181,43 @@ export default async function DashboardPage() {
           )}
         </div>
 
-        {hasBirthYear ? (
-          <LifeGrid grid={lifeGrid} />
-        ) : (
-          <div className="rounded-xl border border-dashed border-border p-8 text-center">
-            <p className="text-sm text-muted-foreground">
-              Add your birth year in{' '}
-              <Link href="/settings" className="text-foreground underline underline-offset-2">
-                settings
-              </Link>{' '}
-              to see your life in weeks.
-            </p>
-          </div>
-        )}
+        <FadeIn className="relative">
+          {hasBirthYear ? (
+            <LifeGrid grid={lifeGrid} />
+          ) : (
+            <div className="rounded-xl border border-dashed border-border p-8 text-center">
+              <p className="text-sm text-muted-foreground">
+                Add your birth year in{' '}
+                <Link href="/settings" className="text-foreground underline underline-offset-2">
+                  settings
+                </Link>{' '}
+                to see your life in weeks.
+              </p>
+            </div>
+          )}
+        </FadeIn>
       </section>
 
+      {/* Stats bento grid — the premium product dashboard feel */}
+      <DashboardStats
+        weeksLived={lifeGrid.weeksLived}
+        weeksRemaining={lifeGrid.weeksRemaining}
+        totalWeeks={lifeGrid.totalWeeks}
+        hasBirthYear={hasBirthYear}
+        timelineCount={timelineList.length}
+        habitsDone={habitsDone}
+        habitsTotal={habitsTotal}
+        activeCommitments={activeCommitments.length}
+        dueToday={dueToday.length}
+        primaryCta={primaryCta}
+      />
+
       {/* Today's practice */}
-      <section className="space-y-4">
+      <FadeIn className="space-y-4">
         <div className="flex items-baseline justify-between gap-3">
-          <h2 className="text-lg font-semibold text-foreground">Today&apos;s practice</h2>
+          <h2 className="font-serif text-xl font-semibold text-foreground">
+            Today&apos;s practice
+          </h2>
           <Link href="/commitments" className="text-sm text-muted-foreground hover:text-foreground">
             All commitments →
           </Link>
@@ -181,7 +230,7 @@ export default async function DashboardPage() {
                 ? `${dueToday.length} waiting for today's stamp.`
                 : 'All stamped for today.'}
             </p>
-            <div className="grid gap-3 sm:grid-cols-2">
+            <div className="grid gap-4 sm:grid-cols-2">
               {activeCommitments.slice(0, 4).map((c) => (
                 <CommitmentCard
                   key={c.id}
@@ -197,7 +246,7 @@ export default async function DashboardPage() {
             </div>
           </>
         ) : (
-          <div className="rounded-xl border border-border p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div className="rounded-xl border border-border bg-card p-6 shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div className="max-w-md">
               <p className="text-sm text-foreground font-medium">Start a commitment</p>
               <p className="mt-1 text-sm text-muted-foreground">
@@ -213,12 +262,12 @@ export default async function DashboardPage() {
             </Link>
           </div>
         )}
-      </section>
+      </FadeIn>
 
       {/* Daily ritual — the other dimension */}
-      <section className="space-y-4">
+      <FadeIn className="space-y-4">
         <div className="flex items-baseline justify-between gap-3">
-          <h2 className="text-lg font-semibold text-foreground">
+          <h2 className="font-serif text-xl font-semibold text-foreground">
             {isMorning ? 'This morning' : 'This evening'}
           </h2>
           <Link href="/daily" className="text-sm text-muted-foreground hover:text-foreground">
@@ -226,9 +275,9 @@ export default async function DashboardPage() {
           </Link>
         </div>
 
-        <div className="grid gap-3 sm:grid-cols-2">
+        <div className="grid gap-4 sm:grid-cols-2">
           {/* Habits summary */}
-          <div className="rounded-xl border border-border p-4">
+          <div className="rounded-xl border border-border bg-card p-5 shadow-sm">
             <p className="text-sm font-medium text-foreground">Habits</p>
             {habitsTotal > 0 ? (
               <>
@@ -265,7 +314,7 @@ export default async function DashboardPage() {
           </div>
 
           {/* Journal summary */}
-          <div className="rounded-xl border border-border p-4">
+          <div className="rounded-xl border border-border bg-card p-5 shadow-sm">
             <p className="text-sm font-medium text-foreground">Journal</p>
             {todayJournal ? (
               <p className="mt-1 text-sm text-muted-foreground line-clamp-3">
@@ -286,17 +335,17 @@ export default async function DashboardPage() {
             </Link>
           </div>
         </div>
-      </section>
+      </FadeIn>
 
       {weeklyReflection && <LumiWeeklyReview initialReflection={weeklyReflection} />}
 
       {/* Archetype */}
       {personality && (
-        <section className="space-y-3">
+        <FadeIn className="space-y-3">
           <div className="flex items-start gap-4">
             <span className="text-3xl">{personality.archetype.emoji}</span>
             <div className="flex-1 min-w-0">
-              <h2 className="text-lg font-semibold text-foreground">
+              <h2 className="font-serif text-xl font-semibold text-foreground">
                 {personality.archetype.name}
               </h2>
               <p className="mt-1 text-sm text-muted-foreground">
@@ -323,13 +372,13 @@ export default async function DashboardPage() {
                 ))}
             </div>
           )}
-        </section>
+        </FadeIn>
       )}
 
       {/* Timelines */}
-      <section className="space-y-4">
+      <FadeIn className="space-y-4">
         <div className="flex items-center justify-between gap-3">
-          <h2 className="text-lg font-semibold text-foreground">Your timelines</h2>
+          <h2 className="font-serif text-xl font-semibold text-foreground">Your timelines</h2>
           <Link href="/timeline/new">
             <Button size="sm" variant="outline" className="gap-1.5">
               <Plus className="h-3.5 w-3.5" />
@@ -370,7 +419,7 @@ export default async function DashboardPage() {
             })}
           </div>
         )}
-      </section>
+      </FadeIn>
 
       <BucketListSection initialItems={rawBucketItems} />
 

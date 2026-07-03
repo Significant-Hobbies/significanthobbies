@@ -13,7 +13,13 @@ import Link from 'next/link';
 import type { ReactNode } from 'react';
 import { useMemo, useState } from 'react';
 
-import { ScrollReveal } from '~/components/scroll-reveal';
+import {
+  AnimatedTabs,
+  CardHoverEffect,
+  GridBackground,
+  StaggerContainer,
+  StaggerItem,
+} from '~/components/aceternity';
 import { Input } from '~/components/ui/input';
 import { HOBBY_CATEGORIES } from '~/lib/hobbies';
 import { getTimelineUrl } from '~/lib/timeline-url';
@@ -87,8 +93,8 @@ function ExploreTimelineCard({ timeline }: { timeline: TimelineData & { likeCoun
   ).slice(0, 3);
 
   return (
-    <Link href={getTimelineUrl(timeline)} prefetch={false}>
-      <div className="group flex h-full flex-col rounded-xl border border-border bg-card p-5 transition-all hover:-translate-y-0.5 hover:border-foreground/30 hover:shadow-sm">
+    <Link href={getTimelineUrl(timeline)} prefetch={false} className="block h-full">
+      <CardHoverEffect className="flex h-full flex-col p-5 transition-transform hover:-translate-y-0.5 hover:shadow-sm">
         {/* Phase color strip */}
         {phases.length > 0 && (
           <div className="mb-4 flex h-1.5 w-full overflow-hidden rounded-full gap-px">
@@ -203,7 +209,7 @@ function ExploreTimelineCard({ timeline }: { timeline: TimelineData & { likeCoun
             <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
           </span>
         </div>
-      </div>
+      </CardHoverEffect>
     </Link>
   );
 }
@@ -336,43 +342,39 @@ export function ExploreClient({ timelines }: ExploreClientProps) {
     return result;
   }, [timelines, query, sort, categoryFilter]);
 
-  const SORT_OPTIONS: { label: string; value: SortOption }[] = [
-    { label: 'All', value: 'all' },
-    { label: 'Most phases', value: 'most-phases' },
-    { label: 'Most hobbies', value: 'most-hobbies' },
-    { label: 'Recent', value: 'recent' },
-    { label: 'Most liked', value: 'most-liked' },
+  const SORT_TABS: { id: SortOption; label: string }[] = [
+    { id: 'all', label: 'All' },
+    { id: 'most-phases', label: 'Most phases' },
+    { id: 'most-hobbies', label: 'Most hobbies' },
+    { id: 'recent', label: 'Recent' },
+    { id: 'most-liked', label: 'Most liked' },
   ];
 
   return (
     <div>
-      {/* Search bar */}
-      <div className="relative mb-5">
-        <Search className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground/60" />
-        <Input
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          placeholder="Search timelines, hobbies, or people..."
-          className="h-11 border-border bg-card pl-10 placeholder:text-muted-foreground/60"
-        />
-      </div>
+      {/* Header area with grid background */}
+      <div className="relative mb-5 overflow-hidden rounded-2xl">
+        <GridBackground variant="dots" size={22} />
+        <div className="relative px-1 py-4 sm:px-3">
+          {/* Search bar */}
+          <div className="relative mb-4">
+            <Search className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground/60" />
+            <Input
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Search timelines, hobbies, or people..."
+              className="h-11 border-border bg-card pl-10 placeholder:text-muted-foreground/60"
+            />
+          </div>
 
-      {/* Sort chips */}
-      <div className="mb-3 flex flex-wrap gap-2">
-        {SORT_OPTIONS.map((opt) => (
-          <button
-            key={opt.value}
-            type="button"
-            onClick={() => setSort(opt.value)}
-            className={`rounded-full px-3.5 py-1.5 text-sm font-medium transition-colors focus-visible:ring-2 focus-visible:ring-foreground/50 focus-visible:outline-none ${
-              sort === opt.value
-                ? 'bg-primary text-primary-foreground'
-                : 'border border-border bg-card text-muted-foreground hover:border-foreground/30 hover:text-foreground'
-            }`}
-          >
-            {opt.label}
-          </button>
-        ))}
+          {/* Sort tabs */}
+          <AnimatedTabs
+            tabs={SORT_TABS}
+            active={sort}
+            onChange={(id) => setSort(id as SortOption)}
+            className="flex-wrap"
+          />
+        </div>
       </div>
 
       {/* Category filter chips */}
@@ -441,13 +443,13 @@ export function ExploreClient({ timelines }: ExploreClientProps) {
             {query && ` for "${query}"`}
             {categoryFilter && ` in ${categoryFilter}`}
           </p>
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-            {filtered.map((timeline, i) => (
-              <ScrollReveal key={timeline.id} animation="fade-up" delay={i * 60} duration={450}>
+          <StaggerContainer className="grid grid-cols-1 gap-4 md:grid-cols-2" staggerDelay={0.05}>
+            {filtered.map((timeline) => (
+              <StaggerItem key={timeline.id}>
                 <ExploreTimelineCard timeline={timeline} />
-              </ScrollReveal>
+              </StaggerItem>
             ))}
-          </div>
+          </StaggerContainer>
         </>
       )}
 

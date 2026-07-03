@@ -156,6 +156,40 @@
   }
 }
 
+/* ─── Professional depth utilities ────────────────────────────────────────── */
+@layer utilities {
+  /* Subtle elevation — Stripe-like card shadow */
+  .shadow-soft {
+    box-shadow:
+      0 1px 2px 0 oklch(0 0 0 / 0.05),
+      0 1px 3px 0 oklch(0 0 0 / 0.08);
+  }
+  .shadow-elevated {
+    box-shadow:
+      0 2px 4px 0 oklch(0 0 0 / 0.06),
+      0 4px 12px 0 oklch(0 0 0 / 0.1);
+  }
+  .shadow-float {
+    box-shadow:
+      0 4px 8px 0 oklch(0 0 0 / 0.08),
+      0 8px 24px 0 oklch(0 0 0 / 0.12);
+  }
+  /* Gold glow for primary CTAs */
+  .shadow-glow {
+    box-shadow: 0 0 20px oklch(0.82 0.13 88 / 0.25);
+  }
+  .shadow-glow-lg {
+    box-shadow: 0 0 40px oklch(0.82 0.13 88 / 0.3);
+  }
+  /* Gradient border — premium card edge */
+  .border-gradient {
+    border: 1px solid transparent;
+    background:
+      linear-gradient(var(--card), var(--card)) padding-box,
+      linear-gradient(135deg, oklch(0.82 0.13 88 / 0.3), oklch(0.72 0.13 150 / 0.2)) border-box;
+  }
+}
+
 /* ─── Keyframes ─────────────────────────────────────────────────────────────── */
 
 @keyframes fadeOut {

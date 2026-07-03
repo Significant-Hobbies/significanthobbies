@@ -3,6 +3,13 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
+import {
+  CardHoverEffect,
+  FadeIn,
+  GridBackground,
+  StaggerContainer,
+  StaggerItem,
+} from '~/components/aceternity';
 import { JsonLd } from '~/components/json-ld';
 import { Badge } from '~/components/ui/badge';
 import { timelines, users } from '~/db/schema';
@@ -127,7 +134,7 @@ export default async function CategoryPage({ params }: Props) {
         </Link>
       </div>
 
-      {/* Image header — photo with a simple bottom darkening for text */}
+      {/* Image header — photo with a grid background overlay and bottom darkening for text */}
       <div className="relative -mx-4 mb-8 h-56 sm:mx-0 sm:h-72 sm:rounded-xl overflow-hidden">
         {categoryImageSrc(cat.name) ? (
           <img
@@ -140,37 +147,46 @@ export default async function CategoryPage({ params }: Props) {
         ) : (
           <div className="absolute inset-0 bg-card" />
         )}
+        <GridBackground variant="lines" size={28} color="oklch(0.97 0.003 285 / 0.10)" />
         <div className="absolute inset-0 bg-gradient-to-t from-background/85 via-background/30 to-transparent" />
-        <div className="absolute bottom-0 left-0 right-0 p-5 sm:p-6">
+        <FadeIn className="absolute bottom-0 left-0 right-0 p-5 sm:p-6" y={16}>
           <div className="flex items-center gap-2.5">
             <span className="text-3xl">{cat.emoji}</span>
             <h1 className="text-2xl sm:text-3xl font-semibold text-foreground">{cat.name}</h1>
           </div>
           <p className="mt-1 text-sm text-foreground/70">{cat.hobbies.length} hobbies</p>
-        </div>
+        </FadeIn>
       </div>
 
-      <p className="text-muted-foreground leading-relaxed max-w-2xl mb-8">{description}</p>
+      <FadeIn className="text-muted-foreground leading-relaxed max-w-2xl mb-8" delay={0.1}>
+        {description}
+      </FadeIn>
 
       {/* Hobbies grid */}
       <div className="mb-12">
         <h2 className="mb-4 text-sm font-medium text-foreground">
           Browse {cat.name.toLowerCase()} hobbies
         </h2>
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+        <StaggerContainer className="grid grid-cols-2 gap-3 sm:grid-cols-3" staggerDelay={0.04}>
           {cat.hobbies.map((hobby) => {
             const hobbySlug = hobby.toLowerCase().replace(/\s+/g, '-');
             return (
-              <Link key={hobby} href={`/hobbies/${encodeURIComponent(hobbySlug)}`} prefetch={false}>
-                <div className="group rounded-xl border border-border bg-card p-4 transition-all hover:border-foreground/30 hover:shadow-sm cursor-pointer">
-                  <span className="font-medium text-foreground group-hover:text-foreground transition-colors text-sm">
-                    {hobby}
-                  </span>
-                </div>
-              </Link>
+              <StaggerItem key={hobby}>
+                <Link
+                  href={`/hobbies/${encodeURIComponent(hobbySlug)}`}
+                  prefetch={false}
+                  className="block h-full"
+                >
+                  <CardHoverEffect className="h-full p-4">
+                    <span className="font-medium text-foreground group-hover:text-foreground transition-colors text-sm">
+                      {hobby}
+                    </span>
+                  </CardHoverEffect>
+                </Link>
+              </StaggerItem>
             );
           })}
-        </div>
+        </StaggerContainer>
       </div>
 
       {/* Community timelines */}
@@ -179,38 +195,40 @@ export default async function CategoryPage({ params }: Props) {
           Popular {cat.name.toLowerCase()} timelines
         </h2>
         {displayedTimelines.length > 0 ? (
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+          <StaggerContainer className="grid grid-cols-1 gap-3 sm:grid-cols-2" staggerDelay={0.08}>
             {displayedTimelines.map((t) => {
               const phases = parseJSONColumn<Phase[]>(t.phases, [], 'hobby-category:render:phases');
               const totalHobbies = new Set(phases.flatMap((p) => p.hobbies.map((h) => h.name)))
                 .size;
               return (
-                <Link
-                  key={t.id}
-                  href={getTimelineUrl({
-                    id: t.id,
-                    slug: t.slug,
-                    user: t.userUsername ? { username: t.userUsername } : null,
-                  })}
-                  prefetch={false}
-                >
-                  <div className="group rounded-xl border border-border bg-card p-4 transition-colors hover:border-foreground/30">
-                    <h3 className="font-medium text-foreground group-hover:text-foreground transition-colors">
-                      {t.title ?? 'Hobby Timeline'}
-                    </h3>
-                    {t.userName && (
-                      <p className="text-xs text-muted-foreground mt-0.5">
-                        @{t.userUsername ?? t.userName}
+                <StaggerItem key={t.id}>
+                  <Link
+                    href={getTimelineUrl({
+                      id: t.id,
+                      slug: t.slug,
+                      user: t.userUsername ? { username: t.userUsername } : null,
+                    })}
+                    prefetch={false}
+                    className="block h-full"
+                  >
+                    <CardHoverEffect className="h-full p-4">
+                      <h3 className="font-medium text-foreground group-hover:text-foreground transition-colors">
+                        {t.title ?? 'Hobby Timeline'}
+                      </h3>
+                      {t.userName && (
+                        <p className="text-xs text-muted-foreground mt-0.5">
+                          @{t.userUsername ?? t.userName}
+                        </p>
+                      )}
+                      <p className="text-xs text-muted-foreground/60 mt-1.5">
+                        {phases.length} phases · {totalHobbies} hobbies
                       </p>
-                    )}
-                    <p className="text-xs text-muted-foreground/60 mt-1.5">
-                      {phases.length} phases · {totalHobbies} hobbies
-                    </p>
-                  </div>
-                </Link>
+                    </CardHoverEffect>
+                  </Link>
+                </StaggerItem>
               );
             })}
-          </div>
+          </StaggerContainer>
         ) : (
           <div className="rounded-xl border border-border bg-card/40 p-8 text-center">
             <p className="text-muted-foreground">

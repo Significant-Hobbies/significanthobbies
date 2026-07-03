@@ -23,7 +23,7 @@ const famous = [
         famous.map((person) => (
           <a
             href={`/bucket-lists/${person.slug}`}
-            class="rounded-full border border-border px-4 py-1.5 text-sm text-foreground no-underline transition hover:border-muted-foreground focus-visible:ring-2 focus-visible:ring-foreground/50 focus-visible:outline-none"
+            class="spotlight-card rounded-full border border-border px-4 py-1.5 text-sm text-foreground no-underline transition hover:border-muted-foreground focus-visible:ring-2 focus-visible:ring-foreground/50 focus-visible:outline-none"
           >
             <span aria-hidden="true">{person.emoji}</span> {person.name}
           </a>

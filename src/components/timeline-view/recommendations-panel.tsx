@@ -14,7 +14,7 @@ export function RecommendationsPanel({ phases }: Props) {
   if (recommendations.length === 0) return null;
 
   return (
-    <div className="rounded-xl border border-border bg-card p-5 space-y-4">
+    <div className="rounded-xl border border-border bg-card p-5 space-y-4 shadow-soft">
       <div className="flex items-center gap-2">
         <Sparkles className="h-4 w-4 text-muted-foreground" />
         <h2 className="text-lg font-semibold text-foreground">What to try next</h2>

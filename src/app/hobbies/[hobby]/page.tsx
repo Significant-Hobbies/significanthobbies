@@ -2,6 +2,7 @@ import { desc, eq } from 'drizzle-orm';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
+import { FadeIn, SpotlightCard } from '~/components/aceternity';
 import { HobbyRoadmapCard } from '~/components/hobby-roadmap-card';
 import { JsonLd } from '~/components/json-ld';
 import { Badge } from '~/components/ui/badge';
@@ -150,16 +151,16 @@ export default async function HobbyDetailPage({ params }: Props) {
           ← All hobbies
         </Link>
       </div>
-      <div className="mb-8 flex items-center gap-3">
+      <FadeIn className="mb-8 flex items-center gap-3">
         <span className="text-4xl">{category.emoji}</span>
         <div>
           <h1 className="text-3xl font-bold text-foreground">{hobbyName}</h1>
           <p className="text-muted-foreground text-sm">{category.name}</p>
         </div>
-      </div>
+      </FadeIn>
 
       {/* Popularity */}
-      <div className="mb-8 flex items-center gap-3">
+      <FadeIn className="mb-8 flex items-center gap-3" delay={0.08}>
         <div className="rounded-xl border border-border bg-card px-5 py-3 flex items-center gap-3">
           <span className="text-2xl font-bold text-foreground">{popularityCount}</span>
           <span className="text-sm text-muted-foreground">
@@ -180,16 +181,16 @@ export default async function HobbyDetailPage({ params }: Props) {
             )}
           </span>
         </div>
-      </div>
+      </FadeIn>
 
       {/* Roadmap: concrete next-step path from today → 3 months */}
-      <div className="mb-8">
+      <FadeIn className="mb-8" delay={0.12}>
         <HobbyRoadmapCard roadmap={roadmap} />
-      </div>
+      </FadeIn>
 
       {/* Resources */}
       {resources.length > 0 && (
-        <div className="mb-8">
+        <FadeIn className="mb-8" delay={0.1}>
           <h2 className="mb-4 text-sm font-semibold text-muted-foreground">
             Tools & resources for {hobbyName}
           </h2>
@@ -233,12 +234,12 @@ export default async function HobbyDetailPage({ params }: Props) {
               </a>
             ))}
           </div>
-        </div>
+        </FadeIn>
       )}
 
       {/* Related articles */}
       {relatedPosts.length > 0 && (
-        <div className="mb-8">
+        <FadeIn className="mb-8" delay={0.1}>
           <h2 className="mb-4 text-sm font-semibold text-muted-foreground">Related articles</h2>
           <div className="space-y-3">
             {relatedPosts.map((post) => (
@@ -259,11 +260,11 @@ export default async function HobbyDetailPage({ params }: Props) {
               </Link>
             ))}
           </div>
-        </div>
+        </FadeIn>
       )}
 
       {/* Community timelines */}
-      <div className="mb-12">
+      <FadeIn className="mb-12" delay={0.1}>
         <h2 className="mb-4 text-sm font-semibold text-muted-foreground">
           Community timelines featuring {hobbyName}
         </h2>
@@ -310,7 +311,7 @@ export default async function HobbyDetailPage({ params }: Props) {
             </Link>
           </div>
         )}
-      </div>
+      </FadeIn>
 
       {/* Related hobbies in same category */}
       {otherHobbies.length > 0 && (
@@ -339,7 +340,7 @@ export default async function HobbyDetailPage({ params }: Props) {
 
       {/* Cross-category related hobbies */}
       {crossCategoryHobbies.length > 0 && (
-        <div>
+        <FadeIn delay={0.1}>
           <h2 className="mb-1 text-sm font-semibold text-muted-foreground">You might also like</h2>
           <p className="mb-4 text-xs text-muted-foreground/60">
             Hobbies people pair with {hobbyName.toLowerCase()}, often from a completely different
@@ -353,21 +354,25 @@ export default async function HobbyDetailPage({ params }: Props) {
                 <Link
                   key={affinity.name}
                   href={`/hobbies/${encodeURIComponent(slug)}`}
-                  className="group block rounded-xl border border-border bg-card p-4 transition-colors hover:border-foreground/30"
+                  className="block h-full"
                   prefetch={false}
                 >
-                  <div className="flex items-center gap-2 mb-1">
-                    <span className="text-lg">{affinityCategory?.emoji ?? '🎯'}</span>
-                    <span className="font-semibold text-foreground text-sm group-hover:text-foreground transition-colors">
-                      {affinity.name}
-                    </span>
-                  </div>
-                  <p className="text-xs text-muted-foreground leading-relaxed">{affinity.reason}</p>
+                  <SpotlightCard className="h-full p-4" innerClassName="h-full">
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className="text-lg">{affinityCategory?.emoji ?? '🎯'}</span>
+                      <span className="font-semibold text-foreground text-sm group-hover:text-foreground transition-colors">
+                        {affinity.name}
+                      </span>
+                    </div>
+                    <p className="text-xs text-muted-foreground leading-relaxed">
+                      {affinity.reason}
+                    </p>
+                  </SpotlightCard>
                 </Link>
               );
             })}
           </div>
-        </div>
+        </FadeIn>
       )}
     </div>
   );

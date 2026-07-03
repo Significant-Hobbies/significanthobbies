@@ -46,7 +46,7 @@ export function PersonalityCard({ phases }: Props) {
   const categoryEmoji = Object.fromEntries(HOBBY_CATEGORIES.map((c) => [c.name, c.emoji]));
 
   return (
-    <div className="rounded-xl border border-border bg-card p-5 space-y-5">
+    <div className="rounded-xl border border-border bg-card p-5 space-y-5 shadow-soft">
       {/* Header */}
       <div className="flex items-start gap-3">
         <span className="text-4xl leading-none">{archetype.emoji}</span>
