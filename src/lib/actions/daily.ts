@@ -39,6 +39,7 @@ export async function createHabit(name: string, targetFrequency?: string, icon?:
     icon: trimmedIcon,
   });
   revalidatePath('/daily');
+  revalidatePath('/dashboard');
 }
 
 export async function deleteHabit(id: string) {
@@ -50,6 +51,7 @@ export async function deleteHabit(id: string) {
     .set({ status: 'archived' })
     .where(and(eq(habits.id, id), eq(habits.userId, session.user.id)));
   revalidatePath('/daily');
+  revalidatePath('/dashboard');
 }
 
 // ── Habit logs (check-ins) ──────────────────────────────────────────────────
@@ -98,6 +100,7 @@ export async function toggleHabitLog(habitId: string, dayDate: string, completed
     });
   }
   revalidatePath('/daily');
+  revalidatePath('/dashboard');
 }
 
 // ── Journal entries ─────────────────────────────────────────────────────────
@@ -143,6 +146,7 @@ export async function saveJournalEntry(
     });
   }
   revalidatePath('/daily');
+  revalidatePath('/dashboard');
 }
 
 // ── Daily check-in state ────────────────────────────────────────────────────
@@ -188,6 +192,7 @@ export async function saveDailyCheckin(
     });
   }
   revalidatePath('/daily');
+  revalidatePath('/dashboard');
 }
 
 // ── Profile ─────────────────────────────────────────────────────────────────
