@@ -30,6 +30,21 @@ export const getServerAuthSession = cache(
       columns: { username: true },
     });
 
+    // Safety net: if the user signed up before the databaseHook was added,
+    // they may have an auth_user row but no app-level User row. Create it
+    // lazily so foreign keys on Habit/Timeline/etc. resolve.
+    if (!dbUser) {
+      await db
+        .insert(users)
+        .values({
+          id: session.user.id,
+          name: session.user.name ?? null,
+          email: session.user.email ?? null,
+          image: session.user.image ?? null,
+        })
+        .onConflictDoNothing();
+    }
+
     return {
       user: {
         id: session.user.id,
