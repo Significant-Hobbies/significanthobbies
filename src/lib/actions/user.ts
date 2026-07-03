@@ -134,6 +134,34 @@ export async function updateProfile(data: {
   revalidatePath('/settings');
 }
 
+// ─── Creed ──────────────────────────────────────────────────────────────────
+// The user's personal declaration — "I am someone who..."
+// This is the emotional anchor of the product. It sits at the top of the
+// dashboard and on the public profile. It's the user's stamp.
+
+export async function updateCreed(creed: string): Promise<{ success: boolean; error?: string }> {
+  const session = await getServerAuthSession();
+  if (!session?.user?.id) return { success: false, error: 'Not authenticated' };
+
+  const trimmed = creed.trim().slice(0, 500); // Max 500 chars
+
+  await db
+    .update(users)
+    .set({ creed: trimmed || null })
+    .where(eq(users.id, session.user.id));
+
+  const user = await db.query.users.findFirst({
+    where: eq(users.id, session.user.id),
+    columns: { username: true },
+  });
+  if (user?.username) {
+    revalidatePath(`/u/${user.username}`);
+  }
+  revalidatePath('/dashboard');
+
+  return { success: true };
+}
+
 const QuestProgressArraySchema = z.array(z.string().max(100)).max(500);
 
 export async function syncQuestProgress(completedQuests: string[], earnedBadges: string[]) {

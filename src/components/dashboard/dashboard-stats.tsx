@@ -72,7 +72,7 @@ export function DashboardStats({
     <StaggerContainer className="space-y-4">
       <StaggerItem>
         <BentoGrid className="auto-rows-[11rem]">
-          {/* Weeks remaining — the mortality frame, hero stat with progress bar */}
+          {/* Weeks to stamp — the canvas frame, hero stat with progress bar */}
           {hasBirthYear && (
             <SpotlightCard
               className="shadow-soft sm:col-span-2 lg:col-span-1"
@@ -82,14 +82,14 @@ export function DashboardStats({
                 <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
                   <Clock className="h-5 w-5" />
                 </div>
-                <h3 className="font-serif text-base font-medium text-foreground">Weeks left</h3>
+                <h3 className="font-serif text-base font-medium text-foreground">Weeks to stamp</h3>
               </div>
               <div>
                 <p className="font-serif text-4xl font-semibold tabular-nums text-foreground">
                   <NumberTicker value={weeksRemaining} />
                 </p>
                 <p className="mt-1 text-xs text-muted-foreground">
-                  of ~{totalWeeks.toLocaleString()} · {weeksLived.toLocaleString()} lived
+                  of ~{totalWeeks.toLocaleString()} · {weeksLived.toLocaleString()} stamped
                 </p>
                 {/* Life progress bar */}
                 <div className="mt-3 h-1 w-full overflow-hidden rounded-full bg-foreground/10">

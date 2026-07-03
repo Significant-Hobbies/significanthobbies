@@ -83,6 +83,9 @@ export const users = sqliteTable('User', {
   birthYear: integer('birthYear'),
   bio: text('bio'),
   website: text('website'),
+  // The user's personal creed — their declaration of what they're about.
+  // "I am someone who..." — the emotional anchor of the product.
+  creed: text('creed'),
   completedQuests: text('completedQuests').notNull().default('[]'),
   earnedBadges: text('earnedBadges').notNull().default('[]'),
   createdAt: integer('createdAt', { mode: 'timestamp' }).notNull().default(sql`(unixepoch())`),
@@ -434,6 +437,8 @@ export const userQuests = sqliteTable(
     sourceTimelineId: text('sourceTimelineId'),
     // Which bucket list item this quest was decomposed from — null for non-bucket quests
     sourceBucketItemId: text('sourceBucketItemId'),
+    // Which arc this quest belongs to — null for standalone quests
+    arcId: text('arcId'),
     // The quest title at generation time (so it displays even if the static quest changes)
     title: text('title').notNull(),
     description: text('description'),
@@ -452,6 +457,32 @@ export const userQuests = sqliteTable(
       table.status
     ),
   ]
+);
+
+// ─── Arcs ──────────────────────────────────────────────────────────────────
+// Arcs are high-level chapters in the user's life story. They contain side quests.
+// Think anime arcs: "The Rediscovery Arc", "Kilimanjaro Training Arc", etc.
+export const arcs = sqliteTable(
+  'Arc',
+  {
+    id: text('id')
+      .primaryKey()
+      .$defaultFn(() => createId()),
+    userId: text('userId')
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
+    title: text('title').notNull(),
+    description: text('description'),
+    emoji: text('emoji'),
+    type: text('type').notNull().default('custom'),
+    sourceBucketItemId: text('sourceBucketItemId'),
+    sourceTimelineId: text('sourceTimelineId'),
+    status: text('status').notNull().default('active'),
+    startedAt: integer('startedAt', { mode: 'timestamp' }).notNull().default(sql`(unixepoch())`),
+    completedAt: integer('completedAt', { mode: 'timestamp' }),
+    createdAt: integer('createdAt', { mode: 'timestamp' }).notNull().default(sql`(unixepoch())`),
+  },
+  (table) => [index('Arc_userId_status_idx').on(table.userId, table.status)]
 );
 
 // Simple cuid-like ID generator using nanoid pattern

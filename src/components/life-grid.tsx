@@ -5,10 +5,10 @@ type Props = {
 };
 
 /**
- * Life in Weeks — the mortality frame. A 52×~77 grid where each cell is one
- * week of a ~4,000-week life. Past weeks are muted charcoal; remaining weeks
- * carry a subtle gold gradient + glow so the future feels luminous, not empty.
- * Stamped weeks (weeks with practice) glow in gold.
+ * Life in Weeks — the stamp frame. A 52×~77 grid where each cell is one
+ * week of a ~4,000-week life. Stamped weeks (weeks with practice) glow in
+ * gold — that's your mark on the canvas so far. The weeks ahead carry a
+ * subtle gold tint: open space, not empty space.
  */
 export function LifeGrid({ grid }: Props) {
   const years = Math.ceil(grid.cells.length / 52);
@@ -33,7 +33,7 @@ export function LifeGrid({ grid }: Props) {
         style={{
           gridTemplateColumns: `repeat(52, minmax(0, 1fr))`,
         }}
-        aria-label={`Life grid: ${grid.weeksLived} of ${grid.totalWeeks} weeks lived`}
+        aria-label={`Life grid: ${grid.weeksLived} of ${grid.totalWeeks} weeks stamped`}
       >
         {grid.cells.map((cell) => {
           // Past, unpracticed: muted charcoal
@@ -50,10 +50,10 @@ export function LifeGrid({ grid }: Props) {
               className={`aspect-square rounded-[1px] transition-colors ${bg}`}
               title={
                 cell.stamped
-                  ? `Week ${cell.weekIndex + 1} — practiced`
+                  ? `Week ${cell.weekIndex + 1} — stamped`
                   : cell.lived
                     ? `Week ${cell.weekIndex + 1}`
-                    : `Week ${cell.weekIndex + 1} — ahead`
+                    : `Week ${cell.weekIndex + 1} — to stamp`
               }
             />
           );
@@ -63,7 +63,7 @@ export function LifeGrid({ grid }: Props) {
       {/* Editorial axis labels */}
       <div className="mt-3 flex items-center justify-between text-[11px] text-muted-foreground/50">
         <span className="font-mono">Age 0</span>
-        <span className="font-mono tabular-nums">{currentYear} yrs lived</span>
+        <span className="font-mono tabular-nums">{currentYear} yrs stamped</span>
         <span className="font-mono">~{years} years</span>
       </div>
     </div>

@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { useState, useTransition } from 'react';
 
 import { BorderBeam, SpotlightCard, StaggerContainer, StaggerItem } from '~/components/aceternity';
+import { ArcCompleteCelebration } from '~/components/dashboard/arc-complete-celebration';
 import { Button } from '~/components/ui/button';
 import { abandonQuest, completeUserQuest } from '~/lib/actions/user-quests';
 import { cn } from '~/lib/utils';
@@ -35,17 +36,41 @@ export function ActiveQuests({ quests }: ActiveQuestsProps) {
   const [isPending, startTransition] = useTransition();
   // Track which quest just completed so we can show a checkmark animation.
   const [justCompletedId, setJustCompletedId] = useState<string | null>(null);
+  // The arc that just completed — drives the celebration overlay.
+  const [completedArc, setCompletedArc] = useState<{
+    id: string;
+    title: string;
+    emoji: string | null;
+    type: string;
+  } | null>(null);
 
   function handleComplete(id: string) {
+    const quest = quests.find((q) => q.id === id);
     startTransition(async () => {
       const res = await completeUserQuest(id);
       if (res.success) {
         setJustCompletedId(id);
-        // Let the checkmark animation breathe before the card disappears.
-        await new Promise((r) => setTimeout(r, 600));
-        router.refresh();
+        // Show the celebration overlay instead of immediately refreshing.
+        if (quest) {
+          setCompletedArc({
+            id: quest.id,
+            title: quest.title,
+            emoji: quest.emoji,
+            type: quest.type,
+          });
+        } else {
+          // Fallback: no quest metadata — just refresh.
+          await new Promise((r) => setTimeout(r, 600));
+          router.refresh();
+        }
       }
     });
+  }
+
+  function handleDismissCelebration() {
+    setCompletedArc(null);
+    setJustCompletedId(null);
+    router.refresh();
   }
 
   function handleAbandon(id: string) {
@@ -172,6 +197,9 @@ export function ActiveQuests({ quests }: ActiveQuestsProps) {
           })}
         </StaggerContainer>
       )}
+
+      {/* Arc completion celebration overlay */}
+      <ArcCompleteCelebration arc={completedArc} onDismiss={handleDismissCelebration} />
     </section>
   );
 }

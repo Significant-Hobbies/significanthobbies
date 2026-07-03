@@ -4,8 +4,9 @@ import Link from 'next/link';
 import { redirect } from 'next/navigation';
 
 import { FadeIn, GradientMesh, GridBackground } from '~/components/aceternity';
-import { ActiveQuests } from '~/components/dashboard/active-quests';
+import { ActiveArcs } from '~/components/dashboard/active-arcs';
 import { BehavioralInsights } from '~/components/dashboard/behavioral-insights';
+import { Creed } from '~/components/dashboard/creed';
 import { BucketListSection } from '~/components/bucket-list-section';
 import { CommitmentCard } from '~/components/commitments/commitment-card';
 import { DashboardStats } from '~/components/dashboard/dashboard-stats';
@@ -27,7 +28,8 @@ import {
   users,
 } from '~/db/schema';
 import { getMyCommitments } from '~/lib/actions/commitments';
-import { getActiveQuests, getCompletedQuests } from '~/lib/actions/user-quests';
+import { getActiveArcs } from '~/lib/actions/arcs';
+import { getCompletedQuests } from '~/lib/actions/user-quests';
 import { computeBehavioralInsights } from '~/lib/behavioral-insights';
 import { computeStreak, type StampRow } from '~/lib/commitments';
 import { getWeeklyReflection } from '~/lib/lumi-coach';
@@ -75,7 +77,7 @@ export default async function DashboardPage() {
     myHabitLogs,
     allHabitLogs,
     myJournal,
-    activeQuests,
+    activeArcs,
     completedQuests,
     abandonedQuestRows,
   ] = await Promise.all([
@@ -92,7 +94,7 @@ export default async function DashboardPage() {
     getMyCommitments(),
     db.query.users.findFirst({
       where: eq(users.id, session.user.id),
-      columns: { birthYear: true },
+      columns: { birthYear: true, creed: true, name: true },
     }),
     db
       .select()
@@ -109,7 +111,7 @@ export default async function DashboardPage() {
       .from(journalEntries)
       .where(and(eq(journalEntries.userId, session.user.id), eq(journalEntries.dayDate, today)))
       .limit(1),
-    getActiveQuests(),
+    getActiveArcs(),
     getCompletedQuests(),
     db
       .select()
@@ -175,7 +177,18 @@ export default async function DashboardPage() {
   }));
   const behavioralInsights = computeBehavioralInsights({
     completedQuests,
-    activeQuests,
+    activeQuests: activeArcs.flatMap((arc) =>
+      arc.quests
+        .filter((q) => q.status === 'active')
+        .map((q) => ({
+          id: q.id,
+          questId: q.questId,
+          type: arc.type,
+          sourceHobby: q.sourceHobby,
+          title: q.title,
+          startedAt: q.startedAt,
+        }))
+    ),
     abandonedQuests,
     habitLogs: allHabitLogs.map((l) => ({
       habitId: l.habitId,
@@ -225,7 +238,7 @@ export default async function DashboardPage() {
             href: '/commitments',
             label: 'Begin →',
             description:
-              'Pick a hobby, show up daily, stamp each day with proof. A 30-day commitment spends roughly 4 of your remaining weeks.',
+              'Pick a hobby, show up daily, stamp each day with proof. A 30-day commitment spends roughly 4 of your weeks ahead.',
           }
         : {
             kind: 'ritual' as const,
@@ -237,6 +250,11 @@ export default async function DashboardPage() {
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-10 sm:py-14 space-y-16">
+      {/* ─── Creed — the emotional anchor, the first thing the user sees ─── */}
+      <FadeIn>
+        <Creed creed={me?.creed ?? null} userName={me?.name ?? null} />
+      </FadeIn>
+
       {/* ─── Hero header — gradient mesh + editorial greeting ─── */}
       <section className="relative space-y-6 overflow-hidden rounded-2xl border border-border/50 p-6 sm:p-8">
         <GradientMesh variant="gold" />
@@ -250,9 +268,9 @@ export default async function DashboardPage() {
           </h1>
           {hasBirthYear && (
             <p className="mt-2 text-sm text-muted-foreground">
-              {lifeGrid.weeksLived.toLocaleString()} weeks lived ·{' '}
+              {lifeGrid.weeksLived.toLocaleString()} weeks stamped ·{' '}
               <span className="text-primary">
-                {lifeGrid.weeksRemaining.toLocaleString()} remaining
+                {lifeGrid.weeksRemaining.toLocaleString()} to stamp
               </span>{' '}
               of ~{lifeGrid.totalWeeks.toLocaleString()}
             </p>
@@ -291,9 +309,9 @@ export default async function DashboardPage() {
         primaryCta={primaryCta}
       />
 
-      {/* ─── Active quests — the core Timeline→Quest loop ─── */}
+      {/* ─── Active arcs — the core loop: arcs contain side quests ─── */}
       <FadeIn delay={0.1}>
-        <ActiveQuests quests={activeQuests} />
+        <ActiveArcs arcs={activeArcs} />
       </FadeIn>
 
       {/* ─── Behavioral insights — honest patterns from real activity ─── */}
@@ -356,7 +374,7 @@ export default async function DashboardPage() {
           <EmptyStateCard
             icon={Compass}
             title="Start a commitment"
-            description="Pick a hobby, show up daily, stamp each day with proof. A 30-day commitment spends roughly 4 of your remaining weeks."
+            description="Pick a hobby, show up daily, stamp each day with proof. A 30-day commitment spends roughly 4 of your weeks ahead."
             ctaLabel="Begin"
             href="/commitments"
           />
