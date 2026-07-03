@@ -52,9 +52,7 @@ export default function BucketListsPage() {
             </div>
             {/* Headline block */}
             <div className="space-y-5 text-center sm:text-left">
-              <p className="text-[#e05533] text-xs font-semibold uppercase tracking-[0.2em]">
-                Guided by Lumi
-              </p>
+              <p className="text-[#e05533] text-sm font-semibold">Guided by Lumi</p>
               <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold leading-[1.08] tracking-tight text-foreground text-balance">
                 Your bucket list is a <span className="text-[#e05533]">love letter</span> to your
                 future self.

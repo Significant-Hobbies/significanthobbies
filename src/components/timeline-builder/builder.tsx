@@ -87,7 +87,7 @@ function TemplatePicker({ onPick }: { onPick: (template: TimelineTemplate) => vo
                 {template.phases.length} phases
               </span>
             ) : (
-              <span className="inline-flex items-center rounded-full bg-foreground/5 px-2 py-0.5 text-xs text-muted-foreground/60 group-hover:bg-foreground/10 group-hover:text-growth transition-colors">
+              <span className="inline-flex items-center rounded-full bg-foreground/5 px-2 py-0.5 text-xs text-muted-foreground group-hover:bg-foreground/10 group-hover:text-growth transition-colors">
                 empty
               </span>
             )}
@@ -237,7 +237,7 @@ export function TimelineBuilder({ existing }: Props) {
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           placeholder="Timeline title (optional)"
-          className="h-11 border-border bg-card text-lg font-medium placeholder:text-muted-foreground/60"
+          className="h-11 border-border bg-card text-lg font-medium placeholder:text-muted-foreground"
         />
       </div>
 
@@ -251,7 +251,7 @@ export function TimelineBuilder({ existing }: Props) {
           {phasesWithHobbies}/{totalPhases} phases have hobbies
         </span>
         {allEmpty && (
-          <span className="text-xs text-muted-foreground/60">
+          <span className="text-xs text-muted-foreground">
             Tip: Add hobbies to each phase to unlock insights
           </span>
         )}
@@ -259,7 +259,7 @@ export function TimelineBuilder({ existing }: Props) {
           <button
             type="button"
             onClick={() => setTemplatePicked(false)}
-            className="ml-auto text-xs text-muted-foreground/60 hover:text-muted-foreground transition-colors"
+            className="ml-auto text-xs text-muted-foreground hover:text-muted-foreground transition-colors"
           >
             Change template
           </button>
@@ -280,7 +280,7 @@ export function TimelineBuilder({ existing }: Props) {
                 />
                 {index === 0 && phases.length > 1 && (
                   <p
-                    className="mt-1.5 text-center text-xs text-muted-foreground/60"
+                    className="mt-1.5 text-center text-xs text-muted-foreground"
                     style={{
                       animation: 'fadeOut 0.5s ease 3s forwards',
                     }}

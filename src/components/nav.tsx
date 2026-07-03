@@ -26,7 +26,7 @@ export async function Nav() {
   const session = await getServerAuthSession();
 
   return (
-    <nav className="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur-md">
+    <nav className="sticky top-0 z-50 border-b border-border bg-background">
       <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-4">
         <Link
           href="/"

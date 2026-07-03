@@ -133,7 +133,7 @@ export default async function SearchPage({ searchParams }: Props) {
       <div className="mt-8 space-y-10">
         {/* --- Timelines section --- */}
         <section className="scroll-reveal">
-          <h2 className="mb-4 flex items-center gap-2 text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+          <h2 className="mb-4 flex items-center gap-2 text-sm font-semibold text-muted-foreground">
             Timelines
             <span className="rounded-full bg-foreground/5 px-2 py-0.5 text-xs font-medium text-muted-foreground">
               {timelineResults.length}
@@ -176,7 +176,7 @@ export default async function SearchPage({ searchParams }: Props) {
 
         {/* --- People section --- */}
         <section className="scroll-reveal scroll-reveal-d2">
-          <h2 className="mb-4 flex items-center gap-2 text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+          <h2 className="mb-4 flex items-center gap-2 text-sm font-semibold text-muted-foreground">
             People
             <span className="rounded-full bg-foreground/5 px-2 py-0.5 text-xs font-medium text-muted-foreground">
               {userWithCounts.length}
@@ -221,7 +221,7 @@ export default async function SearchPage({ searchParams }: Props) {
 
         {/* --- Hobbies section --- */}
         <section className="scroll-reveal scroll-reveal-d3">
-          <h2 className="mb-4 flex items-center gap-2 text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+          <h2 className="mb-4 flex items-center gap-2 text-sm font-semibold text-muted-foreground">
             Hobbies
             <span className="rounded-full bg-foreground/5 px-2 py-0.5 text-xs font-medium text-muted-foreground">
               {matchingHobbies.length}

@@ -237,7 +237,6 @@ type Section = {
   subtitle: string;
   hobbies: TryHobby[];
   badgeColor: string;
-  borderColor: string;
 };
 
 const SECTIONS: Section[] = [
@@ -247,7 +246,6 @@ const SECTIONS: Section[] = [
     subtitle: '10 hobbies that need no equipment, no class, no prep',
     hobbies: START_TONIGHT,
     badgeColor: 'bg-foreground/10 text-foreground border-foreground/20',
-    borderColor: 'border-foreground/30',
   },
   {
     id: 'this-weekend',
@@ -255,7 +253,6 @@ const SECTIONS: Section[] = [
     subtitle: '10 low-barrier hobbies to explore in a few hours',
     hobbies: THIS_WEEKEND,
     badgeColor: 'bg-blue-100 text-blue-800 border-blue-200',
-    borderColor: 'border-blue-300',
   },
   {
     id: 'this-month',
@@ -263,7 +260,6 @@ const SECTIONS: Section[] = [
     subtitle: '10 hobbies worth a 30-day honest attempt',
     hobbies: THIS_MONTH,
     badgeColor: 'bg-purple-100 text-purple-800 border-purple-200',
-    borderColor: 'border-purple-300',
   },
   {
     id: 'this-year',
@@ -271,7 +267,6 @@ const SECTIONS: Section[] = [
     subtitle: '10 deep-dive hobbies for people ready to commit',
     hobbies: THIS_YEAR,
     badgeColor: 'bg-amber-400/15 text-amber-300 border-amber-400/30',
-    borderColor: 'border-amber-400/40',
   },
 ];
 
@@ -323,7 +318,7 @@ export default function HobbiesToTryPage() {
       <div className="space-y-12">
         {SECTIONS.map((section) => (
           <section key={section.id} id={section.id}>
-            <div className={`border-l-4 ${section.borderColor} pl-4 mb-6`}>
+            <div className="mb-6">
               <h2 className="text-2xl font-bold text-foreground">{section.label}</h2>
               <p className="text-muted-foreground mt-1 text-sm">{section.subtitle}</p>
             </div>

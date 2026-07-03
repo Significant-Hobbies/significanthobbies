@@ -79,9 +79,7 @@ export function InsightsPanel({ phases }: Props) {
       {/* Rekindled hobbies */}
       {rekindled.length > 0 && (
         <div>
-          <h3 className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-2">
-            Rekindled hobbies
-          </h3>
+          <h3 className="text-sm font-semibold text-muted-foreground mb-2">Rekindled hobbies</h3>
           <div className="flex flex-wrap gap-1.5">
             {rekindled.map((h) => (
               <Badge
@@ -98,9 +96,7 @@ export function InsightsPanel({ phases }: Props) {
       {/* Most persistent */}
       {topPersistent.length > 0 && (
         <div>
-          <h3 className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-2">
-            Most persistent
-          </h3>
+          <h3 className="text-sm font-semibold text-muted-foreground mb-2">Most persistent</h3>
           <div className="space-y-1.5">
             {topPersistent.map(({ hobby, count }) => {
               const inAllPhases = count === phases.length;
@@ -139,9 +135,7 @@ export function InsightsPanel({ phases }: Props) {
       {/* Longest streaks */}
       {longestStreaks.length > 0 && (
         <div>
-          <h3 className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-2">
-            Longest streaks
-          </h3>
+          <h3 className="text-sm font-semibold text-muted-foreground mb-2">Longest streaks</h3>
           <div className="space-y-1.5">
             {longestStreaks.map(({ hobby, streak, startPhase, endPhase }) => (
               <div key={hobby} className="flex items-center justify-between">
@@ -158,9 +152,7 @@ export function InsightsPanel({ phases }: Props) {
       {/* Phase transitions */}
       {phaseTransitions.length > 0 && (
         <div>
-          <h3 className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-2">
-            Phase transitions
-          </h3>
+          <h3 className="text-sm font-semibold text-muted-foreground mb-2">Phase transitions</h3>
           <div className="space-y-1.5">
             {phaseTransitions.map(({ fromPhase, toPhase, majorChange }) => (
               <div key={`${fromPhase}-${toPhase}`} className="flex items-start gap-2 text-xs">

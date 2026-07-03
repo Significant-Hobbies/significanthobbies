@@ -25,7 +25,7 @@ export function LogStampForm({ commitmentId, hobbyName, defaultOpen = false }: P
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!proofUrl.trim()) {
-      setError('Add a proof link to stamp today.');
+      setError('Add a proof link to continue.');
       return;
     }
     setSubmitting(true);
@@ -71,7 +71,7 @@ export function LogStampForm({ commitmentId, hobbyName, defaultOpen = false }: P
         <span className="font-medium text-foreground">{hobbyName}</span>.
       </p>
       <div>
-        <label className="block text-[11px] font-medium uppercase tracking-wide text-muted-foreground/70 mb-1">
+        <label className="block text-[11px] font-semibold text-muted-foreground/70 mb-1">
           Proof link (YouTube, photo, anything)
         </label>
         <input
@@ -84,7 +84,7 @@ export function LogStampForm({ commitmentId, hobbyName, defaultOpen = false }: P
         />
       </div>
       <div>
-        <label className="block text-[11px] font-medium uppercase tracking-wide text-muted-foreground/70 mb-1">
+        <label className="block text-[11px] font-semibold text-muted-foreground/70 mb-1">
           Note (optional)
         </label>
         <input

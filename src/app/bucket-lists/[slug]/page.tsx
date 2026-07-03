@@ -127,7 +127,7 @@ export default async function FamousBucketListPage({ params }: Props) {
           </div>
 
           {list.quote && (
-            <blockquote className="border-l-4 border-[#e05533] pl-4 italic text-muted-foreground text-sm">
+            <blockquote className="border-l-2 border-lumi pl-4 italic text-muted-foreground text-sm">
               &ldquo;{list.quote.text}&rdquo;
             </blockquote>
           )}
@@ -228,9 +228,7 @@ export default async function FamousBucketListPage({ params }: Props) {
         {/* Sources */}
         {list.sources && list.sources.length > 0 && (
           <div className="rounded-xl border border-border bg-card/40 px-5 py-4 space-y-2">
-            <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-              Sources
-            </p>
+            <p className="text-sm font-semibold text-muted-foreground">Sources</p>
             <ul className="space-y-1">
               {list.sources.map((s, i) => (
                 <li key={i} className="text-xs text-muted-foreground flex items-start gap-2">

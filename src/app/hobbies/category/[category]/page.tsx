@@ -140,13 +140,7 @@ export default async function CategoryPage({ params }: Props) {
         ) : (
           <div className="absolute inset-0 bg-card" />
         )}
-        <div
-          className="absolute inset-0"
-          style={{
-            background:
-              'linear-gradient(to top, rgba(12, 43, 41, 0.85) 0%, rgba(12, 43, 41, 0.3) 50%, transparent 80%)',
-          }}
-        />
+        <div className="absolute inset-0 bg-gradient-to-t from-background/85 via-background/30 to-transparent" />
         <div className="absolute bottom-0 left-0 right-0 p-5 sm:p-6">
           <div className="flex items-center gap-2.5">
             <span className="text-3xl">{cat.emoji}</span>

@@ -346,9 +346,7 @@ export function HobbyQuiz() {
       {/* Header */}
       {!isResults && (
         <div className="mb-10 text-center">
-          <p className="mb-2 text-xs font-semibold uppercase tracking-widest text-foreground">
-            Free Hobby Quiz
-          </p>
+          <p className="mb-2 text-sm font-semibold text-foreground">Free Hobby Quiz</p>
           <h1 className="text-3xl font-bold text-foreground">Find Your Perfect Hobby</h1>
           <p className="mt-3 text-muted-foreground">
             Answer 5 quick questions and get personalized hobby recommendations.
@@ -432,9 +430,7 @@ export function HobbyQuiz() {
           {/* Archetype reveal */}
           <div className="mb-10 rounded-2xl border border-foreground/20 bg-gradient-to-br from-foreground/10 to-white p-8 text-center shadow-sm">
             <div className="mb-4 text-6xl">{archetype.emoji}</div>
-            <p className="mb-1 text-xs font-semibold uppercase tracking-widest text-foreground">
-              Your Hobby Archetype
-            </p>
+            <p className="mb-1 text-sm font-semibold text-foreground">Your Hobby Archetype</p>
             <h1 className="mb-3 text-3xl font-bold text-foreground">{archetype.title}</h1>
             <p className="text-muted-foreground">{archetype.description}</p>
 

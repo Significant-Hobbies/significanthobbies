@@ -87,7 +87,7 @@ export default async function RecentTimelinesPage() {
                     </p>
                   )}
                 </div>
-                <span className="font-mono text-[10px] uppercase tracking-wide text-muted-foreground/60 tabular-nums">
+                <span className="font-mono text-[10px] text-muted-foreground/60 tabular-nums">
                   {(t.updatedAt instanceof Date
                     ? t.updatedAt
                     : new Date(Number(t.updatedAt) * 1000)

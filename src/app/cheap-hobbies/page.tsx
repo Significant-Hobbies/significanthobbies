@@ -261,7 +261,7 @@ export default function CheapHobbiesPage() {
 
       {/* Free Hobbies */}
       <section id="free" className="mb-12">
-        <div className="border-l-4 border-foreground/30 pl-4 mb-6">
+        <div className="mb-6">
           <h2 className="text-2xl font-bold text-foreground">15 Completely Free Hobbies</h2>
           <p className="text-muted-foreground mt-1 text-sm">
             Zero dollars required to start. These hobbies are free indefinitely — no catch, no
@@ -295,7 +295,7 @@ export default function CheapHobbiesPage() {
 
       {/* Cheap Hobbies */}
       <section id="cheap">
-        <div className="border-l-4 border-blue-400 pl-4 mb-6">
+        <div className="mb-6">
           <h2 className="text-2xl font-bold text-foreground">10 Hobbies Under $50 to Start</h2>
           <p className="text-muted-foreground mt-1 text-sm">
             A small upfront investment, then free forever. These are the hobbies where one purchase

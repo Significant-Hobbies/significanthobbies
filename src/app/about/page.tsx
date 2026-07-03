@@ -20,9 +20,7 @@ export default function AboutPage() {
       </p>
 
       <section className="mt-8 space-y-3 text-sm leading-6">
-        <h2 className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-          What you can do
-        </h2>
+        <h2 className="text-sm font-semibold text-muted-foreground">What you can do</h2>
         <ul className="list-disc space-y-1 pl-5 marker:text-muted-foreground/60">
           <li>
             Build a timeline of your hobby phases — childhood experiments through current
@@ -43,9 +41,7 @@ export default function AboutPage() {
       </section>
 
       <section className="mt-8 space-y-3 text-sm leading-6">
-        <h2 className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-          Why bother
-        </h2>
+        <h2 className="text-sm font-semibold text-muted-foreground">Why bother</h2>
         <p className="text-foreground">
           The reps on a thing you actually care about beat the dopamine loop of feeds. Most people
           can&apos;t even list their hobbies — the timeline is forcing function to remember, then

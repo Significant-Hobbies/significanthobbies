@@ -26,11 +26,10 @@ export function MobileMenu({ links, isLoggedIn }: MobileMenuProps) {
       </button>
 
       {open && (
-        <div className="absolute left-0 top-14 z-50 w-full border-b border-border bg-card/95 backdrop-blur-sm">
+        <div className="absolute left-0 top-14 z-50 w-full border-b border-border bg-card">
           <div className="flex flex-col px-4 py-3 gap-1">
             {links.map((link) => {
               const isActive = pathname === link.href;
-              const isBucketList = link.href === '/bucket-lists';
               return (
                 <Link
                   key={link.href}
@@ -39,12 +38,8 @@ export function MobileMenu({ links, isLoggedIn }: MobileMenuProps) {
                   onClick={() => setOpen(false)}
                   className={`rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${
                     isActive
-                      ? isBucketList
-                        ? 'bg-amber-400/10 text-foreground'
-                        : 'bg-foreground/10 text-foreground'
-                      : isBucketList
-                        ? 'text-muted-foreground hover:bg-amber-400/10 hover:text-foreground'
-                        : 'text-muted-foreground hover:bg-card/40 hover:text-foreground'
+                      ? 'bg-foreground/10 text-foreground'
+                      : 'text-muted-foreground hover:bg-card/40 hover:text-foreground'
                   }`}
                 >
                   {link.label}

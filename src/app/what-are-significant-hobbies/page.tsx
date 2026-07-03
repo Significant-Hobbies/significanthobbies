@@ -157,38 +157,9 @@ export default function WhatAreSignificantHobbiesPage() {
         }}
       />
 
-      <div className="min-h-screen" style={{ background: '#FAFAFA' }}>
+      <div className="min-h-screen bg-background">
         {/* Hero */}
-        <section
-          className="relative overflow-hidden px-4 py-20 sm:py-28"
-          style={{
-            background:
-              'linear-gradient(160deg, #F5F5F4 0%, #ECFDF5 40%, #FAFAF9 70%, #F5F5F4 100%)',
-          }}
-        >
-          <div className="pointer-events-none absolute inset-0">
-            <div
-              className="absolute rounded-full"
-              style={{
-                width: 600,
-                height: 600,
-                top: '-25%',
-                right: '-10%',
-                background: 'radial-gradient(circle, rgba(16,185,129,0.07) 0%, transparent 70%)',
-              }}
-            />
-            <div
-              className="absolute rounded-full"
-              style={{
-                width: 400,
-                height: 400,
-                bottom: '-20%',
-                left: '5%',
-                background: 'radial-gradient(circle, rgba(245,158,11,0.06) 0%, transparent 70%)',
-              }}
-            />
-          </div>
-
+        <section className="relative overflow-hidden px-4 py-20 sm:py-28">
           <div className="relative mx-auto max-w-3xl text-center">
             <h1 className="mb-6 text-4xl font-bold tracking-tight text-foreground sm:text-5xl md:text-6xl">
               What Are Significant Hobbies?
@@ -333,7 +304,7 @@ export default function WhatAreSignificantHobbiesPage() {
 
             <div className="mt-8 overflow-hidden rounded-2xl border border-border bg-card shadow-sm">
               <div className="border-b border-border px-6 py-4">
-                <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground/60">
+                <p className="text-sm font-semibold text-muted-foreground/60">
                   What you might discover
                 </p>
               </div>

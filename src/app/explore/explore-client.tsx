@@ -109,9 +109,7 @@ function ExploreTimelineCard({ timeline }: { timeline: TimelineData & { likeCoun
             {username && <p className="mt-1 text-xs text-muted-foreground/60">@{username}</p>}
           </div>
           <div className="shrink-0 rounded-lg border border-border bg-card/40 px-2 py-1 text-right">
-            <div className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/60">
-              Span
-            </div>
+            <div className="text-[10px] font-semibold text-muted-foreground/60">Span</div>
             <div className="text-xs font-semibold text-foreground">{timelineSpan(phases)}</div>
           </div>
         </div>
@@ -267,9 +265,7 @@ function ExploreFooter() {
   return (
     <section className="mt-10 rounded-xl border border-border bg-foreground/90 px-5 py-6 text-foreground md:flex md:items-center md:justify-between md:gap-6">
       <div>
-        <p className="text-xs font-semibold uppercase tracking-wider text-foreground">
-          Community signal
-        </p>
+        <p className="text-sm font-semibold text-foreground">Community signal</p>
         <h2 className="mt-2 text-xl font-semibold">Explore grows with every public phase.</h2>
         <p className="mt-2 max-w-2xl text-sm leading-6 text-muted-foreground/40">
           Add a timeline with hobbies, dates, and phase labels so other people can discover patterns
@@ -368,7 +364,7 @@ export function ExploreClient({ timelines }: ExploreClientProps) {
             key={opt.value}
             type="button"
             onClick={() => setSort(opt.value)}
-            className={`rounded-full px-3.5 py-1.5 text-sm font-medium transition-colors ${
+            className={`rounded-full px-3.5 py-1.5 text-sm font-medium transition-colors focus-visible:ring-2 focus-visible:ring-foreground/50 focus-visible:outline-none ${
               sort === opt.value
                 ? 'bg-primary text-primary-foreground'
                 : 'border border-border bg-card text-muted-foreground hover:border-foreground/30 hover:text-foreground'

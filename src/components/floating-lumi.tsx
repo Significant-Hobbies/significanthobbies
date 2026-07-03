@@ -54,9 +54,7 @@ export function FloatingLumi() {
         "
       >
         <div className="px-4 pt-3 pb-1">
-          <p className="text-xs font-semibold text-[#e05533] uppercase tracking-widest">
-            Quick links
-          </p>
+          <p className="text-sm font-semibold text-[#e05533]">Quick links</p>
         </div>
         {SHORTCUTS.map(({ label, href }) => (
           <Link

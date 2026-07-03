@@ -340,9 +340,7 @@ export default async function DashboardPage() {
 
         {timelineList.length === 0 ? (
           <div className="rounded-xl border border-dashed border-border p-10 text-center">
-            <p className="text-sm text-muted-foreground mb-4">
-              You haven&apos;t mapped a chapter of your life yet.
-            </p>
+            <p className="text-sm text-muted-foreground mb-4">No timelines yet.</p>
             <Link href="/timeline/new">
               <Button>Build your first timeline</Button>
             </Link>

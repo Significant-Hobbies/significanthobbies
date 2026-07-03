@@ -122,7 +122,7 @@ function BlogContent({ blocks }: { blocks: ContentBlock[] }) {
             return (
               <blockquote
                 key={idx}
-                className="scroll-reveal-blur my-8 border-l-4 border-foreground/40 py-1 pl-6"
+                className="scroll-reveal-blur my-8 border-l-2 border-foreground/40 py-1 pl-6"
               >
                 <p className="text-lg italic leading-relaxed text-muted-foreground">
                   &ldquo;{block.text}&rdquo;
@@ -215,7 +215,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
   const style = categoryStyle(post.category);
 
   return (
-    <div className="min-h-screen" style={{ background: '#FAFAFA' }}>
+    <div className="min-h-screen bg-background">
       <JsonLd
         data={{
           '@context': 'https://schema.org',
@@ -247,12 +247,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
       </div>
 
       {/* Article header */}
-      <header
-        className="px-4 pb-12 pt-12 sm:pt-16"
-        style={{
-          background: 'linear-gradient(160deg, #F5F5F4 0%, #ECFDF5 50%, #FAFAF9 100%)',
-        }}
-      >
+      <header className="px-4 pb-12 pt-12 sm:pt-16">
         <div className="mx-auto max-w-3xl">
           {/* Category + meta row */}
           <div className="scroll-reveal mb-5 flex flex-wrap items-center gap-3">
@@ -307,7 +302,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
             {/* Divider with label */}
             <div className="mb-8 flex items-center gap-4">
               <div className="h-px flex-1 bg-foreground/10" />
-              <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground/60">
+              <p className="text-sm font-semibold text-muted-foreground/60">
                 More from the journal
               </p>
               <div className="h-px flex-1 bg-foreground/10" />
@@ -325,10 +320,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
       )}
 
       {/* CTA */}
-      <section
-        className="border-t border-border px-4 py-16"
-        style={{ background: 'linear-gradient(135deg, #F0FDF4 0%, #FAFAF9 100%)' }}
-      >
+      <section className="border-t border-border px-4 py-16">
         <div className="scroll-reveal-scale mx-auto max-w-3xl text-center">
           <div className="mb-3 text-3xl">🗺️</div>
           <h2 className="mb-3 text-2xl font-bold text-foreground">

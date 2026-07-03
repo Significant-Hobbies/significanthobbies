@@ -35,15 +35,12 @@ export function PhaseSwimlane({ phases, pins = [] }: Props) {
             <div
               key={phase.id}
               className="rounded-xl border border-border bg-card overflow-hidden"
-              style={{ borderLeft: `3px solid ${color.border}` }}
+              style={{ borderLeft: `1px solid ${color.border}` }}
             >
               <div className="px-4 py-3" style={{ background: color.bg }}>
                 <div className="flex items-center justify-between">
                   <h3 className="font-semibold text-foreground text-sm">{phase.label}</h3>
-                  <Badge
-                    variant="outline"
-                    className="border-border text-xs text-muted-foreground/60"
-                  >
+                  <Badge variant="outline" className="border-border text-xs text-muted-foreground">
                     {phase.hobbies.length} hobbies
                   </Badge>
                 </div>
@@ -58,7 +55,7 @@ export function PhaseSwimlane({ phases, pins = [] }: Props) {
 
               <div className="px-4 py-3 flex flex-wrap gap-1.5">
                 {phase.hobbies.length === 0 && (
-                  <p className="text-xs text-muted-foreground/60 italic">No hobbies added</p>
+                  <p className="text-xs text-muted-foreground italic">No hobbies added</p>
                 )}
                 {phase.hobbies.map((hobby) => {
                   const category = getCategoryForHobby(hobby.name);
@@ -92,7 +89,7 @@ export function PhaseSwimlane({ phases, pins = [] }: Props) {
                 {/* Phase header with colored top border */}
                 <div
                   className="border-b border-border px-3 py-3"
-                  style={{ borderTop: `3px solid ${color.border}`, background: color.bg }}
+                  style={{ borderTop: `1px solid ${color.border}`, background: color.bg }}
                 >
                   <h3 className="font-semibold text-foreground text-sm">{phase.label}</h3>
                   {(phase.ageStart ?? phase.yearStart) && (
@@ -108,7 +105,7 @@ export function PhaseSwimlane({ phases, pins = [] }: Props) {
                 <div className="px-3 py-3 flex-1 space-y-1.5">
                   {phase.hobbies.length === 0 && (
                     <div className="rounded-md border border-dashed border-border px-3 py-4 text-center">
-                      <p className="text-xs text-muted-foreground/60 italic">No hobbies added</p>
+                      <p className="text-xs text-muted-foreground italic">No hobbies added</p>
                     </div>
                   )}
                   {phase.hobbies.map((hobby) => {
@@ -132,7 +129,7 @@ export function PhaseSwimlane({ phases, pins = [] }: Props) {
                                 }`}
                               />
                             ))}
-                            <span className="ml-1 text-xs text-muted-foreground/60">
+                            <span className="ml-1 text-xs text-muted-foreground">
                               {INTENSITY_LABELS[hobby.intensity]}
                             </span>
                           </div>
@@ -144,10 +141,7 @@ export function PhaseSwimlane({ phases, pins = [] }: Props) {
 
                 {/* Count badge */}
                 <div className="px-3 pb-3">
-                  <Badge
-                    variant="outline"
-                    className="border-border text-xs text-muted-foreground/60"
-                  >
+                  <Badge variant="outline" className="border-border text-xs text-muted-foreground">
                     {phase.hobbies.length} hobbies
                   </Badge>
                 </div>
@@ -161,9 +155,7 @@ export function PhaseSwimlane({ phases, pins = [] }: Props) {
         <div className="mt-4">
           <div className="mb-2 flex items-center gap-2">
             <div className="h-px flex-1 bg-foreground/10" />
-            <span className="text-xs font-medium uppercase tracking-wide text-muted-foreground/60">
-              Pins
-            </span>
+            <span className="text-sm font-semibold text-muted-foreground">Pins</span>
             <div className="h-px flex-1 bg-foreground/10" />
           </div>
           <div className="flex flex-wrap gap-2">
@@ -175,7 +167,7 @@ export function PhaseSwimlane({ phases, pins = [] }: Props) {
               >
                 <span className="text-sm">{pin.emoji}</span>
                 <span className="font-medium text-foreground">{pin.label}</span>
-                <span className="text-muted-foreground/60">{pin.date}</span>
+                <span className="text-muted-foreground">{pin.date}</span>
                 {pin.relatedHobby && (
                   <span className="rounded-full bg-growth/15 px-1.5 py-0.5 text-[10px] font-medium text-growth">
                     {pin.relatedHobby}

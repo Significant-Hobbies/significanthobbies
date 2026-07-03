@@ -68,7 +68,7 @@ export function SaaSMakerTestimonialsSection() {
   if (status !== 'ready') return null;
 
   return (
-    <section className="border-t border-border px-4 py-16" style={{ background: '#FAFAFA' }}>
+    <section className="border-t border-border bg-muted px-4 py-16">
       <div className="mx-auto max-w-4xl">
         <h2 className="mb-8 text-center text-3xl font-bold text-foreground">
           What people are saying

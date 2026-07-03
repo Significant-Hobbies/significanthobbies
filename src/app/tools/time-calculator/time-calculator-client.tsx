@@ -145,23 +145,18 @@ export function TimeCalculatorClient() {
     {
       id: 'free',
       label: 'Free time',
-      color: '#059669',
+      color: 'oklch(0.72 0.13 150)',
       hours: freeTime,
       pct: (freeTime / TOTAL_HOURS) * 100,
     },
   ].filter((s) => s.hours > 0);
 
   return (
-    <div className="min-h-screen" style={{ background: '#FAFAFA' }}>
+    <div className="min-h-screen bg-background">
       {/* Hero */}
-      <section
-        className="relative overflow-hidden px-4 py-16 sm:py-24"
-        style={{
-          background: 'linear-gradient(160deg, #ECFDF5 0%, #F5F5F4 50%, #ECFDF5 100%)',
-        }}
-      >
+      <section className="relative overflow-hidden px-4 py-16 sm:py-24">
         <div className="relative mx-auto max-w-2xl text-center">
-          <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-foreground/20 bg-foreground/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-widest text-foreground">
+          <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-foreground/20 bg-foreground/10 px-4 py-1.5 text-sm font-semibold text-foreground">
             <span className="h-1.5 w-1.5 rounded-full bg-foreground" />
             Free Tool
           </div>
@@ -208,7 +203,7 @@ export function TimeCalculatorClient() {
                       max={inp.max}
                       value={val}
                       onChange={(e) => handleChange(inp.id, parseInt(e.target.value, 10))}
-                      className="w-full cursor-pointer appearance-none rounded-full bg-foreground/5 outline-none"
+                      className="w-full cursor-pointer appearance-none rounded-full bg-foreground/5 outline-none focus-visible:ring-2 focus-visible:ring-foreground/50"
                       style={{
                         height: '6px',
                         accentColor: inp.color,
@@ -234,9 +229,7 @@ export function TimeCalculatorClient() {
           >
             {overBudget ? (
               <>
-                <p className="mb-1 text-sm font-semibold uppercase tracking-wider text-destructive">
-                  Over budget
-                </p>
+                <p className="mb-1 text-sm font-semibold text-destructive">Over budget</p>
                 <p className="text-5xl font-black text-destructive sm:text-6xl">
                   {used - TOTAL_HOURS}h
                 </p>
@@ -246,9 +239,7 @@ export function TimeCalculatorClient() {
               </>
             ) : (
               <>
-                <p className="mb-1 text-sm font-semibold uppercase tracking-wider text-foreground">
-                  Your weekly hobby time
-                </p>
+                <p className="mb-1 text-sm font-semibold text-foreground">Your weekly hobby time</p>
                 <p className="text-6xl font-black text-foreground sm:text-7xl">
                   {freeTime}
                   <span className="text-3xl font-bold">h</span>
@@ -268,7 +259,7 @@ export function TimeCalculatorClient() {
           {/* Time bar */}
           {!overBudget && (
             <div className="rounded-2xl border border-border bg-card p-6 shadow-sm">
-              <h3 className="mb-4 text-xs font-bold uppercase tracking-wider text-muted-foreground/60">
+              <h3 className="mb-4 text-sm font-bold text-muted-foreground/60">
                 Where your 168 hours go
               </h3>
               <div className="flex h-8 w-full overflow-hidden rounded-full">

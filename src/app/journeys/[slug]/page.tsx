@@ -137,9 +137,7 @@ export default async function JourneyDetailPage({ params }: Props) {
 
         {/* Phase timeline */}
         <div className="scroll-reveal mb-10">
-          <h2 className="mb-5 text-xs font-semibold uppercase tracking-wider text-muted-foreground/60">
-            Hobby Timeline
-          </h2>
+          <h2 className="mb-5 text-sm font-semibold text-muted-foreground/60">Hobby Timeline</h2>
           <div className="space-y-4">
             {person.phases.map((phase, idx) => {
               const colors = PHASE_COLORS[idx % PHASE_COLORS.length]!;
@@ -148,9 +146,7 @@ export default async function JourneyDetailPage({ params }: Props) {
                   key={phase.label}
                   className={`rounded-xl border ${colors.border} ${colors.bg} p-5`}
                 >
-                  <h3 className={`mb-3 text-sm font-bold uppercase tracking-wide ${colors.label}`}>
-                    {phase.label}
-                  </h3>
+                  <h3 className={`mb-3 text-sm font-bold ${colors.label}`}>{phase.label}</h3>
                   <div className="flex flex-wrap gap-2">
                     {phase.hobbies.map((hobby) => (
                       <span
@@ -195,7 +191,7 @@ export default async function JourneyDetailPage({ params }: Props) {
         {/* Quote */}
         {person.quote && (
           <div className="scroll-reveal mb-10">
-            <blockquote className="border-l-4 border-foreground/30 pl-5">
+            <blockquote className="border-l-2 border-foreground/30 pl-5">
               <p className="text-base italic leading-relaxed text-muted-foreground">
                 &ldquo;{person.quote.text}&rdquo;
               </p>
@@ -224,7 +220,7 @@ export default async function JourneyDetailPage({ params }: Props) {
               >
                 <span className="text-2xl">{prevPerson.emoji}</span>
                 <div className="min-w-0 flex-1">
-                  <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/60">
+                  <p className="text-[10px] font-semibold text-muted-foreground/60">
                     ← Previous journey
                   </p>
                   <p className="truncate text-sm font-semibold text-foreground group-hover:text-foreground">
@@ -242,7 +238,7 @@ export default async function JourneyDetailPage({ params }: Props) {
               >
                 <span className="text-2xl">{nextPerson.emoji}</span>
                 <div className="min-w-0 flex-1">
-                  <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/60">
+                  <p className="text-[10px] font-semibold text-muted-foreground/60">
                     Next journey →
                   </p>
                   <p className="truncate text-sm font-semibold text-foreground group-hover:text-foreground">

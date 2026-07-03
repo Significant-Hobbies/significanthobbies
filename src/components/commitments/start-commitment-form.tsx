@@ -30,7 +30,7 @@ export function StartCommitmentForm({ suggestions = [], weeksRemaining }: Props)
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!hobbyName.trim()) {
-      setError('Pick a hobby to commit to.');
+      setError('Enter a hobby name to continue.');
       return;
     }
     setSubmitting(true);
@@ -105,8 +105,7 @@ export function StartCommitmentForm({ suggestions = [], weeksRemaining }: Props)
 
       {weeksRemaining !== undefined && (
         <p className="text-xs text-muted-foreground leading-relaxed">
-          This commitment will spend ~{spendWeeks} weeks of your remaining{' '}
-          {weeksRemaining.toLocaleString()}. Worth it?
+          This uses ~{spendWeeks} weeks of your remaining {weeksRemaining.toLocaleString()}.
         </p>
       )}
 

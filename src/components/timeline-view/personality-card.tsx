@@ -29,7 +29,7 @@ function TraitBar({ label, value }: { label: string; value: number }) {
       <div className="flex-1 h-1.5 rounded-full bg-foreground/5 overflow-hidden">
         <div className="h-full rounded-full bg-growth" style={{ width: `${pct}%` }} />
       </div>
-      <span className="w-7 text-right text-xs text-muted-foreground/60">{pct}%</span>
+      <span className="w-7 text-right text-xs text-muted-foreground">{pct}%</span>
     </div>
   );
 }
@@ -63,9 +63,7 @@ export function PersonalityCard({ phases }: Props) {
 
       {/* Category breakdown */}
       <div>
-        <h3 className="text-xs font-medium uppercase tracking-wide text-muted-foreground/60 mb-2">
-          Category breakdown
-        </h3>
+        <h3 className="text-sm font-semibold text-muted-foreground mb-2">Category breakdown</h3>
         {/* Stacked bar */}
         <div className="flex h-3 w-full overflow-hidden rounded-full gap-px">
           {breakdownEntries.map(([cat, pct]) => (
@@ -83,7 +81,7 @@ export function PersonalityCard({ phases }: Props) {
             <div key={cat} className="flex items-center gap-1">
               <span className="text-xs">{categoryEmoji[cat] ?? '•'}</span>
               <span className="text-xs text-muted-foreground">
-                {cat} <span className="text-muted-foreground/60">{pct}%</span>
+                {cat} <span className="text-muted-foreground">{pct}%</span>
               </span>
             </div>
           ))}
@@ -92,9 +90,7 @@ export function PersonalityCard({ phases }: Props) {
 
       {/* Trait indicators */}
       <div>
-        <h3 className="text-xs font-medium uppercase tracking-wide text-muted-foreground/60 mb-2">
-          Traits
-        </h3>
+        <h3 className="text-sm font-semibold text-muted-foreground mb-2">Traits</h3>
         <div className="space-y-1.5">
           <TraitBar label="Breadth" value={traits.breadth} />
           <TraitBar label="Depth" value={traits.depth} />

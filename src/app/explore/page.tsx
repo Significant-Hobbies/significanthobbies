@@ -112,9 +112,7 @@ export default async function ExplorePage() {
       {/* Trending hobbies */}
       {trendingHobbies.length > 0 && (
         <div className="mb-8">
-          <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground/60">
-            Trending
-          </p>
+          <p className="mb-3 text-sm font-semibold text-muted-foreground/60">Trending</p>
           <div className="flex flex-wrap gap-2">
             {trendingHobbies.map(({ name, count, emoji }) => (
               <Link
@@ -140,9 +138,7 @@ export default async function ExplorePage() {
 function ExploreStat({ label, value }: { label: string; value: string }) {
   return (
     <div className="rounded-xl border border-border bg-card px-3 py-2">
-      <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/60">
-        {label}
-      </p>
+      <p className="text-[10px] font-semibold text-muted-foreground/60">{label}</p>
       <p className="mt-1 text-lg font-bold text-foreground">{value}</p>
     </div>
   );

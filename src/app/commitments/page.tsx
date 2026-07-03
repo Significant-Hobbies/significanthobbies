@@ -54,17 +54,14 @@ export default async function CommitmentsPage() {
       <header className="space-y-2">
         <h1 className="text-2xl font-semibold text-foreground">Commitments</h1>
         <p className="text-sm text-muted-foreground max-w-lg">
-          Pick a hobby, show up daily, stamp each day with proof. A stamp is a record that you
-          existed and practiced.
+          Practice daily, log proof with stamps. Track your commitment journey.
         </p>
       </header>
 
       <StartCommitmentForm suggestions={suggestions} weeksRemaining={weeksRemaining} />
 
       {active.length === 0 && completed.length === 0 ? (
-        <p className="text-sm text-muted-foreground">
-          No commitments yet. Start one above — even a 7-day streak counts.
-        </p>
+        <p className="text-sm text-muted-foreground">No commitments yet. Start one above.</p>
       ) : (
         <section className="space-y-3">
           <h2 className="text-sm font-medium text-foreground">

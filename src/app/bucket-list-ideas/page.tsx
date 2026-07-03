@@ -255,7 +255,7 @@ export default function BucketListIdeasPage() {
           <div className="flex items-center gap-5 rounded-2xl border border-[#f0a090] bg-[#fff0ec] px-6 py-5 mb-8 max-w-md">
             <Lumi size={80} glow float />
             <div>
-              <p className="text-[#e05533] text-xs font-semibold uppercase tracking-widest mb-1">
+              <p className="text-[#e05533] text-sm font-semibold mb-1">
                 Guided by Lumi · {totalIdeas}+ ideas
               </p>
               <p className="text-muted-foreground text-sm leading-relaxed">
@@ -347,9 +347,7 @@ export default function BucketListIdeasPage() {
                 if (famous.length === 0) return null;
                 return (
                   <div className={`rounded-xl border ${style.border} ${style.bg} px-5 py-4`}>
-                    <p
-                      className={`text-xs font-semibold uppercase tracking-wider ${style.text} mb-3`}
-                    >
+                    <p className={`text-sm font-semibold ${style.text} mb-3`}>
                       Famous people who checked {cat.label.toLowerCase()} off their list
                     </p>
                     <div className="flex flex-wrap gap-3">

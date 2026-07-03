@@ -148,9 +148,7 @@ function HobbyCombobox({ label, value, onChange, exclude }: HobbyComboboxProps) 
 
   return (
     <div ref={containerRef} className="relative flex-1">
-      <p className="mb-1.5 text-xs font-semibold uppercase tracking-wider text-muted-foreground/60">
-        {label}
-      </p>
+      <p className="mb-1.5 text-sm font-semibold text-muted-foreground/60">{label}</p>
 
       {value ? (
         <div className="flex items-center justify-between rounded-xl border border-foreground/30 bg-card px-4 py-3">
@@ -222,9 +220,7 @@ function CompareRow({ label, left, right }: RowProps) {
   return (
     <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-3 border-b border-border py-4 last:border-0">
       <div className="flex justify-end">{left}</div>
-      <div className="w-28 text-center text-xs font-semibold uppercase tracking-wider text-muted-foreground/60">
-        {label}
-      </div>
+      <div className="w-28 text-center text-sm font-semibold text-muted-foreground/60">{label}</div>
       <div className="flex justify-start">{right}</div>
     </div>
   );
@@ -382,9 +378,7 @@ export function CompareClient() {
       {/* Quick picks */}
       {!hobbyA && !hobbyB && (
         <div className="mt-10">
-          <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground/60">
-            Popular comparisons
-          </p>
+          <p className="mb-3 text-sm font-semibold text-muted-foreground/60">Popular comparisons</p>
           <div className="flex flex-wrap gap-2">
             {[
               ['Running', 'Cycling'],

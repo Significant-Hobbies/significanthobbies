@@ -122,7 +122,7 @@ export default function CostCalculatorClient() {
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-10">
-      <div className="mb-2 inline-flex items-center gap-2 rounded-full border border-foreground/20 bg-foreground/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-foreground">
+      <div className="mb-2 inline-flex items-center gap-2 rounded-full border border-foreground/20 bg-foreground/10 px-3 py-1 text-[11px] font-semibold text-foreground">
         Free tool
       </div>
       <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
@@ -148,13 +148,11 @@ export default function CostCalculatorClient() {
       </div>
 
       <div className="mt-6 rounded-2xl border border-border bg-card p-5 shadow-sm">
-        <label className="block text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-          Hobby
-        </label>
+        <label className="block text-sm font-semibold text-muted-foreground">Hobby</label>
         <input
           value={hobbyName}
           onChange={(e) => setHobbyName(e.target.value)}
-          className="mt-1 w-full rounded-lg border border-border px-3 py-2 text-base focus:border-foreground/30 focus:outline-none"
+          className="mt-1 w-full rounded-lg border border-border px-3 py-2 text-base focus:border-foreground/30 focus:outline-none focus-visible:ring-2 focus-visible:ring-foreground/50"
           placeholder="e.g. Watercolor painting"
         />
 
@@ -167,7 +165,7 @@ export default function CostCalculatorClient() {
               <input
                 value={it.label}
                 onChange={(e) => updateItem(it.id, { label: e.target.value })}
-                className="col-span-12 rounded-md border border-border bg-card px-2 py-1.5 text-sm sm:col-span-5"
+                className="col-span-12 rounded-md border border-border bg-card px-2 py-1.5 text-sm focus-visible:ring-2 focus-visible:ring-foreground/50 focus-visible:outline-none sm:col-span-5"
                 placeholder="What is it?"
               />
               <input
@@ -175,7 +173,7 @@ export default function CostCalculatorClient() {
                 inputMode="decimal"
                 value={Number.isFinite(it.amount) ? it.amount : 0}
                 onChange={(e) => updateItem(it.id, { amount: Number(e.target.value) || 0 })}
-                className="col-span-6 rounded-md border border-border bg-card px-2 py-1.5 text-sm sm:col-span-3"
+                className="col-span-6 rounded-md border border-border bg-card px-2 py-1.5 text-sm focus-visible:ring-2 focus-visible:ring-foreground/50 focus-visible:outline-none sm:col-span-3"
                 min={0}
                 step={5}
               />
@@ -184,7 +182,7 @@ export default function CostCalculatorClient() {
                 onChange={(e) =>
                   updateItem(it.id, { cadence: e.target.value as LineItem['cadence'] })
                 }
-                className="col-span-4 rounded-md border border-border bg-card px-2 py-1.5 text-sm sm:col-span-3"
+                className="col-span-4 rounded-md border border-border bg-card px-2 py-1.5 text-sm focus-visible:ring-2 focus-visible:ring-foreground/50 focus-visible:outline-none sm:col-span-3"
               >
                 <option value="once">one-time</option>
                 <option value="monthly">monthly</option>
@@ -252,9 +250,7 @@ function Stat({
         emphasize ? 'border-foreground/30 bg-foreground/10' : 'border-border bg-card'
       }`}
     >
-      <div className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
-        {label}
-      </div>
+      <div className="text-[10px] font-semibold text-muted-foreground">{label}</div>
       <div
         className={`mt-1 text-2xl font-bold tabular-nums ${
           emphasize ? 'text-foreground' : 'text-foreground'

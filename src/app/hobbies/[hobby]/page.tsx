@@ -190,7 +190,7 @@ export default async function HobbyDetailPage({ params }: Props) {
       {/* Resources */}
       {resources.length > 0 && (
         <div className="mb-8">
-          <h2 className="mb-4 text-sm font-medium uppercase tracking-wide text-muted-foreground">
+          <h2 className="mb-4 text-sm font-semibold text-muted-foreground">
             Tools & resources for {hobbyName}
           </h2>
           <div className="space-y-3">
@@ -239,9 +239,7 @@ export default async function HobbyDetailPage({ params }: Props) {
       {/* Related articles */}
       {relatedPosts.length > 0 && (
         <div className="mb-8">
-          <h2 className="mb-4 text-sm font-medium uppercase tracking-wide text-muted-foreground">
-            Related articles
-          </h2>
+          <h2 className="mb-4 text-sm font-semibold text-muted-foreground">Related articles</h2>
           <div className="space-y-3">
             {relatedPosts.map((post) => (
               <Link key={post.slug} href={`/blog/${post.slug}`} prefetch={false}>
@@ -266,7 +264,7 @@ export default async function HobbyDetailPage({ params }: Props) {
 
       {/* Community timelines */}
       <div className="mb-12">
-        <h2 className="mb-4 text-sm font-medium uppercase tracking-wide text-muted-foreground">
+        <h2 className="mb-4 text-sm font-semibold text-muted-foreground">
           Community timelines featuring {hobbyName}
         </h2>
         {matchingTimelines.length > 0 ? (
@@ -317,7 +315,7 @@ export default async function HobbyDetailPage({ params }: Props) {
       {/* Related hobbies in same category */}
       {otherHobbies.length > 0 && (
         <div className="mb-8">
-          <h2 className="mb-4 text-sm font-medium uppercase tracking-wide text-muted-foreground">
+          <h2 className="mb-4 text-sm font-semibold text-muted-foreground">
             {category.emoji} Other {category.name.toLowerCase()} hobbies
           </h2>
           <div className="flex flex-wrap gap-2">
@@ -342,9 +340,7 @@ export default async function HobbyDetailPage({ params }: Props) {
       {/* Cross-category related hobbies */}
       {crossCategoryHobbies.length > 0 && (
         <div>
-          <h2 className="mb-1 text-sm font-medium uppercase tracking-wide text-muted-foreground">
-            You might also like
-          </h2>
+          <h2 className="mb-1 text-sm font-semibold text-muted-foreground">You might also like</h2>
           <p className="mb-4 text-xs text-muted-foreground/60">
             Hobbies people pair with {hobbyName.toLowerCase()}, often from a completely different
             direction.

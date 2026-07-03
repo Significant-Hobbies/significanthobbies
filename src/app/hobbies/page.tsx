@@ -10,20 +10,6 @@ export const metadata = {
     'Browse 110+ hobbies across 10 categories. Find your next passion — from creative arts and music to outdoor adventures and making.',
 };
 
-// Left-border accent colors cycling through hues per category index
-const CATEGORY_BORDER_COLORS = [
-  'border-l-emerald-500',
-  'border-l-blue-500',
-  'border-l-purple-500',
-  'border-l-orange-500',
-  'border-l-pink-500',
-  'border-l-teal-500',
-  'border-l-amber-500',
-  'border-l-violet-500',
-  'border-l-sky-500',
-  'border-l-rose-500',
-];
-
 export default function HobbiesPage() {
   const totalCategories = HOBBY_CATEGORIES.length;
   const totalHobbies = HOBBY_CATEGORIES.reduce((sum, c) => sum + c.hobbies.length, 0);
@@ -63,12 +49,7 @@ export default function HobbiesPage() {
                         className="absolute inset-0 h-full w-full object-cover transition-transform group-hover:scale-105"
                         loading="lazy"
                       />
-                      <div
-                        className="absolute inset-0"
-                        style={{
-                          background: 'linear-gradient(to top, rgba(12, 43, 41, 0.7), transparent)',
-                        }}
-                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-background/70 to-transparent" />
                       <span className="absolute top-1.5 left-1.5 text-xl">{category.emoji}</span>
                     </div>
                   ) : (
@@ -90,11 +71,10 @@ export default function HobbiesPage() {
       </div>
 
       <div className="space-y-10">
-        {HOBBY_CATEGORIES.map((category, idx) => {
-          const borderColor = CATEGORY_BORDER_COLORS[idx % CATEGORY_BORDER_COLORS.length];
+        {HOBBY_CATEGORIES.map((category) => {
           const catSlug = category.name.toLowerCase().replace(/\s+/g, '-');
           return (
-            <div key={category.name} className={`scroll-reveal border-l-2 pl-5 ${borderColor}`}>
+            <div key={category.name} className="scroll-reveal">
               <div className="mb-4 flex items-center gap-2">
                 <span className="text-2xl">{category.emoji}</span>
                 <Link href={`/hobbies/category/${catSlug}`} prefetch={false}>

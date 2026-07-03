@@ -80,7 +80,7 @@ export function DailyRitual({
   const router = useRouter();
 
   const greeting = isMorning ? `Good morning, ${firstName}.` : `Good evening, ${firstName}.`;
-  const prompt = isMorning ? 'What are you doing with this day?' : 'What did this day amount to?';
+  const prompt = isMorning ? "What's your focus today?" : 'How did your day go?';
 
   function isHabitDone(habitId: string): boolean {
     return logs.some((l) => l.habitId === habitId && l.completed);
@@ -165,7 +165,7 @@ export function DailyRitual({
               ? 'The one thing that would make today worth living…'
               : 'Be honest. What happened, and what did it mean?'
           }
-          className="w-full min-h-[120px] rounded-lg border border-border bg-background px-4 py-3 text-sm text-foreground leading-relaxed focus:border-foreground/40 focus:outline-none focus:ring-1 focus:ring-foreground/40 resize-none"
+          className="w-full min-h-[120px] rounded-lg border border-border bg-background px-4 py-3 text-sm text-foreground leading-relaxed focus:border-foreground/40 focus-visible:ring-2 focus-visible:ring-foreground/60 focus-visible:outline-none resize-none"
         />
       </div>
 
@@ -191,7 +191,7 @@ export function DailyRitual({
               <div key={habit.id} className="flex items-center gap-3 group">
                 <button
                   onClick={() => toggleHabit(habit.id)}
-                  className={`flex h-5 w-5 shrink-0 items-center justify-center rounded border transition-colors ${
+                  className={`flex h-5 w-5 shrink-0 items-center justify-center rounded border transition-colors focus-visible:ring-2 focus-visible:ring-foreground/50 focus-visible:outline-none ${
                     isHabitDone(habit.id)
                       ? 'border-foreground bg-foreground text-background'
                       : 'border-border hover:border-foreground/40'
@@ -227,7 +227,7 @@ export function DailyRitual({
               onChange={(e) => setNewHabit(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleAddHabit()}
               placeholder="New habit name"
-              className="flex-1 rounded-lg border border-border bg-background px-3 py-1.5 text-sm text-foreground focus:border-foreground/40 focus:outline-none focus:ring-1 focus:ring-foreground/40"
+              className="flex-1 rounded-lg border border-border bg-background px-3 py-1.5 text-sm text-foreground focus:border-foreground/40 focus-visible:ring-2 focus-visible:ring-foreground/50 focus-visible:outline-none"
             />
             <Button
               size="sm"
@@ -260,7 +260,7 @@ export function DailyRitual({
         {saved && <span className="text-sm text-muted-foreground">Saved.</span>}
         {!canSave && (
           <span className="text-xs text-muted-foreground/60">
-            {isMorning ? 'Write something first.' : 'Write about your day first.'}
+            {isMorning ? 'Add your focus to save.' : 'Add your entry to save.'}
           </span>
         )}
       </div>

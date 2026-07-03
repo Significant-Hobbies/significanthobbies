@@ -458,7 +458,7 @@ export default function TravelBucketListPage() {
           <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6 mb-8">
             <Lumi size={88} glow float className="shrink-0" />
             <div className="space-y-4 text-center sm:text-left">
-              <p className="text-[#e05533] text-sm font-semibold uppercase tracking-widest">
+              <p className="text-[#e05533] text-sm font-semibold">
                 Guided by Lumi · {totalDestinations} destinations across 5 regions
               </p>
               <h1 className="text-4xl sm:text-5xl font-bold leading-tight text-foreground text-balance">

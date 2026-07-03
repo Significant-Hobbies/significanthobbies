@@ -234,9 +234,7 @@ export function GetStartedClient() {
 
         {/* Example profiles */}
         <div className="mt-6">
-          <p className="mb-3 text-xs font-medium uppercase tracking-wider text-muted-foreground/60">
-            Example profiles
-          </p>
+          <p className="mb-3 text-sm font-semibold text-muted-foreground/60">Example profiles</p>
           <div className="flex flex-col gap-2">
             {EXAMPLE_PROFILES.map(({ handle, display }) => (
               <Link
@@ -255,7 +253,7 @@ export function GetStartedClient() {
 
       {/* What you get */}
       <section className="mx-auto max-w-xl px-4 pb-12">
-        <p className="mb-4 text-sm font-semibold uppercase tracking-wider text-muted-foreground/60">
+        <p className="mb-4 text-sm font-semibold text-muted-foreground/60">
           What you get with a profile
         </p>
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">

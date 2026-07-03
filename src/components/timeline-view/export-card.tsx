@@ -39,19 +39,17 @@ export function ExportCard({ timeline, exportRef }: Props) {
       <div className="relative mb-6">
         <div className="flex items-start justify-between">
           <div>
-            <p className="text-xs font-medium uppercase tracking-widest text-emerald-400 mb-1">
-              significanthobbies
-            </p>
+            <p className="text-xs font-medium text-emerald-400 mb-1">significanthobbies</p>
             <h1 className="text-2xl font-bold text-slate-100">
               {timeline.title ?? 'My Hobby Journey'}
             </h1>
             {timeline.user?.username && (
-              <p className="mt-0.5 text-sm text-slate-500">@{timeline.user.username}</p>
+              <p className="mt-0.5 text-sm text-slate-400">@{timeline.user.username}</p>
             )}
           </div>
           <div className="text-right">
             <div className="text-3xl font-black text-emerald-400">{totalHobbies}</div>
-            <div className="text-xs text-slate-500">hobbies</div>
+            <div className="text-xs text-slate-400">hobbies</div>
           </div>
         </div>
       </div>
@@ -69,7 +67,7 @@ export function ExportCard({ timeline, exportRef }: Props) {
               />
               <div className="px-2 py-1.5">
                 <p className="text-xs font-medium text-slate-300 truncate">{phase.label}</p>
-                <p className="text-xs text-slate-600">{phase.hobbies.length} hobbies</p>
+                <p className="text-xs text-slate-500">{phase.hobbies.length} hobbies</p>
               </div>
             </div>
           ))}
@@ -91,7 +89,7 @@ export function ExportCard({ timeline, exportRef }: Props) {
           );
         })}
         {totalHobbies > 20 && (
-          <span className="inline-flex items-center rounded-full border border-slate-700 bg-slate-800/80 px-2.5 py-0.5 text-xs text-slate-500">
+          <span className="inline-flex items-center rounded-full border border-slate-700 bg-slate-800/80 px-2.5 py-0.5 text-xs text-slate-400">
             +{totalHobbies - 20} more
           </span>
         )}
@@ -113,17 +111,17 @@ export function ExportCard({ timeline, exportRef }: Props) {
         <div className="grid grid-cols-3 gap-3 mb-6">
           <div className="rounded-lg bg-slate-800/60 p-3 text-center">
             <div className="text-xl font-bold text-orange-400">{insights.rekindled.length}</div>
-            <div className="text-xs text-slate-500">rekindled</div>
+            <div className="text-xs text-slate-400">rekindled</div>
           </div>
           <div className="rounded-lg bg-slate-800/60 p-3 text-center">
             <div className="text-xl font-bold text-blue-400">
               {insights.mostPersistent.filter((h) => h.count >= 2).length}
             </div>
-            <div className="text-xs text-slate-500">persistent</div>
+            <div className="text-xs text-slate-400">persistent</div>
           </div>
           <div className="rounded-lg bg-slate-800/60 p-3 text-center">
             <div className="text-xl font-bold text-purple-400">{phases.length}</div>
-            <div className="text-xs text-slate-500">phases</div>
+            <div className="text-xs text-slate-400">phases</div>
           </div>
         </div>
       )}
@@ -137,7 +135,7 @@ export function ExportCard({ timeline, exportRef }: Props) {
             </span>
           ))}
         </div>
-        <p className="text-xs text-slate-600">significanthobbies.com</p>
+        <p className="text-xs text-slate-500">significanthobbies.com</p>
       </div>
     </div>
   );

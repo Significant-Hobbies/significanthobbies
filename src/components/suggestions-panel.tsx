@@ -55,7 +55,7 @@ export function SuggestionsPanel({ existingHobbies }: Props) {
       <div className="space-y-4">
         {grouped.map((group) => (
           <div key={group.name}>
-            <p className="mb-2 text-xs font-medium text-muted-foreground uppercase tracking-wide">
+            <p className="mb-2 text-sm font-semibold text-muted-foreground">
               {group.emoji} {group.name}
             </p>
             <div className="flex flex-wrap gap-2">

@@ -414,39 +414,11 @@ function SideQuestsInner() {
   ];
 
   return (
-    <div className="min-h-screen" style={{ background: '#FAFAFA' }}>
+    <div className="min-h-screen bg-background">
       {/* Hero */}
-      <section
-        className="relative overflow-hidden px-4 py-20 sm:py-28"
-        style={{
-          background: 'linear-gradient(160deg, #F5F5F4 0%, #ECFDF5 40%, #FAFAF9 70%, #F5F5F4 100%)',
-        }}
-      >
-        <div className="pointer-events-none absolute inset-0">
-          <div
-            className="absolute rounded-full"
-            style={{
-              width: 500,
-              height: 500,
-              top: '-20%',
-              right: '-5%',
-              background: 'radial-gradient(circle, rgba(16,185,129,0.08) 0%, transparent 70%)',
-            }}
-          />
-          <div
-            className="absolute rounded-full"
-            style={{
-              width: 400,
-              height: 400,
-              bottom: '-15%',
-              left: '10%',
-              background: 'radial-gradient(circle, rgba(245,158,11,0.07) 0%, transparent 70%)',
-            }}
-          />
-        </div>
-
+      <section className="relative overflow-hidden px-4 py-20 sm:py-28">
         <div className="relative mx-auto max-w-5xl text-center">
-          <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-foreground/20 bg-foreground/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-widest text-foreground">
+          <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-foreground/20 bg-foreground/10 px-4 py-1.5 text-sm font-semibold text-foreground">
             <span className="h-1.5 w-1.5 rounded-full bg-foreground" />
             Side Quests
           </div>
@@ -738,11 +710,8 @@ export function SideQuestsClient() {
   return (
     <Suspense
       fallback={
-        <div
-          className="flex min-h-screen items-center justify-center"
-          style={{ background: '#FAFAFA' }}
-        >
-          <div className="text-muted-foreground/60">Loading quests...</div>
+        <div className="flex min-h-screen items-center justify-center bg-background">
+          <div className="text-muted-foreground">Loading quests...</div>
         </div>
       }
     >

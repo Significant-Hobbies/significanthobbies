@@ -130,13 +130,13 @@ export function CommentsSectionWithOwn({
             onChange={(e) => setBody(e.target.value.slice(0, 280))}
             placeholder="Share your thoughts..."
             rows={3}
-            className="w-full resize-none rounded-lg border border-border bg-card/40 px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground/60 focus:border-foreground/30 focus:bg-card focus:outline-none focus:ring-1 focus:ring-foreground/30 transition-colors"
+            className="w-full resize-none rounded-lg border border-border bg-card/40 px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:border-foreground/30 focus:bg-card focus-visible:ring-2 focus-visible:ring-foreground/50 focus-visible:outline-none transition-colors"
           />
           <div className="mt-1.5 flex items-center justify-between">
             <span
               className={[
                 'text-xs',
-                remaining < 20 ? 'text-rose-500' : 'text-muted-foreground/60',
+                remaining < 20 ? 'text-rose-500' : 'text-muted-foreground',
               ].join(' ')}
             >
               {remaining} left
@@ -161,7 +161,7 @@ export function CommentsSectionWithOwn({
 
       {/* Comments list */}
       {comments.length === 0 ? (
-        <p className="text-center text-sm text-muted-foreground/60 py-6">Be the first to comment</p>
+        <p className="text-center text-sm text-muted-foreground py-6">Be the first to comment</p>
       ) : (
         <ul className="space-y-4">
           {comments.map((comment) => (
@@ -173,11 +173,9 @@ export function CommentsSectionWithOwn({
                     {comment.user.name ?? comment.user.username ?? 'Anonymous'}
                   </span>
                   {comment.user.username && (
-                    <span className="text-xs text-muted-foreground/60">
-                      @{comment.user.username}
-                    </span>
+                    <span className="text-xs text-muted-foreground">@{comment.user.username}</span>
                   )}
-                  <span className="text-xs text-muted-foreground/60">
+                  <span className="text-xs text-muted-foreground">
                     {timeAgo(comment.createdAt)}
                   </span>
                 </div>

@@ -8,7 +8,7 @@ export function BadgeCollection({ earnedBadgeIds }: { earnedBadgeIds: string[] }
 
   return (
     <div>
-      <h2 className="mb-3 text-sm font-medium uppercase tracking-wide text-muted-foreground">
+      <h2 className="mb-3 text-sm font-semibold text-muted-foreground">
         Badges
         {earnedBadgeIds.length > 0 && (
           <span className="ml-2 text-foreground">{earnedBadgeIds.length} earned</span>

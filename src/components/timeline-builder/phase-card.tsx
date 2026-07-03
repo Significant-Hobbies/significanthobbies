@@ -72,7 +72,7 @@ export function PhaseCard({ phase, onChange, onDelete, isOnly }: Props) {
       ref={setNodeRef}
       style={style}
       className={`rounded-xl border bg-card ${
-        hasHobbies ? 'border-l-2 border-l-emerald-500 border-border' : 'border-border'
+        hasHobbies ? 'border-border bg-card/80' : 'border-border'
       }`}
     >
       {/* Header */}
@@ -81,7 +81,7 @@ export function PhaseCard({ phase, onChange, onDelete, isOnly }: Props) {
         <button
           {...attributes}
           {...listeners}
-          className="flex h-11 w-11 shrink-0 cursor-grab touch-none items-center justify-center rounded-md text-muted-foreground/60 hover:text-muted-foreground active:cursor-grabbing"
+          className="flex h-11 w-11 shrink-0 cursor-grab touch-none items-center justify-center rounded-md text-muted-foreground hover:text-muted-foreground active:cursor-grabbing"
           aria-label="Drag to reorder"
         >
           <GripVertical className="h-5 w-5" />
@@ -94,7 +94,7 @@ export function PhaseCard({ phase, onChange, onDelete, isOnly }: Props) {
           value={phase.label}
           onChange={(e) => update({ label: e.target.value })}
           placeholder="Phase name (e.g. High school)"
-          className="h-9 flex-1 border-transparent bg-transparent text-sm font-medium text-foreground placeholder:text-muted-foreground/60 focus-visible:border-border focus-visible:bg-card/40"
+          className="h-9 flex-1 border-transparent bg-transparent text-sm font-medium text-foreground placeholder:text-muted-foreground focus-visible:border-border focus-visible:bg-card/40"
         />
 
         <div className="flex items-center gap-0.5">
@@ -103,7 +103,7 @@ export function PhaseCard({ phase, onChange, onDelete, isOnly }: Props) {
               type="button"
               variant="ghost"
               size="icon"
-              className="h-11 w-11 text-muted-foreground/60 hover:text-destructive"
+              className="h-11 w-11 text-muted-foreground hover:text-destructive"
               onClick={onDelete}
               aria-label="Delete phase"
             >
@@ -114,7 +114,7 @@ export function PhaseCard({ phase, onChange, onDelete, isOnly }: Props) {
             type="button"
             variant="ghost"
             size="icon"
-            className="h-11 w-11 text-muted-foreground/60 hover:text-foreground"
+            className="h-11 w-11 text-muted-foreground hover:text-foreground"
             onClick={() => setOpen((v) => !v)}
             aria-label={open ? 'Collapse phase' : 'Expand phase'}
           >
@@ -141,7 +141,7 @@ export function PhaseCard({ phase, onChange, onDelete, isOnly }: Props) {
                 placeholder="From"
                 className="h-10 border-border bg-card/40 text-sm"
               />
-              <span className="text-muted-foreground/60 text-xs">–</span>
+              <span className="text-muted-foreground text-xs">–</span>
               <Input
                 type="number"
                 value={phase.ageEnd ?? ''}
@@ -160,12 +160,12 @@ export function PhaseCard({ phase, onChange, onDelete, isOnly }: Props) {
           <div className="space-y-1.5">
             <Label className="text-xs text-muted-foreground">
               Hobbies{' '}
-              <span className={hasHobbies ? 'text-growth' : 'text-muted-foreground/60'}>
+              <span className={hasHobbies ? 'text-growth' : 'text-muted-foreground'}>
                 ({phase.hobbies.length})
               </span>
             </Label>
             {milestonePrompt && (
-              <p className="text-xs text-muted-foreground/60 italic">{milestonePrompt}</p>
+              <p className="text-xs text-muted-foreground italic">{milestonePrompt}</p>
             )}
             <HobbyInput hobbies={phase.hobbies} onChange={(hobbies) => update({ hobbies })} />
           </div>

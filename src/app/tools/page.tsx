@@ -63,16 +63,11 @@ const BADGE_STYLES: Record<string, string> = {
 
 export default function ToolsPage() {
   return (
-    <div className="min-h-screen" style={{ background: '#FAFAFA' }}>
+    <div className="min-h-screen bg-background">
       {/* Hero */}
-      <section
-        className="relative overflow-hidden px-4 py-16 sm:py-24"
-        style={{
-          background: 'linear-gradient(160deg, #ECFDF5 0%, #F5F5F4 50%, #ECFDF5 100%)',
-        }}
-      >
+      <section className="relative overflow-hidden px-4 py-16 sm:py-24">
         <div className="relative mx-auto max-w-3xl text-center">
-          <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-foreground/20 bg-foreground/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-widest text-foreground">
+          <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-foreground/20 bg-foreground/10 px-4 py-1.5 text-sm font-semibold text-foreground">
             <span className="h-1.5 w-1.5 rounded-full bg-foreground" />
             Free Tools
           </div>

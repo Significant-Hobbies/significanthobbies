@@ -37,7 +37,7 @@ export function LumiWeeklyReview({ initialReflection }: Props) {
   const showDueBadge = hydrated && due && !justMarked;
 
   return (
-    <div className="relative overflow-hidden rounded-2xl border border-[#f0a090] bg-gradient-to-br from-[#fff6f2] to-white p-6 shadow-sm">
+    <div className="relative overflow-hidden rounded-2xl border border-lumi-200 bg-lumi-50 p-6 shadow-sm">
       {/* Decorative Lumi */}
       <div className="absolute -right-4 -top-2 opacity-10 select-none">
         <Lumi size={120} />
@@ -52,7 +52,7 @@ export function LumiWeeklyReview({ initialReflection }: Props) {
               <div className="flex items-center gap-2">
                 <h3 className="font-bold text-foreground">Weekly check-in with Lumi</h3>
                 {showStreak && (
-                  <span className="inline-flex items-center gap-1 rounded-full bg-orange-100 px-2 py-0.5 text-xs font-semibold text-orange-600">
+                  <span className="inline-flex items-center gap-1 rounded-full bg-lumi-50 px-2 py-0.5 text-xs font-semibold text-lumi-600">
                     <Flame className="h-3 w-3" />
                     {streak} week{streak !== 1 ? 's' : ''}
                   </span>
@@ -71,7 +71,7 @@ export function LumiWeeklyReview({ initialReflection }: Props) {
           <button
             onClick={handleRefresh}
             disabled={isPending}
-            className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3 py-1.5 text-xs text-muted-foreground hover:border-[#f0a090] hover:text-[#c94420] transition-colors disabled:opacity-50"
+            className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3 py-1.5 text-xs text-muted-foreground hover:border-lumi-200 hover:text-lumi-600 transition-colors disabled:opacity-50"
             aria-label="Refresh reflection"
           >
             <RefreshCw className={`h-3 w-3 ${isPending ? 'animate-spin' : ''}`} />
@@ -81,7 +81,7 @@ export function LumiWeeklyReview({ initialReflection }: Props) {
 
         {/* Due badge */}
         {showDueBadge && (
-          <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-[#e05533] px-3 py-1 text-xs font-semibold text-foreground">
+          <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-lumi px-3 py-1 text-xs font-semibold text-foreground">
             <span className="relative flex h-2 w-2">
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-card opacity-75" />
               <span className="relative inline-flex h-2 w-2 rounded-full bg-card" />
@@ -102,17 +102,15 @@ export function LumiWeeklyReview({ initialReflection }: Props) {
         <div className="space-y-2 mb-4">
           {reflection.questions.map((q, i) => (
             <div key={i} className="flex items-start gap-2">
-              <span className="text-[#e05533] mt-0.5 shrink-0">→</span>
+              <span className="text-lumi mt-0.5 shrink-0">→</span>
               <p className="text-sm text-foreground leading-relaxed">{q}</p>
             </div>
           ))}
         </div>
 
         {/* Suggestion */}
-        <div className="rounded-xl bg-card/70 border border-[#f0a090]/50 px-4 py-3 mb-4">
-          <p className="text-xs font-semibold uppercase tracking-wide text-[#c94420] mb-1">
-            This week
-          </p>
+        <div className="rounded-xl bg-card/70 border border-lumi-200/50 px-4 py-3 mb-4">
+          <p className="text-xs font-semibold text-lumi-600 mb-1">This week</p>
           <p className="text-sm text-foreground">{reflection.suggestion}</p>
         </div>
 
@@ -125,7 +123,7 @@ export function LumiWeeklyReview({ initialReflection }: Props) {
               className={`inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold transition-all ${
                 justMarked
                   ? 'bg-foreground/10 text-foreground cursor-default'
-                  : 'bg-[#e05533] text-foreground hover:bg-[#c94420]'
+                  : 'bg-lumi text-foreground hover:bg-lumi-600'
               }`}
             >
               <Check className="h-4 w-4" />

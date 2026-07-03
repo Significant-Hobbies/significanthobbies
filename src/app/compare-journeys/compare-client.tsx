@@ -196,13 +196,11 @@ export function CompareJourneysClient({ userA, userB, paramA, paramB }: Props) {
 
       {/* Venn-style three-column layout */}
       <div>
-        <h3 className="mb-4 text-sm font-medium uppercase tracking-wide text-muted-foreground">
-          Hobby overlap
-        </h3>
+        <h3 className="mb-4 text-sm font-semibold text-muted-foreground">Hobby overlap</h3>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           {/* Only A */}
           <div className="rounded-xl border border-border bg-card/40 p-4">
-            <p className="mb-3 text-xs font-semibold uppercase tracking-wide text-muted-foreground text-center">
+            <p className="mb-3 text-sm font-semibold text-muted-foreground text-center">
               Only @{userA?.username}
             </p>
             {onlyA.length === 0 ? (
@@ -223,7 +221,7 @@ export function CompareJourneysClient({ userA, userB, paramA, paramB }: Props) {
 
           {/* Shared — highlighted */}
           <div className="rounded-xl border border-foreground/30 bg-foreground/10 p-4 shadow-sm">
-            <p className="mb-3 text-xs font-semibold uppercase tracking-wide text-foreground text-center">
+            <p className="mb-3 text-sm font-semibold text-foreground text-center">
               Shared ({shared.length})
             </p>
             {shared.length === 0 ? (
@@ -246,7 +244,7 @@ export function CompareJourneysClient({ userA, userB, paramA, paramB }: Props) {
 
           {/* Only B */}
           <div className="rounded-xl border border-border bg-card/40 p-4">
-            <p className="mb-3 text-xs font-semibold uppercase tracking-wide text-muted-foreground text-center">
+            <p className="mb-3 text-sm font-semibold text-muted-foreground text-center">
               Only @{userB?.username}
             </p>
             {onlyB.length === 0 ? (
@@ -273,9 +271,7 @@ export function CompareJourneysClient({ userA, userB, paramA, paramB }: Props) {
           <div className="text-sm font-semibold text-foreground text-center">
             @{userA?.username}
           </div>
-          <div className="text-xs text-muted-foreground/60 text-center uppercase tracking-wide">
-            Stat
-          </div>
+          <div className="text-sm text-muted-foreground/60 text-center">Stat</div>
           <div className="text-sm font-semibold text-foreground text-center">
             @{userB?.username}
           </div>
@@ -292,9 +288,7 @@ export function CompareJourneysClient({ userA, userB, paramA, paramB }: Props) {
 
       {/* Combined personality */}
       <div className="rounded-xl border border-foreground/20 bg-gradient-to-br from-foreground/10 to-card/40 p-6">
-        <h3 className="mb-1 text-sm font-medium uppercase tracking-wide text-foreground">
-          Combined personality
-        </h3>
+        <h3 className="mb-1 text-sm font-semibold text-foreground">Combined personality</h3>
         <p className="text-xs text-muted-foreground mb-4">
           If you merged both journeys into one timeline, you would be…
         </p>
