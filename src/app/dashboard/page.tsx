@@ -279,6 +279,24 @@ export default async function DashboardPage() {
               <Compass className="h-5 w-5 text-muted-foreground transition-colors group-hover:text-primary" />
             </Link>
           </FadeIn>
+
+          {/* Link to look-back */}
+          <FadeIn delay={0.25}>
+            <Link
+              href="/look-back"
+              className="group relative flex items-center justify-between overflow-hidden rounded-xl border border-primary/20 bg-primary/5 px-5 py-4 transition-colors hover:border-primary/40 hover:bg-primary/10"
+            >
+              <div>
+                <p className="font-serif text-sm font-medium text-foreground">
+                  Read your life back →
+                </p>
+                <p className="mt-0.5 text-xs text-muted-foreground">
+                  Your story, told back to you as a narrative
+                </p>
+              </div>
+              <span className="text-2xl">📖</span>
+            </Link>
+          </FadeIn>
         </div>
       </section>
 
