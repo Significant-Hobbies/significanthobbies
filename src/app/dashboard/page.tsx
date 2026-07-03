@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { redirect } from 'next/navigation';
 
 import { FadeIn, GradientMesh, GridBackground } from '~/components/aceternity';
+import { ActiveQuests } from '~/components/dashboard/active-quests';
 import { BucketListSection } from '~/components/bucket-list-section';
 import { CommitmentCard } from '~/components/commitments/commitment-card';
 import { DashboardStats } from '~/components/dashboard/dashboard-stats';
@@ -17,6 +18,7 @@ import { RediscoveryNudges } from '~/components/timeline-view/rediscovery-nudges
 import { Button } from '~/components/ui/button';
 import { bucketListItems, habitLogs, habits, journalEntries, timelines, users } from '~/db/schema';
 import { getMyCommitments } from '~/lib/actions/commitments';
+import { getActiveQuests } from '~/lib/actions/user-quests';
 import { computeStreak, type StampRow } from '~/lib/commitments';
 import { getWeeklyReflection } from '~/lib/lumi-coach';
 import { birthDateFromYear, buildLifeGrid, weekIndexForDay } from '~/lib/mortality';
@@ -63,6 +65,7 @@ export default async function DashboardPage() {
     myHabitLogs,
     allHabitLogs,
     myJournal,
+    activeQuests,
   ] = await Promise.all([
     db
       .select()
@@ -94,6 +97,7 @@ export default async function DashboardPage() {
       .from(journalEntries)
       .where(and(eq(journalEntries.userId, session.user.id), eq(journalEntries.dayDate, today)))
       .limit(1),
+    getActiveQuests(),
   ]);
 
   const todayJournal = myJournal[0] ?? null;
@@ -238,6 +242,11 @@ export default async function DashboardPage() {
         dueToday={dueToday.length}
         primaryCta={primaryCta}
       />
+
+      {/* ─── Active quests — the core Timeline→Quest loop ─── */}
+      <FadeIn delay={0.1}>
+        <ActiveQuests quests={activeQuests} />
+      </FadeIn>
 
       {/* ─── Habit heatmap — visual streak display ─── */}
       {habitsTotal > 0 && (

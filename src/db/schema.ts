@@ -398,6 +398,55 @@ export const dailyCheckins = sqliteTable(
   (table) => [uniqueIndex('DailyCheckin_userId_dayDate_key').on(table.userId, table.dayDate)]
 );
 
+// ─── Personalized quests ──────────────────────────────────────────────────
+// The quest loop: Timeline → Rediscovery → Personalized Quest → Complete → Pin back to Timeline.
+// This table tracks quests that are generated FROM the user's timeline (not the 50 static
+// side-quests, which are still tracked via users.completedQuests JSON array).
+//
+// A userQuest can be:
+//   - 'rediscovery' — generated from a dropped/dormant hobby in their timeline
+//   - 'static' — a static side-quest the user explicitly started (bridges the two systems)
+//
+// The sourceHobby field links the quest to the specific hobby it's about (e.g. "Photography").
+// The sourceTimelineId links it to the timeline that generated it.
+// On completion, a TimelinePin is auto-added to close the loop.
+export const userQuests = sqliteTable(
+  'UserQuest',
+  {
+    id: text('id')
+      .primaryKey()
+      .$defaultFn(() => createId()),
+    userId: text('userId')
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
+    // For static quests: the SideQuest.id (e.g. "sq-01"). For rediscovery: "rq-{hobby-slug}".
+    questId: text('questId').notNull(),
+    // 'rediscovery' = generated from timeline, 'static' = from the 50 static quests
+    type: text('type').notNull().default('rediscovery'),
+    // The hobby this quest is about (e.g. "Photography") — null for static quests
+    sourceHobby: text('sourceHobby'),
+    // Which timeline generated this quest — null for static quests
+    sourceTimelineId: text('sourceTimelineId'),
+    // The quest title at generation time (so it displays even if the static quest changes)
+    title: text('title').notNull(),
+    description: text('description'),
+    emoji: text('emoji'),
+    // 'active' | 'completed' | 'abandoned'
+    status: text('status').notNull().default('active'),
+    startedAt: integer('startedAt', { mode: 'timestamp' }).notNull().default(sql`(unixepoch())`),
+    completedAt: integer('completedAt', { mode: 'timestamp' }),
+    createdAt: integer('createdAt', { mode: 'timestamp' }).notNull().default(sql`(unixepoch())`),
+  },
+  (table) => [
+    index('UserQuest_userId_status_idx').on(table.userId, table.status),
+    uniqueIndex('UserQuest_userId_questId_active_key').on(
+      table.userId,
+      table.questId,
+      table.status
+    ),
+  ]
+);
+
 // Simple cuid-like ID generator using nanoid pattern
 function createId(): string {
   const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';

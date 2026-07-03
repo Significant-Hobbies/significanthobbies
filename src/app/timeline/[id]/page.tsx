@@ -17,7 +17,7 @@ import { LikeButton } from '~/components/timeline-view/like-button';
 import { PersonalityCard } from '~/components/timeline-view/personality-card';
 import { PhaseSwimlane } from '~/components/timeline-view/phase-swimlane';
 import { RecommendationsPanel } from '~/components/timeline-view/recommendations-panel';
-import { RediscoveryNudges } from '~/components/timeline-view/rediscovery-nudges';
+import { RediscoveryQuests } from '~/components/timeline-view/rediscovery-quests';
 import { VersionHistory } from '~/components/timeline-view/version-history';
 import { VisibilityToggle } from '~/components/timeline-view/visibility-toggle';
 import { Badge } from '~/components/ui/badge';
@@ -258,7 +258,7 @@ export default async function TimelinePage({ params }: Props) {
           </StaggerItem>
           {isOwner && (
             <StaggerItem>
-              <RediscoveryNudges phases={phases} />
+              <RediscoveryQuests timelineId={timeline.id} phases={phases} />
             </StaggerItem>
           )}
           {isOwner && (

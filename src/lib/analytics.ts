@@ -106,3 +106,33 @@ export function trackCoreAction(action: CoreAction, distinctId?: string): void {
 export function trackReturned(): void {
   emit('returned', {});
 }
+
+/**
+ * Discovery funnel — quiz → recommendations → timeline (2026-07-03 refocus).
+ *
+ * One event per step, named `discovery_<step>`, all carrying `project_id`:
+ *  - `discovery_land`                   — anon landing page viewed (fired from
+ *                                         the Astro overlay, see landing-astro/).
+ *  - `discovery_quiz_start`             — first quiz question answered.
+ *  - `discovery_quiz_complete`          — last quiz question answered.
+ *  - `discovery_recommendations_viewed` — quiz results (personalized recs) shown.
+ *  - `discovery_timeline_start`         — new-timeline builder opened (`source`
+ *                                         distinguishes quiz vs direct).
+ *  - `discovery_shared`                 — quiz result or timeline shared/exported.
+ *
+ * Measurement plan + decision rule live in PROJECT_STATUS.md.
+ */
+export type DiscoveryStep =
+  | 'land'
+  | 'quiz_start'
+  | 'quiz_complete'
+  | 'recommendations_viewed'
+  | 'timeline_start'
+  | 'shared';
+
+export function trackDiscovery(
+  step: DiscoveryStep,
+  properties: Record<string, unknown> = {}
+): void {
+  trackEvent(`discovery_${step}`, properties);
+}

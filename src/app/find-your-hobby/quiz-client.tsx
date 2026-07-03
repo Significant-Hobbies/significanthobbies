@@ -1,12 +1,12 @@
 'use client';
 
 import Link from 'next/link';
-import posthog from 'posthog-js';
 import { useEffect, useRef, useState } from 'react';
 
 import { BorderBeam, FadeIn, SpotlightCard, TextGenerateEffect } from '~/components/aceternity';
 import { EmailCapture } from '~/components/email-capture';
 import { QuizResultCard } from '~/components/quiz-result-card';
+import { trackDiscovery, trackEvent } from '~/lib/analytics';
 import { HOBBY_CATEGORIES } from '~/lib/hobbies';
 
 type Category =
@@ -217,17 +217,6 @@ function buildHobbyExperiments(hobbies: string[], topCats: Category[]): HobbyExp
   });
 }
 
-function trackRecommendationEvent(
-  name: 'recommendation_started' | 'recommendation_saved',
-  properties: Record<string, unknown>
-) {
-  try {
-    posthog.capture(name, { project_id: 'significanthobbies', ...properties });
-  } catch {
-    // Best-effort only; recommendations should never fail because analytics did.
-  }
-}
-
 export function HobbyQuiz() {
   const [step, setStep] = useState(0); // 0-4 = questions, 5 = results
   const [answers, setAnswers] = useState<number[]>([]);
@@ -254,6 +243,10 @@ export function HobbyQuiz() {
       newScores[cat] = (newScores[cat] ?? 0) + 1;
     }
 
+    // Discovery funnel: quiz start on the first answer, complete on the last.
+    if (step === 0) trackDiscovery('quiz_start');
+    if (step === QUESTIONS.length - 1) trackDiscovery('quiz_complete');
+
     setScores(newScores);
     setAnswers([...answers, selectedOption]);
     setSelectedOption(null);
@@ -273,7 +266,11 @@ export function HobbyQuiz() {
     const topCats = getTopCategories(scores);
     const archetype = ARCHETYPE_MAP[topCats[0]!];
     const text = `I took the Hobby Finder Quiz and I'm ${archetype?.title ?? 'a hobby explorer'}! Find your perfect hobby at significanthobbies.com/find-your-hobby`;
-    if (navigator.share) {
+    trackDiscovery('shared', {
+      surface: 'quiz_result',
+      method: typeof navigator.share === 'function' ? 'web_share' : 'clipboard',
+    });
+    if (typeof navigator.share === 'function') {
       // share() rejects when the user cancels — that's not an error.
       void navigator
         .share({
@@ -303,6 +300,7 @@ export function HobbyQuiz() {
       link.download = 'my-hobby-personality.png';
       link.href = dataUrl;
       link.click();
+      trackDiscovery('shared', { surface: 'quiz_result', method: 'png_download' });
     } catch (err) {
       console.error('Quiz card PNG export failed', err);
       alert("Couldn't create the image — try again in a moment.");
@@ -321,7 +319,7 @@ export function HobbyQuiz() {
     if (!isResults || !archetype) return;
     if (trackedRecommendationStartRef.current) return;
     trackedRecommendationStartRef.current = true;
-    trackRecommendationEvent('recommendation_started', {
+    trackEvent('recommendation_started', {
       archetype: archetype.title,
       top_categories: topCats,
       recommended_hobbies: recommendedHobbies.slice(0, 3),
@@ -336,7 +334,7 @@ export function HobbyQuiz() {
     };
     localStorage.setItem('significant-hobbies:experiment-plan', JSON.stringify(payload));
     setSavedExperimentPlan(true);
-    trackRecommendationEvent('recommendation_saved', {
+    trackEvent('recommendation_saved', {
       archetype: payload.archetype,
       hobbies: hobbyExperiments.map((experiment) => experiment.hobby),
     });
