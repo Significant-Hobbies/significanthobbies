@@ -136,3 +136,31 @@ export function trackDiscovery(
 ): void {
   trackEvent(`discovery_${step}`, properties);
 }
+
+/**
+ * Primary discovery funnel — the single chosen discovery UX (the hobby quiz
+ * at `/find-your-hobby`), measured over a 7-day window in PostHog.
+ *
+ * Three canonical steps, all carrying `project_id` + `surface: "quiz"`:
+ *  - `discovery_started`   — quiz page viewed (top of funnel).
+ *  - `discovery_engaged`   — quiz completed and personalized recommendations
+ *                            shown (the "engaged" moment that produces value).
+ *  - `hobby_committed`     — the user commits to a hobby: saves the experiment
+ *                            plan, or clicks through to build a timeline from
+ *                            the quiz result (bottom of funnel).
+ *
+ * Build the PostHog funnel as:
+ *   discovery_started → discovery_engaged → hobby_committed
+ * with a 7-day conversion window between each step.
+ *
+ * The legacy `trackDiscovery` steps above remain for backwards-compatible
+ * detail events; these three are the canonical, decision-driving funnel.
+ */
+export type DiscoveryFunnelStep = 'started' | 'engaged' | 'committed';
+
+export function trackDiscoveryFunnel(
+  step: DiscoveryFunnelStep,
+  properties: Record<string, unknown> = {}
+): void {
+  trackEvent(`discovery_${step}`, { surface: 'quiz', ...properties });
+}

@@ -6,7 +6,7 @@ import { useEffect, useRef, useState } from 'react';
 import { BorderBeam, FadeIn, SpotlightCard, TextGenerateEffect } from '~/components/aceternity';
 import { EmailCapture } from '~/components/email-capture';
 import { QuizResultCard } from '~/components/quiz-result-card';
-import { trackDiscovery, trackEvent } from '~/lib/analytics';
+import { trackDiscovery, trackDiscoveryFunnel, trackEvent } from '~/lib/analytics';
 import { HOBBY_CATEGORIES } from '~/lib/hobbies';
 
 type Category =
@@ -226,6 +226,8 @@ export function HobbyQuiz() {
   const [savedExperimentPlan, setSavedExperimentPlan] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
   const trackedRecommendationStartRef = useRef(false);
+  const trackedFunnelStartRef = useRef(false);
+  const trackedFunnelEngagedRef = useRef(false);
 
   const isResults = step >= QUESTIONS.length;
   const currentQuestion = QUESTIONS[step];
@@ -316,6 +318,22 @@ export function HobbyQuiz() {
   const hobbyExperiments = isResults ? buildHobbyExperiments(recommendedHobbies, topCats) : [];
 
   useEffect(() => {
+    if (trackedFunnelStartRef.current) return;
+    trackedFunnelStartRef.current = true;
+    trackDiscoveryFunnel('started');
+  }, []);
+
+  useEffect(() => {
+    if (!isResults || !archetype) return;
+    if (trackedFunnelEngagedRef.current) return;
+    trackedFunnelEngagedRef.current = true;
+    trackDiscoveryFunnel('engaged', {
+      archetype: archetype.title,
+      top_categories: topCats,
+    });
+  }, [archetype, isResults, topCats]);
+
+  useEffect(() => {
     if (!isResults || !archetype) return;
     if (trackedRecommendationStartRef.current) return;
     trackedRecommendationStartRef.current = true;
@@ -335,6 +353,11 @@ export function HobbyQuiz() {
     localStorage.setItem('significant-hobbies:experiment-plan', JSON.stringify(payload));
     setSavedExperimentPlan(true);
     trackEvent('recommendation_saved', {
+      archetype: payload.archetype,
+      hobbies: hobbyExperiments.map((experiment) => experiment.hobby),
+    });
+    trackDiscoveryFunnel('committed', {
+      method: 'save_plan',
       archetype: payload.archetype,
       hobbies: hobbyExperiments.map((experiment) => experiment.hobby),
     });
@@ -534,6 +557,12 @@ export function HobbyQuiz() {
             <div className="flex flex-col gap-3 sm:flex-row">
               <Link
                 href="/timeline/new"
+                onClick={() =>
+                  trackDiscoveryFunnel('committed', {
+                    method: 'timeline_start',
+                    archetype: archetype?.title,
+                  })
+                }
                 className="flex-1 rounded-lg bg-primary px-6 py-3 text-center text-sm font-semibold text-primary-foreground shadow-sm transition-colors hover:opacity-90"
               >
                 Build your hobby timeline →

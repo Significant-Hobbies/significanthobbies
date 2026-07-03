@@ -27,11 +27,6 @@ export function SiteFooter() {
             <p className="text-xs font-medium text-foreground">Hobbies</p>
             <ul className="mt-3 space-y-2 text-xs text-muted-foreground">
               <li>
-                <Link href="/hobbies" prefetch={false} className="hover:text-foreground">
-                  Directory
-                </Link>
-              </li>
-              <li>
                 <Link href="/find-your-hobby" prefetch={false} className="hover:text-foreground">
                   Find your hobby
                 </Link>
@@ -75,11 +70,6 @@ export function SiteFooter() {
               <li>
                 <Link href="/side-quests" prefetch={false} className="hover:text-foreground">
                   Quest board
-                </Link>
-              </li>
-              <li>
-                <Link href="/explore" prefetch={false} className="hover:text-foreground">
-                  Community
                 </Link>
               </li>
               <li>
