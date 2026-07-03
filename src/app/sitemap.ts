@@ -1,47 +1,14 @@
-export const dynamic = 'force-dynamic';
-
-import { eq, isNotNull } from 'drizzle-orm';
 import type { MetadataRoute } from 'next';
 
-import { timelines, users } from '~/db/schema';
 import { blogPosts } from '~/lib/blog-posts';
 import { FAMOUS_BUCKET_LISTS } from '~/lib/famous-bucket-lists';
 import { HOBBY_CATEGORIES } from '~/lib/hobbies';
-import { db } from '~/server/db';
+
+export const revalidate = 3600;
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = 'https://significanthobbies.com';
   const now = new Date();
-
-  // The static portion of the sitemap (landing, category pages, blog) must
-  // ship even if Turso is unreachable. Dynamic rows degrade to empty.
-  let publicTimelineRows: Array<{
-    id: string;
-    slug: string | null;
-    updatedAt: Date;
-    userUsername: string | null;
-  }> = [];
-  let userRows: Array<{ username: string | null }> = [];
-
-  try {
-    publicTimelineRows = await db
-      .select({
-        id: timelines.id,
-        slug: timelines.slug,
-        updatedAt: timelines.updatedAt,
-        userUsername: users.username,
-      })
-      .from(timelines)
-      .leftJoin(users, eq(timelines.userId, users.id))
-      .where(eq(timelines.visibility, 'PUBLIC'));
-
-    userRows = await db
-      .select({ username: users.username })
-      .from(users)
-      .where(isNotNull(users.username));
-  } catch (err) {
-    console.error('sitemap: dynamic rows fetch failed; returning static only', err);
-  }
 
   const categoryPages = [
     'creative',
@@ -221,22 +188,5 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...bucketListPages,
     ...hobbyPages,
     ...blogPages,
-    ...publicTimelineRows.map((t) => ({
-      url:
-        t.userUsername && t.slug
-          ? `${baseUrl}/u/${t.userUsername}/${t.slug}`
-          : `${baseUrl}/timeline/${t.id}`,
-      lastModified: t.updatedAt,
-      changeFrequency: 'monthly' as const,
-      priority: 0.5,
-    })),
-    ...userRows
-      .filter((u) => u.username !== null)
-      .map((u) => ({
-        url: `${baseUrl}/u/${u.username!}`,
-        lastModified: now,
-        changeFrequency: 'monthly' as const,
-        priority: 0.4,
-      })),
   ];
 }
