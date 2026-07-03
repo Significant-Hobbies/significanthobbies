@@ -69,6 +69,25 @@ const OG_IMAGE = `${SITE_URL}/opengraph-image`;
     <meta name="twitter:image" content={OG_IMAGE} />
     <meta name="theme-color" content="#1a1a1a" />
     <link rel="icon" href="/favicon.ico" />
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "Significant Hobbies",
+      "applicationCategory": "LifestyleApplication",
+      "operatingSystem": "Web Browser",
+      "url": "https://significanthobbies.com",
+      "description": "Map your hobby history across life phases. Visualize insights, share your journey, and discover what to explore next. Timeline builder with drag-and-drop phases and auto-save for guests.",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "creator": {
+        "@type": "Person",
+        "name": "Sarthak Agrawal",
+        "url": "https://sarthakagrawal.dev"
+      }
+    })} />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link

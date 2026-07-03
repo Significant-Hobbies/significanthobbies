@@ -1,0 +1,35 @@
+---
+const fleet = [
+  { name: 'Foundry', url: 'https://sassmaker.com', blurb: 'SaaS factory floor' },
+  { name: 'Aliveville', url: 'https://aliveville.com', blurb: 'AI world simulator' },
+  { name: 'CodeVetter', url: 'https://codevetter.com', blurb: 'AI code review' },
+  { name: 'High Signal', url: 'https://highsignal.app', blurb: 'Daily tech/startup brief' },
+  { name: 'Karte', url: 'https://karte.cc', blurb: 'AI link-in-bio' },
+  { name: 'RolePatch', url: 'https://rolepatch.com', blurb: 'AI resume tailoring' },
+  { name: 'Materia', url: 'https://materia.io', blurb: 'Evidence-graded remedies' },
+];
+---
+
+<footer class="border-t border-border bg-background px-6 py-12 lg:px-12">
+  <div class="mx-auto max-w-5xl">
+    <p class="mb-5 text-center text-xs font-medium uppercase tracking-wider text-muted-foreground">
+      More from the fleet
+    </p>
+    <ul class="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-sm">
+      {
+        fleet.map((site) => (
+          <li>
+            <a
+              href={site.url}
+              class="text-muted-foreground no-underline transition-colors hover:text-foreground"
+              rel="noopener"
+            >
+              <span class="font-medium text-foreground/80">{site.name}</span>
+              <span class="ml-1.5 text-muted-foreground/70">— {site.blurb}</span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</footer>
