@@ -31,9 +31,9 @@ export async function generateMetadata({
 const CATEGORY_COLORS: Record<string, { bg: string; text: string; border: string }> = {
   Wellbeing: { bg: 'bg-foreground/10', text: 'text-foreground', border: 'border-foreground/20' },
   'Getting Started': {
-    bg: 'bg-amber-400/10',
+    bg: 'bg-primary/10',
     text: 'text-foreground',
-    border: 'border-amber-400/30',
+    border: 'border-primary/30',
   },
   Psychology: { bg: 'bg-violet-50', text: 'text-violet-700', border: 'border-violet-200' },
   Reflection: { bg: 'bg-blue-50', text: 'text-blue-700', border: 'border-blue-200' },
@@ -100,12 +100,12 @@ function BlogContent({ blocks }: { blocks: ContentBlock[] }) {
             return (
               <div
                 key={idx}
-                className="scroll-reveal-scale my-8 flex gap-4 rounded-xl border border-amber-400/30 bg-amber-400/10 px-6 py-5"
+                className="scroll-reveal-scale my-8 flex gap-4 rounded-xl border border-primary/30 bg-primary/10 px-6 py-5"
               >
                 <span className="mt-0.5 shrink-0 text-2xl" role="img" aria-hidden="true">
                   {block.emoji}
                 </span>
-                <p className="text-base italic leading-relaxed text-amber-300">{block.text}</p>
+                <p className="text-base italic leading-relaxed text-lumi-300">{block.text}</p>
               </div>
             );
 

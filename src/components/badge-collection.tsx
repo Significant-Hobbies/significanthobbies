@@ -22,7 +22,7 @@ export function BadgeCollection({ earnedBadgeIds }: { earnedBadgeIds: string[] }
               key={badge.id}
               className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-medium transition-all ${
                 isEarned
-                  ? 'border-amber-400/30 bg-amber-400/10 text-amber-300 shadow-sm'
+                  ? 'border-primary/30 bg-primary/10 text-lumi-300 shadow-sm'
                   : 'border-border bg-card/40 text-muted-foreground/60'
               }`}
               title={isEarned ? badge.description : 'Keep completing quests to unlock this badge'}

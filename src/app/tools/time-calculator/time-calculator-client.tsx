@@ -315,7 +315,7 @@ export function TimeCalculatorClient() {
               )}
 
               {screenTime > 0 && (
-                <div className="rounded-2xl border border-amber-400/30 bg-amber-400/10 p-6 shadow-sm">
+                <div className="rounded-2xl border border-primary/30 bg-primary/10 p-6 shadow-sm">
                   <div className="mb-2 flex items-center gap-2">
                     <span className="text-xl">📱</span>
                     <h3 className="font-bold text-foreground">Screen time swap</h3>

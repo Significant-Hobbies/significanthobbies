@@ -44,8 +44,8 @@ export function FloatingLumi() {
       {/* Expandable panel — slides in above the button on hover */}
       <div
         className="
-          flex flex-col gap-1 rounded-2xl border border-[#f0a090]
-          bg-card/95 backdrop-blur-sm shadow-xl
+          flex flex-col gap-1 rounded-2xl border border-lumi-200
+          bg-card shadow-xl
           overflow-hidden
           max-h-0 opacity-0 scale-95 origin-bottom-right
           group-hover:max-h-64 group-hover:opacity-100 group-hover:scale-100
@@ -54,13 +54,13 @@ export function FloatingLumi() {
         "
       >
         <div className="px-4 pt-3 pb-1">
-          <p className="text-sm font-semibold text-[#e05533]">Quick links</p>
+          <p className="text-sm font-semibold text-primary">Quick links</p>
         </div>
         {SHORTCUTS.map(({ label, href }) => (
           <Link
             key={href}
             href={href}
-            className="mx-2 mb-1 rounded-xl px-3 py-2.5 text-sm font-medium text-foreground hover:bg-[#fff0ec] hover:text-[#e05533] transition-colors"
+            className="mx-2 mb-1 rounded-xl px-3 py-2.5 text-sm font-medium text-foreground hover:bg-primary/10 hover:text-primary transition-colors"
           >
             {label}
           </Link>
@@ -72,12 +72,12 @@ export function FloatingLumi() {
       <div className="relative flex items-center justify-center">
         {/* Coral glow ring */}
         <span
-          className="absolute inset-0 rounded-full bg-[#e05533]/20 blur-md scale-125 animate-pulse-soft"
+          className="absolute inset-0 rounded-full bg-primary/20 blur-md scale-125 animate-pulse-soft"
           aria-hidden
         />
         <button
           type="button"
-          className="relative flex items-center justify-center rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#e05533] focus-visible:ring-offset-2 focus-visible:ring-offset-white"
+          className="relative flex items-center justify-center rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
           aria-label="Open Lumi bucket list guide"
         >
           <Lumi size={48} float glow />
@@ -96,7 +96,7 @@ export function FloatingLumi() {
             opacity-0 group-hover:opacity-100
             hover:bg-foreground/15 hover:text-foreground
             transition-opacity duration-200
-            focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#e05533]
+            focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary
           "
         >
           ×

@@ -297,9 +297,9 @@ export default function HobbiesForResumePage() {
         ones that genuinely reflect you, then be ready to talk about them.
       </p>
 
-      <div className="mb-8 rounded-xl bg-amber-400/10 border border-amber-400/30 p-5">
-        <h2 className="text-sm font-bold text-amber-300 mb-1">How to choose what to include</h2>
-        <ul className="space-y-1.5 text-sm text-amber-300">
+      <div className="mb-8 rounded-xl bg-primary/10 border border-primary/30 p-5">
+        <h2 className="text-sm font-bold text-lumi-300 mb-1">How to choose what to include</h2>
+        <ul className="space-y-1.5 text-sm text-lumi-300">
           <li>
             Include hobbies where you&apos;ve reached a notable level — a rank, a project, a
             milestone

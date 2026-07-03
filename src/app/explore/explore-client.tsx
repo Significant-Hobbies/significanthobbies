@@ -27,7 +27,7 @@ const PHASE_COLORS = [
   'bg-orange-400',
   'bg-pink-400',
   'bg-teal-400',
-  'bg-amber-400',
+  'bg-primary',
   'bg-violet-400',
 ];
 

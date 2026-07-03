@@ -16,12 +16,12 @@ export function Lumi({
   className = '',
   ...props
 }: LumiProps) {
-  // Coral palette — oklch(0.62 0.20 27) family
-  const body = onDark ? '#f87171' : '#e05533'; // coral-500 / coral-400 on dark
-  const highlight = onDark ? '#fca5a5' : '#f07050'; // lighter coral
-  const deep = onDark ? '#e05533' : '#b83520'; // darker coral for depth
-  const smile = onDark ? '#7f1d1d' : '#7f1d1d'; // dark red for smile
-  const sparkle = onDark ? '#fca5a5' : '#f87171'; // light coral sparkle
+  // Gold palette — oklch(0.82 0.13 88) family (matches primary/lumi accent)
+  const body = onDark ? '#d4a843' : '#d4a843'; // gold-500
+  const highlight = onDark ? '#e8c770' : '#e8c770'; // lighter gold
+  const deep = onDark ? '#b8862a' : '#b8862a'; // darker gold for depth
+  const smile = onDark ? '#5c3d10' : '#5c3d10'; // dark gold-brown for smile
+  const sparkle = onDark ? '#e8c770' : '#d4a843'; // light gold sparkle
 
   const animClasses = [
     className,

@@ -8,6 +8,7 @@
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-sans);
+  --font-serif: var(--font-serif);
   --font-mono: var(--font-geist-mono);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
@@ -66,60 +67,60 @@
   /* Growth — sage green (practice / stamps / progress) */
   --color-growth: oklch(0.72 0.13 150);
   --color-growth-soft: oklch(0.72 0.13 150 / 0.16);
-  /* Hero surface — deepest teal */
-  --color-hero: oklch(0.12 0.022 178);
-  --color-hero-surface: oklch(0.15 0.024 178);
+  /* Hero surface — deepest charcoal */
+  --color-hero: oklch(0.11 0.005 285);
+  --color-hero-surface: oklch(0.14 0.006 285);
 }
 
-/* ─── Deep Study palette ────────────────────────────────────────────────────
-   Saturated deep-teal body, cream ink, gold (Lumi) accents. The surface IS
-   the mood — a darkened study lit by a single warm lamp. Warmth lives in the
-   gold accent + Fraunces display serif, NOT in a tinted near-white bg (that's
-   the AI cream-default tell). All values OKLCH.
+/* ─── Editorial Dark palette ─────────────────────────────────────────────────
+   Neutral charcoal canvas, clean white ink, single gold accent. Inspired by
+   Stripe/Notion editorial discipline: type-forward, generous whitespace,
+   restrained decoration. Warmth lives in the gold accent + Fraunces display
+   serif, NOT in the surface color. All values OKLCH.
 */
 :root {
-  --radius: 0.875rem;
-  /* Deep teal body — not black, a real saturated dark green-teal */
-  --background: oklch(0.16 0.025 178);
-  --foreground: oklch(0.94 0.018 85);
-  /* card — lifted a step from the body, same hue */
-  --card: oklch(0.195 0.024 178);
-  --card-foreground: oklch(0.94 0.018 85);
+  --radius: 0.75rem;
+  /* Neutral charcoal body — near-zero chroma, slight warmth */
+  --background: oklch(0.15 0.005 285);
+  --foreground: oklch(0.97 0.003 285);
+  /* card — lifted one step from body, same neutral hue */
+  --card: oklch(0.19 0.006 285);
+  --card-foreground: oklch(0.97 0.003 285);
   /* popover */
-  --popover: oklch(0.195 0.024 178);
-  --popover-foreground: oklch(0.94 0.018 85);
-  /* gold primary — Lumi guiding light. Dark teal text on gold for contrast */
+  --popover: oklch(0.19 0.006 285);
+  --popover-foreground: oklch(0.97 0.003 285);
+  /* gold primary — the single warm accent. Dark text on gold for contrast */
   --primary: oklch(0.82 0.13 88);
-  --primary-foreground: oklch(0.16 0.025 178);
-  /* secondary — muted teal surface */
-  --secondary: oklch(0.235 0.022 178);
-  --secondary-foreground: oklch(0.94 0.018 85);
-  /* muted — surface for panels; foreground tuned for ≥4.5:1 on dark teal */
-  --muted: oklch(0.235 0.02 178);
-  --muted-foreground: oklch(0.78 0.018 85);
-  /* accent — slightly warmer/lifted teal for hover states */
-  --accent: oklch(0.26 0.026 178);
-  --accent-foreground: oklch(0.94 0.018 85);
+  --primary-foreground: oklch(0.15 0.005 285);
+  /* secondary — muted neutral surface */
+  --secondary: oklch(0.23 0.006 285);
+  --secondary-foreground: oklch(0.97 0.003 285);
+  /* muted — surface for panels; foreground tuned for ≥4.5:1 on charcoal */
+  --muted: oklch(0.23 0.006 285);
+  --muted-foreground: oklch(0.72 0.008 285);
+  /* accent — slightly lifted neutral for hover states */
+  --accent: oklch(0.26 0.008 285);
+  --accent-foreground: oklch(0.97 0.003 285);
   /* destructive — warm red, tuned for dark bg */
   --destructive: oklch(0.65 0.20 25);
-  /* border — subtle teal hairline */
-  --border: oklch(0.30 0.022 178);
-  --input: oklch(0.30 0.022 178);
+  /* border — subtle neutral hairline */
+  --border: oklch(0.27 0.006 285);
+  --input: oklch(0.27 0.006 285);
   --ring: oklch(0.82 0.13 88);
-  /* charts — gold + sage + cream family for the dark surface */
+  /* charts — gold + sage + neutral family for the dark surface */
   --chart-1: oklch(0.82 0.13 88);
   --chart-2: oklch(0.72 0.13 150);
   --chart-3: oklch(0.78 0.10 200);
   --chart-4: oklch(0.70 0.15 50);
   --chart-5: oklch(0.80 0.08 320);
-  /* sidebar — same study, marginally deeper */
-  --sidebar: oklch(0.14 0.024 178);
-  --sidebar-foreground: oklch(0.94 0.018 85);
+  /* sidebar — marginally deeper than body */
+  --sidebar: oklch(0.13 0.005 285);
+  --sidebar-foreground: oklch(0.97 0.003 285);
   --sidebar-primary: oklch(0.82 0.13 88);
-  --sidebar-primary-foreground: oklch(0.16 0.025 178);
-  --sidebar-accent: oklch(0.22 0.024 178);
-  --sidebar-accent-foreground: oklch(0.94 0.018 85);
-  --sidebar-border: oklch(0.28 0.022 178);
+  --sidebar-primary-foreground: oklch(0.15 0.005 285);
+  --sidebar-accent: oklch(0.22 0.006 285);
+  --sidebar-accent-foreground: oklch(0.97 0.003 285);
+  --sidebar-border: oklch(0.25 0.006 285);
   --sidebar-ring: oklch(0.82 0.13 88);
 }
 
@@ -136,11 +137,22 @@
   }
   ::selection {
     background: oklch(0.82 0.13 88 / 0.25);
-    color: oklch(0.97 0.02 85);
+    color: oklch(0.97 0.003 285);
   }
   /* Balance text wrapping on headings by default for better multi-line layout */
   h1, h2, h3 {
     text-wrap: balance;
+  }
+  /* Editorial display headings — Fraunces serif for h1/h2, tight tracking */
+  h1 {
+    font-family: var(--font-serif), Georgia, serif;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+  }
+  h2 {
+    font-family: var(--font-serif), Georgia, serif;
+    font-weight: 500;
+    letter-spacing: -0.01em;
   }
 }
 
@@ -248,111 +260,73 @@
   to { transform: rotate(360deg); }
 }
 
-/* ─── Scroll-triggered reveal (CSS-only, no JS needed) ───────────────────────── */
+/* ─── Scroll-triggered reveal (CSS-only, subtle editorial fade) ────────────── */
 
 @keyframes scrollRevealUp {
-  from {
-    opacity: 0;
-    transform: translateY(32px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes scrollRevealScale {
-  from {
-    opacity: 0;
-    transform: scale(0.92);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
+  from { opacity: 0; transform: scale(0.98); }
+  to   { opacity: 1; transform: scale(1); }
 }
 
 @keyframes scrollRevealLeft {
-  from {
-    opacity: 0;
-    transform: translateX(-28px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
+  from { opacity: 0; transform: translateX(-8px); }
+  to   { opacity: 1; transform: translateX(0); }
 }
 
 @keyframes scrollRevealRight {
-  from {
-    opacity: 0;
-    transform: translateX(28px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
+  from { opacity: 0; transform: translateX(8px); }
+  to   { opacity: 1; transform: translateX(0); }
 }
 
 @keyframes scrollRevealBlur {
-  from {
-    opacity: 0;
-    filter: blur(8px);
-    transform: translateY(16px) scale(0.97);
-  }
-  to {
-    opacity: 1;
-    filter: blur(0);
-    transform: translateY(0) scale(1);
-  }
+  from { opacity: 0; filter: blur(2px); transform: translateY(4px); }
+  to   { opacity: 1; filter: blur(0); transform: translateY(0); }
 }
 
 @keyframes scrollRevealFlip {
-  from {
-    opacity: 0;
-    transform: perspective(800px) rotateX(10deg) translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: perspective(800px) rotateX(0) translateY(0);
-  }
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
-/* Base class — elements start invisible, animate when entering viewport */
+/* Base class — gentle fade, content appears smoothly without feeling animated */
 .scroll-reveal {
-  animation: scrollRevealUp 0.7s ease-out both;
+  animation: scrollRevealUp 0.4s ease-out both;
   animation-timeline: view();
-  animation-range: entry 0% entry 30%;
+  animation-range: entry 0% entry 20%;
 }
 
 .scroll-reveal-scale {
-  animation: scrollRevealScale 0.6s ease-out both;
+  animation: scrollRevealScale 0.4s ease-out both;
   animation-timeline: view();
-  animation-range: entry 0% entry 30%;
+  animation-range: entry 0% entry 20%;
 }
 
 .scroll-reveal-left {
-  animation: scrollRevealLeft 0.7s ease-out both;
+  animation: scrollRevealLeft 0.4s ease-out both;
   animation-timeline: view();
-  animation-range: entry 0% entry 30%;
+  animation-range: entry 0% entry 20%;
 }
 
 .scroll-reveal-right {
-  animation: scrollRevealRight 0.7s ease-out both;
+  animation: scrollRevealRight 0.4s ease-out both;
   animation-timeline: view();
-  animation-range: entry 0% entry 30%;
+  animation-range: entry 0% entry 20%;
 }
 
 .scroll-reveal-blur {
-  animation: scrollRevealBlur 0.8s ease-out both;
+  animation: scrollRevealBlur 0.4s ease-out both;
   animation-timeline: view();
-  animation-range: entry 0% entry 35%;
+  animation-range: entry 0% entry 20%;
 }
 
 .scroll-reveal-flip {
-  animation: scrollRevealFlip 0.7s ease-out both;
+  animation: scrollRevealFlip 0.4s ease-out both;
   animation-timeline: view();
-  animation-range: entry 0% entry 30%;
+  animation-range: entry 0% entry 20%;
 }
 
 /* Stagger delays for children */

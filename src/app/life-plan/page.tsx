@@ -34,10 +34,10 @@ const CATEGORY_COLORS: Record<
     dot: 'bg-purple-400',
   },
   achievement: {
-    bg: 'bg-amber-400/10',
-    border: 'border-amber-400/30',
-    text: 'text-amber-600',
-    dot: 'bg-amber-400',
+    bg: 'bg-primary/10',
+    border: 'border-primary/30',
+    text: 'text-lumi-600',
+    dot: 'bg-primary',
   },
   social: {
     bg: 'bg-rose-50',
@@ -153,7 +153,7 @@ export default async function LifePlanPage() {
           label="Bucket list"
           value={totalBucket}
           sub={`${totalDone} done`}
-          accent="text-[#e05533]"
+          accent="text-primary"
         />
         <StatCard
           label="In progress"
@@ -241,13 +241,13 @@ export default async function LifePlanPage() {
           </div>
 
           {/* In-progress bucket items */}
-          <div className="rounded-xl border border-amber-400/30 bg-amber-400/10/60 p-5">
+          <div className="rounded-xl border border-primary/30 bg-primary/10/60 p-5">
             <p className="text-sm font-medium text-muted-foreground mb-3">In progress</p>
             {bucketInProgress.length > 0 ? (
               <ul className="space-y-2">
                 {bucketInProgress.slice(0, 5).map((item) => (
                   <li key={item.id} className="flex items-center gap-2 text-sm text-foreground">
-                    <span className="h-2 w-2 rounded-full bg-amber-400 shrink-0" />
+                    <span className="h-2 w-2 rounded-full bg-primary shrink-0" />
                     <span className="truncate">{item.title}</span>
                     {item.targetYear && (
                       <span className="text-xs text-muted-foreground/60 shrink-0">
@@ -276,7 +276,7 @@ export default async function LifePlanPage() {
             <h2 className="text-lg font-semibold text-foreground">Ahead of you</h2>
             <Link
               href="/dashboard"
-              className="text-sm text-[#e05533] hover:text-[#c94420] transition-colors"
+              className="text-sm text-primary hover:text-lumi-600 transition-colors"
             >
               Manage bucket list →
             </Link>
@@ -380,11 +380,11 @@ export default async function LifePlanPage() {
       {totalDone > 0 && (
         <section className="space-y-4">
           <h2 className="text-lg font-semibold text-foreground">Done &amp; dusted</h2>
-          <div className="rounded-xl border border-[#f0a090] bg-[#fff6f2] p-5">
+          <div className="rounded-xl border border-lumi-200 bg-primary/10 p-5">
             <ul className="grid gap-2 sm:grid-cols-2">
               {bucketDone.map((item) => (
                 <li key={item.id} className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <span className="inline-flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-[#e05533] text-foreground text-[9px] font-bold">
+                  <span className="inline-flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-primary text-foreground text-[9px] font-bold">
                     ✓
                   </span>
                   <span className="truncate">{item.title}</span>

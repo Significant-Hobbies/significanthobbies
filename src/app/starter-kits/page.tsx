@@ -15,7 +15,7 @@ const CATEGORY_STYLES: Record<string, string> = {
   Outdoor: 'border-teal-300 bg-teal-50 text-teal-800',
   Physical: 'border-blue-300 bg-blue-50 text-blue-800',
   Intellectual: 'border-purple-300 bg-purple-50 text-purple-800',
-  Culinary: 'border-amber-400/40 bg-amber-400/10 text-amber-300',
+  Culinary: 'border-primary/40 bg-primary/10 text-lumi-300',
 };
 
 function hobbySlug(name: string) {

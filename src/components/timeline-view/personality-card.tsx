@@ -14,7 +14,7 @@ const CATEGORY_COLORS: Record<string, string> = {
   Intellectual: 'bg-blue-500',
   Gaming: 'bg-indigo-400',
   Outdoor: 'bg-green-400',
-  Culinary: 'bg-amber-400',
+  Culinary: 'bg-primary',
   Collecting: 'bg-orange-400',
   Making: 'bg-stone-400',
   Social: 'bg-teal-400',

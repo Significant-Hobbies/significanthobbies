@@ -32,8 +32,8 @@ export function AddToMyListButton({
 
   if (added) {
     return (
-      <span className="inline-flex items-center gap-1.5 text-xs font-medium text-[#c94420]">
-        <span className="inline-flex h-4 w-4 items-center justify-center rounded-full bg-[#e05533] text-white text-[9px] font-bold">
+      <span className="inline-flex items-center gap-1.5 text-xs font-medium text-lumi-600">
+        <span className="inline-flex h-4 w-4 items-center justify-center rounded-full bg-primary text-primary-foreground text-[9px] font-bold">
           ✓
         </span>
         Added to your bucket list
@@ -45,7 +45,7 @@ export function AddToMyListButton({
     <button
       onClick={handleAdd}
       disabled={isPending}
-      className="inline-flex items-center gap-1.5 rounded-full border border-[#f0a090] bg-white px-3 py-1 text-xs font-medium text-[#c94420] hover:bg-[#fff0ec] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+      className="inline-flex items-center gap-1.5 rounded-full border border-lumi-200 bg-card px-3 py-1 text-xs font-medium text-lumi-600 hover:bg-primary/10 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
     >
       {isPending ? 'Adding…' : '+ Add to my list'}
     </button>

@@ -111,7 +111,7 @@ export function HobbyRoadmapCard({ roadmap }: { roadmap: HobbyRoadmap }) {
                   type="checkbox"
                   checked={isDone}
                   onChange={() => toggleStep(step.id)}
-                  className="mt-1 h-4 w-4 shrink-0 cursor-pointer accent-emerald-600 focus-visible:ring-2 focus-visible:ring-foreground/50 focus-visible:outline-none"
+                  className="mt-1 h-4 w-4 shrink-0 cursor-pointer accent-growth focus-visible:ring-2 focus-visible:ring-foreground/50 focus-visible:outline-none"
                   aria-label={`Mark "${step.goal}" as done`}
                 />
                 <div className="min-w-0 flex-1">

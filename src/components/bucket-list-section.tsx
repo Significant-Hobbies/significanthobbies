@@ -424,7 +424,7 @@ export function BucketListSection({ initialItems }: Props) {
                   isDone
                     ? 'border-lumi-200 bg-lumi-50/70'
                     : isInProgress
-                      ? 'border-amber-400/30 bg-amber-400/10/60'
+                      ? 'border-primary/30 bg-primary/10/60'
                       : 'border-border bg-card hover:border-border hover:shadow-sm'
                 }`}
               >
@@ -445,7 +445,7 @@ export function BucketListSection({ initialItems }: Props) {
                     isDone
                       ? 'border-lumi bg-lumi hover:bg-lumi-600 hover:border-lumi-600'
                       : isInProgress
-                        ? 'border-amber-400 bg-amber-400/40 hover:bg-amber-400/60'
+                        ? 'border-primary bg-primary/40 hover:bg-primary/60'
                         : 'border-border hover:border-lumi hover:scale-110'
                   }`}
                   aria-label={`Status: ${STATUS_LABEL[status]}. Click to advance.`}

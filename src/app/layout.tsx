@@ -1,7 +1,7 @@
 import '~/app/globals.css';
 
 import type { Metadata, Viewport } from 'next';
-import { Geist } from 'next/font/google';
+import { Fraunces, Geist } from 'next/font/google';
 
 import { JsonLd } from '~/components/json-ld';
 import { Nav } from '~/components/nav';
@@ -12,6 +12,12 @@ import { SiteFooter } from '~/components/site-footer';
 import { VitalsReporter } from '~/components/VitalsReporter';
 
 const geist = Geist({ subsets: ['latin'], display: 'swap', variable: '--font-sans' });
+const fraunces = Fraunces({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-serif',
+  axes: ['opsz'],
+});
 
 export const metadata: Metadata = {
   title: {
@@ -56,8 +62,10 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={geist.variable}>
-      <body className="min-h-screen bg-background text-foreground font-sans antialiased">
+    <html lang="en" className={`${geist.variable} ${fraunces.variable}`}>
+      <body
+        className={`${geist.variable} ${fraunces.variable} min-h-screen bg-background text-foreground font-sans antialiased`}
+      >
         <JsonLd
           data={{
             '@context': 'https://schema.org',

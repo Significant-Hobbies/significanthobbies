@@ -19,7 +19,7 @@ const CATEGORY_BORDER_HOVER: Record<string, string> = {
   travel: 'hover:border-sky-300',
   adventure: 'hover:border-orange-300',
   creative: 'hover:border-purple-300',
-  achievement: 'hover:border-[#f0a090]',
+  achievement: 'hover:border-lumi-200',
   social: 'hover:border-rose-300',
   humanitarian: 'hover:border-foreground/30',
 };
@@ -52,9 +52,9 @@ export default function BucketListsPage() {
             </div>
             {/* Headline block */}
             <div className="space-y-5 text-center sm:text-left">
-              <p className="text-[#e05533] text-sm font-semibold">Guided by Lumi</p>
+              <p className="text-primary text-sm font-semibold">Guided by Lumi</p>
               <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold leading-[1.08] tracking-tight text-foreground text-balance">
-                Your bucket list is a <span className="text-[#e05533]">love letter</span> to your
+                Your bucket list is a <span className="text-primary">love letter</span> to your
                 future self.
               </h1>
               <p className="text-muted-foreground text-lg max-w-xl leading-relaxed">
@@ -64,13 +64,13 @@ export default function BucketListsPage() {
               <div className="flex flex-wrap gap-4 justify-center sm:justify-start">
                 <Link
                   href="/dashboard"
-                  className="inline-flex items-center gap-2 rounded-full bg-[#e05533] px-8 py-3.5 text-sm font-bold text-foreground hover:bg-[#c94420] active:scale-95 transition-all duration-150 shadow-md"
+                  className="inline-flex items-center gap-2 rounded-full bg-primary px-8 py-3.5 text-sm font-bold text-foreground hover:bg-lumi-600 active:scale-95 transition-all duration-150 shadow-md"
                 >
                   ✨ Start my list
                 </Link>
                 <a
                   href="#lists"
-                  className="inline-flex items-center gap-2 rounded-full border border-border px-8 py-3.5 text-sm font-medium text-muted-foreground hover:border-[#e05533] hover:text-[#e05533] transition-colors duration-200"
+                  className="inline-flex items-center gap-2 rounded-full border border-border px-8 py-3.5 text-sm font-medium text-muted-foreground hover:border-primary hover:text-primary transition-colors duration-200"
                 >
                   Browse famous lists ↓
                 </a>
@@ -103,7 +103,7 @@ export default function BucketListsPage() {
               { value: '100%', label: 'free' },
             ].map(({ value, label }, i) => (
               <div key={i} className="flex items-center gap-2 text-sm">
-                <span className="text-xl font-bold text-[#e05533]">{value}</span>
+                <span className="text-xl font-bold text-primary">{value}</span>
                 <span className="text-muted-foreground">{label}</span>
                 {i < 3 && (
                   <span className="hidden sm:inline-block ml-8 text-muted-foreground/40 select-none">
@@ -135,8 +135,8 @@ export default function BucketListsPage() {
               const pct = Math.round((done / total) * 100);
               const dom = getDominantCategory(person.slug);
               const borderHover = dom
-                ? (CATEGORY_BORDER_HOVER[dom] ?? 'hover:border-[#f0a090]')
-                : 'hover:border-[#f0a090]';
+                ? (CATEGORY_BORDER_HOVER[dom] ?? 'hover:border-lumi-200')
+                : 'hover:border-lumi-200';
 
               // Circular SVG progress ring — 60px
               const r = 24;
@@ -160,12 +160,11 @@ export default function BucketListsPage() {
                         cy="30"
                         r={r}
                         fill="none"
-                        stroke="#e05533"
                         strokeWidth="4"
                         strokeLinecap="round"
                         strokeDasharray={circ}
                         strokeDashoffset={offset}
-                        className="transition-all duration-700"
+                        className="stroke-primary transition-all duration-700"
                       />
                       <text
                         x="30"
@@ -185,7 +184,7 @@ export default function BucketListsPage() {
                     </svg>
                   </div>
 
-                  <h2 className="text-lg font-bold text-foreground group-hover:text-[#e05533] transition-colors leading-snug">
+                  <h2 className="text-lg font-bold text-foreground group-hover:text-primary transition-colors leading-snug">
                     {person.name}
                   </h2>
                   <p className="mt-1 text-sm text-muted-foreground line-clamp-2 flex-1 leading-relaxed">
@@ -201,9 +200,7 @@ export default function BucketListsPage() {
                       >
                         <span
                           className={`h-3.5 w-3.5 shrink-0 rounded-full border-2 ${
-                            item.status === 'done'
-                              ? 'border-[#e05533] bg-[#e05533]'
-                              : 'border-border'
+                            item.status === 'done' ? 'border-primary bg-primary' : 'border-border'
                           }`}
                         />
                         <span
@@ -221,7 +218,7 @@ export default function BucketListsPage() {
                   </ul>
 
                   {/* Hover CTA */}
-                  <div className="mt-5 text-sm font-semibold text-[#e05533] opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                  <div className="mt-5 text-sm font-semibold text-primary opacity-0 group-hover:opacity-100 transition-opacity duration-200">
                     View list →
                   </div>
                 </Link>
@@ -232,7 +229,7 @@ export default function BucketListsPage() {
       </section>
 
       {/* ── Bottom CTA ───────────────────────────────────────────────────── */}
-      <section className="relative overflow-hidden bg-[#e05533]">
+      <section className="relative overflow-hidden bg-primary">
         <div className="relative mx-auto max-w-3xl px-4 py-20 text-center space-y-6">
           <div className="flex justify-center">
             <Lumi size={80} glow float onDark />
@@ -248,7 +245,7 @@ export default function BucketListsPage() {
           <div className="flex flex-wrap gap-3 justify-center">
             <Link
               href="/dashboard"
-              className="inline-flex items-center gap-2 rounded-full bg-card px-7 py-3.5 text-sm font-bold text-[#e05533] hover:bg-foreground/5 active:scale-95 transition-all duration-150 shadow-lg"
+              className="inline-flex items-center gap-2 rounded-full bg-card px-7 py-3.5 text-sm font-bold text-primary hover:bg-foreground/5 active:scale-95 transition-all duration-150 shadow-lg"
             >
               ✨ Start my bucket list
             </Link>

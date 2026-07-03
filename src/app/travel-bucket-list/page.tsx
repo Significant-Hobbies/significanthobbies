@@ -398,11 +398,11 @@ const REGION_STYLES: Record<
     dot: 'bg-foreground',
   },
   coral: {
-    bg: 'bg-[#fff0ec]',
-    border: 'border-[#f0a090]',
-    text: 'text-[#e05533]',
-    badge: 'bg-[#fff0ec] text-[#e05533] border-[#f0a090]',
-    dot: 'bg-[#e05533]',
+    bg: 'bg-primary/10',
+    border: 'border-lumi-200',
+    text: 'text-primary',
+    badge: 'bg-primary/10 text-primary border-lumi-200',
+    dot: 'bg-primary',
   },
   teal: {
     bg: 'bg-teal-50',
@@ -458,12 +458,12 @@ export default function TravelBucketListPage() {
           <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6 mb-8">
             <Lumi size={88} glow float className="shrink-0" />
             <div className="space-y-4 text-center sm:text-left">
-              <p className="text-[#e05533] text-sm font-semibold">
+              <p className="text-primary text-sm font-semibold">
                 Guided by Lumi · {totalDestinations} destinations across 5 regions
               </p>
               <h1 className="text-4xl sm:text-5xl font-bold leading-tight text-foreground text-balance">
                 The Ultimate Travel Bucket List{' '}
-                <span className="text-[#e05533]">(75 Destinations)</span>
+                <span className="text-primary">(75 Destinations)</span>
               </h1>
               <p className="text-muted-foreground text-lg max-w-xl">
                 From Stonehenge to the Serengeti to Antarctica — 75 places organized by region, with
@@ -472,13 +472,13 @@ export default function TravelBucketListPage() {
               <div className="flex flex-wrap gap-3 justify-center sm:justify-start">
                 <Link
                   href="/dashboard"
-                  className="inline-flex items-center gap-2 rounded-full bg-[#e05533] px-6 py-3 text-sm font-semibold text-foreground hover:bg-[#c94420] transition-colors shadow-md"
+                  className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-semibold text-foreground hover:bg-lumi-600 transition-colors shadow-md"
                 >
                   Build my travel list
                 </Link>
                 <Link
                   href="/bucket-lists"
-                  className="inline-flex items-center gap-2 rounded-full border border-border px-6 py-3 text-sm font-medium text-muted-foreground hover:border-[#e05533] hover:text-[#e05533] transition-colors"
+                  className="inline-flex items-center gap-2 rounded-full border border-border px-6 py-3 text-sm font-medium text-muted-foreground hover:border-primary hover:text-primary transition-colors"
                 >
                   See famous lists →
                 </Link>
@@ -595,7 +595,7 @@ export default function TravelBucketListPage() {
       </section>
 
       {/* ── CTA ──────────────────────────────────────────────────── */}
-      <section className="bg-[#fff0ec] border-t border-[#f0a090]">
+      <section className="bg-primary/10 border-t border-lumi-200">
         <div className="mx-auto max-w-3xl px-4 py-16 text-center space-y-6">
           <Lumi size={64} glow float className="mx-auto" />
           <h2 className="text-3xl font-bold text-foreground text-balance">Ready to build yours?</h2>
@@ -606,13 +606,13 @@ export default function TravelBucketListPage() {
           <div className="flex flex-wrap gap-3 justify-center">
             <Link
               href="/dashboard"
-              className="inline-flex items-center gap-2 rounded-full bg-[#e05533] px-6 py-3 text-sm font-semibold text-foreground hover:bg-[#c94420] transition-colors shadow-md"
+              className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-semibold text-foreground hover:bg-lumi-600 transition-colors shadow-md"
             >
               Build my bucket list
             </Link>
             <Link
               href="/bucket-lists"
-              className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-6 py-3 text-sm font-medium text-foreground hover:border-[#e05533] transition-colors"
+              className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-6 py-3 text-sm font-medium text-foreground hover:border-primary transition-colors"
             >
               Browse famous lists →
             </Link>

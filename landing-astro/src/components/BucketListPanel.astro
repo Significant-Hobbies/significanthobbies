@@ -9,13 +9,13 @@ const famous = [
 ];
 ---
 
-<section class="px-6 py-24 lg:px-12" style="background: #c94420">
+<section class="bg-card border-y border-border px-6 py-24 lg:px-12">
   <div class="mx-auto max-w-4xl text-center">
     <p class="mb-6 text-5xl" aria-hidden="true">🦊</p>
-    <h2 class="text-3xl font-bold text-white sm:text-4xl lg:text-5xl">
+    <h2 class="text-3xl font-medium text-foreground sm:text-4xl lg:text-5xl">
       What will you do before you die?
     </h2>
-    <p class="mx-auto mt-4 max-w-xl text-lg text-white/80">
+    <p class="mx-auto mt-4 max-w-xl text-lg text-muted-foreground">
       Twelve remarkable people wrote theirs down. Browse their bucket lists — then build yours.
     </p>
     <div class="mt-8 flex flex-wrap justify-center gap-2">
@@ -23,9 +23,9 @@ const famous = [
         famous.map((person) => (
           <a
             href={`/bucket-lists/${person.slug}`}
-            class="rounded-full border border-white/30 px-4 py-1.5 text-sm text-white/90 no-underline transition hover:bg-white/10"
+            class="rounded-full border border-border px-4 py-1.5 text-sm text-foreground no-underline transition hover:border-muted-foreground focus-visible:ring-2 focus-visible:ring-foreground/50 focus-visible:outline-none"
           >
-            {person.emoji} {person.name}
+            <span aria-hidden="true">{person.emoji}</span> {person.name}
           </a>
         ))
       }
@@ -33,13 +33,13 @@ const famous = [
     <div class="mt-10 flex flex-wrap justify-center gap-4">
       <a
         href="/bucket-lists"
-        class="rounded-full bg-white px-7 py-3 text-sm font-semibold text-[#c94420] no-underline transition hover:bg-white/90"
+        class="rounded-full bg-primary px-7 py-3 text-sm font-semibold text-primary-foreground no-underline transition hover:opacity-90 focus-visible:ring-2 focus-visible:ring-foreground/50 focus-visible:outline-none"
       >
         Browse famous bucket lists →
       </a>
       <a
         href="/bucket-list-ideas"
-        class="rounded-full border border-white/40 px-7 py-3 text-sm font-semibold text-white no-underline transition hover:bg-white/10"
+        class="rounded-full border border-border px-7 py-3 text-sm font-semibold text-foreground no-underline transition hover:border-muted-foreground focus-visible:ring-2 focus-visible:ring-foreground/50 focus-visible:outline-none"
       >
         150+ ideas →
       </a>

@@ -1,32 +1,53 @@
 ---
 const journeyPhases = [
-  { label: 'Childhood', color: '#10b981', bg: '#D1FAE5', hobbies: ['lego', 'swimming', 'chess', 'drawing'] },
-  { label: 'Teen Years', color: '#F59E0B', bg: '#FEF3C7', hobbies: ['guitar', 'skateboarding', 'video games'] },
-  { label: 'College', color: '#3B82F6', bg: '#DBEAFE', hobbies: ['hiking', 'photography', 'coding'] },
-  { label: 'Now', color: '#8B5CF6', bg: '#EDE9FE', hobbies: ['running', 'cooking', 'pottery'] },
+  {
+    label: 'Childhood',
+    color: 'oklch(0.72 0.13 150)',   /* sage */
+    bg: 'oklch(0.72 0.13 150 / 0.12)',
+    border: 'oklch(0.72 0.13 150 / 0.35)',
+    hobbies: ['lego', 'swimming', 'chess', 'drawing'],
+  },
+  {
+    label: 'Teen Years',
+    color: 'oklch(0.82 0.13 88)',    /* gold */
+    bg: 'oklch(0.82 0.13 88 / 0.12)',
+    border: 'oklch(0.82 0.13 88 / 0.35)',
+    hobbies: ['guitar', 'skateboarding', 'video games'],
+  },
+  {
+    label: 'College',
+    color: 'oklch(0.78 0.10 200)',   /* slate-blue */
+    bg: 'oklch(0.78 0.10 200 / 0.12)',
+    border: 'oklch(0.78 0.10 200 / 0.35)',
+    hobbies: ['hiking', 'photography', 'coding'],
+  },
+  {
+    label: 'Now',
+    color: 'oklch(0.80 0.08 320)',   /* mauve */
+    bg: 'oklch(0.80 0.08 320 / 0.12)',
+    border: 'oklch(0.80 0.08 320 / 0.35)',
+    hobbies: ['running', 'cooking', 'pottery'],
+  },
 ];
 ---
 
-<section class="bg-white px-6 py-24 lg:px-12">
+<section class="bg-background px-6 py-24 lg:px-12">
   <div class="mx-auto max-w-6xl">
     <div class="grid grid-cols-1 gap-6 lg:grid-cols-5">
       <div class="lg:col-span-3">
-        <h2 class="text-2xl font-bold text-stone-900 sm:text-3xl">
+        <h2 class="text-2xl font-medium text-foreground sm:text-3xl">
           Every hobby you&apos;ve ever had, mapped across your life
         </h2>
-        <p class="mt-2 text-stone-500">
+        <p class="mt-2 text-muted-foreground">
           Build life phases — childhood, teen years, college, career — and tag every interest you remember,
           even the ones you only tried once.
         </p>
-        <div class="mt-6 overflow-hidden rounded-2xl border border-stone-100 bg-stone-50 shadow-sm">
-          <div class="border-b border-stone-100 px-5 py-3 text-xs font-semibold uppercase tracking-wider text-stone-400">
-            Your hobby timeline
-          </div>
+        <div class="mt-6 overflow-hidden rounded-2xl border border-border bg-card">
           {
             journeyPhases.map((phase) => (
               <div
-                class="flex items-start gap-3 border-b border-stone-50 px-5 py-3.5 last:border-0"
-                style={`background: ${phase.bg}55`}
+                class="flex items-start gap-3 border-b border-border px-5 py-3.5 last:border-0"
+                style={`background: ${phase.bg}`}
               >
                 <div class="flex min-w-[80px] items-center gap-1.5 pt-0.5">
                   <div class="h-2 w-2 shrink-0 rounded-full" style={`background: ${phase.color}`} />
@@ -38,7 +59,7 @@ const journeyPhases = [
                   {phase.hobbies.map((h) => (
                     <span
                       class="rounded-full border px-2 py-0.5 text-[11px] font-medium"
-                      style={`background: ${phase.bg}; border-color: ${phase.color}50; color: ${phase.color}`}
+                      style={`background: ${phase.bg}; border-color: ${phase.border}; color: ${phase.color}`}
                     >
                       {h}
                     </span>
@@ -47,28 +68,28 @@ const journeyPhases = [
               </div>
             ))
           }
-          <div class="px-5 py-3 text-center text-[10px] text-stone-400">
+          <div class="px-5 py-3 text-center text-[10px] text-muted-foreground">
             4 phases · 13 hobbies · your story will look different
           </div>
         </div>
       </div>
 
       <div class="flex flex-col gap-6 lg:col-span-2">
-        <div class="flex-1 rounded-2xl border border-stone-100 bg-stone-50 p-6">
-          <div class="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-100 text-lg">
+        <div class="flex-1 rounded-2xl border border-border bg-card p-6">
+          <div class="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-muted text-lg text-primary">
             ✦
           </div>
-          <h3 class="text-base font-bold text-stone-900">Discover your hobby archetype</h3>
-          <p class="mt-2 text-sm leading-relaxed text-stone-500">
+          <h3 class="text-base font-semibold text-foreground">Discover your hobby archetype</h3>
+          <p class="mt-2 text-sm leading-relaxed text-muted-foreground">
             See what stuck across decades, what you rekindled, and the personality archetype your interests reveal.
           </p>
         </div>
-        <div class="flex-1 rounded-2xl border border-stone-100 bg-stone-50 p-6">
-          <div class="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-100 text-lg">
+        <div class="flex-1 rounded-2xl border border-border bg-card p-6">
+          <div class="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-muted text-lg text-primary">
             ↗
           </div>
-          <h3 class="text-base font-bold text-stone-900">Share a beautiful identity card</h3>
-          <p class="mt-2 text-sm leading-relaxed text-stone-500">
+          <h3 class="text-base font-semibold text-foreground">Share a beautiful identity card</h3>
+          <p class="mt-2 text-sm leading-relaxed text-muted-foreground">
             Export your whole hobby journey as a stunning card — ready to share anywhere.
           </p>
         </div>

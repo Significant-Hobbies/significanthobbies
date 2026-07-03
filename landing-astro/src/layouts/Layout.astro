@@ -20,23 +20,24 @@ const OG_IMAGE = `${SITE_URL}/opengraph-image`;
     <style is:inline>
       #lcp-shell {
         margin: 0;
-        background: #0c2b29;
+        background: oklch(0.15 0.005 285);
         padding: 6rem 1.5rem;
       }
       #lcp-shell h1 {
         margin: 0;
         max-width: 42rem;
         font-size: clamp(2.5rem, 5vw, 4.5rem);
-        font-weight: 800;
+        font-weight: 500;
         line-height: 1.05;
         letter-spacing: -0.02em;
-        color: #fff;
+        color: oklch(0.97 0.003 285);
+        font-family: 'Fraunces', Georgia, 'Times New Roman', serif;
       }
       #lcp-shell .lcp-line {
         display: block;
       }
       #lcp-shell .lcp-muted {
-        color: #d6d3d1;
+        color: oklch(0.72 0.008 285);
       }
       /* Hide the real landing until the shell drops — avoids double hero flash. */
       body.lcp-pending main,
@@ -57,12 +58,12 @@ const OG_IMAGE = `${SITE_URL}/opengraph-image`;
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={OG_IMAGE} />
-    <meta name="theme-color" content="#0c2b29" />
+    <meta name="theme-color" content="#1a1a1a" />
     <link rel="icon" href="/favicon.ico" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,400;0,500;0,700;1,400&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     />
   </head>

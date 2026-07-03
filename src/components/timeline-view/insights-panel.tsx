@@ -38,7 +38,7 @@ export function InsightsPanel({ phases }: Props) {
             border: '1px solid rgba(16,185,129,0.2)',
           }}
         >
-          <div className="text-2xl font-bold text-emerald-500">{totalHobbies}</div>
+          <div className="text-2xl font-bold text-growth">{totalHobbies}</div>
           <div className="text-xs text-muted-foreground mt-0.5">total hobbies</div>
         </div>
         <div
@@ -71,7 +71,7 @@ export function InsightsPanel({ phases }: Props) {
             border: '1px solid rgba(245,158,11,0.2)',
           }}
         >
-          <div className="text-2xl font-bold text-amber-500">{categoryDiversity}</div>
+          <div className="text-2xl font-bold text-primary">{categoryDiversity}</div>
           <div className="text-xs text-muted-foreground mt-0.5">categories</div>
         </div>
       </div>

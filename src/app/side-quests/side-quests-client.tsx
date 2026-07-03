@@ -31,8 +31,8 @@ const CATEGORY_COLORS: Record<QuestCategory, { border: string; bg: string; text:
     text: 'text-purple-700',
   },
   culinary: {
-    border: 'border-amber-400/30',
-    bg: 'bg-amber-400/10',
+    border: 'border-primary/30',
+    bg: 'bg-primary/10',
     text: 'text-foreground',
   },
   social: {
@@ -286,7 +286,7 @@ function BadgeToast({ badgeIds, onDismiss }: { badgeIds: string[]; onDismiss: ()
               setVisible(false);
               setTimeout(onDismiss, 300);
             }}
-            className={`flex items-center gap-3 rounded-xl border border-amber-400/40 bg-amber-400/10 p-4 shadow-lg transition-all duration-300 ${
+            className={`flex items-center gap-3 rounded-xl border border-primary/40 bg-primary/10 p-4 shadow-lg transition-all duration-300 ${
               visible ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'
             }`}
           >
@@ -554,7 +554,7 @@ function SideQuestsInner() {
 
               {/* Save prompt */}
               {showSavePrompt && (
-                <div className="mb-8 flex items-center justify-between rounded-xl border border-amber-400/30 bg-amber-400/10 px-5 py-3">
+                <div className="mb-8 flex items-center justify-between rounded-xl border border-primary/30 bg-primary/10 px-5 py-3">
                   <p className="text-sm text-foreground">
                     <span className="mr-1">&#128190;</span> Save your progress — sign in to keep
                     your quests across devices.{' '}

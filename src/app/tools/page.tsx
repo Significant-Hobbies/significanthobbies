@@ -58,7 +58,7 @@ const TOOLS: Tool[] = [
 
 const BADGE_STYLES: Record<string, string> = {
   Popular: 'bg-foreground/10 text-foreground border-foreground/20',
-  New: 'bg-amber-400/10 text-foreground border-amber-400/30',
+  New: 'bg-primary/10 text-foreground border-primary/30',
 };
 
 export default function ToolsPage() {

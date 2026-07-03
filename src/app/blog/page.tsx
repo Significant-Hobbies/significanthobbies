@@ -13,9 +13,9 @@ export const metadata: Metadata = {
 const CATEGORY_COLORS: Record<string, { bg: string; text: string; border: string }> = {
   Wellbeing: { bg: 'bg-foreground/10', text: 'text-foreground', border: 'border-foreground/20' },
   'Getting Started': {
-    bg: 'bg-amber-400/10',
+    bg: 'bg-primary/10',
     text: 'text-foreground',
-    border: 'border-amber-400/30',
+    border: 'border-primary/30',
   },
   Psychology: { bg: 'bg-violet-50', text: 'text-violet-700', border: 'border-violet-200' },
   Reflection: { bg: 'bg-blue-50', text: 'text-blue-700', border: 'border-blue-200' },

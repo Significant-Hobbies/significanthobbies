@@ -47,10 +47,10 @@ const PHASE_COLORS = [
     pill: 'bg-violet-100 text-violet-800',
   },
   {
-    bg: 'bg-amber-400/10',
-    border: 'border-amber-400/40',
+    bg: 'bg-primary/10',
+    border: 'border-primary/40',
     label: 'text-foreground',
-    pill: 'bg-amber-400/15 text-amber-300',
+    pill: 'bg-primary/15 text-lumi-300',
   },
   {
     bg: 'bg-rose-50',

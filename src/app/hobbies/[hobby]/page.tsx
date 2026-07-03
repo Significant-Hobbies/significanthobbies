@@ -218,7 +218,7 @@ export default async function HobbyDetailPage({ params }: Props) {
                       </span>
                     )}
                     {r.type === 'sponsored' && (
-                      <span className="rounded-full bg-amber-400/10 border border-amber-400/30 px-2 py-0.5 text-[10px] font-medium text-foreground">
+                      <span className="rounded-full bg-primary/10 border border-primary/30 px-2 py-0.5 text-[10px] font-medium text-foreground">
                         sponsored
                       </span>
                     )}

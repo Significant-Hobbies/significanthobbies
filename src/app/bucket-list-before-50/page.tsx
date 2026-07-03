@@ -326,11 +326,11 @@ export default function BucketListBefore50Page() {
           <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6 mb-8">
             <Lumi size={88} glow float className="shrink-0" />
             <div className="space-y-4 text-center sm:text-left">
-              <p className="text-[#e05533] text-sm font-semibold">
+              <p className="text-primary text-sm font-semibold">
                 Guided by Lumi · 50 goals worth your best years
               </p>
               <h1 className="text-4xl sm:text-5xl font-bold leading-tight text-foreground text-balance">
-                50 Things to Do <span className="text-[#e05533]">Before You Turn 50</span>
+                50 Things to Do <span className="text-primary">Before You Turn 50</span>
               </h1>
               <p className="text-muted-foreground text-lg max-w-xl">
                 The 40s are peak ambition. Here are 50 goals that reflect depth, legacy, and a life
@@ -339,13 +339,13 @@ export default function BucketListBefore50Page() {
               <div className="flex flex-wrap gap-3 justify-center sm:justify-start">
                 <Link
                   href="/dashboard"
-                  className="inline-flex items-center gap-2 rounded-full bg-[#e05533] px-6 py-3 text-sm font-semibold text-foreground hover:bg-[#c94420] transition-colors shadow-md"
+                  className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-semibold text-foreground hover:bg-lumi-600 transition-colors shadow-md"
                 >
                   Build my bucket list
                 </Link>
                 <Link
                   href="/bucket-lists"
-                  className="inline-flex items-center gap-2 rounded-full border border-border px-6 py-3 text-sm font-medium text-muted-foreground hover:border-[#e05533] hover:text-[#e05533] transition-colors"
+                  className="inline-flex items-center gap-2 rounded-full border border-border px-6 py-3 text-sm font-medium text-muted-foreground hover:border-primary hover:text-primary transition-colors"
                 >
                   See famous lists →
                 </Link>
@@ -376,7 +376,7 @@ export default function BucketListBefore50Page() {
           See Will Smith&apos;s full bucket list journey:{' '}
           <Link
             href="/bucket-lists/will-smith"
-            className="text-[#e05533] hover:text-[#c94420] font-medium transition-colors"
+            className="text-primary hover:text-lumi-600 font-medium transition-colors"
           >
             Will Smith&apos;s bucket list →
           </Link>
@@ -389,12 +389,12 @@ export default function BucketListBefore50Page() {
           {ITEMS.map((item, i) => (
             <div
               key={i}
-              className="flex items-start gap-4 rounded-xl border border-[#f0a090] bg-[#fff0ec] px-4 py-4 hover:border-[#e05533] hover:shadow-sm transition-all"
+              className="flex items-start gap-4 rounded-xl border border-lumi-200 bg-primary/10 px-4 py-4 hover:border-primary hover:shadow-sm transition-all"
             >
               <span className="text-2xl leading-none mt-0.5">{item.emoji}</span>
               <div className="space-y-1 min-w-0">
                 <div className="flex items-start gap-2">
-                  <span className="text-xs font-bold text-[#e05533] shrink-0 mt-0.5">
+                  <span className="text-xs font-bold text-primary shrink-0 mt-0.5">
                     {String(i + 1).padStart(2, '0')}
                   </span>
                   <p className="font-semibold text-foreground text-sm leading-snug">{item.title}</p>
@@ -427,7 +427,7 @@ export default function BucketListBefore50Page() {
       </section>
 
       {/* ── CTA ──────────────────────────────────────────────────── */}
-      <section className="bg-[#fff0ec] border-t border-[#f0a090]">
+      <section className="bg-primary/10 border-t border-lumi-200">
         <div className="mx-auto max-w-3xl px-4 py-16 text-center space-y-6">
           <Lumi size={64} glow float className="mx-auto" />
           <h2 className="text-3xl font-bold text-foreground text-balance">Ready to build yours?</h2>
@@ -438,13 +438,13 @@ export default function BucketListBefore50Page() {
           <div className="flex flex-wrap gap-3 justify-center">
             <Link
               href="/dashboard"
-              className="inline-flex items-center gap-2 rounded-full bg-[#e05533] px-6 py-3 text-sm font-semibold text-foreground hover:bg-[#c94420] transition-colors shadow-md"
+              className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-semibold text-foreground hover:bg-lumi-600 transition-colors shadow-md"
             >
               Build my bucket list
             </Link>
             <Link
               href="/bucket-lists"
-              className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-6 py-3 text-sm font-medium text-foreground hover:border-[#e05533] transition-colors"
+              className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-6 py-3 text-sm font-medium text-foreground hover:border-primary transition-colors"
             >
               Browse famous lists →
             </Link>

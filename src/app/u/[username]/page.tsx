@@ -43,7 +43,7 @@ const CATEGORY_BADGE_COLORS: Record<string, string> = {
   Outdoor: 'border-foreground/20 bg-foreground/10 text-foreground',
   Culinary: 'border-foreground/20 bg-foreground/10 text-foreground',
   Collecting: 'border-border bg-foreground/5 text-muted-foreground',
-  Making: 'border-amber-400/30 bg-amber-400/10 text-amber-300',
+  Making: 'border-primary/30 bg-primary/10 text-lumi-300',
   Social: 'border-teal-400/30 bg-teal-400/10 text-teal-300',
 };
 
@@ -454,7 +454,7 @@ export default async function ProfilePage({ params }: Props) {
                       isDone
                         ? 'border-foreground/30 bg-foreground/10'
                         : isInProgress
-                          ? 'border-amber-400/40 bg-amber-400/10'
+                          ? 'border-primary/40 bg-primary/10'
                           : 'border-border bg-card/40'
                     }`}
                   >
@@ -463,7 +463,7 @@ export default async function ProfilePage({ params }: Props) {
                         isDone
                           ? 'border-foreground bg-foreground text-primary-foreground'
                           : isInProgress
-                            ? 'border-amber-400 bg-amber-400/40 text-amber-300'
+                            ? 'border-primary bg-primary/40 text-lumi-300'
                             : 'border-border'
                       }`}
                     >
