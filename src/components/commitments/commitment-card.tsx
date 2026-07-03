@@ -3,9 +3,11 @@
 import { useState } from 'react';
 import { Trophy, X } from 'lucide-react';
 
+import { BorderBeam, NumberTicker } from '~/components/aceternity';
 import { Button } from '~/components/ui/button';
 import { abandonCommitment } from '~/lib/actions/commitments';
 import { computeStreak, type StampRow } from '~/lib/commitments';
+import { cn } from '~/lib/utils';
 import { LogStampForm } from './log-stamp-form';
 
 type Props = {
@@ -17,6 +19,10 @@ type Props = {
   stamps: StampRow[];
   // Show the abandon control (owner only).
   canAbandon?: boolean;
+  // Render with an animated border beam (featured / active commitments).
+  featured?: boolean;
+  // Override the container classes (e.g. when wrapped by SpotlightCard).
+  className?: string;
 };
 
 export function CommitmentCard({
@@ -27,6 +33,8 @@ export function CommitmentCard({
   startDate,
   stamps,
   canAbandon = false,
+  featured = false,
+  className,
 }: Props) {
   const info = computeStreak(stamps);
   const progress = Math.min(100, Math.round((info.totalStamps / goalDays) * 100));
@@ -47,14 +55,17 @@ export function CommitmentCard({
 
   return (
     <div
-      className={`rounded-xl border p-4 ${
+      className={cn(
+        'relative overflow-hidden rounded-xl border p-4 shadow-soft',
         isComplete
           ? 'border-border bg-card'
           : dueToday
             ? 'border-border bg-card'
-            : 'border-border bg-card'
-      }`}
+            : 'border-border bg-card',
+        className
+      )}
     >
+      {featured && <BorderBeam />}
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
           <div className="flex items-center gap-2">
@@ -84,8 +95,8 @@ export function CommitmentCard({
       </div>
 
       <div className="mt-3 grid grid-cols-3 gap-2 text-center">
-        <Stat label="Current" value={info.currentStreak} />
-        <Stat label="Longest" value={info.longestStreak} />
+        <Stat label="Current" value={info.currentStreak} animate />
+        <Stat label="Longest" value={info.longestStreak} animate />
         <Stat label="Total" value={`${info.totalStamps}/${goalDays}`} />
       </div>
 
@@ -113,10 +124,21 @@ export function CommitmentCard({
   );
 }
 
-function Stat({ label, value }: { label: string; value: number | string }) {
+function Stat({
+  label,
+  value,
+  animate = false,
+}: {
+  label: string;
+  value: number | string;
+  animate?: boolean;
+}) {
+  const isNumber = typeof value === 'number';
   return (
     <div className="rounded-lg bg-foreground/5 py-1.5">
-      <div className="text-base font-semibold tabular-nums text-foreground">{value}</div>
+      <div className="text-base font-semibold tabular-nums text-foreground">
+        {animate && isNumber ? <NumberTicker value={value} /> : value}
+      </div>
       <div className="text-[10px] text-muted-foreground/50">{label}</div>
     </div>
   );

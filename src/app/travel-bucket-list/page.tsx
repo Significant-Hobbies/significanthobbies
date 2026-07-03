@@ -1,6 +1,14 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 
+import {
+  FadeIn,
+  GridBackground,
+  SpotlightCard,
+  StaggerContainer,
+  StaggerItem,
+  TextGenerateEffect,
+} from '~/components/aceternity';
 import { JsonLd } from '~/components/json-ld';
 import { Lumi } from '~/components/lumi';
 
@@ -453,38 +461,41 @@ export default function TravelBucketListPage() {
       <JsonLd data={faqSchema} />
 
       {/* ── Hero ─────────────────────────────────────────────────── */}
-      <section className="bg-card pt-16 pb-10 px-4">
-        <div className="mx-auto max-w-4xl">
-          <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6 mb-8">
-            <Lumi size={88} glow float className="shrink-0" />
-            <div className="space-y-4 text-center sm:text-left">
-              <p className="text-primary text-sm font-semibold">
-                Guided by Lumi · {totalDestinations} destinations across 5 regions
-              </p>
-              <h1 className="text-4xl sm:text-5xl font-bold leading-tight text-foreground text-balance">
-                The Ultimate Travel Bucket List{' '}
-                <span className="text-primary">(75 Destinations)</span>
-              </h1>
-              <p className="text-muted-foreground text-lg max-w-xl">
-                From Stonehenge to the Serengeti to Antarctica — 75 places organized by region, with
-                notes on why each one belongs on every serious list.
-              </p>
-              <div className="flex flex-wrap gap-3 justify-center sm:justify-start">
-                <Link
-                  href="/dashboard"
-                  className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-semibold text-foreground hover:bg-lumi-600 transition-colors shadow-md"
-                >
-                  Build my travel list
-                </Link>
-                <Link
-                  href="/bucket-lists"
-                  className="inline-flex items-center gap-2 rounded-full border border-border px-6 py-3 text-sm font-medium text-muted-foreground hover:border-primary hover:text-primary transition-colors"
-                >
-                  See famous lists →
-                </Link>
+      <section className="relative bg-card pt-16 pb-10 px-4">
+        <GridBackground />
+        <div className="relative mx-auto max-w-4xl">
+          <FadeIn>
+            <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6 mb-8">
+              <Lumi size={88} glow float className="shrink-0" />
+              <div className="space-y-4 text-center sm:text-left">
+                <p className="text-primary text-sm font-semibold">
+                  Guided by Lumi · {totalDestinations} destinations across 5 regions
+                </p>
+                <TextGenerateEffect
+                  words="The Ultimate Travel Bucket List (75 Destinations)"
+                  className="text-4xl sm:text-5xl font-bold leading-tight text-foreground text-balance"
+                />
+                <p className="text-muted-foreground text-lg max-w-xl">
+                  From Stonehenge to the Serengeti to Antarctica — 75 places organized by region,
+                  with notes on why each one belongs on every serious list.
+                </p>
+                <div className="flex flex-wrap gap-3 justify-center sm:justify-start">
+                  <Link
+                    href="/dashboard"
+                    className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-semibold text-foreground hover:bg-lumi-600 transition-colors shadow-md"
+                  >
+                    Build my travel list
+                  </Link>
+                  <Link
+                    href="/bucket-lists"
+                    className="inline-flex items-center gap-2 rounded-full border border-border px-6 py-3 text-sm font-medium text-muted-foreground hover:border-primary hover:text-primary transition-colors"
+                  >
+                    See famous lists →
+                  </Link>
+                </div>
               </div>
             </div>
-          </div>
+          </FadeIn>
         </div>
       </section>
 
@@ -515,60 +526,64 @@ export default function TravelBucketListPage() {
           let counter = REGIONS.slice(0, regionIdx).reduce((sum, r) => sum + r.items.length, 0);
           return (
             <section key={region.id} id={region.id} className="scroll-mt-28 space-y-6">
-              <div className="flex items-center gap-3">
-                <div
-                  className={`h-10 w-10 rounded-xl border ${s.border} ${s.bg} flex items-center justify-center text-xl`}
-                >
-                  {region.emoji}
+              <FadeIn>
+                <div className="flex items-center gap-3">
+                  <div
+                    className={`h-10 w-10 rounded-xl border ${s.border} ${s.bg} flex items-center justify-center text-xl`}
+                  >
+                    {region.emoji}
+                  </div>
+                  <div>
+                    <h2 className="text-2xl font-bold text-foreground text-balance">
+                      {region.label}
+                    </h2>
+                    <p className={`text-sm ${s.text} font-medium`}>
+                      {region.items.length} destinations
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <h2 className="text-2xl font-bold text-foreground text-balance">
-                    {region.label}
-                  </h2>
-                  <p className={`text-sm ${s.text} font-medium`}>
-                    {region.items.length} destinations
-                  </p>
-                </div>
-              </div>
+              </FadeIn>
 
-              <div className="space-y-3">
+              <StaggerContainer className="space-y-3">
                 {region.items.map((dest, j) => {
                   counter++;
                   return (
-                    <div
-                      key={j}
-                      className={`rounded-xl border ${s.border} ${s.bg} px-5 py-4 space-y-2`}
-                    >
-                      <div className="flex items-start gap-3">
-                        <span className={`mt-2 h-2 w-2 shrink-0 rounded-full ${s.dot}`} />
-                        <div className="space-y-1 min-w-0">
-                          <div className="flex items-center gap-2">
-                            <span className={`text-xs font-bold ${s.text}`}>{counter}</span>
-                            <h3 className="font-semibold text-foreground text-sm leading-snug">
-                              {dest.name}
-                            </h3>
-                          </div>
-                          <p className="text-muted-foreground text-sm leading-relaxed">
-                            {dest.why}
-                          </p>
-                          {dest.famous && (
-                            <p className="text-xs text-muted-foreground">
-                              <Link
-                                href={`/bucket-lists/${dest.famous.slug}`}
-                                className={`font-medium ${s.text} hover:underline transition-colors`}
-                                prefetch={false}
-                              >
-                                {dest.famous.name}
-                              </Link>{' '}
-                              {dest.famous.note}.
+                    <StaggerItem key={j}>
+                      <SpotlightCard
+                        className={`border ${s.border} ${s.bg} shadow-soft`}
+                        innerClassName="px-5 py-4 space-y-2"
+                      >
+                        <div className="flex items-start gap-3">
+                          <span className={`mt-2 h-2 w-2 shrink-0 rounded-full ${s.dot}`} />
+                          <div className="space-y-1 min-w-0">
+                            <div className="flex items-center gap-2">
+                              <span className={`text-xs font-bold ${s.text}`}>{counter}</span>
+                              <h3 className="font-semibold text-foreground text-sm leading-snug">
+                                {dest.name}
+                              </h3>
+                            </div>
+                            <p className="text-muted-foreground text-sm leading-relaxed">
+                              {dest.why}
                             </p>
-                          )}
+                            {dest.famous && (
+                              <p className="text-xs text-muted-foreground">
+                                <Link
+                                  href={`/bucket-lists/${dest.famous.slug}`}
+                                  className={`font-medium ${s.text} hover:underline transition-colors`}
+                                  prefetch={false}
+                                >
+                                  {dest.famous.name}
+                                </Link>{' '}
+                                {dest.famous.note}.
+                              </p>
+                            )}
+                          </div>
                         </div>
-                      </div>
-                    </div>
+                      </SpotlightCard>
+                    </StaggerItem>
                   );
                 })}
-              </div>
+              </StaggerContainer>
             </section>
           );
         })}

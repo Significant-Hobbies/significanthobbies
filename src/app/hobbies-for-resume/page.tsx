@@ -1,6 +1,14 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 
+import {
+  FadeIn,
+  GridBackground,
+  SpotlightCard,
+  StaggerContainer,
+  StaggerItem,
+  TextGenerateEffect,
+} from '~/components/aceternity';
 import { JsonLd } from '~/components/json-ld';
 
 export const metadata: Metadata = {
@@ -277,96 +285,117 @@ export default function HobbiesForResumePage() {
         }}
       />
 
-      <div className="mb-6">
-        <Link href="/hobbies" className="text-sm text-muted-foreground hover:text-foreground">
-          ← Hobby Directory
-        </Link>
+      {/* Header */}
+      <div className="relative mb-8 overflow-hidden rounded-3xl border border-border/60">
+        <GridBackground variant="dots" size={22} />
+        <FadeIn className="relative p-6 sm:p-8">
+          <Link href="/hobbies" className="text-sm text-muted-foreground hover:text-foreground">
+            ← Hobby Directory
+          </Link>
+          <TextGenerateEffect
+            words={`${total} Impressive Hobbies to Put on Your Resume`}
+            className="mt-4 text-3xl font-bold text-foreground"
+          />
+        </FadeIn>
       </div>
 
-      <h1 className="text-3xl font-bold text-foreground mb-4">
-        {total} Impressive Hobbies to Put on Your Resume
-      </h1>
-      <p className="text-lg text-muted-foreground mb-4 leading-relaxed">
-        The hobbies section of a resume is either an afterthought or a differentiator. Done well, it
-        signals personality, discipline, and transferable skills that work history alone can&apos;t
-        convey. Done poorly, it&apos;s filler that interviewers skip.
-      </p>
-      <p className="text-lg text-muted-foreground mb-8 leading-relaxed">
-        The rule: only include a hobby if you can speak about it substantively in an interview.
-        Depth beats breadth. Below are {total} hobbies organized by what they communicate — pick the
-        ones that genuinely reflect you, then be ready to talk about them.
-      </p>
+      <FadeIn delay={0.1}>
+        <p className="text-lg text-muted-foreground mb-4 leading-relaxed">
+          The hobbies section of a resume is either an afterthought or a differentiator. Done well,
+          it signals personality, discipline, and transferable skills that work history alone
+          can&apos;t convey. Done poorly, it&apos;s filler that interviewers skip.
+        </p>
+      </FadeIn>
+      <FadeIn delay={0.18}>
+        <p className="text-lg text-muted-foreground mb-8 leading-relaxed">
+          The rule: only include a hobby if you can speak about it substantively in an interview.
+          Depth beats breadth. Below are {total} hobbies organized by what they communicate — pick
+          the ones that genuinely reflect you, then be ready to talk about them.
+        </p>
+      </FadeIn>
 
-      <div className="mb-8 rounded-xl bg-primary/10 border border-primary/30 p-5">
-        <h2 className="text-sm font-bold text-lumi-300 mb-1">How to choose what to include</h2>
-        <ul className="space-y-1.5 text-sm text-lumi-300">
-          <li>
-            Include hobbies where you&apos;ve reached a notable level — a rank, a project, a
-            milestone
-          </li>
-          <li>
-            Match hobbies to the role: creative hobbies for creative roles, analytical for
-            analytical
-          </li>
-          <li>Mention the community aspect if relevant — clubs, competitions, teaching others</li>
-          <li>Never include something you can&apos;t discuss for 60 seconds unprompted</li>
-        </ul>
-      </div>
+      <FadeIn className="mb-8">
+        <SpotlightCard
+          className="border-primary/30 bg-primary/10 shadow-soft"
+          innerClassName="rounded-xl p-5"
+        >
+          <h2 className="text-sm font-bold text-lumi-300 mb-1">How to choose what to include</h2>
+          <ul className="space-y-1.5 text-sm text-lumi-300">
+            <li>
+              Include hobbies where you&apos;ve reached a notable level — a rank, a project, a
+              milestone
+            </li>
+            <li>
+              Match hobbies to the role: creative hobbies for creative roles, analytical for
+              analytical
+            </li>
+            <li>Mention the community aspect if relevant — clubs, competitions, teaching others</li>
+            <li>Never include something you can&apos;t discuss for 60 seconds unprompted</li>
+          </ul>
+        </SpotlightCard>
+      </FadeIn>
 
       <div className="space-y-10">
         {CATEGORIES.map((cat) => (
-          <section key={cat.title}>
-            <div className={`rounded-lg ${cat.bgColor} border ${cat.borderColor} px-5 py-4 mb-4`}>
-              <h2 className={`text-lg font-bold ${cat.color} mb-1`}>{cat.title}</h2>
-              <p className="text-sm text-muted-foreground">{cat.description}</p>
-            </div>
-            <ul className="space-y-3">
-              {cat.hobbies.map((hobby) => (
-                <li
-                  key={hobby.name}
-                  className="flex gap-4 rounded-lg border border-border bg-card p-4 hover:border-foreground/30 transition-colors"
-                >
-                  <div className="flex-1">
-                    <Link
-                      href={`/hobbies/${hobbySlug(hobby.name)}`}
-                      className="font-semibold text-foreground hover:text-foreground transition-colors"
-                      prefetch={false}
-                    >
-                      {hobby.name}
-                    </Link>
-                    <p
-                      className="mt-1 text-sm text-muted-foreground leading-relaxed"
-                      dangerouslySetInnerHTML={{ __html: hobby.signal }}
-                    />
-                  </div>
-                </li>
-              ))}
-            </ul>
-          </section>
+          <FadeIn key={cat.title}>
+            <section>
+              <div className={`rounded-lg ${cat.bgColor} border ${cat.borderColor} px-5 py-4 mb-4`}>
+                <h2 className={`text-lg font-bold ${cat.color} mb-1`}>{cat.title}</h2>
+                <p className="text-sm text-muted-foreground">{cat.description}</p>
+              </div>
+              <StaggerContainer className="space-y-3">
+                {cat.hobbies.map((hobby) => (
+                  <StaggerItem key={hobby.name}>
+                    <SpotlightCard className="shadow-soft" innerClassName="rounded-lg p-4">
+                      <div className="flex-1">
+                        <Link
+                          href={`/hobbies/${hobbySlug(hobby.name)}`}
+                          className="font-semibold text-foreground hover:text-foreground transition-colors"
+                          prefetch={false}
+                        >
+                          {hobby.name}
+                        </Link>
+                        <p
+                          className="mt-1 text-sm text-muted-foreground leading-relaxed"
+                          dangerouslySetInnerHTML={{ __html: hobby.signal }}
+                        />
+                      </div>
+                    </SpotlightCard>
+                  </StaggerItem>
+                ))}
+              </StaggerContainer>
+            </section>
+          </FadeIn>
         ))}
       </div>
 
-      <div className="mt-12 rounded-xl bg-foreground/10 border border-foreground/20 p-8 text-center">
-        <h2 className="text-xl font-bold text-foreground mb-2">Build your hobby timeline</h2>
-        <p className="text-muted-foreground mb-4">
-          Track your hobbies over time — a visual record of the skills, communities, and experiences
-          you&apos;ve built. Useful for interviews, applications, and self-understanding.
-        </p>
-        <Link
-          href="/timeline/new"
-          className="inline-flex rounded-lg bg-primary px-6 py-2.5 text-sm font-semibold text-primary-foreground hover:opacity-90 transition-colors"
+      <FadeIn className="mt-12">
+        <SpotlightCard
+          className="border-foreground/20 bg-foreground/10 shadow-soft"
+          innerClassName="rounded-xl p-8 text-center"
         >
-          Build your timeline →
-        </Link>
-        <div className="mt-4">
+          <h2 className="text-xl font-bold text-foreground mb-2">Build your hobby timeline</h2>
+          <p className="text-muted-foreground mb-4">
+            Track your hobbies over time — a visual record of the skills, communities, and
+            experiences you&apos;ve built. Useful for interviews, applications, and
+            self-understanding.
+          </p>
           <Link
-            href="/find-your-hobby"
-            className="text-sm text-muted-foreground/60 hover:text-muted-foreground transition-colors"
+            href="/timeline/new"
+            className="inline-flex rounded-lg bg-primary px-6 py-2.5 text-sm font-semibold text-primary-foreground hover:opacity-90 transition-colors"
           >
-            Or take the quiz to find a new hobby →
+            Build your timeline →
           </Link>
-        </div>
-      </div>
+          <div className="mt-4">
+            <Link
+              href="/find-your-hobby"
+              className="text-sm text-muted-foreground/60 hover:text-muted-foreground transition-colors"
+            >
+              Or take the quiz to find a new hobby →
+            </Link>
+          </div>
+        </SpotlightCard>
+      </FadeIn>
     </div>
   );
 }

@@ -3,6 +3,7 @@ export const revalidate = 300;
 import { count, desc, eq, inArray } from 'drizzle-orm';
 import Link from 'next/link';
 
+import { FadeIn, GridBackground } from '~/components/aceternity';
 import { likes, timelines, users } from '~/db/schema';
 import { getCategoryForHobby } from '~/lib/hobbies';
 import type { Phase, TimelineData, TimelineVisibility } from '~/lib/types';
@@ -93,11 +94,12 @@ export default async function ExplorePage() {
   const totalLikes = timelineList.reduce((sum, timeline) => sum + timeline.likeCount, 0);
 
   return (
-    <div className="mx-auto min-h-screen max-w-5xl px-4 py-12 pb-16">
+    <div className="relative mx-auto min-h-screen max-w-5xl px-4 py-12 pb-16">
+      <GridBackground variant="dots" size={22} />
       {/* Page header */}
-      <div className="scroll-reveal mb-8 grid gap-5 md:grid-cols-[minmax(0,1fr)_22rem] md:items-end">
+      <FadeIn className="relative mb-8 grid gap-5 md:grid-cols-[minmax(0,1fr)_22rem] md:items-end">
         <div>
-          <h1 className="text-3xl font-bold text-foreground">Explore timelines</h1>
+          <h1 className="font-serif text-3xl font-semibold text-foreground">Explore timelines</h1>
           <p className="mt-2 text-muted-foreground">
             Discover how people spend their time — across life phases, hobbies, and chapters.
           </p>
@@ -107,11 +109,11 @@ export default async function ExplorePage() {
           <ExploreStat label="Phases" value={String(totalPhases)} />
           <ExploreStat label="Signals" value={String(totalUniqueHobbies + totalLikes)} />
         </div>
-      </div>
+      </FadeIn>
 
       {/* Trending hobbies */}
       {trendingHobbies.length > 0 && (
-        <div className="mb-8">
+        <FadeIn className="relative mb-8" delay={0.05}>
           <p className="mb-3 text-sm font-semibold text-muted-foreground/60">Trending</p>
           <div className="flex flex-wrap gap-2">
             {trendingHobbies.map(({ name, count, emoji }) => (
@@ -127,10 +129,12 @@ export default async function ExplorePage() {
               </Link>
             ))}
           </div>
-        </div>
+        </FadeIn>
       )}
 
-      <ExploreClient timelines={timelineList} />
+      <div className="relative">
+        <ExploreClient timelines={timelineList} />
+      </div>
     </div>
   );
 }

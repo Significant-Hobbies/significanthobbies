@@ -1,6 +1,14 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 
+import {
+  CardHoverEffect,
+  FadeIn,
+  GridBackground,
+  SpotlightCard,
+  StaggerContainer,
+  StaggerItem,
+} from '~/components/aceternity';
 import { EmailCapture } from '~/components/email-capture';
 import { type BlogPost, blogPosts } from '~/lib/blog-posts';
 
@@ -32,87 +40,98 @@ function categoryStyle(category: string) {
   );
 }
 
-function PostCard({ post, featured = false }: { post: BlogPost; featured?: boolean }) {
+function PostCardContent({ post, featured = false }: { post: BlogPost; featured?: boolean }) {
   const style = categoryStyle(post.category);
 
   return (
-    <Link href={`/blog/${post.slug}`} className="group block h-full" prefetch={false}>
+    <div className="group relative h-full">
+      {/* Top accent */}
       <div
-        className={`relative flex h-full overflow-hidden border border-border bg-card shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-foreground/30 ${
+        className={`absolute inset-x-0 top-0 origin-left scale-x-0 bg-gradient-to-r from-foreground to-foreground/60 transition-transform duration-300 group-hover:scale-x-100 ${
+          featured ? 'h-1 rounded-t-3xl' : 'h-0.5'
+        }`}
+      />
+
+      {/* Emoji */}
+      <div
+        className={`shrink-0 transition-transform duration-300 group-hover:scale-110 ${
           featured
-            ? 'flex-col gap-6 rounded-3xl p-8 hover:shadow-[0_12px_40px_rgba(16,185,129,0.12)] sm:flex-row sm:items-center sm:gap-12 sm:p-10'
-            : 'flex-col rounded-2xl hover:shadow-[0_8px_32px_rgba(16,185,129,0.10)]'
+            ? 'flex h-24 w-24 items-center justify-center rounded-2xl border border-border bg-card/40 text-5xl shadow-sm'
+            : 'p-6 pb-0 text-4xl'
         }`}
       >
-        {/* Top accent */}
-        <div
-          className={`absolute inset-x-0 top-0 origin-left scale-x-0 bg-gradient-to-r from-foreground to-foreground/60 transition-transform duration-300 group-hover:scale-x-100 ${
-            featured ? 'h-1 rounded-t-3xl' : 'h-0.5'
-          }`}
-        />
+        {post.emoji}
+      </div>
 
-        {/* Emoji */}
-        <div
-          className={`shrink-0 transition-transform duration-300 group-hover:scale-110 ${
-            featured
-              ? 'flex h-24 w-24 items-center justify-center rounded-2xl border border-border bg-card/40 text-5xl shadow-sm'
-              : 'p-6 pb-0 text-4xl'
+      <div className={`flex flex-1 flex-col ${featured ? '' : 'p-6 pt-4'}`}>
+        {/* Category + meta */}
+        <div className="mb-3 flex flex-wrap items-center gap-2">
+          <span
+            className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold ${style.bg} ${style.text} ${style.border}`}
+          >
+            {post.category}
+          </span>
+          <span className="text-xs text-muted-foreground/60">{post.readTime} min read</span>
+          <span className="text-xs text-muted-foreground/40">·</span>
+          <span className="text-xs text-muted-foreground/60">{post.publishedAt}</span>
+        </div>
+
+        {/* Title */}
+        {featured ? (
+          <h2 className="mb-3 text-2xl font-bold leading-snug text-foreground transition-colors group-hover:text-foreground sm:text-3xl">
+            {post.title}
+          </h2>
+        ) : (
+          <h3 className="mb-2 text-lg font-bold leading-snug text-foreground transition-colors group-hover:text-foreground">
+            {post.title}
+          </h3>
+        )}
+
+        {/* Excerpt */}
+        <p
+          className={`flex-1 leading-relaxed text-muted-foreground ${
+            featured ? 'text-base sm:text-lg' : 'line-clamp-2 text-sm'
           }`}
         >
-          {post.emoji}
-        </div>
+          {post.excerpt}
+        </p>
 
-        <div className={`flex flex-1 flex-col ${featured ? '' : 'p-6 pt-4'}`}>
-          {/* Category + meta */}
-          <div className="mb-3 flex flex-wrap items-center gap-2">
-            <span
-              className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold ${style.bg} ${style.text} ${style.border}`}
-            >
-              {post.category}
-            </span>
-            <span className="text-xs text-muted-foreground/60">{post.readTime} min read</span>
-            <span className="text-xs text-muted-foreground/40">·</span>
-            <span className="text-xs text-muted-foreground/60">{post.publishedAt}</span>
+        {/* Footer */}
+        {featured ? (
+          <div className="mt-5 inline-flex items-center gap-1 text-sm font-semibold text-foreground transition-all duration-200 group-hover:gap-2">
+            Read article
+            <span className="transition-transform duration-200 group-hover:translate-x-0.5">→</span>
           </div>
-
-          {/* Title */}
-          {featured ? (
-            <h2 className="mb-3 text-2xl font-bold leading-snug text-foreground transition-colors group-hover:text-foreground sm:text-3xl">
-              {post.title}
-            </h2>
-          ) : (
-            <h3 className="mb-2 text-lg font-bold leading-snug text-foreground transition-colors group-hover:text-foreground">
-              {post.title}
-            </h3>
-          )}
-
-          {/* Excerpt */}
-          <p
-            className={`flex-1 leading-relaxed text-muted-foreground ${
-              featured ? 'text-base sm:text-lg' : 'line-clamp-2 text-sm'
-            }`}
-          >
-            {post.excerpt}
-          </p>
-
-          {/* Footer */}
-          {featured ? (
-            <div className="mt-5 inline-flex items-center gap-1 text-sm font-semibold text-foreground transition-all duration-200 group-hover:gap-2">
-              Read article
-              <span className="transition-transform duration-200 group-hover:translate-x-0.5">
-                →
-              </span>
-            </div>
-          ) : (
-            <div className="mt-4 flex items-center justify-between border-t border-border pt-4">
-              <span className="text-xs text-muted-foreground/60">{post.readTime} min read</span>
-              <span className="text-xs font-semibold text-foreground opacity-0 transition-opacity duration-200 group-hover:opacity-100">
-                Read →
-              </span>
-            </div>
-          )}
-        </div>
+        ) : (
+          <div className="mt-4 flex items-center justify-between border-t border-border pt-4">
+            <span className="text-xs text-muted-foreground/60">{post.readTime} min read</span>
+            <span className="text-xs font-semibold text-foreground opacity-0 transition-opacity duration-200 group-hover:opacity-100">
+              Read →
+            </span>
+          </div>
+        )}
       </div>
+    </div>
+  );
+}
+
+function PostCard({ post, featured = false }: { post: BlogPost; featured?: boolean }) {
+  return (
+    <Link href={`/blog/${post.slug}`} className="group block h-full" prefetch={false}>
+      {featured ? (
+        <SpotlightCard
+          className={`h-full shadow-soft ${featured ? 'rounded-3xl' : 'rounded-2xl'}`}
+          innerClassName={`flex h-full flex-col ${featured ? 'gap-6 p-8 sm:flex-row sm:items-center sm:gap-12 sm:p-10' : ''}`}
+        >
+          <PostCardContent post={post} featured />
+        </SpotlightCard>
+      ) : (
+        <CardHoverEffect className="h-full overflow-hidden rounded-2xl p-0 shadow-soft transition-transform duration-300 hover:-translate-y-0.5">
+          <div className="flex h-full flex-col">
+            <PostCardContent post={post} />
+          </div>
+        </CardHoverEffect>
+      )}
     </Link>
   );
 }
@@ -124,22 +143,27 @@ export default function BlogPage() {
     <div className="min-h-screen bg-background">
       {/* Hero */}
       <section className="relative overflow-hidden px-4 py-20 sm:py-28">
+        <GridBackground variant="dots" size={22} />
         <div className="relative mx-auto max-w-5xl text-center">
-          <div className="scroll-reveal mb-5 inline-flex items-center gap-2 rounded-full border border-foreground/20 bg-foreground/10 px-4 py-1.5 text-sm font-semibold text-foreground">
+          <FadeIn className="mb-5 inline-flex items-center gap-2 rounded-full border border-foreground/20 bg-foreground/10 px-4 py-1.5 text-sm font-semibold text-foreground">
             <span className="h-1.5 w-1.5 rounded-full bg-foreground" />
             The Hobby Journal
-          </div>
+          </FadeIn>
 
-          <h1 className="scroll-reveal scroll-reveal-d1 mb-4 text-4xl font-bold tracking-tight text-foreground sm:text-5xl md:text-6xl">
-            The Hobby Journal
-          </h1>
+          <FadeIn delay={0.08}>
+            <h1 className="mb-4 text-4xl font-bold tracking-tight text-foreground sm:text-5xl md:text-6xl">
+              The Hobby Journal
+            </h1>
+          </FadeIn>
 
-          <p className="scroll-reveal scroll-reveal-d2 mx-auto max-w-xl text-lg text-muted-foreground sm:text-xl">
-            Thoughts on hobbies, identity, and living curiously.
-          </p>
+          <FadeIn delay={0.16}>
+            <p className="mx-auto max-w-xl text-lg text-muted-foreground sm:text-xl">
+              Thoughts on hobbies, identity, and living curiously.
+            </p>
+          </FadeIn>
 
           {/* Decorative dots */}
-          <div className="scroll-reveal scroll-reveal-d3 mt-8 flex justify-center gap-1.5">
+          <FadeIn delay={0.24} className="mt-8 flex justify-center gap-1.5">
             {[...Array(5)].map((_, i) => (
               <div
                 key={i}
@@ -147,7 +171,7 @@ export default function BlogPage() {
                 style={{ opacity: 0.4 + i * 0.12 }}
               />
             ))}
-          </div>
+          </FadeIn>
         </div>
       </section>
 
@@ -156,47 +180,46 @@ export default function BlogPage() {
         <div className="mx-auto max-w-5xl">
           {/* Featured post */}
           {featured && (
-            <div className="scroll-reveal-blur mb-10">
+            <FadeIn className="mb-10">
               <p className="mb-4 text-sm font-semibold text-muted-foreground/60">Featured</p>
               <PostCard post={featured} featured />
-            </div>
+            </FadeIn>
           )}
 
           {/* Email capture */}
-          <div className="scroll-reveal mb-10 rounded-xl border border-border bg-card/40 p-6 text-center">
-            <p className="font-medium text-foreground mb-2">Enjoy the journal?</p>
-            <p className="text-sm text-muted-foreground mb-4">
-              Get new articles and hobby inspiration in your inbox.
-            </p>
-            <EmailCapture source="blog" />
-          </div>
+          <FadeIn className="mb-10">
+            <SpotlightCard className="shadow-soft" innerClassName="rounded-xl p-6 text-center">
+              <p className="font-medium text-foreground mb-2">Enjoy the journal?</p>
+              <p className="text-sm text-muted-foreground mb-4">
+                Get new articles and hobby inspiration in your inbox.
+              </p>
+              <EmailCapture source="blog" />
+            </SpotlightCard>
+          </FadeIn>
 
           {/* Divider */}
-          <div className="scroll-reveal mb-10 flex items-center gap-4">
+          <FadeIn className="mb-10 flex items-center gap-4">
             <div className="h-px flex-1 bg-foreground/10" />
             <p className="text-sm font-semibold text-muted-foreground/60">All articles</p>
             <div className="h-px flex-1 bg-foreground/10" />
-          </div>
+          </FadeIn>
 
           {/* Rest of posts grid */}
           {rest.length > 0 && (
-            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-              {rest.map((post, i) => (
-                <div
-                  key={post.slug}
-                  className={`scroll-reveal-flip scroll-reveal-d${Math.min(i + 1, 6)}`}
-                >
+            <StaggerContainer className="grid grid-cols-1 gap-6 md:grid-cols-2">
+              {rest.map((post) => (
+                <StaggerItem key={post.slug} className="h-full">
                   <PostCard post={post} />
-                </div>
+                </StaggerItem>
               ))}
-            </div>
+            </StaggerContainer>
           )}
         </div>
       </section>
 
       {/* Back to site */}
       <section className="border-t border-border px-4 py-10">
-        <div className="scroll-reveal-scale mx-auto max-w-5xl text-center">
+        <FadeIn className="mx-auto max-w-5xl text-center">
           <p className="mb-3 text-sm text-muted-foreground">Ready to map your own hobby story?</p>
           <Link
             href="/timeline/new"
@@ -213,7 +236,7 @@ export default function BlogPage() {
               ← Back to SignificantHobbies
             </Link>
           </div>
-        </div>
+        </FadeIn>
       </section>
     </div>
   );

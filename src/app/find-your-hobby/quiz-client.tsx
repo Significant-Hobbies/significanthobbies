@@ -4,6 +4,7 @@ import Link from 'next/link';
 import posthog from 'posthog-js';
 import { useEffect, useRef, useState } from 'react';
 
+import { BorderBeam, FadeIn, SpotlightCard, TextGenerateEffect } from '~/components/aceternity';
 import { EmailCapture } from '~/components/email-capture';
 import { QuizResultCard } from '~/components/quiz-result-card';
 import { HOBBY_CATEGORIES } from '~/lib/hobbies';
@@ -342,249 +343,256 @@ export function HobbyQuiz() {
   }
 
   return (
-    <div className="mx-auto max-w-2xl px-4 py-12">
-      {/* Header */}
-      {!isResults && (
-        <div className="mb-10 text-center">
-          <p className="mb-2 text-sm font-semibold text-foreground">Free Hobby Quiz</p>
-          <h1 className="text-3xl font-bold text-foreground">Find Your Perfect Hobby</h1>
-          <p className="mt-3 text-muted-foreground">
-            Answer 5 quick questions and get personalized hobby recommendations.
-          </p>
-        </div>
-      )}
-
-      {/* Progress indicator */}
-      {!isResults && (
-        <div className="mb-8 flex items-center justify-center gap-2">
-          {QUESTIONS.map((_, i) => (
-            <div
-              key={i}
-              className={`h-2 rounded-full transition-all duration-300 ${
-                i < step
-                  ? 'w-8 bg-foreground'
-                  : i === step
-                    ? 'w-8 bg-foreground/60'
-                    : 'w-4 bg-foreground/10'
-              }`}
-            />
-          ))}
-        </div>
-      )}
-
-      {/* Quiz question */}
-      {!isResults && currentQuestion && (
-        <div key={step} className="animate-in fade-in slide-in-from-right-4 duration-300">
-          <div className="mb-2 text-center text-sm text-muted-foreground/60">
-            Question {step + 1} of {QUESTIONS.length}
+    <FadeIn>
+      <div className="mx-auto max-w-2xl px-4 py-12">
+        {/* Header */}
+        {!isResults && (
+          <div className="mb-10 text-center">
+            <p className="mb-2 text-sm font-semibold text-foreground">Free Hobby Quiz</p>
+            <h1 className="text-3xl font-bold text-foreground">Find Your Perfect Hobby</h1>
+            <p className="mt-3 text-muted-foreground">
+              Answer 5 quick questions and get personalized hobby recommendations.
+            </p>
           </div>
-          <h2 className="mb-6 text-center text-xl font-semibold text-foreground">
-            {currentQuestion.question}
-          </h2>
+        )}
 
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-            {currentQuestion.options.map((option, i) => {
-              const isSelected = selectedOption === i;
-              return (
-                <button
-                  key={i}
-                  onClick={() => handleSelect(i)}
-                  className={`flex items-center gap-3 rounded-xl border-2 p-4 text-left transition-all duration-150 hover:border-foreground/30 hover:bg-foreground/10 focus:outline-none focus:ring-2 focus:ring-foreground/30 focus:ring-offset-2 ${
-                    isSelected
-                      ? 'border-foreground/30 bg-foreground/10 shadow-sm'
-                      : 'border-border bg-card'
-                  }`}
-                >
-                  <span className="text-2xl">{option.emoji}</span>
-                  <span
-                    className={`text-sm font-medium ${
-                      isSelected ? 'text-foreground' : 'text-foreground'
-                    }`}
-                  >
-                    {option.label}
-                  </span>
-                </button>
-              );
-            })}
+        {/* Progress indicator */}
+        {!isResults && (
+          <div className="mb-8 flex items-center justify-center gap-2">
+            {QUESTIONS.map((_, i) => (
+              <div
+                key={i}
+                className={`h-2 rounded-full transition-all duration-300 ${
+                  i < step
+                    ? 'w-8 bg-foreground'
+                    : i === step
+                      ? 'w-8 bg-foreground/60'
+                      : 'w-4 bg-foreground/10'
+                }`}
+              />
+            ))}
           </div>
+        )}
 
-          <div className="mt-6 flex justify-center">
-            <button
-              onClick={handleNext}
-              disabled={selectedOption === null}
-              className={`rounded-lg px-8 py-3 text-sm font-semibold transition-all duration-150 ${
-                selectedOption !== null
-                  ? 'bg-primary text-primary-foreground hover:opacity-90 shadow-sm hover:shadow-md'
-                  : 'cursor-not-allowed bg-foreground/5 text-muted-foreground/60'
-              }`}
-            >
-              {step === QUESTIONS.length - 1 ? 'See my results →' : 'Next →'}
-            </button>
-          </div>
-        </div>
-      )}
+        {/* Quiz question */}
+        {!isResults && currentQuestion && (
+          <div key={step} className="animate-in fade-in slide-in-from-right-4 duration-300">
+            <SpotlightCard className="rounded-2xl shadow-soft" innerClassName="p-6">
+              <div className="mb-2 text-center text-sm text-muted-foreground/60">
+                Question {step + 1} of {QUESTIONS.length}
+              </div>
+              <h2 className="mb-6 text-center text-xl font-semibold text-foreground">
+                {currentQuestion.question}
+              </h2>
 
-      {/* Results screen */}
-      {isResults && archetype && (
-        <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-          {/* Archetype reveal */}
-          <div className="mb-10 rounded-2xl border border-foreground/20 bg-gradient-to-br from-foreground/10 to-white p-8 text-center shadow-sm">
-            <div className="mb-4 text-6xl">{archetype.emoji}</div>
-            <p className="mb-1 text-sm font-semibold text-foreground">Your Hobby Archetype</p>
-            <h1 className="mb-3 text-3xl font-bold text-foreground">{archetype.title}</h1>
-            <p className="text-muted-foreground">{archetype.description}</p>
-
-            {topCats.length > 1 && (
-              <div className="mt-4 flex flex-wrap justify-center gap-2">
-                {topCats.map((cat) => {
-                  const a = ARCHETYPE_MAP[cat];
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                {currentQuestion.options.map((option, i) => {
+                  const isSelected = selectedOption === i;
                   return (
-                    <span
-                      key={cat}
-                      className="inline-flex items-center gap-1 rounded-full bg-foreground/10 px-3 py-1 text-xs font-medium text-foreground"
+                    <button
+                      key={i}
+                      onClick={() => handleSelect(i)}
+                      className={`flex items-center gap-3 rounded-xl border-2 p-4 text-left transition-all duration-150 hover:border-foreground/30 hover:bg-foreground/10 focus:outline-none focus:ring-2 focus:ring-foreground/30 focus:ring-offset-2 ${
+                        isSelected
+                          ? 'border-foreground/30 bg-foreground/10 shadow-sm'
+                          : 'border-border bg-card'
+                      }`}
                     >
-                      {a?.emoji} {cat}
-                    </span>
+                      <span className="text-2xl">{option.emoji}</span>
+                      <span
+                        className={`text-sm font-medium ${
+                          isSelected ? 'text-foreground' : 'text-foreground'
+                        }`}
+                      >
+                        {option.label}
+                      </span>
+                    </button>
                   );
                 })}
               </div>
-            )}
-          </div>
 
-          {/* Recommended hobbies */}
-          <div className="mb-8">
-            <h2 className="mb-1 text-lg font-semibold text-foreground">Hobbies picked for you</h2>
-            <p className="mb-4 text-sm text-muted-foreground">
-              Based on your archetype — click any to explore community timelines.
-            </p>
-            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-              {recommendedHobbies.map((hobby) => {
-                const cat = HOBBY_CATEGORIES.find((c) => c.hobbies.includes(hobby));
-                return (
-                  <Link
-                    key={hobby}
-                    href={`/hobbies/${hobbySlug(hobby)}`}
-                    className="flex flex-col items-center gap-1 rounded-xl border border-border bg-card p-4 text-center text-sm font-medium text-foreground transition-all hover:border-foreground/30 hover:bg-foreground/10 hover:text-foreground hover:shadow-sm"
-                    prefetch={false}
-                  >
-                    <span className="text-2xl">{cat?.emoji ?? '✨'}</span>
-                    <span>{hobby}</span>
-                  </Link>
-                );
-              })}
-            </div>
-          </div>
-
-          {/* Guided hobby experiments */}
-          <div className="mb-8 rounded-2xl border border-border bg-card p-5 shadow-sm">
-            <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
-              <div>
-                <h2 className="text-lg font-semibold text-foreground">Try one tiny experiment</h2>
-                <p className="text-sm text-muted-foreground">
-                  Pick the lowest-friction test before committing to a whole new identity.
-                </p>
+              <div className="mt-6 flex justify-center">
+                <button
+                  onClick={handleNext}
+                  disabled={selectedOption === null}
+                  className={`rounded-lg px-8 py-3 text-sm font-semibold transition-all duration-150 ${
+                    selectedOption !== null
+                      ? 'bg-primary text-primary-foreground hover:opacity-90 shadow-sm hover:shadow-md'
+                      : 'cursor-not-allowed bg-foreground/5 text-muted-foreground/60'
+                  }`}
+                >
+                  {step === QUESTIONS.length - 1 ? 'See my results →' : 'Next →'}
+                </button>
               </div>
-              <button
-                onClick={handleSaveExperimentPlan}
-                className="rounded-lg border border-foreground/20 bg-foreground/10 px-4 py-2 text-sm font-semibold text-foreground transition-colors hover:border-foreground/30 hover:bg-foreground/10"
+            </SpotlightCard>
+          </div>
+        )}
+
+        {/* Results screen */}
+        {isResults && archetype && (
+          <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+            {/* Archetype reveal */}
+            <div className="relative mb-10 overflow-hidden rounded-2xl border border-foreground/20 bg-gradient-to-br from-foreground/10 to-white p-8 text-center shadow-soft">
+              <BorderBeam size={200} duration={12} />
+              <div className="mb-4 text-6xl">{archetype.emoji}</div>
+              <p className="mb-1 text-sm font-semibold text-foreground">Your Hobby Archetype</p>
+              <h1 className="mb-3 text-3xl font-bold text-foreground">{archetype.title}</h1>
+              <p className="text-muted-foreground">{archetype.description}</p>
+
+              {topCats.length > 1 && (
+                <div className="mt-4 flex flex-wrap justify-center gap-2">
+                  {topCats.map((cat) => {
+                    const a = ARCHETYPE_MAP[cat];
+                    return (
+                      <span
+                        key={cat}
+                        className="inline-flex items-center gap-1 rounded-full bg-foreground/10 px-3 py-1 text-xs font-medium text-foreground"
+                      >
+                        {a?.emoji} {cat}
+                      </span>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+
+            {/* Recommended hobbies */}
+            <div className="mb-8">
+              <h2 className="mb-1 text-lg font-semibold text-foreground">Hobbies picked for you</h2>
+              <p className="mb-4 text-sm text-muted-foreground">
+                Based on your archetype — click any to explore community timelines.
+              </p>
+              <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+                {recommendedHobbies.map((hobby) => {
+                  const cat = HOBBY_CATEGORIES.find((c) => c.hobbies.includes(hobby));
+                  return (
+                    <Link
+                      key={hobby}
+                      href={`/hobbies/${hobbySlug(hobby)}`}
+                      className="flex flex-col items-center gap-1 rounded-xl border border-border bg-card p-4 text-center text-sm font-medium text-foreground transition-all hover:border-foreground/30 hover:bg-foreground/10 hover:text-foreground hover:shadow-sm"
+                      prefetch={false}
+                    >
+                      <span className="text-2xl">{cat?.emoji ?? '✨'}</span>
+                      <span>{hobby}</span>
+                    </Link>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Guided hobby experiments */}
+            <div className="mb-8 rounded-2xl border border-border bg-card p-5 shadow-sm">
+              <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+                <div>
+                  <h2 className="text-lg font-semibold text-foreground">Try one tiny experiment</h2>
+                  <p className="text-sm text-muted-foreground">
+                    Pick the lowest-friction test before committing to a whole new identity.
+                  </p>
+                </div>
+                <button
+                  onClick={handleSaveExperimentPlan}
+                  className="rounded-lg border border-foreground/20 bg-foreground/10 px-4 py-2 text-sm font-semibold text-foreground transition-colors hover:border-foreground/30 hover:bg-foreground/10"
+                >
+                  {savedExperimentPlan ? 'Plan saved' : 'Save plan'}
+                </button>
+              </div>
+              <div className="grid gap-3">
+                {hobbyExperiments.map((experiment) => {
+                  const category = HOBBY_CATEGORIES.find(
+                    (item) => item.name === experiment.category
+                  );
+                  return (
+                    <div
+                      key={experiment.hobby}
+                      className="rounded-xl border border-border bg-card/40 p-4"
+                    >
+                      <div className="mb-3 flex items-start justify-between gap-3">
+                        <div>
+                          <p className="text-sm font-semibold text-foreground">
+                            {category?.emoji ?? '✨'} {experiment.hobby}
+                          </p>
+                          <p className="mt-1 text-xs text-muted-foreground">{experiment.reason}</p>
+                        </div>
+                        <div className="flex shrink-0 flex-col items-end gap-1 text-[11px] font-medium text-muted-foreground">
+                          <span>{experiment.time}</span>
+                          <span>{experiment.cost}</span>
+                        </div>
+                      </div>
+                      <p className="rounded-lg bg-card px-3 py-2 text-sm text-foreground">
+                        {experiment.firstStep}
+                      </p>
+                    </div>
+                  );
+                })}
+              </div>
+              {savedExperimentPlan && (
+                <p className="mt-3 text-center text-xs font-medium text-foreground">
+                  Saved on this device. Turn the experiment into a timeline when you are ready.
+                </p>
+              )}
+            </div>
+
+            {/* CTAs */}
+            <div className="flex flex-col gap-3 sm:flex-row">
+              <Link
+                href="/timeline/new"
+                className="flex-1 rounded-lg bg-primary px-6 py-3 text-center text-sm font-semibold text-primary-foreground shadow-sm transition-colors hover:opacity-90"
               >
-                {savedExperimentPlan ? 'Plan saved' : 'Save plan'}
+                Build your hobby timeline →
+              </Link>
+              <Link
+                href="/hobbies"
+                className="flex-1 rounded-lg border border-border bg-card px-6 py-3 text-center text-sm font-semibold text-foreground transition-colors hover:border-border hover:bg-card/40"
+              >
+                Explore all hobbies
+              </Link>
+            </div>
+
+            <div className="mt-4 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
+              <button
+                onClick={handleShare}
+                className="flex items-center gap-2 rounded-lg border border-border bg-card px-5 py-2.5 text-sm font-medium text-muted-foreground transition-colors hover:border-border hover:bg-card/40"
+              >
+                <span>🔗</span> Share your result
+              </button>
+              <button
+                onClick={handleDownloadCard}
+                disabled={isDownloading}
+                className="flex items-center gap-2 rounded-lg border border-border bg-card px-5 py-2.5 text-sm font-medium text-muted-foreground transition-colors hover:border-border hover:bg-card/40 disabled:opacity-50"
+              >
+                <span>⬇️</span> {isDownloading ? 'Downloading...' : 'Download Card'}
+              </button>
+              <button
+                onClick={handleRestart}
+                className="text-sm text-muted-foreground/60 underline-offset-2 hover:text-muted-foreground hover:underline"
+              >
+                Retake quiz
               </button>
             </div>
-            <div className="grid gap-3">
-              {hobbyExperiments.map((experiment) => {
-                const category = HOBBY_CATEGORIES.find((item) => item.name === experiment.category);
-                return (
-                  <div
-                    key={experiment.hobby}
-                    className="rounded-xl border border-border bg-card/40 p-4"
-                  >
-                    <div className="mb-3 flex items-start justify-between gap-3">
-                      <div>
-                        <p className="text-sm font-semibold text-foreground">
-                          {category?.emoji ?? '✨'} {experiment.hobby}
-                        </p>
-                        <p className="mt-1 text-xs text-muted-foreground">{experiment.reason}</p>
-                      </div>
-                      <div className="flex shrink-0 flex-col items-end gap-1 text-[11px] font-medium text-muted-foreground">
-                        <span>{experiment.time}</span>
-                        <span>{experiment.cost}</span>
-                      </div>
-                    </div>
-                    <p className="rounded-lg bg-card px-3 py-2 text-sm text-foreground">
-                      {experiment.firstStep}
-                    </p>
-                  </div>
-                );
-              })}
+
+            {/* Hidden export card — rendered off-screen for PNG export */}
+            <div className="fixed -left-[9999px] -top-[9999px] pointer-events-none">
+              <QuizResultCard
+                archetype={archetype.title}
+                archetypeEmoji={archetype.emoji}
+                topCategories={topCats}
+                recommendedHobbies={recommendedHobbies}
+                exportRef={cardRef}
+              />
             </div>
-            {savedExperimentPlan && (
-              <p className="mt-3 text-center text-xs font-medium text-foreground">
-                Saved on this device. Turn the experiment into a timeline when you are ready.
+
+            <div className="mt-8 rounded-xl border border-border bg-card/40 p-6 text-center">
+              <p className="font-medium text-foreground mb-2">
+                Want hobby recommendations in your inbox?
               </p>
-            )}
+              <p className="text-sm text-muted-foreground mb-4">
+                Weekly inspiration — no spam, unsubscribe anytime.
+              </p>
+              <EmailCapture source="quiz" />
+            </div>
           </div>
-
-          {/* CTAs */}
-          <div className="flex flex-col gap-3 sm:flex-row">
-            <Link
-              href="/timeline/new"
-              className="flex-1 rounded-lg bg-primary px-6 py-3 text-center text-sm font-semibold text-primary-foreground shadow-sm transition-colors hover:opacity-90"
-            >
-              Build your hobby timeline →
-            </Link>
-            <Link
-              href="/hobbies"
-              className="flex-1 rounded-lg border border-border bg-card px-6 py-3 text-center text-sm font-semibold text-foreground transition-colors hover:border-border hover:bg-card/40"
-            >
-              Explore all hobbies
-            </Link>
-          </div>
-
-          <div className="mt-4 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
-            <button
-              onClick={handleShare}
-              className="flex items-center gap-2 rounded-lg border border-border bg-card px-5 py-2.5 text-sm font-medium text-muted-foreground transition-colors hover:border-border hover:bg-card/40"
-            >
-              <span>🔗</span> Share your result
-            </button>
-            <button
-              onClick={handleDownloadCard}
-              disabled={isDownloading}
-              className="flex items-center gap-2 rounded-lg border border-border bg-card px-5 py-2.5 text-sm font-medium text-muted-foreground transition-colors hover:border-border hover:bg-card/40 disabled:opacity-50"
-            >
-              <span>⬇️</span> {isDownloading ? 'Downloading...' : 'Download Card'}
-            </button>
-            <button
-              onClick={handleRestart}
-              className="text-sm text-muted-foreground/60 underline-offset-2 hover:text-muted-foreground hover:underline"
-            >
-              Retake quiz
-            </button>
-          </div>
-
-          {/* Hidden export card — rendered off-screen for PNG export */}
-          <div className="fixed -left-[9999px] -top-[9999px] pointer-events-none">
-            <QuizResultCard
-              archetype={archetype.title}
-              archetypeEmoji={archetype.emoji}
-              topCategories={topCats}
-              recommendedHobbies={recommendedHobbies}
-              exportRef={cardRef}
-            />
-          </div>
-
-          <div className="mt-8 rounded-xl border border-border bg-card/40 p-6 text-center">
-            <p className="font-medium text-foreground mb-2">
-              Want hobby recommendations in your inbox?
-            </p>
-            <p className="text-sm text-muted-foreground mb-4">
-              Weekly inspiration — no spam, unsubscribe anytime.
-            </p>
-            <EmailCapture source="quiz" />
-          </div>
-        </div>
-      )}
-    </div>
+        )}
+      </div>
+    </FadeIn>
   );
 }

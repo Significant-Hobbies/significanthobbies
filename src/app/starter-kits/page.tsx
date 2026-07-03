@@ -1,6 +1,14 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 
+import {
+  CardHoverEffect,
+  FadeIn,
+  GridBackground,
+  SpotlightCard,
+  StaggerContainer,
+  StaggerItem,
+} from '~/components/aceternity';
 import { JsonLd } from '~/components/json-ld';
 import { STARTER_KIT_CATEGORIES, STARTER_KITS } from '~/lib/starter-kits';
 
@@ -24,7 +32,7 @@ function hobbySlug(name: string) {
 
 export default function StarterKitsPage() {
   return (
-    <div className="mx-auto max-w-5xl px-4 py-12">
+    <div className="relative mx-auto max-w-5xl px-4 py-12">
       <JsonLd
         data={{
           '@context': 'https://schema.org',
@@ -36,24 +44,26 @@ export default function StarterKitsPage() {
         }}
       />
 
-      <div className="mb-6">
+      <GridBackground variant="dots" size={22} />
+
+      <FadeIn className="relative mb-6">
         <Link href="/tools" className="text-sm text-muted-foreground hover:text-foreground">
           Back to tools
         </Link>
-      </div>
+      </FadeIn>
 
-      <section className="mb-10 max-w-3xl">
+      <FadeIn className="relative mb-10 max-w-3xl" delay={0.05}>
         <p className="mb-3 text-sm font-semibold text-foreground">Starter kits</p>
-        <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+        <h1 className="font-serif text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
           Local starter kits for hobby experiments
         </h1>
         <p className="mt-4 text-lg leading-relaxed text-muted-foreground">
           Each kit is designed for one small experiment using materials you can find nearby. Pick a
           kit, run the first experiment, then decide whether the hobby deserves a second session.
         </p>
-      </section>
+      </FadeIn>
 
-      <section className="mb-10 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
+      <FadeIn className="relative mb-10 grid gap-3 sm:grid-cols-2 lg:grid-cols-5" delay={0.1}>
         {STARTER_KIT_CATEGORIES.map((category) => {
           const count = STARTER_KITS.filter((kit) => kit.category === category).length;
           return (
@@ -71,9 +81,9 @@ export default function StarterKitsPage() {
             </a>
           );
         })}
-      </section>
+      </FadeIn>
 
-      <div className="space-y-10">
+      <div className="relative space-y-10">
         {STARTER_KIT_CATEGORIES.map((category) => (
           <section key={category} id={category.toLowerCase()}>
             <div className="mb-4 flex items-center gap-3">
@@ -87,107 +97,121 @@ export default function StarterKitsPage() {
               </span>
             </div>
 
-            <div className="grid gap-5 md:grid-cols-2">
+            <StaggerContainer className="grid gap-5 md:grid-cols-2">
               {STARTER_KITS.filter((kit) => kit.category === category).map((kit) => (
-                <article
-                  key={kit.slug}
-                  className="rounded-xl border border-border bg-card p-5 shadow-sm transition-colors hover:border-foreground/30"
-                >
-                  <div className="mb-4 flex flex-wrap items-start justify-between gap-3">
-                    <div>
-                      <h3 className="text-lg font-bold text-foreground">{kit.title}</h3>
-                      <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
-                        {kit.fit}
-                      </p>
-                    </div>
-                    <div className="rounded-lg border border-border bg-card/40 px-3 py-2 text-right">
-                      <p className="text-sm font-semibold text-muted-foreground/60">Budget</p>
-                      <p className="text-sm font-semibold text-foreground">{kit.budget}</p>
-                    </div>
-                  </div>
+                <StaggerItem key={kit.slug}>
+                  <CardHoverEffect className="h-full rounded-xl shadow-soft">
+                    <article className="p-5">
+                      <div className="mb-4 flex flex-wrap items-start justify-between gap-3">
+                        <div>
+                          <h3 className="text-lg font-bold text-foreground">{kit.title}</h3>
+                          <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
+                            {kit.fit}
+                          </p>
+                        </div>
+                        <div className="rounded-lg border border-border bg-card/40 px-3 py-2 text-right">
+                          <p className="text-sm font-semibold text-muted-foreground/60">Budget</p>
+                          <p className="text-sm font-semibold text-foreground">{kit.budget}</p>
+                        </div>
+                      </div>
 
-                  <dl className="grid gap-3 border-y border-border py-4 sm:grid-cols-2">
-                    <div>
-                      <dt className="text-sm font-semibold text-muted-foreground/60">First win</dt>
-                      <dd className="mt-1 text-sm font-medium text-foreground">
-                        {kit.timeToFirstWin}
-                      </dd>
-                    </div>
-                    <div>
-                      <dt className="text-sm font-semibold text-muted-foreground/60">
-                        Local sources
-                      </dt>
-                      <dd className="mt-1 text-sm text-muted-foreground">
-                        {kit.localSources.join(', ')}
-                      </dd>
-                    </div>
-                  </dl>
+                      <dl className="grid gap-3 border-y border-border py-4 sm:grid-cols-2">
+                        <div>
+                          <dt className="text-sm font-semibold text-muted-foreground/60">
+                            First win
+                          </dt>
+                          <dd className="mt-1 text-sm font-medium text-foreground">
+                            {kit.timeToFirstWin}
+                          </dd>
+                        </div>
+                        <div>
+                          <dt className="text-sm font-semibold text-muted-foreground/60">
+                            Local sources
+                          </dt>
+                          <dd className="mt-1 text-sm text-muted-foreground">
+                            {kit.localSources.join(', ')}
+                          </dd>
+                        </div>
+                      </dl>
 
-                  <div className="mt-4 grid gap-4 lg:grid-cols-2">
-                    <div>
-                      <h4 className="text-sm font-semibold text-foreground">Minimal supplies</h4>
-                      <ul className="mt-2 space-y-1 text-sm text-muted-foreground">
-                        {kit.supplies.map((item) => (
-                          <li key={item} className="flex gap-2">
-                            <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-foreground" />
-                            <span>{item}</span>
-                          </li>
+                      <div className="mt-4 grid gap-4 lg:grid-cols-2">
+                        <div>
+                          <h4 className="text-sm font-semibold text-foreground">
+                            Minimal supplies
+                          </h4>
+                          <ul className="mt-2 space-y-1 text-sm text-muted-foreground">
+                            {kit.supplies.map((item) => (
+                              <li key={item} className="flex gap-2">
+                                <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-foreground" />
+                                <span>{item}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                        <div>
+                          <h4 className="text-sm font-semibold text-foreground">
+                            First experiment
+                          </h4>
+                          <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                            {kit.firstExperiment}
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="mt-4 rounded-lg border border-border bg-card/40 p-4">
+                        <p className="text-sm font-semibold text-muted-foreground/60">
+                          Keep going if
+                        </p>
+                        <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
+                          {kit.successSignal}
+                        </p>
+                        <p className="mt-3 text-sm font-semibold text-muted-foreground/60">
+                          Next upgrade
+                        </p>
+                        <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
+                          {kit.upgradePath}
+                        </p>
+                      </div>
+
+                      <div className="mt-4 flex flex-wrap gap-2">
+                        {kit.relatedHobbies.map((hobby) => (
+                          <Link
+                            key={hobby}
+                            href={`/hobbies/${hobbySlug(hobby)}`}
+                            className="rounded-full border border-border px-3 py-1 text-xs font-medium text-muted-foreground transition-colors hover:border-foreground/30 hover:text-foreground"
+                            prefetch={false}
+                          >
+                            {hobby}
+                          </Link>
                         ))}
-                      </ul>
-                    </div>
-                    <div>
-                      <h4 className="text-sm font-semibold text-foreground">First experiment</h4>
-                      <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-                        {kit.firstExperiment}
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="mt-4 rounded-lg border border-border bg-card/40 p-4">
-                    <p className="text-sm font-semibold text-muted-foreground/60">Keep going if</p>
-                    <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
-                      {kit.successSignal}
-                    </p>
-                    <p className="mt-3 text-sm font-semibold text-muted-foreground/60">
-                      Next upgrade
-                    </p>
-                    <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
-                      {kit.upgradePath}
-                    </p>
-                  </div>
-
-                  <div className="mt-4 flex flex-wrap gap-2">
-                    {kit.relatedHobbies.map((hobby) => (
-                      <Link
-                        key={hobby}
-                        href={`/hobbies/${hobbySlug(hobby)}`}
-                        className="rounded-full border border-border px-3 py-1 text-xs font-medium text-muted-foreground transition-colors hover:border-foreground/30 hover:text-foreground"
-                        prefetch={false}
-                      >
-                        {hobby}
-                      </Link>
-                    ))}
-                  </div>
-                </article>
+                      </div>
+                    </article>
+                  </CardHoverEffect>
+                </StaggerItem>
               ))}
-            </div>
+            </StaggerContainer>
           </section>
         ))}
       </div>
 
-      <section className="mt-12 rounded-xl border border-foreground/20 bg-foreground/10 p-6 text-center">
-        <h2 className="text-xl font-bold text-foreground">Want a more personal shortlist?</h2>
-        <p className="mx-auto mt-2 max-w-2xl text-sm leading-relaxed text-muted-foreground">
-          Take the hobby quiz first, then use the starter kit closest to your recommended hobby as a
-          low-risk experiment.
-        </p>
-        <Link
-          href="/find-your-hobby"
-          className="mt-4 inline-flex rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground transition-colors hover:opacity-90"
+      <FadeIn className="relative mt-12" delay={0.1}>
+        <SpotlightCard
+          className="rounded-xl border-foreground/20 bg-foreground/10 shadow-soft"
+          innerClassName="p-6 text-center"
         >
-          Take the quiz
-        </Link>
-      </section>
+          <h2 className="text-xl font-bold text-foreground">Want a more personal shortlist?</h2>
+          <p className="mx-auto mt-2 max-w-2xl text-sm leading-relaxed text-muted-foreground">
+            Take the hobby quiz first, then use the starter kit closest to your recommended hobby as
+            a low-risk experiment.
+          </p>
+          <Link
+            href="/find-your-hobby"
+            className="mt-4 inline-flex rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground transition-colors hover:opacity-90"
+          >
+            Take the quiz
+          </Link>
+        </SpotlightCard>
+      </FadeIn>
     </div>
   );
 }

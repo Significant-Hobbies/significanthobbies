@@ -3,6 +3,7 @@ import { ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 
+import { FadeIn, SpotlightCard } from '~/components/aceternity';
 import { users } from '~/db/schema';
 import { getServerAuthSession } from '~/server/auth';
 import { db } from '~/server/db';
@@ -35,7 +36,7 @@ export default async function SettingsPage() {
   if (!user) redirect('/login');
 
   return (
-    <div className="mx-auto max-w-xl px-4 py-12">
+    <FadeIn className="mx-auto max-w-xl px-4 py-12">
       {/* Back link */}
       {user.username && (
         <Link
@@ -49,7 +50,7 @@ export default async function SettingsPage() {
 
       <h1 className="mb-8 text-2xl font-bold text-foreground">Settings</h1>
 
-      <div className="rounded-2xl border border-border bg-card p-6 shadow-sm">
+      <SpotlightCard className="shadow-soft" innerClassName="p-6">
         <h2 className="mb-5 text-base font-semibold text-foreground">Edit profile</h2>
         <ProfileForm
           initialName={user.name ?? ''}
@@ -57,7 +58,7 @@ export default async function SettingsPage() {
           initialWebsite={user.website ?? ''}
           username={user.username ?? ''}
         />
-      </div>
-    </div>
+      </SpotlightCard>
+    </FadeIn>
   );
 }

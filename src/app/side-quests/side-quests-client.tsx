@@ -4,6 +4,16 @@ import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { Suspense, useCallback, useEffect, useMemo, useState } from 'react';
 
+import {
+  BorderBeam,
+  FadeIn,
+  GridBackground,
+  NumberTicker,
+  StaggerContainer,
+  StaggerItem,
+  SpotlightCard,
+  TextGenerateEffect,
+} from '~/components/aceternity';
 import { AccountabilityCircles } from '~/components/accountability-circles';
 import { useQuestProgress } from '~/hooks/use-quest-progress';
 import { getBadgeById } from '~/lib/badges';
@@ -118,7 +128,8 @@ function QuestCard({
   }, [quest.id]);
 
   return (
-    <div className="mx-auto w-full max-w-lg rounded-2xl border border-border bg-card p-8 shadow-sm transition-all">
+    <SpotlightCard className="mx-auto w-full max-w-lg shadow-soft" innerClassName="p-8">
+      {isCompleted && <BorderBeam />}
       {/* Emoji */}
       <div className="mb-5 text-center text-6xl">{quest.emoji}</div>
 
@@ -196,7 +207,7 @@ function QuestCard({
           </button>
         )}
       </div>
-    </div>
+    </SpotlightCard>
   );
 }
 
@@ -238,9 +249,11 @@ function ProgressBar({ completed, total }: { completed: number; total: number })
     <div className="mb-8">
       <div className="mb-2 flex items-center justify-between text-sm">
         <span className="font-medium text-foreground">
-          {completed} / {total} completed
+          <NumberTicker value={completed} /> / {total} completed
         </span>
-        <span className="text-muted-foreground/60">{pct}%</span>
+        <span className="text-muted-foreground/60">
+          <NumberTicker value={pct} />%
+        </span>
       </div>
       <div className="h-3 w-full overflow-hidden rounded-full bg-foreground/5">
         <div
@@ -417,14 +430,15 @@ function SideQuestsInner() {
     <div className="min-h-screen bg-background">
       {/* Hero */}
       <section className="relative overflow-hidden px-4 py-20 sm:py-28">
-        <div className="relative mx-auto max-w-5xl text-center">
+        <GridBackground />
+        <FadeIn className="relative mx-auto max-w-5xl text-center">
           <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-foreground/20 bg-foreground/10 px-4 py-1.5 text-sm font-semibold text-foreground">
             <span className="h-1.5 w-1.5 rounded-full bg-foreground" />
             Side Quests
           </div>
 
           <h1 className="mb-4 text-4xl font-bold tracking-tight text-foreground sm:text-5xl md:text-6xl">
-            50 Quests to Make Life Interesting
+            <TextGenerateEffect words="50 Quests to Make Life Interesting" />
           </h1>
 
           <p className="mx-auto max-w-xl text-lg text-muted-foreground sm:text-xl">
@@ -440,7 +454,7 @@ function SideQuestsInner() {
               />
             ))}
           </div>
-        </div>
+        </FadeIn>
       </section>
 
       {/* Tab bar */}
@@ -587,107 +601,108 @@ function SideQuestsInner() {
                       <span className="text-xl">{cat.emoji}</span>
                       <h3 className="text-lg font-bold text-foreground">{cat.label}</h3>
                       <span className="text-sm text-muted-foreground/60">
-                        {catCompleted}/{quests.length} completed
+                        <NumberTicker value={catCompleted} />/{quests.length} completed
                       </span>
                     </div>
 
-                    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                    <StaggerContainer className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                       {quests.map((quest) => {
                         const done = isCompleted(quest.id);
                         const expanded = expandedCards.has(quest.id);
 
                         return (
-                          <div
-                            key={quest.id}
-                            className={`rounded-xl border bg-card transition-all ${
-                              done ? 'border-foreground/20 bg-foreground/10' : 'border-border'
-                            }`}
-                          >
-                            <div className="flex items-start gap-3 p-4">
-                              {/* Checkbox */}
-                              <button
-                                type="button"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  done ? uncompleteQuest(quest.id) : completeQuest(quest.id);
-                                }}
-                                className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded transition-all ${
-                                  done
-                                    ? 'bg-foreground text-primary-foreground'
-                                    : 'border-2 border-border hover:border-foreground/30'
-                                }`}
-                                aria-label={
-                                  done ? `Uncomplete ${quest.title}` : `Complete ${quest.title}`
-                                }
-                              >
-                                {done && (
-                                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-                                    <path
-                                      d="M2 6L5 9L10 3"
-                                      stroke="currentColor"
-                                      strokeWidth="2"
-                                      strokeLinecap="round"
-                                      strokeLinejoin="round"
-                                    />
-                                  </svg>
-                                )}
-                              </button>
-
-                              {/* Content */}
-                              <button
-                                type="button"
-                                onClick={() => toggleExpanded(quest.id)}
-                                className="flex-1 text-left"
-                              >
-                                <div className="flex items-center gap-2">
-                                  <span className="text-lg">{quest.emoji}</span>
-                                  <span
-                                    className={`font-medium ${
-                                      done
-                                        ? 'text-muted-foreground/60 line-through'
-                                        : 'text-foreground'
-                                    }`}
-                                  >
-                                    {quest.title}
-                                  </span>
-                                  <DifficultyDots difficulty={quest.difficulty} />
-                                </div>
-                              </button>
-                            </div>
-
-                            {/* Expanded details */}
-                            {expanded && (
-                              <div className="border-t border-border px-4 pb-4 pt-3">
-                                <p className="mb-3 text-sm leading-relaxed text-muted-foreground">
-                                  {quest.description}
-                                </p>
-                                <div className="flex flex-wrap items-center gap-2">
-                                  <span className="text-xs text-muted-foreground/60">
-                                    {quest.timeEstimate}
-                                  </span>
-                                  {quest.relatedHobbies.map((hobby) => (
-                                    <span
-                                      key={hobby}
-                                      className="rounded-full bg-foreground/5 px-2 py-0.5 text-xs text-muted-foreground"
-                                    >
-                                      {hobby}
-                                    </span>
-                                  ))}
-                                </div>
-                                <Link
-                                  href="/timeline/new"
-                                  className="mt-3 inline-flex items-center gap-1 text-xs font-semibold text-foreground hover:text-foreground"
-                                  prefetch={false}
+                          <StaggerItem key={quest.id}>
+                            <SpotlightCard
+                              className={`shadow-soft ${done ? 'border-foreground/20' : ''}`}
+                              innerClassName="p-0"
+                            >
+                              {done && <BorderBeam />}
+                              <div className="flex items-start gap-3 p-4">
+                                {/* Checkbox */}
+                                <button
+                                  type="button"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    done ? uncompleteQuest(quest.id) : completeQuest(quest.id);
+                                  }}
+                                  className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded transition-all ${
+                                    done
+                                      ? 'bg-foreground text-primary-foreground'
+                                      : 'border-2 border-border hover:border-foreground/30'
+                                  }`}
+                                  aria-label={
+                                    done ? `Uncomplete ${quest.title}` : `Complete ${quest.title}`
+                                  }
                                 >
-                                  Add to timeline
-                                  <span>&#8594;</span>
-                                </Link>
+                                  {done && (
+                                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                                      <path
+                                        d="M2 6L5 9L10 3"
+                                        stroke="currentColor"
+                                        strokeWidth="2"
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                      />
+                                    </svg>
+                                  )}
+                                </button>
+
+                                {/* Content */}
+                                <button
+                                  type="button"
+                                  onClick={() => toggleExpanded(quest.id)}
+                                  className="flex-1 text-left"
+                                >
+                                  <div className="flex items-center gap-2">
+                                    <span className="text-lg">{quest.emoji}</span>
+                                    <span
+                                      className={`font-medium ${
+                                        done
+                                          ? 'text-muted-foreground/60 line-through'
+                                          : 'text-foreground'
+                                      }`}
+                                    >
+                                      {quest.title}
+                                    </span>
+                                    <DifficultyDots difficulty={quest.difficulty} />
+                                  </div>
+                                </button>
                               </div>
-                            )}
-                          </div>
+
+                              {/* Expanded details */}
+                              {expanded && (
+                                <div className="border-t border-border px-4 pb-4 pt-3">
+                                  <p className="mb-3 text-sm leading-relaxed text-muted-foreground">
+                                    {quest.description}
+                                  </p>
+                                  <div className="flex flex-wrap items-center gap-2">
+                                    <span className="text-xs text-muted-foreground/60">
+                                      {quest.timeEstimate}
+                                    </span>
+                                    {quest.relatedHobbies.map((hobby) => (
+                                      <span
+                                        key={hobby}
+                                        className="rounded-full bg-foreground/5 px-2 py-0.5 text-xs text-muted-foreground"
+                                      >
+                                        {hobby}
+                                      </span>
+                                    ))}
+                                  </div>
+                                  <Link
+                                    href="/timeline/new"
+                                    className="mt-3 inline-flex items-center gap-1 text-xs font-semibold text-foreground hover:text-foreground"
+                                    prefetch={false}
+                                  >
+                                    Add to timeline
+                                    <span>&#8594;</span>
+                                  </Link>
+                                </div>
+                              )}
+                            </SpotlightCard>
+                          </StaggerItem>
                         );
                       })}
-                    </div>
+                    </StaggerContainer>
                   </div>
                 );
               })}

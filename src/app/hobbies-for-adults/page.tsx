@@ -1,6 +1,14 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 
+import {
+  FadeIn,
+  GridBackground,
+  SpotlightCard,
+  StaggerContainer,
+  StaggerItem,
+  TextGenerateEffect,
+} from '~/components/aceternity';
 import { JsonLd } from '~/components/json-ld';
 
 export const metadata: Metadata = {
@@ -226,7 +234,7 @@ const MAKING: Hobby[] = [
 
 function HobbyCard({ hobby }: { hobby: Hobby }) {
   return (
-    <li className="flex gap-4 rounded-lg border border-border bg-card p-4 hover:border-foreground/30 transition-colors">
+    <SpotlightCard className="shadow-soft" innerClassName="rounded-lg p-4">
       <div className="flex-1">
         <Link
           href={`/hobbies/${hobbySlug(hobby.name)}`}
@@ -237,20 +245,24 @@ function HobbyCard({ hobby }: { hobby: Hobby }) {
         </Link>
         <p className="mt-1 text-sm text-muted-foreground leading-relaxed">{hobby.desc}</p>
       </div>
-    </li>
+    </SpotlightCard>
   );
 }
 
 function Section({ title, hobbies, color }: { title: string; hobbies: Hobby[]; color: string }) {
   return (
-    <section className="mb-10">
-      <h2 className={`text-xl font-bold mb-4 ${color}`}>{title}</h2>
-      <ul className="space-y-3">
-        {hobbies.map((h) => (
-          <HobbyCard key={h.name} hobby={h} />
-        ))}
-      </ul>
-    </section>
+    <FadeIn className="mb-10">
+      <section className="mb-10">
+        <h2 className={`text-xl font-bold mb-4 ${color}`}>{title}</h2>
+        <StaggerContainer className="space-y-3">
+          {hobbies.map((h) => (
+            <StaggerItem key={h.name}>
+              <HobbyCard hobby={h} />
+            </StaggerItem>
+          ))}
+        </StaggerContainer>
+      </section>
+    </FadeIn>
   );
 }
 
@@ -301,59 +313,73 @@ export default function HobbiesForAdultsPage() {
         }}
       />
 
-      <div className="mb-6">
-        <Link href="/hobbies" className="text-sm text-muted-foreground hover:text-foreground">
-          ← Hobby Directory
-        </Link>
+      {/* Header */}
+      <div className="relative mb-8 overflow-hidden rounded-3xl border border-border/60">
+        <GridBackground variant="dots" size={22} />
+        <FadeIn className="relative p-6 sm:p-8">
+          <Link href="/hobbies" className="text-sm text-muted-foreground hover:text-foreground">
+            ← Hobby Directory
+          </Link>
+          <TextGenerateEffect
+            words="50 Best Hobbies for Adults — Find What Excites You"
+            className="mt-4 text-3xl font-bold text-foreground"
+          />
+        </FadeIn>
       </div>
 
-      <h1 className="text-3xl font-bold text-foreground mb-4">
-        50 Best Hobbies for Adults — Find What Excites You
-      </h1>
-      <p className="text-lg text-muted-foreground mb-8 leading-relaxed">
-        Most hobby lists are filler. This one isn&apos;t. We curated 50 hobbies across six
-        categories — Creative, Physical, Intellectual, Social, Outdoor, and Making — with real
-        context on what each one involves and why adults in particular find them rewarding. Scan the
-        categories, follow the links, find your next thing.
-      </p>
+      <FadeIn delay={0.1}>
+        <p className="text-lg text-muted-foreground mb-8 leading-relaxed">
+          Most hobby lists are filler. This one isn&apos;t. We curated 50 hobbies across six
+          categories — Creative, Physical, Intellectual, Social, Outdoor, and Making — with real
+          context on what each one involves and why adults in particular find them rewarding. Scan
+          the categories, follow the links, find your next thing.
+        </p>
+      </FadeIn>
 
       <Section title="Creative" hobbies={CREATIVE} color="text-purple-700" />
       <Section title="Physical" hobbies={PHYSICAL} color="text-foreground" />
 
-      <div className="my-8 rounded-xl bg-card/40 border border-border p-6">
-        <p className="text-muted-foreground text-sm leading-relaxed">
-          <strong className="text-foreground">Finding it hard to choose?</strong> Most adults
-          discover their best hobbies by experimenting freely, not by thinking hard. Give something
-          three sessions before deciding — the first one is always awkward.
-        </p>
-      </div>
+      <FadeIn className="my-8">
+        <SpotlightCard className="shadow-soft" innerClassName="rounded-xl p-6">
+          <p className="text-muted-foreground text-sm leading-relaxed">
+            <strong className="text-foreground">Finding it hard to choose?</strong> Most adults
+            discover their best hobbies by experimenting freely, not by thinking hard. Give
+            something three sessions before deciding — the first one is always awkward.
+          </p>
+        </SpotlightCard>
+      </FadeIn>
 
       <Section title="Intellectual" hobbies={INTELLECTUAL} color="text-blue-700" />
       <Section title="Social" hobbies={SOCIAL} color="text-orange-700" />
       <Section title="Outdoor" hobbies={OUTDOOR} color="text-teal-700" />
       <Section title="Making" hobbies={MAKING} color="text-foreground" />
 
-      <div className="mt-12 rounded-xl bg-foreground/10 border border-foreground/20 p-8 text-center">
-        <h2 className="text-xl font-bold text-foreground mb-2">Not sure which fits you best?</h2>
-        <p className="text-muted-foreground mb-4">
-          Take our 2-minute quiz — answer a few questions about your personality and schedule, and
-          get a shortlist tailored to you.
-        </p>
-        <Link
-          href="/find-your-hobby"
-          className="inline-flex rounded-lg bg-primary px-6 py-2.5 text-sm font-semibold text-primary-foreground hover:opacity-90 transition-colors"
+      <FadeIn className="mt-12">
+        <SpotlightCard
+          className="border-foreground/20 bg-foreground/10 shadow-soft"
+          innerClassName="rounded-xl p-8 text-center"
         >
-          Take the Quiz →
-        </Link>
-        <div className="mt-4">
+          <h2 className="text-xl font-bold text-foreground mb-2">Not sure which fits you best?</h2>
+          <p className="text-muted-foreground mb-4">
+            Take our 2-minute quiz — answer a few questions about your personality and schedule, and
+            get a shortlist tailored to you.
+          </p>
           <Link
-            href="/timeline/new"
-            className="text-sm text-muted-foreground/60 hover:text-muted-foreground transition-colors"
+            href="/find-your-hobby"
+            className="inline-flex rounded-lg bg-primary px-6 py-2.5 text-sm font-semibold text-primary-foreground hover:opacity-90 transition-colors"
           >
-            Already have hobbies? Build your hobby timeline →
+            Take the Quiz →
           </Link>
-        </div>
-      </div>
+          <div className="mt-4">
+            <Link
+              href="/timeline/new"
+              className="text-sm text-muted-foreground/60 hover:text-muted-foreground transition-colors"
+            >
+              Already have hobbies? Build your hobby timeline →
+            </Link>
+          </div>
+        </SpotlightCard>
+      </FadeIn>
     </div>
   );
 }

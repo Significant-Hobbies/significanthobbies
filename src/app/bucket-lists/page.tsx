@@ -1,6 +1,15 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 
+import {
+  CardHoverEffect,
+  FadeIn,
+  GridBackground,
+  SpotlightCard,
+  StaggerContainer,
+  StaggerItem,
+  TextGenerateEffect,
+} from '~/components/aceternity';
 import { Lumi } from '~/components/lumi';
 import { BUCKET_ITEM_CATEGORIES, FAMOUS_BUCKET_LISTS } from '~/lib/famous-bucket-lists';
 
@@ -43,52 +52,57 @@ export default function BucketListsPage() {
   return (
     <main className="bg-card">
       {/* ── Hero ─────────────────────────────────────────────────────────── */}
-      <section className="bg-card pt-20 pb-16 px-4">
-        <div className="mx-auto max-w-4xl">
-          <div className="flex flex-col sm:flex-row items-center sm:items-start gap-8">
-            {/* Lumi left-aligned */}
-            <div className="shrink-0">
-              <Lumi size={100} glow float />
-            </div>
-            {/* Headline block */}
-            <div className="space-y-5 text-center sm:text-left">
-              <p className="text-primary text-sm font-semibold">Guided by Lumi</p>
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold leading-[1.08] tracking-tight text-foreground text-balance">
-                Your bucket list is a <span className="text-primary">love letter</span> to your
-                future self.
-              </h1>
-              <p className="text-muted-foreground text-lg max-w-xl leading-relaxed">
-                The world&apos;s most remarkable people have written theirs down. Browse their lists
-                — then build yours.
-              </p>
-              <div className="flex flex-wrap gap-4 justify-center sm:justify-start">
-                <Link
-                  href="/dashboard"
-                  className="inline-flex items-center gap-2 rounded-full bg-primary px-8 py-3.5 text-sm font-bold text-foreground hover:bg-lumi-600 active:scale-95 transition-all duration-150 shadow-md"
-                >
-                  ✨ Start my list
-                </Link>
-                <a
-                  href="#lists"
-                  className="inline-flex items-center gap-2 rounded-full border border-border px-8 py-3.5 text-sm font-medium text-muted-foreground hover:border-primary hover:text-primary transition-colors duration-200"
-                >
-                  Browse famous lists ↓
-                </a>
+      <section className="relative bg-card pt-20 pb-16 px-4">
+        <GridBackground />
+        <div className="relative mx-auto max-w-4xl">
+          <FadeIn>
+            <div className="flex flex-col sm:flex-row items-center sm:items-start gap-8">
+              {/* Lumi left-aligned */}
+              <div className="shrink-0">
+                <Lumi size={100} glow float />
+              </div>
+              {/* Headline block */}
+              <div className="space-y-5 text-center sm:text-left">
+                <p className="text-primary text-sm font-semibold">Guided by Lumi</p>
+                <TextGenerateEffect
+                  words="Your bucket list is a love letter to your future self."
+                  className="text-4xl sm:text-5xl lg:text-6xl font-bold leading-[1.08] tracking-tight text-foreground text-balance"
+                />
+                <p className="text-muted-foreground text-lg max-w-xl leading-relaxed">
+                  The world&apos;s most remarkable people have written theirs down. Browse their
+                  lists — then build yours.
+                </p>
+                <div className="flex flex-wrap gap-4 justify-center sm:justify-start">
+                  <Link
+                    href="/dashboard"
+                    className="inline-flex items-center gap-2 rounded-full bg-primary px-8 py-3.5 text-sm font-bold text-foreground hover:bg-lumi-600 active:scale-95 transition-all duration-150 shadow-md"
+                  >
+                    ✨ Start my list
+                  </Link>
+                  <a
+                    href="#lists"
+                    className="inline-flex items-center gap-2 rounded-full border border-border px-8 py-3.5 text-sm font-medium text-muted-foreground hover:border-primary hover:text-primary transition-colors duration-200"
+                  >
+                    Browse famous lists ↓
+                  </a>
+                </div>
               </div>
             </div>
-          </div>
+          </FadeIn>
 
           {/* Category pills */}
-          <div className="flex flex-wrap gap-2 justify-center mt-10">
-            {Object.entries(BUCKET_ITEM_CATEGORIES).map(([key, { label, emoji }]) => (
-              <span
-                key={key}
-                className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card/40 px-3 py-1 text-xs text-muted-foreground"
-              >
-                {emoji} {label}
-              </span>
-            ))}
-          </div>
+          <FadeIn delay={0.2}>
+            <div className="flex flex-wrap gap-2 justify-center mt-10">
+              {Object.entries(BUCKET_ITEM_CATEGORIES).map(([key, { label, emoji }]) => (
+                <span
+                  key={key}
+                  className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card/40 px-3 py-1 text-xs text-muted-foreground"
+                >
+                  {emoji} {label}
+                </span>
+              ))}
+            </div>
+          </FadeIn>
         </div>
       </section>
 
@@ -119,16 +133,18 @@ export default function BucketListsPage() {
       {/* ── Person grid ──────────────────────────────────────────────────── */}
       <section id="lists" className="bg-card pb-24 pt-16">
         <div className="mx-auto max-w-5xl px-4 space-y-10">
-          <div className="text-center space-y-3">
-            <h2 className="text-3xl sm:text-4xl font-bold text-foreground text-balance">
-              Famous bucket lists
-            </h2>
-            <p className="text-muted-foreground text-base max-w-md mx-auto">
-              Click any person to see their full list — and borrow items for yours.
-            </p>
-          </div>
+          <FadeIn>
+            <div className="text-center space-y-3">
+              <h2 className="text-3xl sm:text-4xl font-bold text-foreground text-balance">
+                Famous bucket lists
+              </h2>
+              <p className="text-muted-foreground text-base max-w-md mx-auto">
+                Click any person to see their full list — and borrow items for yours.
+              </p>
+            </div>
+          </FadeIn>
 
-          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          <StaggerContainer className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {FAMOUS_BUCKET_LISTS.map((person) => {
               const done = person.items.filter((i) => i.status === 'done').length;
               const total = person.items.length;
@@ -144,87 +160,104 @@ export default function BucketListsPage() {
               const offset = circ * (1 - pct / 100);
 
               return (
-                <Link
-                  key={person.slug}
-                  href={`/bucket-lists/${person.slug}`}
-                  className={`group relative flex flex-col rounded-2xl border border-border bg-card p-6 shadow-sm hover:shadow-md ${borderHover} hover:-translate-y-1 transition-all duration-200 overflow-hidden`}
-                  prefetch={false}
-                >
-                  <div className="flex items-start justify-between gap-3 mb-4">
-                    <span className="text-4xl leading-none">{person.emoji}</span>
-                    {/* Circular progress — 60px */}
-                    <svg width="60" height="60" viewBox="0 0 60 60" className="shrink-0 -rotate-90">
-                      <circle cx="30" cy="30" r={r} fill="none" stroke="#f5f5f4" strokeWidth="4" />
-                      <circle
-                        cx="30"
-                        cy="30"
-                        r={r}
-                        fill="none"
-                        strokeWidth="4"
-                        strokeLinecap="round"
-                        strokeDasharray={circ}
-                        strokeDashoffset={offset}
-                        className="stroke-primary transition-all duration-700"
-                      />
-                      <text
-                        x="30"
-                        y="30"
-                        textAnchor="middle"
-                        dominantBaseline="middle"
-                        style={{
-                          fontSize: '11px',
-                          fill: '#78716c',
-                          fontWeight: 600,
-                          transform: 'rotate(90deg)',
-                          transformOrigin: '30px 30px',
-                        }}
-                      >
-                        {pct}%
-                      </text>
-                    </svg>
-                  </div>
-
-                  <h2 className="text-lg font-bold text-foreground group-hover:text-primary transition-colors leading-snug">
-                    {person.name}
-                  </h2>
-                  <p className="mt-1 text-sm text-muted-foreground line-clamp-2 flex-1 leading-relaxed">
-                    {person.knownFor}
-                  </p>
-
-                  {/* Top 2 items preview */}
-                  <ul className="mt-5 space-y-2">
-                    {person.items.slice(0, 2).map((item, i) => (
-                      <li
-                        key={i}
-                        className="flex items-center gap-2.5 text-sm text-muted-foreground"
-                      >
-                        <span
-                          className={`h-3.5 w-3.5 shrink-0 rounded-full border-2 ${
-                            item.status === 'done' ? 'border-primary bg-primary' : 'border-border'
-                          }`}
-                        />
-                        <span
-                          className={
-                            item.status === 'done' ? 'line-through text-muted-foreground' : ''
-                          }
+                <StaggerItem key={person.slug}>
+                  <CardHoverEffect className="h-full">
+                    <Link
+                      href={`/bucket-lists/${person.slug}`}
+                      className={`group relative flex h-full flex-col rounded-2xl border border-border bg-card p-6 shadow-soft ${borderHover} hover:-translate-y-1 transition-all duration-200 overflow-hidden`}
+                      prefetch={false}
+                    >
+                      <div className="flex items-start justify-between gap-3 mb-4">
+                        <span className="text-4xl leading-none">{person.emoji}</span>
+                        {/* Circular progress — 60px */}
+                        <svg
+                          width="60"
+                          height="60"
+                          viewBox="0 0 60 60"
+                          className="shrink-0 -rotate-90"
                         >
-                          {item.title.length > 46 ? `${item.title.slice(0, 46)}…` : item.title}
-                        </span>
-                      </li>
-                    ))}
-                    {total > 2 && (
-                      <li className="text-xs text-muted-foreground pl-6">+{total - 2} more</li>
-                    )}
-                  </ul>
+                          <circle
+                            cx="30"
+                            cy="30"
+                            r={r}
+                            fill="none"
+                            stroke="#f5f5f4"
+                            strokeWidth="4"
+                          />
+                          <circle
+                            cx="30"
+                            cy="30"
+                            r={r}
+                            fill="none"
+                            strokeWidth="4"
+                            strokeLinecap="round"
+                            strokeDasharray={circ}
+                            strokeDashoffset={offset}
+                            className="stroke-primary transition-all duration-700"
+                          />
+                          <text
+                            x="30"
+                            y="30"
+                            textAnchor="middle"
+                            dominantBaseline="middle"
+                            style={{
+                              fontSize: '11px',
+                              fill: '#78716c',
+                              fontWeight: 600,
+                              transform: 'rotate(90deg)',
+                              transformOrigin: '30px 30px',
+                            }}
+                          >
+                            {pct}%
+                          </text>
+                        </svg>
+                      </div>
 
-                  {/* Hover CTA */}
-                  <div className="mt-5 text-sm font-semibold text-primary opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-                    View list →
-                  </div>
-                </Link>
+                      <h2 className="text-lg font-bold text-foreground group-hover:text-primary transition-colors leading-snug">
+                        {person.name}
+                      </h2>
+                      <p className="mt-1 text-sm text-muted-foreground line-clamp-2 flex-1 leading-relaxed">
+                        {person.knownFor}
+                      </p>
+
+                      {/* Top 2 items preview */}
+                      <ul className="mt-5 space-y-2">
+                        {person.items.slice(0, 2).map((item, i) => (
+                          <li
+                            key={i}
+                            className="flex items-center gap-2.5 text-sm text-muted-foreground"
+                          >
+                            <span
+                              className={`h-3.5 w-3.5 shrink-0 rounded-full border-2 ${
+                                item.status === 'done'
+                                  ? 'border-primary bg-primary'
+                                  : 'border-border'
+                              }`}
+                            />
+                            <span
+                              className={
+                                item.status === 'done' ? 'line-through text-muted-foreground' : ''
+                              }
+                            >
+                              {item.title.length > 46 ? `${item.title.slice(0, 46)}…` : item.title}
+                            </span>
+                          </li>
+                        ))}
+                        {total > 2 && (
+                          <li className="text-xs text-muted-foreground pl-6">+{total - 2} more</li>
+                        )}
+                      </ul>
+
+                      {/* Hover CTA */}
+                      <div className="mt-5 text-sm font-semibold text-primary opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                        View list →
+                      </div>
+                    </Link>
+                  </CardHoverEffect>
+                </StaggerItem>
               );
             })}
-          </div>
+          </StaggerContainer>
         </div>
       </section>
 

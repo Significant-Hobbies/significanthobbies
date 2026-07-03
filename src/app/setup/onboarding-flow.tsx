@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useCallback, useRef, useState } from 'react';
 import { toast } from 'sonner';
 
+import { BorderBeam, FadeIn, GradientMesh, SpotlightCard } from '~/components/aceternity';
 import { setUsername } from '~/lib/actions/user';
 
 type OnboardingUser = {
@@ -104,9 +105,10 @@ export function OnboardingFlow({ user }: { user: OnboardingUser }) {
   }, []);
 
   return (
-    <div className="relative flex min-h-screen items-center justify-center px-4 py-12">
-      <div key={step} className="animate-step-in w-full max-w-md">
-        <div className="rounded-xl border border-border bg-card px-5 py-8 sm:px-8 sm:py-10">
+    <div className="relative flex min-h-screen items-center justify-center overflow-hidden px-4 py-12">
+      <GradientMesh />
+      <FadeIn key={step} className="relative w-full max-w-md">
+        <SpotlightCard className="shadow-soft" innerClassName="px-5 py-8 sm:px-8 sm:py-10">
           {/* ══ Step 0: Welcome ═══════════════════════════════════════ */}
           {step === 0 && (
             <div className="flex flex-col items-center text-center">
@@ -378,8 +380,8 @@ export function OnboardingFlow({ user }: { user: OnboardingUser }) {
               </p>
             </div>
           )}
-        </div>
-      </div>
+        </SpotlightCard>
+      </FadeIn>
     </div>
   );
 }

@@ -4,6 +4,15 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
+import {
+  BorderBeam,
+  FadeIn,
+  GradientMesh,
+  NumberTicker,
+  SpotlightCard,
+  StaggerContainer,
+  StaggerItem,
+} from '~/components/aceternity';
 import { BadgeCollection } from '~/components/badge-collection';
 import { CommitmentCard } from '~/components/commitments/commitment-card';
 import { FollowButton } from '~/components/follow-button';
@@ -167,135 +176,147 @@ export default async function ProfilePage({ params }: Props) {
     .map(([name]) => name);
 
   return (
-    <div className="mx-auto max-w-4xl px-4 py-12">
+    <div className="relative mx-auto max-w-4xl px-4 py-12">
+      <GradientMesh />
       {/* Profile header */}
-      <div className="scroll-reveal mb-8 flex items-start gap-5 flex-wrap">
-        {/* Avatar with optional owner glow */}
-        <div
-          className={
-            isOwner
-              ? 'rounded-full p-0.5 bg-gradient-to-br from-foreground/40 via-foreground/20 to-transparent ring-2 ring-foreground/30 shadow-[0_0_18px_2px_oklch(0.82_0.13_88/0.15)]'
-              : ''
-          }
-        >
-          {user.image ? (
-            <Image
-              src={user.image}
-              alt={user.name ?? 'Avatar'}
-              width={72}
-              height={72}
-              className="rounded-full border-2 border-border"
-            />
-          ) : (
-            <div className="h-[72px] w-[72px] rounded-full bg-foreground/5 border-2 border-border flex items-center justify-center text-2xl font-bold text-muted-foreground">
-              {(user.name ?? username).charAt(0).toUpperCase()}
-            </div>
-          )}
-        </div>
-
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2 flex-wrap">
-            <h1 className="text-2xl font-bold text-foreground">{user.name ?? username}</h1>
-            {isOwner && (
-              <Link
-                href="/settings"
-                className="inline-flex items-center gap-1 text-xs text-muted-foreground/60 hover:text-foreground transition-colors"
+      <FadeIn className="relative mb-8">
+        <SpotlightCard className="shadow-soft" innerClassName="p-6">
+          <div className="relative overflow-hidden rounded-xl">
+            <BorderBeam size={200} duration={15} />
+            <div className="flex items-start gap-5 flex-wrap">
+              {/* Avatar with optional owner glow */}
+              <div
+                className={
+                  isOwner
+                    ? 'rounded-full p-0.5 bg-gradient-to-br from-foreground/40 via-foreground/20 to-transparent ring-2 ring-foreground/30 shadow-[0_0_18px_2px_oklch(0.82_0.13_88/0.15)]'
+                    : ''
+                }
               >
-                <Pencil className="h-3 w-3" />
-                Edit profile
-              </Link>
-            )}
-          </div>
-          <p className="text-muted-foreground">@{user.username}</p>
+                {user.image ? (
+                  <Image
+                    src={user.image}
+                    alt={user.name ?? 'Avatar'}
+                    width={72}
+                    height={72}
+                    className="rounded-full border-2 border-border"
+                  />
+                ) : (
+                  <div className="h-[72px] w-[72px] rounded-full bg-foreground/5 border-2 border-border flex items-center justify-center text-2xl font-bold text-muted-foreground">
+                    {(user.name ?? username).charAt(0).toUpperCase()}
+                  </div>
+                )}
+              </div>
 
-          {/* Bio */}
-          {user.bio && (
-            <p className="mt-2 text-sm text-muted-foreground italic leading-relaxed max-w-md">
-              {user.bio}
-            </p>
-          )}
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <h1 className="font-serif text-2xl font-semibold text-foreground">
+                    {user.name ?? username}
+                  </h1>
+                  {isOwner && (
+                    <Link
+                      href="/settings"
+                      className="inline-flex items-center gap-1 text-xs text-muted-foreground/60 hover:text-foreground transition-colors"
+                    >
+                      <Pencil className="h-3 w-3" />
+                      Edit profile
+                    </Link>
+                  )}
+                </div>
+                <p className="text-muted-foreground">@{user.username}</p>
 
-          {/* Website */}
-          {user.website && (
-            <a
-              href={user.website}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mt-1.5 inline-flex items-center gap-1 text-xs text-foreground hover:text-foreground hover:underline transition-colors"
-            >
-              <ExternalLink className="h-3 w-3" />
-              {user.website.replace(/^https?:\/\//, '')}
-            </a>
-          )}
+                {/* Bio */}
+                {user.bio && (
+                  <p className="mt-2 text-sm text-muted-foreground italic leading-relaxed max-w-md">
+                    {user.bio}
+                  </p>
+                )}
 
-          {/* Stats bar */}
-          <div className="mt-3 flex flex-wrap gap-2">
-            <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card/40 px-3 py-1 text-xs text-foreground">
-              <span className="text-foreground font-semibold">{timelineList.length}</span>
-              <span className="text-muted-foreground">
-                timeline{timelineList.length !== 1 ? 's' : ''}
-              </span>
-            </span>
-            <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card/40 px-3 py-1 text-xs text-foreground">
-              <span className="text-foreground font-semibold">{allHobbies.length}</span>
-              <span className="text-muted-foreground">
-                unique hobbie{allHobbies.length !== 1 ? 's' : ''}
-              </span>
-            </span>
-            <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card/40 px-3 py-1 text-xs text-foreground">
-              <span className="text-foreground font-semibold">{totalPhases}</span>
-              <span className="text-muted-foreground">phase{totalPhases !== 1 ? 's' : ''}</span>
-            </span>
-            <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card/40 px-3 py-1 text-xs text-foreground">
-              <span className="text-foreground font-semibold">{followerCount}</span>
-              <span className="text-muted-foreground">
-                follower{followerCount !== 1 ? 's' : ''}
-              </span>
-            </span>
-            <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card/40 px-3 py-1 text-xs text-foreground">
-              <span className="text-foreground font-semibold">{followingCount}</span>
-              <span className="text-muted-foreground">following</span>
-            </span>
-          </div>
+                {/* Website */}
+                {user.website && (
+                  <a
+                    href={user.website}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="mt-1.5 inline-flex items-center gap-1 text-xs text-foreground hover:text-foreground hover:underline transition-colors"
+                  >
+                    <ExternalLink className="h-3 w-3" />
+                    {user.website.replace(/^https?:\/\//, '')}
+                  </a>
+                )}
 
-          {/* Follow button (shown to non-owners) */}
-          {!isOwner && session?.user && (
-            <div className="mt-3">
-              <FollowButton
-                targetUserId={user.id}
-                initialFollowing={isFollowing}
-                initialCount={followerCount}
-                isOwnProfile={false}
-              />
+                {/* Stats bar */}
+                <div className="mt-3 flex flex-wrap gap-2">
+                  <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card/40 px-3 py-1 text-xs text-foreground">
+                    <NumberTicker value={timelineList.length} className="font-semibold" />
+                    <span className="text-muted-foreground">
+                      timeline{timelineList.length !== 1 ? 's' : ''}
+                    </span>
+                  </span>
+                  <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card/40 px-3 py-1 text-xs text-foreground">
+                    <NumberTicker value={allHobbies.length} className="font-semibold" />
+                    <span className="text-muted-foreground">
+                      unique hobbie{allHobbies.length !== 1 ? 's' : ''}
+                    </span>
+                  </span>
+                  <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card/40 px-3 py-1 text-xs text-foreground">
+                    <NumberTicker value={totalPhases} className="font-semibold" />
+                    <span className="text-muted-foreground">
+                      phase{totalPhases !== 1 ? 's' : ''}
+                    </span>
+                  </span>
+                  <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card/40 px-3 py-1 text-xs text-foreground">
+                    <NumberTicker value={followerCount} className="font-semibold" />
+                    <span className="text-muted-foreground">
+                      follower{followerCount !== 1 ? 's' : ''}
+                    </span>
+                  </span>
+                  <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card/40 px-3 py-1 text-xs text-foreground">
+                    <NumberTicker value={followingCount} className="font-semibold" />
+                    <span className="text-muted-foreground">following</span>
+                  </span>
+                </div>
+
+                {/* Follow button (shown to non-owners) */}
+                {!isOwner && session?.user && (
+                  <div className="mt-3">
+                    <FollowButton
+                      targetUserId={user.id}
+                      initialFollowing={isFollowing}
+                      initialCount={followerCount}
+                      isOwnProfile={false}
+                    />
+                  </div>
+                )}
+
+                {/* Prompt unauthenticated visitors to log in to follow */}
+                {!isOwner && !session?.user && (
+                  <div className="mt-3">
+                    <Link
+                      href="/login"
+                      className="inline-flex items-center gap-1.5 rounded-full bg-primary px-4 py-1.5 text-sm font-medium text-primary-foreground hover:opacity-90 transition-colors"
+                    >
+                      Follow
+                    </Link>
+                    <span className="ml-3 text-sm text-muted-foreground">
+                      <span className="font-semibold text-foreground">{followerCount}</span>{' '}
+                      {followerCount === 1 ? 'follower' : 'followers'}
+                    </span>
+                  </div>
+                )}
+              </div>
+
+              {isOwner && (
+                <Link href="/timeline/new">
+                  <Button className="bg-primary text-primary-foreground hover:opacity-90">
+                    <Plus className="mr-1.5 h-4 w-4" />
+                    New timeline
+                  </Button>
+                </Link>
+              )}
             </div>
-          )}
-
-          {/* Prompt unauthenticated visitors to log in to follow */}
-          {!isOwner && !session?.user && (
-            <div className="mt-3">
-              <Link
-                href="/login"
-                className="inline-flex items-center gap-1.5 rounded-full bg-primary px-4 py-1.5 text-sm font-medium text-primary-foreground hover:opacity-90 transition-colors"
-              >
-                Follow
-              </Link>
-              <span className="ml-3 text-sm text-muted-foreground">
-                <span className="font-semibold text-foreground">{followerCount}</span>{' '}
-                {followerCount === 1 ? 'follower' : 'followers'}
-              </span>
-            </div>
-          )}
-        </div>
-
-        {isOwner && (
-          <Link href="/timeline/new">
-            <Button className="bg-primary text-primary-foreground hover:opacity-90">
-              <Plus className="mr-1.5 h-4 w-4" />
-              New timeline
-            </Button>
-          </Link>
-        )}
-      </div>
+          </div>
+        </SpotlightCard>
+      </FadeIn>
 
       <div className="space-y-8">
         {/* Life in weeks — mortality frame */}
@@ -381,14 +402,16 @@ export default async function ProfilePage({ params }: Props) {
 
         {/* Timelines */}
         {timelineList.length > 0 ? (
-          <div className="scroll-reveal scroll-reveal-d2">
+          <FadeIn className="relative" delay={0.15}>
             <h2 className="mb-4 text-sm font-medium text-foreground">Timelines</h2>
-            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+            <StaggerContainer className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               {timelineList.map((t) => (
-                <TimelineCard key={t.id} timeline={t} showVisibility={isOwner} />
+                <StaggerItem key={t.id}>
+                  <TimelineCard timeline={t} showVisibility={isOwner} />
+                </StaggerItem>
               ))}
-            </div>
-          </div>
+            </StaggerContainer>
+          </FadeIn>
         ) : (
           <div className="rounded-xl border border-border bg-card/40 p-10 text-center">
             <p className="text-muted-foreground font-medium">

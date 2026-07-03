@@ -2,6 +2,14 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
+import {
+  BorderBeam,
+  FadeIn,
+  GradientMesh,
+  SpotlightCard,
+  StaggerContainer,
+  StaggerItem,
+} from '~/components/aceternity';
 import { FAMOUS_JOURNEYS } from '~/lib/famous-journeys';
 
 type Props = {
@@ -110,87 +118,99 @@ export default async function JourneyDetailPage({ params }: Props) {
 
       <div className="mx-auto max-w-3xl px-4 py-12">
         {/* Back link */}
-        <div className="mb-8">
+        <FadeIn className="mb-8">
           <Link
             href="/journeys"
             className="text-sm text-muted-foreground/60 transition-colors hover:text-muted-foreground"
           >
             ← Famous Hobby Journeys
           </Link>
-        </div>
+        </FadeIn>
 
         {/* Hero */}
-        <div className="scroll-reveal mb-10">
-          <div className="flex items-start gap-4">
-            <span className="text-5xl">{person.emoji}</span>
-            <div>
-              <h1 className="text-3xl font-bold text-foreground">
-                {person.name}&apos;s Hobby Journey
-              </h1>
-              <p className="mt-1 text-muted-foreground/60 text-sm">{person.born}</p>
-              <span className="mt-3 inline-block rounded-full border border-foreground/20 bg-foreground/10 px-3 py-1 text-xs font-semibold text-foreground">
-                {person.knownFor}
-              </span>
+        <div className="relative mb-10 overflow-hidden rounded-3xl border border-border/60">
+          <GradientMesh variant="gold" />
+          <FadeIn className="relative p-6 sm:p-8">
+            <div className="flex items-start gap-4">
+              <span className="text-5xl">{person.emoji}</span>
+              <div>
+                <h1 className="text-3xl font-bold text-foreground">
+                  {person.name}&apos;s Hobby Journey
+                </h1>
+                <p className="mt-1 text-muted-foreground/60 text-sm">{person.born}</p>
+                <span className="mt-3 inline-block rounded-full border border-foreground/20 bg-foreground/10 px-3 py-1 text-xs font-semibold text-foreground">
+                  {person.knownFor}
+                </span>
+              </div>
             </div>
-          </div>
+          </FadeIn>
         </div>
 
         {/* Phase timeline */}
-        <div className="scroll-reveal mb-10">
+        <FadeIn className="mb-10">
           <h2 className="mb-5 text-sm font-semibold text-muted-foreground/60">Hobby Timeline</h2>
-          <div className="space-y-4">
+          <StaggerContainer className="space-y-4">
             {person.phases.map((phase, idx) => {
               const colors = PHASE_COLORS[idx % PHASE_COLORS.length]!;
               return (
-                <div
-                  key={phase.label}
-                  className={`rounded-xl border ${colors.border} ${colors.bg} p-5`}
-                >
-                  <h3 className={`mb-3 text-sm font-bold ${colors.label}`}>{phase.label}</h3>
-                  <div className="flex flex-wrap gap-2">
-                    {phase.hobbies.map((hobby) => (
-                      <span
-                        key={hobby}
-                        className={`inline-block rounded-full px-3 py-1 text-xs font-medium ${colors.pill}`}
-                      >
-                        {hobby}
-                      </span>
-                    ))}
-                  </div>
-                </div>
+                <StaggerItem key={phase.label}>
+                  <SpotlightCard
+                    className={`${colors.border} ${colors.bg} shadow-soft`}
+                    innerClassName={`rounded-xl p-5`}
+                  >
+                    <h3 className={`mb-3 text-sm font-bold ${colors.label}`}>{phase.label}</h3>
+                    <div className="flex flex-wrap gap-2">
+                      {phase.hobbies.map((hobby) => (
+                        <span
+                          key={hobby}
+                          className={`inline-block rounded-full px-3 py-1 text-xs font-medium ${colors.pill}`}
+                        >
+                          {hobby}
+                        </span>
+                      ))}
+                    </div>
+                  </SpotlightCard>
+                </StaggerItem>
               );
             })}
-          </div>
-        </div>
+          </StaggerContainer>
+        </FadeIn>
 
         {/* Surprising hobbies */}
-        <div className="scroll-reveal mb-10">
+        <FadeIn className="mb-10">
           <h2 className="mb-4 text-lg font-bold text-foreground">Surprising hobbies</h2>
-          <div className="rounded-xl border border-border bg-card/40 p-5">
-            <ul className="space-y-3">
-              {person.surprisingHobbies.map((item) => (
-                <li key={item} className="flex items-start gap-3">
-                  <span className="mt-0.5 flex-shrink-0 text-foreground">✦</span>
-                  <span className="text-sm text-muted-foreground">{item}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
+          <SpotlightCard className="shadow-soft" innerClassName="rounded-xl p-5">
+            <StaggerContainer>
+              <ul className="space-y-3">
+                {person.surprisingHobbies.map((item) => (
+                  <StaggerItem key={item}>
+                    <li className="flex items-start gap-3">
+                      <span className="mt-0.5 flex-shrink-0 text-foreground">✦</span>
+                      <span className="text-sm text-muted-foreground">{item}</span>
+                    </li>
+                  </StaggerItem>
+                ))}
+              </ul>
+            </StaggerContainer>
+          </SpotlightCard>
+        </FadeIn>
 
         {/* How hobbies shaped their career */}
-        <div className="scroll-reveal mb-10">
+        <FadeIn className="mb-10">
           <h2 className="mb-4 text-lg font-bold text-foreground">
             How hobbies shaped their career
           </h2>
-          <div className="rounded-xl border border-foreground/20 bg-foreground/10 p-5">
+          <SpotlightCard
+            className="border-foreground/20 bg-foreground/10 shadow-soft"
+            innerClassName="rounded-xl p-5"
+          >
             <p className="text-sm leading-relaxed text-foreground">{person.hobbyInfluence}</p>
-          </div>
-        </div>
+          </SpotlightCard>
+        </FadeIn>
 
         {/* Quote */}
         {person.quote && (
-          <div className="scroll-reveal mb-10">
+          <FadeIn className="mb-10">
             <blockquote className="border-l-2 border-foreground/30 pl-5">
               <p className="text-base italic leading-relaxed text-muted-foreground">
                 &ldquo;{person.quote.text}&rdquo;
@@ -204,75 +224,80 @@ export default async function JourneyDetailPage({ params }: Props) {
                 <footer className="mt-2 text-sm text-muted-foreground/60">— {person.name}</footer>
               )}
             </blockquote>
-          </div>
+          </FadeIn>
         )}
 
         {/* Prev / Next journey navigation */}
         {(prevPerson || nextPerson) && (
-          <nav
-            aria-label="Famous journeys navigation"
-            className="scroll-reveal mb-8 grid grid-cols-1 gap-3 sm:grid-cols-2"
-          >
-            {prevPerson ? (
-              <Link
-                href={`/journeys/${prevPerson.slug}`}
-                className="group flex items-center gap-3 rounded-xl border border-border bg-card p-4 transition-all hover:-translate-y-0.5 hover:border-foreground/30 hover:shadow-sm"
-              >
-                <span className="text-2xl">{prevPerson.emoji}</span>
-                <div className="min-w-0 flex-1">
-                  <p className="text-[10px] font-semibold text-muted-foreground/60">
-                    ← Previous journey
-                  </p>
-                  <p className="truncate text-sm font-semibold text-foreground group-hover:text-foreground">
-                    {prevPerson.name}
-                  </p>
-                </div>
-              </Link>
-            ) : (
-              <div className="hidden sm:block" />
-            )}
-            {nextPerson ? (
-              <Link
-                href={`/journeys/${nextPerson.slug}`}
-                className="group flex items-center gap-3 rounded-xl border border-border bg-card p-4 text-right transition-all hover:-translate-y-0.5 hover:border-foreground/30 hover:shadow-sm sm:flex-row-reverse sm:text-right"
-              >
-                <span className="text-2xl">{nextPerson.emoji}</span>
-                <div className="min-w-0 flex-1">
-                  <p className="text-[10px] font-semibold text-muted-foreground/60">
-                    Next journey →
-                  </p>
-                  <p className="truncate text-sm font-semibold text-foreground group-hover:text-foreground">
-                    {nextPerson.name}
-                  </p>
-                </div>
-              </Link>
-            ) : (
-              <div className="hidden sm:block" />
-            )}
-          </nav>
+          <FadeIn className="mb-8">
+            <nav
+              aria-label="Famous journeys navigation"
+              className="grid grid-cols-1 gap-3 sm:grid-cols-2"
+            >
+              {prevPerson ? (
+                <Link
+                  href={`/journeys/${prevPerson.slug}`}
+                  className="group flex items-center gap-3 rounded-xl border border-border bg-card p-4 shadow-soft transition-all hover:-translate-y-0.5 hover:border-foreground/30"
+                >
+                  <span className="text-2xl">{prevPerson.emoji}</span>
+                  <div className="min-w-0 flex-1">
+                    <p className="text-[10px] font-semibold text-muted-foreground/60">
+                      ← Previous journey
+                    </p>
+                    <p className="truncate text-sm font-semibold text-foreground group-hover:text-foreground">
+                      {prevPerson.name}
+                    </p>
+                  </div>
+                </Link>
+              ) : (
+                <div className="hidden sm:block" />
+              )}
+              {nextPerson ? (
+                <Link
+                  href={`/journeys/${nextPerson.slug}`}
+                  className="group flex items-center gap-3 rounded-xl border border-border bg-card p-4 text-right transition-all hover:-translate-y-0.5 hover:border-foreground/30 hover:shadow-sm sm:flex-row-reverse sm:text-right shadow-soft"
+                >
+                  <span className="text-2xl">{nextPerson.emoji}</span>
+                  <div className="min-w-0 flex-1">
+                    <p className="text-[10px] font-semibold text-muted-foreground/60">
+                      Next journey →
+                    </p>
+                    <p className="truncate text-sm font-semibold text-foreground group-hover:text-foreground">
+                      {nextPerson.name}
+                    </p>
+                  </div>
+                </Link>
+              ) : (
+                <div className="hidden sm:block" />
+              )}
+            </nav>
+          </FadeIn>
         )}
 
         {/* CTA */}
-        <div className="scroll-reveal rounded-xl border border-border bg-foreground/10 p-6 text-center">
-          <h2 className="mb-2 text-base font-bold text-foreground">Map your own hobby journey</h2>
-          <p className="mb-4 text-sm text-muted-foreground">
-            What hobbies have shaped your life? Create your own timeline.
-          </p>
-          <Link
-            href="/timeline/new"
-            className="inline-flex items-center gap-1.5 rounded-full bg-primary px-6 py-2.5 text-sm font-semibold text-primary-foreground shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:opacity-90 hover:shadow-md"
-          >
-            Start your timeline →
-          </Link>
-          <div className="mt-4">
+        <FadeIn>
+          <div className="relative overflow-hidden rounded-xl border border-border bg-foreground/10 p-6 text-center shadow-soft">
+            <BorderBeam size={200} duration={12} />
+            <h2 className="mb-2 text-base font-bold text-foreground">Map your own hobby journey</h2>
+            <p className="mb-4 text-sm text-muted-foreground">
+              What hobbies have shaped your life? Create your own timeline.
+            </p>
             <Link
-              href="/journeys"
-              className="text-sm text-muted-foreground/60 transition-colors hover:text-muted-foreground"
+              href="/timeline/new"
+              className="inline-flex items-center gap-1.5 rounded-full bg-primary px-6 py-2.5 text-sm font-semibold text-primary-foreground shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:opacity-90 hover:shadow-md"
             >
-              ← See all famous journeys
+              Start your timeline →
             </Link>
+            <div className="mt-4">
+              <Link
+                href="/journeys"
+                className="text-sm text-muted-foreground/60 transition-colors hover:text-muted-foreground"
+              >
+                ← See all famous journeys
+              </Link>
+            </div>
           </div>
-        </div>
+        </FadeIn>
       </div>
     </>
   );

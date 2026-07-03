@@ -3,6 +3,13 @@ import { ArrowLeft, Pencil, User } from 'lucide-react';
 import Link from 'next/link';
 import { notFound, redirect } from 'next/navigation';
 
+import {
+  FadeIn,
+  GradientMesh,
+  SpotlightCard,
+  StaggerContainer,
+  StaggerItem,
+} from '~/components/aceternity';
 import { CommentsSectionWithOwn } from '~/components/timeline-view/comments-section';
 import { ExportButton } from '~/components/timeline-view/export-button';
 import { InsightsPanel } from '~/components/timeline-view/insights-panel';
@@ -153,7 +160,7 @@ export default async function TimelinePage({ params }: Props) {
   const breadcrumbLabel = timelineUser?.username ? `@${timelineUser.username}` : 'Home';
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-10">
+    <FadeIn className="mx-auto max-w-6xl px-4 py-10">
       {/* Breadcrumb */}
       <div className="mb-6">
         <Link
@@ -165,9 +172,10 @@ export default async function TimelinePage({ params }: Props) {
         </Link>
       </div>
 
-      {/* Header */}
-      <div className="mb-8 flex items-start justify-between gap-4 flex-wrap">
-        <div>
+      {/* Header with gradient mesh backdrop */}
+      <div className="relative mb-8 flex items-start justify-between gap-4 flex-wrap">
+        <GradientMesh />
+        <FadeIn className="relative">
           <h1 className="text-2xl font-bold text-foreground">
             {timeline.title ?? 'Hobby Timeline'}
           </h1>
@@ -180,16 +188,18 @@ export default async function TimelinePage({ params }: Props) {
               {timelineUser.username ? `@${timelineUser.username}` : timelineUser.name}
             </Link>
           )}
-          <div className="mt-2 flex items-center gap-2">
-            <Badge variant="outline" className="border-border text-xs text-muted-foreground">
-              {phases.length} phases
-            </Badge>
-            <Badge variant="outline" className="border-border text-xs text-muted-foreground">
-              {new Set(phases.flatMap((p) => p.hobbies.map((h) => h.name))).size} hobbies
-            </Badge>
-          </div>
-        </div>
-        <div className="flex items-center gap-2 flex-wrap">
+          <SpotlightCard className="mt-2 inline-flex shadow-soft" innerClassName="p-0">
+            <div className="flex items-center gap-2 px-3 py-1.5">
+              <Badge variant="outline" className="border-border text-xs text-muted-foreground">
+                {phases.length} phases
+              </Badge>
+              <Badge variant="outline" className="border-border text-xs text-muted-foreground">
+                {new Set(phases.flatMap((p) => p.hobbies.map((h) => h.name))).size} hobbies
+              </Badge>
+            </div>
+          </SpotlightCard>
+        </FadeIn>
+        <div className="relative flex items-center gap-2 flex-wrap">
           <LikeButton
             timelineId={timeline.id}
             initialLiked={isLiked}
@@ -225,7 +235,7 @@ export default async function TimelinePage({ params }: Props) {
       </div>
 
       {phases.length === 0 ? (
-        <div className="rounded-xl border border-border bg-card/40 p-12 text-center">
+        <div className="rounded-xl border border-border bg-card/40 p-12 text-center shadow-soft">
           <p className="text-muted-foreground">No phases yet.</p>
           {isOwner && (
             <Link href={`/timeline/${timeline.id}/edit`}>
@@ -236,23 +246,41 @@ export default async function TimelinePage({ params }: Props) {
           )}
         </div>
       ) : (
-        <div className="space-y-8">
-          <PhaseSwimlane phases={phases} pins={pins} />
-          <PersonalityCard phases={phases} />
-          <InsightsPanel phases={phases} />
-          {isOwner && <RediscoveryNudges phases={phases} />}
-          {isOwner && <RecommendationsPanel phases={phases} />}
-          <CommentsSectionWithOwn
-            timelineId={timeline.id}
-            initialComments={commentList}
-            currentUserId={currentUserId}
-            ownCommentIds={ownCommentIds}
-          />
-          {isOwner && versions.length > 0 && (
-            <VersionHistory versions={versions} currentPhases={phases} />
+        <StaggerContainer className="space-y-8">
+          <StaggerItem>
+            <PhaseSwimlane phases={phases} pins={pins} />
+          </StaggerItem>
+          <StaggerItem>
+            <PersonalityCard phases={phases} />
+          </StaggerItem>
+          <StaggerItem>
+            <InsightsPanel phases={phases} />
+          </StaggerItem>
+          {isOwner && (
+            <StaggerItem>
+              <RediscoveryNudges phases={phases} />
+            </StaggerItem>
           )}
-        </div>
+          {isOwner && (
+            <StaggerItem>
+              <RecommendationsPanel phases={phases} />
+            </StaggerItem>
+          )}
+          <StaggerItem>
+            <CommentsSectionWithOwn
+              timelineId={timeline.id}
+              initialComments={commentList}
+              currentUserId={currentUserId}
+              ownCommentIds={ownCommentIds}
+            />
+          </StaggerItem>
+          {isOwner && versions.length > 0 && (
+            <StaggerItem>
+              <VersionHistory versions={versions} currentPhases={phases} />
+            </StaggerItem>
+          )}
+        </StaggerContainer>
       )}
-    </div>
+    </FadeIn>
   );
 }

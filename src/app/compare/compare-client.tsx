@@ -4,6 +4,7 @@ import { ArrowRight, Search, User, UserCheck, Users, UsersRound, X } from 'lucid
 import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
 
+import { BorderBeam, SpotlightCard } from '~/components/aceternity';
 import { Input } from '~/components/ui/input';
 import { getCategoryForHobby } from '~/lib/hobbies';
 import { ALL_COMPARABLE_HOBBIES, HOBBY_DETAILS, type HobbyDetail } from '~/lib/hobby-details';
@@ -233,100 +234,106 @@ function ComparisonCard({ a, b }: { a: HobbyDetail; b: HobbyDetail }) {
   const catB = getCategoryForHobby(b.name);
 
   return (
-    <div className="mt-8 overflow-hidden rounded-2xl border border-border bg-card shadow-sm">
-      {/* Header */}
-      <div className="grid grid-cols-[1fr_auto_1fr] border-b border-border bg-card/40">
-        <div className="p-5 text-right">
-          <p className="text-2xl">{catA?.emoji}</p>
-          <p className="mt-1 text-lg font-bold text-foreground">{a.name}</p>
-          <p className="text-xs text-muted-foreground/60">{catA?.name ?? 'Hobby'}</p>
+    <SpotlightCard
+      className="mt-8 overflow-hidden rounded-2xl shadow-soft"
+      innerClassName="overflow-hidden"
+    >
+      <div className="relative overflow-hidden">
+        <BorderBeam size={200} duration={12} />
+        {/* Header */}
+        <div className="grid grid-cols-[1fr_auto_1fr] border-b border-border bg-card/40">
+          <div className="p-5 text-right">
+            <p className="text-2xl">{catA?.emoji}</p>
+            <p className="mt-1 text-lg font-bold text-foreground">{a.name}</p>
+            <p className="text-xs text-muted-foreground/60">{catA?.name ?? 'Hobby'}</p>
+          </div>
+          <div className="flex items-center justify-center px-4">
+            <span className="text-sm font-semibold text-muted-foreground/40">vs</span>
+          </div>
+          <div className="p-5 text-left">
+            <p className="text-2xl">{catB?.emoji}</p>
+            <p className="mt-1 text-lg font-bold text-foreground">{b.name}</p>
+            <p className="text-xs text-muted-foreground/60">{catB?.name ?? 'Hobby'}</p>
+          </div>
         </div>
-        <div className="flex items-center justify-center px-4">
-          <span className="text-sm font-semibold text-muted-foreground/40">vs</span>
-        </div>
-        <div className="p-5 text-left">
-          <p className="text-2xl">{catB?.emoji}</p>
-          <p className="mt-1 text-lg font-bold text-foreground">{b.name}</p>
-          <p className="text-xs text-muted-foreground/60">{catB?.name ?? 'Hobby'}</p>
-        </div>
-      </div>
 
-      {/* Rows */}
-      <div className="px-6 py-2">
-        <CompareRow
-          label="Cost"
-          left={<CostBadge cost={a.cost} />}
-          right={<CostBadge cost={b.cost} />}
-        />
-        <CompareRow
-          label="Time / session"
-          left={<span className="text-sm text-foreground">{a.timePerSession}</span>}
-          right={<span className="text-sm text-foreground">{b.timePerSession}</span>}
-        />
-        <CompareRow
-          label="Social"
-          left={<SocialIcon level={a.socialLevel} />}
-          right={<SocialIcon level={b.socialLevel} />}
-        />
-        <CompareRow
-          label="Difficulty"
-          left={<DifficultyDots level={a.difficulty} />}
-          right={<DifficultyDots level={b.difficulty} />}
-        />
-        <CompareRow
-          label="Physical"
-          left={<PhysicalBar level={a.physical} />}
-          right={<PhysicalBar level={b.physical} />}
-        />
-        <CompareRow
-          label="Location"
-          left={<LocationTags indoor={a.indoor} outdoor={a.outdoor} />}
-          right={<LocationTags indoor={b.indoor} outdoor={b.outdoor} />}
-        />
-        <CompareRow
-          label="Gear"
-          left={<span className="text-right text-sm text-muted-foreground">{a.gear}</span>}
-          right={<span className="text-sm text-muted-foreground">{b.gear}</span>}
-        />
-        <CompareRow
-          label="Best for"
-          left={
-            <span className="text-right text-sm italic text-muted-foreground">{a.bestFor}</span>
-          }
-          right={<span className="text-sm italic text-muted-foreground">{b.bestFor}</span>}
-        />
-      </div>
+        {/* Rows */}
+        <div className="px-6 py-2">
+          <CompareRow
+            label="Cost"
+            left={<CostBadge cost={a.cost} />}
+            right={<CostBadge cost={b.cost} />}
+          />
+          <CompareRow
+            label="Time / session"
+            left={<span className="text-sm text-foreground">{a.timePerSession}</span>}
+            right={<span className="text-sm text-foreground">{b.timePerSession}</span>}
+          />
+          <CompareRow
+            label="Social"
+            left={<SocialIcon level={a.socialLevel} />}
+            right={<SocialIcon level={b.socialLevel} />}
+          />
+          <CompareRow
+            label="Difficulty"
+            left={<DifficultyDots level={a.difficulty} />}
+            right={<DifficultyDots level={b.difficulty} />}
+          />
+          <CompareRow
+            label="Physical"
+            left={<PhysicalBar level={a.physical} />}
+            right={<PhysicalBar level={b.physical} />}
+          />
+          <CompareRow
+            label="Location"
+            left={<LocationTags indoor={a.indoor} outdoor={a.outdoor} />}
+            right={<LocationTags indoor={b.indoor} outdoor={b.outdoor} />}
+          />
+          <CompareRow
+            label="Gear"
+            left={<span className="text-right text-sm text-muted-foreground">{a.gear}</span>}
+            right={<span className="text-sm text-muted-foreground">{b.gear}</span>}
+          />
+          <CompareRow
+            label="Best for"
+            left={
+              <span className="text-right text-sm italic text-muted-foreground">{a.bestFor}</span>
+            }
+            right={<span className="text-sm italic text-muted-foreground">{b.bestFor}</span>}
+          />
+        </div>
 
-      {/* Footer */}
-      <div className="grid grid-cols-[1fr_auto_1fr] gap-3 border-t border-border bg-card/40 p-5">
-        <div className="flex justify-end">
-          <Link
-            href={`/hobbies/${toSlug(a.name)}`}
-            className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-card px-3.5 py-2 text-sm font-medium text-foreground hover:border-foreground/30 hover:text-foreground transition-colors"
-          >
-            {a.name} detail
-            <ArrowRight className="h-3.5 w-3.5" />
-          </Link>
-        </div>
-        <div className="flex items-center justify-center">
-          <Link
-            href="/timeline/new"
-            className="rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:opacity-90 transition-colors"
-          >
-            Try both
-          </Link>
-        </div>
-        <div className="flex justify-start">
-          <Link
-            href={`/hobbies/${toSlug(b.name)}`}
-            className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-card px-3.5 py-2 text-sm font-medium text-foreground hover:border-foreground/30 hover:text-foreground transition-colors"
-          >
-            {b.name} detail
-            <ArrowRight className="h-3.5 w-3.5" />
-          </Link>
+        {/* Footer */}
+        <div className="grid grid-cols-[1fr_auto_1fr] gap-3 border-t border-border bg-card/40 p-5">
+          <div className="flex justify-end">
+            <Link
+              href={`/hobbies/${toSlug(a.name)}`}
+              className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-card px-3.5 py-2 text-sm font-medium text-foreground hover:border-foreground/30 hover:text-foreground transition-colors"
+            >
+              {a.name} detail
+              <ArrowRight className="h-3.5 w-3.5" />
+            </Link>
+          </div>
+          <div className="flex items-center justify-center">
+            <Link
+              href="/timeline/new"
+              className="rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:opacity-90 transition-colors"
+            >
+              Try both
+            </Link>
+          </div>
+          <div className="flex justify-start">
+            <Link
+              href={`/hobbies/${toSlug(b.name)}`}
+              className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-card px-3.5 py-2 text-sm font-medium text-foreground hover:border-foreground/30 hover:text-foreground transition-colors"
+            >
+              {b.name} detail
+              <ArrowRight className="h-3.5 w-3.5" />
+            </Link>
+          </div>
         </div>
       </div>
-    </div>
+    </SpotlightCard>
   );
 }
 

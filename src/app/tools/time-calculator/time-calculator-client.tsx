@@ -3,6 +3,8 @@
 import Link from 'next/link';
 import { useMemo, useState } from 'react';
 
+import { BorderBeam, FadeIn, NumberTicker, SpotlightCard } from '~/components/aceternity';
+
 const TOTAL_HOURS = 168;
 
 interface SliderInput {
@@ -155,26 +157,26 @@ export function TimeCalculatorClient() {
     <div className="min-h-screen bg-background">
       {/* Hero */}
       <section className="relative overflow-hidden px-4 py-16 sm:py-24">
-        <div className="relative mx-auto max-w-2xl text-center">
+        <FadeIn className="relative mx-auto max-w-2xl text-center">
           <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-foreground/20 bg-foreground/10 px-4 py-1.5 text-sm font-semibold text-foreground">
             <span className="h-1.5 w-1.5 rounded-full bg-foreground" />
             Free Tool
           </div>
-          <h1 className="mb-4 text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
+          <h1 className="mb-4 font-serif text-4xl font-semibold tracking-tight text-foreground sm:text-5xl">
             Hobby Time Calculator
           </h1>
           <p className="mx-auto max-w-xl text-lg text-muted-foreground">
             Find out how many hours you actually have for hobbies each week — and where your time is
             really going.
           </p>
-        </div>
+        </FadeIn>
       </section>
 
       {/* Main content */}
       <section className="px-4 py-12">
-        <div className="mx-auto max-w-2xl space-y-8">
+        <FadeIn className="mx-auto max-w-2xl space-y-8">
           {/* Sliders */}
-          <div className="rounded-2xl border border-border bg-card p-6 shadow-sm sm:p-8">
+          <SpotlightCard className="rounded-2xl shadow-soft" innerClassName="p-6 sm:p-8">
             <h2 className="mb-6 text-lg font-bold text-foreground">Your weekly schedule</h2>
             <div className="space-y-6">
               {INPUTS.map((inp) => {
@@ -217,21 +219,22 @@ export function TimeCalculatorClient() {
                 );
               })}
             </div>
-          </div>
+          </SpotlightCard>
 
           {/* Big number result */}
           <div
-            className={`rounded-2xl border p-8 text-center shadow-sm ${
+            className={`relative overflow-hidden rounded-2xl border p-8 text-center shadow-soft ${
               overBudget
                 ? 'border-destructive/30 bg-destructive/10'
                 : 'border-foreground/20 bg-foreground/10'
             }`}
           >
+            <BorderBeam size={200} duration={10} />
             {overBudget ? (
               <>
                 <p className="mb-1 text-sm font-semibold text-destructive">Over budget</p>
                 <p className="text-5xl font-black text-destructive sm:text-6xl">
-                  {used - TOTAL_HOURS}h
+                  <NumberTicker value={used - TOTAL_HOURS} />h
                 </p>
                 <p className="mt-2 text-base font-medium text-destructive">
                   over 168 hours — try reducing some categories
@@ -241,7 +244,7 @@ export function TimeCalculatorClient() {
               <>
                 <p className="mb-1 text-sm font-semibold text-foreground">Your weekly hobby time</p>
                 <p className="text-6xl font-black text-foreground sm:text-7xl">
-                  {freeTime}
+                  <NumberTicker value={freeTime} />
                   <span className="text-3xl font-bold">h</span>
                 </p>
                 <p className="mt-2 text-base font-medium text-muted-foreground">
@@ -364,7 +367,7 @@ export function TimeCalculatorClient() {
               </Link>
             </div>
           </div>
-        </div>
+        </FadeIn>
       </section>
     </div>
   );

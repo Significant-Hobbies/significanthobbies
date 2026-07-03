@@ -1,6 +1,7 @@
 import { eq } from 'drizzle-orm';
 import type { Metadata } from 'next';
 
+import { FadeIn, GridBackground } from '~/components/aceternity';
 import { timelines, users } from '~/db/schema';
 import type { Phase } from '~/lib/types';
 import { parseJSONColumn } from '~/lib/utils';
@@ -64,14 +65,19 @@ export default async function CompareJourneysPage({ searchParams }: Props) {
   }
 
   return (
-    <div className="mx-auto max-w-5xl px-4 py-12">
-      <div className="mb-10">
-        <h1 className="text-3xl font-bold text-foreground">Compare hobby journeys</h1>
+    <div className="relative mx-auto max-w-5xl px-4 py-12">
+      <GridBackground variant="dots" size={22} />
+      <FadeIn className="relative mb-10">
+        <h1 className="font-serif text-3xl font-semibold text-foreground">
+          Compare hobby journeys
+        </h1>
         <p className="mt-2 text-muted-foreground">
           See shared hobbies, diverging paths, and your combined personality archetype.
         </p>
+      </FadeIn>
+      <div className="relative">
+        <CompareJourneysClient userA={userA} userB={userB} paramA={usernameA} paramB={usernameB} />
       </div>
-      <CompareJourneysClient userA={userA} userB={userB} paramA={usernameA} paramB={usernameB} />
     </div>
   );
 }

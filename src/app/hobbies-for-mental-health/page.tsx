@@ -1,6 +1,14 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 
+import {
+  FadeIn,
+  GridBackground,
+  SpotlightCard,
+  StaggerContainer,
+  StaggerItem,
+  TextGenerateEffect,
+} from '~/components/aceternity';
 import { JsonLd } from '~/components/json-ld';
 
 export const metadata: Metadata = {
@@ -144,82 +152,97 @@ export default function HobbiesForMentalHealthPage() {
         }}
       />
 
-      <div className="mb-6">
-        <Link href="/hobbies" className="text-sm text-muted-foreground hover:text-foreground">
-          ← Hobby Directory
-        </Link>
+      {/* Header */}
+      <div className="relative mb-8 overflow-hidden rounded-3xl border border-border/60">
+        <GridBackground variant="dots" size={22} />
+        <FadeIn className="relative p-6 sm:p-8">
+          <Link href="/hobbies" className="text-sm text-muted-foreground hover:text-foreground">
+            ← Hobby Directory
+          </Link>
+          <TextGenerateEffect
+            words="15 Hobbies That Improve Mental Health — Science-Backed"
+            className="mt-4 text-3xl font-bold text-foreground"
+          />
+        </FadeIn>
       </div>
 
-      <h1 className="text-3xl font-bold text-foreground mb-4">
-        15 Hobbies That Improve Mental Health — Science-Backed
-      </h1>
-      <p className="text-lg text-muted-foreground mb-4 leading-relaxed">
-        Hobbies aren&apos;t a luxury — they&apos;re one of the most effective, accessible mental
-        health tools available. Research consistently shows that engaged leisure activity reduces
-        anxiety, counters depression, builds resilience, and even slows cognitive decline.
-      </p>
-      <p className="text-lg text-muted-foreground mb-8 leading-relaxed">
-        Three mechanisms explain most of the effect:{' '}
-        <strong className="text-foreground">flow state</strong> (full absorption that quiets
-        rumination), <strong className="text-foreground">social connection</strong> (most hobbies
-        create community), and <strong className="text-foreground">identity</strong> (having a self
-        beyond work and roles). Below are 15 hobbies with strong evidence behind them — and an
-        explanation of exactly why each one works.
-      </p>
+      <FadeIn delay={0.1}>
+        <p className="text-lg text-muted-foreground mb-4 leading-relaxed">
+          Hobbies aren&apos;t a luxury — they&apos;re one of the most effective, accessible mental
+          health tools available. Research consistently shows that engaged leisure activity reduces
+          anxiety, counters depression, builds resilience, and even slows cognitive decline.
+        </p>
+      </FadeIn>
+      <FadeIn delay={0.18}>
+        <p className="text-lg text-muted-foreground mb-8 leading-relaxed">
+          Three mechanisms explain most of the effect:{' '}
+          <strong className="text-foreground">flow state</strong> (full absorption that quiets
+          rumination), <strong className="text-foreground">social connection</strong> (most hobbies
+          create community), and <strong className="text-foreground">identity</strong> (having a
+          self beyond work and roles). Below are 15 hobbies with strong evidence behind them — and
+          an explanation of exactly why each one works.
+        </p>
+      </FadeIn>
 
-      <div className="space-y-6">
+      <StaggerContainer className="space-y-6">
         {HOBBIES.map((hobby, i) => (
-          <div
-            key={hobby.name}
-            className="rounded-xl border border-border bg-card p-6 hover:border-foreground/30 transition-colors"
-          >
-            <div className="flex items-start gap-4">
-              <span className="flex-shrink-0 w-8 h-8 rounded-full bg-foreground/10 text-foreground text-sm font-bold flex items-center justify-center">
-                {i + 1}
-              </span>
-              <div className="flex-1">
-                <div className="flex items-center flex-wrap gap-3 mb-2">
-                  <Link
-                    href={`/hobbies/${hobbySlug(hobby.name)}`}
-                    className="text-lg font-bold text-foreground hover:text-foreground transition-colors"
-                    prefetch={false}
-                  >
-                    {hobby.name}
-                  </Link>
-                  <span className="inline-block rounded-full bg-foreground/10 border border-foreground/20 px-3 py-0.5 text-xs font-medium text-foreground">
-                    {hobby.benefit}
-                  </span>
+          <StaggerItem key={hobby.name}>
+            <SpotlightCard className="shadow-soft" innerClassName="rounded-xl p-6">
+              <div className="flex items-start gap-4">
+                <span className="flex-shrink-0 w-8 h-8 rounded-full bg-foreground/10 text-foreground text-sm font-bold flex items-center justify-center">
+                  {i + 1}
+                </span>
+                <div className="flex-1">
+                  <div className="flex items-center flex-wrap gap-3 mb-2">
+                    <Link
+                      href={`/hobbies/${hobbySlug(hobby.name)}`}
+                      className="text-lg font-bold text-foreground hover:text-foreground transition-colors"
+                      prefetch={false}
+                    >
+                      {hobby.name}
+                    </Link>
+                    <span className="inline-block rounded-full bg-foreground/10 border border-foreground/20 px-3 py-0.5 text-xs font-medium text-foreground">
+                      {hobby.benefit}
+                    </span>
+                  </div>
+                  <p className="text-muted-foreground leading-relaxed text-sm">{hobby.why}</p>
                 </div>
-                <p className="text-muted-foreground leading-relaxed text-sm">{hobby.why}</p>
               </div>
-            </div>
-          </div>
+            </SpotlightCard>
+          </StaggerItem>
         ))}
-      </div>
+      </StaggerContainer>
 
-      <div className="mt-10 rounded-xl bg-card/40 border border-border p-6">
-        <h2 className="text-base font-bold text-foreground mb-2">A note on consistency</h2>
-        <p className="text-sm text-muted-foreground leading-relaxed">
-          The mental health benefits of hobbies are cumulative and dose-dependent. A single session
-          of yoga is pleasant. Two hundred sessions builds a different kind of person. The key
-          isn&apos;t finding the perfect hobby — it&apos;s finding one you&apos;ll actually return
-          to, and returning to it.
-        </p>
-      </div>
+      <FadeIn className="mt-10">
+        <SpotlightCard className="shadow-soft" innerClassName="rounded-xl p-6">
+          <h2 className="text-base font-bold text-foreground mb-2">A note on consistency</h2>
+          <p className="text-sm text-muted-foreground leading-relaxed">
+            The mental health benefits of hobbies are cumulative and dose-dependent. A single
+            session of yoga is pleasant. Two hundred sessions builds a different kind of person. The
+            key isn&apos;t finding the perfect hobby — it&apos;s finding one you&apos;ll actually
+            return to, and returning to it.
+          </p>
+        </SpotlightCard>
+      </FadeIn>
 
-      <div className="mt-12 rounded-xl bg-foreground/10 border border-foreground/20 p-8 text-center">
-        <h2 className="text-xl font-bold text-foreground mb-2">Find your perfect hobby</h2>
-        <p className="text-muted-foreground mb-4">
-          Take our 2-minute quiz for personalized recommendations based on your personality,
-          schedule, and what you want to get out of it.
-        </p>
-        <Link
-          href="/find-your-hobby"
-          className="inline-flex rounded-lg bg-primary px-6 py-2.5 text-sm font-semibold text-primary-foreground hover:opacity-90 transition-colors"
+      <FadeIn className="mt-12">
+        <SpotlightCard
+          className="border-foreground/20 bg-foreground/10 shadow-soft"
+          innerClassName="rounded-xl p-8 text-center"
         >
-          Take the Quiz →
-        </Link>
-      </div>
+          <h2 className="text-xl font-bold text-foreground mb-2">Find your perfect hobby</h2>
+          <p className="text-muted-foreground mb-4">
+            Take our 2-minute quiz for personalized recommendations based on your personality,
+            schedule, and what you want to get out of it.
+          </p>
+          <Link
+            href="/find-your-hobby"
+            className="inline-flex rounded-lg bg-primary px-6 py-2.5 text-sm font-semibold text-primary-foreground hover:opacity-90 transition-colors"
+          >
+            Take the Quiz →
+          </Link>
+        </SpotlightCard>
+      </FadeIn>
     </div>
   );
 }

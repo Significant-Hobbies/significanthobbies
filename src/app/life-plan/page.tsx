@@ -2,6 +2,14 @@ import { desc, eq } from 'drizzle-orm';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 
+import {
+  FadeIn,
+  GridBackground,
+  NumberTicker,
+  SpotlightCard,
+  StaggerContainer,
+  StaggerItem,
+} from '~/components/aceternity';
 import { Lumi } from '~/components/lumi';
 import { bucketListItems, timelines } from '~/db/schema';
 import { BUCKET_ITEM_CATEGORIES, type BucketItemCategory } from '~/lib/famous-bucket-lists';
@@ -122,52 +130,65 @@ export default async function LifePlanPage() {
   return (
     <div className="mx-auto max-w-5xl px-4 py-12 space-y-12">
       {/* ── Header ──────────────────────────────────────────────── */}
-      <div className="flex items-start justify-between gap-4 flex-wrap">
-        <div className="flex items-center gap-4">
-          <Lumi size={52} glow />
-          <div>
-            <h1 className="text-3xl font-bold text-foreground">Your life plan</h1>
-            <p className="mt-1 text-muted-foreground">
-              {session.user.name?.split(' ')[0] ?? 'Your'} past, present, and future — one view.
-            </p>
+      <div className="relative">
+        <GridBackground className="absolute inset-0 -z-10" />
+        <FadeIn>
+          <div className="flex items-start justify-between gap-4 flex-wrap">
+            <div className="flex items-center gap-4">
+              <Lumi size={52} glow />
+              <div>
+                <h1 className="text-3xl font-bold text-foreground font-serif">Your life plan</h1>
+                <p className="mt-1 text-muted-foreground">
+                  {session.user.name?.split(' ')[0] ?? 'Your'} past, present, and future — one view.
+                </p>
+              </div>
+            </div>
+            {personality && (
+              <SpotlightCard className="rounded-xl border border-border bg-card/50 px-4 py-2.5 shadow-soft">
+                <p className="text-xs text-foreground font-medium">Your archetype</p>
+                <p className="text-sm font-bold text-foreground">
+                  {personality.archetype.emoji} {personality.archetype.name}
+                </p>
+              </SpotlightCard>
+            )}
           </div>
-        </div>
-        {personality && (
-          <div className="rounded-xl border border-border bg-card/50 px-4 py-2.5">
-            <p className="text-xs text-foreground font-medium">Your archetype</p>
-            <p className="text-sm font-bold text-foreground">
-              {personality.archetype.emoji} {personality.archetype.name}
-            </p>
-          </div>
-        )}
+        </FadeIn>
       </div>
 
       {/* ── Summary stats ───────────────────────────────────────── */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-        <StatCard
-          label="Life phases"
-          value={allPhases.length}
-          sub={`${timelineList.length} timeline${timelineList.length !== 1 ? 's' : ''}`}
-        />
-        <StatCard
-          label="Bucket list"
-          value={totalBucket}
-          sub={`${totalDone} done`}
-          accent="text-primary"
-        />
-        <StatCard
-          label="In progress"
-          value={totalInProgress}
-          sub="right now"
-          accent="text-foreground"
-        />
-        <StatCard
-          label="Planned"
-          value={totalPlanned}
-          sub="ahead of you"
-          accent="text-muted-foreground"
-        />
-      </div>
+      <StaggerContainer className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        <StaggerItem>
+          <StatCard
+            label="Life phases"
+            value={allPhases.length}
+            sub={`${timelineList.length} timeline${timelineList.length !== 1 ? 's' : ''}`}
+          />
+        </StaggerItem>
+        <StaggerItem>
+          <StatCard
+            label="Bucket list"
+            value={totalBucket}
+            sub={`${totalDone} done`}
+            accent="text-primary"
+          />
+        </StaggerItem>
+        <StaggerItem>
+          <StatCard
+            label="In progress"
+            value={totalInProgress}
+            sub="right now"
+            accent="text-foreground"
+          />
+        </StaggerItem>
+        <StaggerItem>
+          <StatCard
+            label="Planned"
+            value={totalPlanned}
+            sub="ahead of you"
+            accent="text-muted-foreground"
+          />
+        </StaggerItem>
+      </StaggerContainer>
 
       {/* ── Life wheel ──────────────────────────────────────────── */}
       {totalBucket > 0 && (
@@ -214,58 +235,64 @@ export default async function LifePlanPage() {
 
       {/* ── Present ─────────────────────────────────────────────── */}
       <section className="space-y-4">
-        <h2 className="text-lg font-semibold text-foreground">Right now</h2>
+        <FadeIn>
+          <h2 className="text-lg font-semibold text-foreground font-serif">Right now</h2>
+        </FadeIn>
         <div className="grid gap-4 sm:grid-cols-2">
           {/* Active hobbies */}
-          <div className="rounded-xl border border-border bg-card p-5">
-            <p className="text-sm font-medium text-muted-foreground mb-3">Active hobbies</p>
-            {recentHobbies.length > 0 ? (
-              <div className="flex flex-wrap gap-2">
-                {recentHobbies.map((hobby) => (
-                  <span
-                    key={hobby}
-                    className="inline-flex items-center rounded-full border border-border bg-card px-3 py-1 text-sm text-foreground"
-                  >
-                    {hobby}
-                  </span>
-                ))}
-              </div>
-            ) : (
-              <p className="text-sm text-muted-foreground/60">
-                No recent hobbies.{' '}
-                <Link href="/timeline/new" className="text-foreground hover:underline">
-                  Start a timeline →
-                </Link>
-              </p>
-            )}
-          </div>
+          <FadeIn delay={0.1}>
+            <SpotlightCard className="rounded-xl border border-border bg-card p-5 shadow-soft">
+              <p className="text-sm font-medium text-muted-foreground mb-3">Active hobbies</p>
+              {recentHobbies.length > 0 ? (
+                <div className="flex flex-wrap gap-2">
+                  {recentHobbies.map((hobby) => (
+                    <span
+                      key={hobby}
+                      className="inline-flex items-center rounded-full border border-border bg-card px-3 py-1 text-sm text-foreground"
+                    >
+                      {hobby}
+                    </span>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-sm text-muted-foreground/60">
+                  No recent hobbies.{' '}
+                  <Link href="/timeline/new" className="text-foreground hover:underline">
+                    Start a timeline →
+                  </Link>
+                </p>
+              )}
+            </SpotlightCard>
+          </FadeIn>
 
           {/* In-progress bucket items */}
-          <div className="rounded-xl border border-primary/30 bg-primary/10/60 p-5">
-            <p className="text-sm font-medium text-muted-foreground mb-3">In progress</p>
-            {bucketInProgress.length > 0 ? (
-              <ul className="space-y-2">
-                {bucketInProgress.slice(0, 5).map((item) => (
-                  <li key={item.id} className="flex items-center gap-2 text-sm text-foreground">
-                    <span className="h-2 w-2 rounded-full bg-primary shrink-0" />
-                    <span className="truncate">{item.title}</span>
-                    {item.targetYear && (
-                      <span className="text-xs text-muted-foreground/60 shrink-0">
-                        by {item.targetYear}
-                      </span>
-                    )}
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <p className="text-sm text-muted-foreground/60">
-                Nothing in progress yet.{' '}
-                <Link href="/dashboard" className="text-foreground hover:underline">
-                  Move something forward →
-                </Link>
-              </p>
-            )}
-          </div>
+          <FadeIn delay={0.2}>
+            <SpotlightCard className="rounded-xl border border-primary/30 bg-primary/10/60 p-5 shadow-soft">
+              <p className="text-sm font-medium text-muted-foreground mb-3">In progress</p>
+              {bucketInProgress.length > 0 ? (
+                <ul className="space-y-2">
+                  {bucketInProgress.slice(0, 5).map((item) => (
+                    <li key={item.id} className="flex items-center gap-2 text-sm text-foreground">
+                      <span className="h-2 w-2 rounded-full bg-primary shrink-0" />
+                      <span className="truncate">{item.title}</span>
+                      {item.targetYear && (
+                        <span className="text-xs text-muted-foreground/60 shrink-0">
+                          by {item.targetYear}
+                        </span>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="text-sm text-muted-foreground/60">
+                  Nothing in progress yet.{' '}
+                  <Link href="/dashboard" className="text-foreground hover:underline">
+                    Move something forward →
+                  </Link>
+                </p>
+              )}
+            </SpotlightCard>
+          </FadeIn>
         </div>
       </section>
 
@@ -328,51 +355,52 @@ export default async function LifePlanPage() {
           </Link>
         </div>
         {timelineList.length > 0 ? (
-          <div className="space-y-3">
+          <StaggerContainer className="space-y-3">
             {timelineList.map((tl) => (
-              <Link
-                key={tl.id}
-                href={`/timeline/${tl.id}`}
-                className="block rounded-xl border border-border bg-card p-4 hover:border-border hover:shadow-sm transition-all"
-                prefetch={false}
-              >
-                <div className="flex items-center justify-between mb-2">
-                  <span className="font-medium text-foreground">{tl.title}</span>
-                  <span className="text-xs text-muted-foreground/60">
-                    {tl.phases.length} phase{tl.phases.length !== 1 ? 's' : ''}
-                  </span>
-                </div>
-                <div className="flex flex-wrap gap-1.5">
-                  {tl.phases
-                    .flatMap((p) => p.hobbies.map((h) => h.name))
-                    .slice(0, 8)
-                    .map((hobby, i) => (
-                      <span
-                        key={`${hobby}-${i}`}
-                        className="inline-flex items-center rounded-full bg-foreground/5 px-2.5 py-0.5 text-xs text-muted-foreground"
-                      >
-                        {hobby}
+              <StaggerItem key={tl.id}>
+                <Link href={`/timeline/${tl.id}`} prefetch={false}>
+                  <SpotlightCard className="block rounded-xl border border-border bg-card p-4 shadow-soft transition-all">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="font-medium text-foreground">{tl.title}</span>
+                      <span className="text-xs text-muted-foreground/60">
+                        {tl.phases.length} phase{tl.phases.length !== 1 ? 's' : ''}
                       </span>
-                    ))}
-                  {tl.phases.flatMap((p) => p.hobbies).length > 8 && (
-                    <span className="text-xs text-muted-foreground/60 self-center">
-                      +{tl.phases.flatMap((p) => p.hobbies).length - 8} more
-                    </span>
-                  )}
-                </div>
-              </Link>
+                    </div>
+                    <div className="flex flex-wrap gap-1.5">
+                      {tl.phases
+                        .flatMap((p) => p.hobbies.map((h) => h.name))
+                        .slice(0, 8)
+                        .map((hobby, i) => (
+                          <span
+                            key={`${hobby}-${i}`}
+                            className="inline-flex items-center rounded-full bg-foreground/5 px-2.5 py-0.5 text-xs text-muted-foreground"
+                          >
+                            {hobby}
+                          </span>
+                        ))}
+                      {tl.phases.flatMap((p) => p.hobbies).length > 8 && (
+                        <span className="text-xs text-muted-foreground/60 self-center">
+                          +{tl.phases.flatMap((p) => p.hobbies).length - 8} more
+                        </span>
+                      )}
+                    </div>
+                  </SpotlightCard>
+                </Link>
+              </StaggerItem>
             ))}
-          </div>
+          </StaggerContainer>
         ) : (
-          <div className="rounded-xl border border-dashed border-border bg-card/40 p-8 text-center">
-            <p className="text-muted-foreground mb-3">No timelines yet.</p>
-            <Link
-              href="/timeline/new"
-              className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2 text-sm font-semibold text-primary-foreground hover:opacity-90 transition-opacity"
-            >
-              Build your first timeline →
-            </Link>
-          </div>
+          <FadeIn>
+            <SpotlightCard className="rounded-xl border border-dashed border-border bg-card/40 p-8 text-center shadow-soft">
+              <p className="text-muted-foreground mb-3">No timelines yet.</p>
+              <Link
+                href="/timeline/new"
+                className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2 text-sm font-semibold text-primary-foreground hover:opacity-90 transition-opacity"
+              >
+                Build your first timeline →
+              </Link>
+            </SpotlightCard>
+          </FadeIn>
         )}
       </section>
 
@@ -410,10 +438,12 @@ function StatCard({
   accent?: string;
 }) {
   return (
-    <div className="rounded-xl border border-border bg-card p-4">
+    <SpotlightCard className="rounded-xl border border-border bg-card p-4 shadow-soft">
       <p className="text-xs text-muted-foreground font-medium">{label}</p>
-      <p className={`text-2xl font-bold ${accent} mt-1`}>{value}</p>
+      <p className={`text-2xl font-bold ${accent} mt-1`}>
+        <NumberTicker value={value} />
+      </p>
       <p className="text-xs text-muted-foreground/60 mt-0.5">{sub}</p>
-    </div>
+    </SpotlightCard>
   );
 }

@@ -3,6 +3,14 @@ import { ArrowLeft, Pencil, User } from 'lucide-react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
+import {
+  BorderBeam,
+  FadeIn,
+  GradientMesh,
+  SpotlightCard,
+  StaggerContainer,
+  StaggerItem,
+} from '~/components/aceternity';
 import { CommentsSectionWithOwn } from '~/components/timeline-view/comments-section';
 import { ExportButton } from '~/components/timeline-view/export-button';
 import { InsightsPanel } from '~/components/timeline-view/insights-panel';
@@ -160,103 +168,135 @@ export default async function TimelineBySlugPage({ params }: Props) {
   }));
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-10">
+    <div className="relative mx-auto max-w-6xl px-4 py-10">
+      <GradientMesh />
       {/* Breadcrumb */}
-      <div className="mb-6">
+      <FadeIn className="relative mb-6">
         <Link
           href={`/u/${username}`}
           className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors"
         >
           <ArrowLeft className="h-3.5 w-3.5" />@{username}
         </Link>
-      </div>
+      </FadeIn>
 
       {/* Header */}
-      <div className="mb-8 flex items-start justify-between gap-4 flex-wrap">
-        <div>
-          <h1 className="text-2xl font-bold text-foreground">
-            {timeline.title ?? 'Hobby Timeline'}
-          </h1>
-          {timelineUser && (
-            <Link
-              href={`/u/${username}`}
-              className="mt-1 inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground"
-            >
-              <User className="h-3.5 w-3.5" />@{username}
-            </Link>
-          )}
-          <div className="mt-2 flex items-center gap-2">
-            <Badge variant="outline" className="border-border text-xs text-muted-foreground">
-              {phases.length} phases
-            </Badge>
-            <Badge variant="outline" className="border-border text-xs text-muted-foreground">
-              {new Set(phases.flatMap((p) => p.hobbies.map((h) => h.name))).size} hobbies
-            </Badge>
+      <FadeIn className="relative mb-8" delay={0.05}>
+        <SpotlightCard className="shadow-soft" innerClassName="p-6">
+          <div className="relative overflow-hidden rounded-xl">
+            <BorderBeam size={200} duration={15} />
+            <div className="flex items-start justify-between gap-4 flex-wrap">
+              <div>
+                <h1 className="font-serif text-2xl font-semibold text-foreground">
+                  {timeline.title ?? 'Hobby Timeline'}
+                </h1>
+                {timelineUser && (
+                  <Link
+                    href={`/u/${username}`}
+                    className="mt-1 inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground"
+                  >
+                    <User className="h-3.5 w-3.5" />@{username}
+                  </Link>
+                )}
+                <div className="mt-2 flex items-center gap-2">
+                  <Badge variant="outline" className="border-border text-xs text-muted-foreground">
+                    {phases.length} phases
+                  </Badge>
+                  <Badge variant="outline" className="border-border text-xs text-muted-foreground">
+                    {new Set(phases.flatMap((p) => p.hobbies.map((h) => h.name))).size} hobbies
+                  </Badge>
+                </div>
+              </div>
+              <div className="flex items-center gap-2 flex-wrap">
+                <LikeButton
+                  timelineId={timeline.id}
+                  initialLiked={isLiked}
+                  initialCount={likeCount}
+                  isAuthenticated={!!currentUserId}
+                />
+                {isOwner && (
+                  <VisibilityToggle timelineId={timeline.id} current={timeline.visibility} />
+                )}
+                <ExportButton timeline={timeline} />
+                {currentUserId && !isOwner && session?.user?.username && timelineUser?.username && (
+                  <Link
+                    href={`/compare-journeys?a=${session.user.username}&b=${timelineUser.username}`}
+                  >
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="border-border text-muted-foreground hover:text-foreground"
+                    >
+                      Compare with mine
+                    </Button>
+                  </Link>
+                )}
+                {isOwner && (
+                  <Link href={`/timeline/${timeline.id}/edit`}>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="border-border text-muted-foreground hover:text-foreground"
+                    >
+                      <Pencil className="mr-1.5 h-3.5 w-3.5" />
+                      Edit
+                    </Button>
+                  </Link>
+                )}
+              </div>
+            </div>
           </div>
-        </div>
-        <div className="flex items-center gap-2 flex-wrap">
-          <LikeButton
-            timelineId={timeline.id}
-            initialLiked={isLiked}
-            initialCount={likeCount}
-            isAuthenticated={!!currentUserId}
-          />
-          {isOwner && <VisibilityToggle timelineId={timeline.id} current={timeline.visibility} />}
-          <ExportButton timeline={timeline} />
-          {currentUserId && !isOwner && session?.user?.username && timelineUser?.username && (
-            <Link href={`/compare-journeys?a=${session.user.username}&b=${timelineUser.username}`}>
-              <Button
-                variant="outline"
-                size="sm"
-                className="border-border text-muted-foreground hover:text-foreground"
-              >
-                Compare with mine
-              </Button>
-            </Link>
-          )}
-          {isOwner && (
-            <Link href={`/timeline/${timeline.id}/edit`}>
-              <Button
-                variant="outline"
-                size="sm"
-                className="border-border text-muted-foreground hover:text-foreground"
-              >
-                <Pencil className="mr-1.5 h-3.5 w-3.5" />
-                Edit
-              </Button>
-            </Link>
-          )}
-        </div>
-      </div>
+        </SpotlightCard>
+      </FadeIn>
 
       {phases.length === 0 ? (
-        <div className="rounded-xl border border-border bg-card/40 p-12 text-center">
-          <p className="text-muted-foreground">No phases yet.</p>
-          {isOwner && (
-            <Link href={`/timeline/${timeline.id}/edit`}>
-              <Button className="mt-4 bg-primary text-primary-foreground hover:opacity-90">
-                Add phases
-              </Button>
-            </Link>
-          )}
-        </div>
+        <FadeIn className="relative">
+          <div className="rounded-xl border border-border bg-card/40 p-12 text-center">
+            <p className="text-muted-foreground">No phases yet.</p>
+            {isOwner && (
+              <Link href={`/timeline/${timeline.id}/edit`}>
+                <Button className="mt-4 bg-primary text-primary-foreground hover:opacity-90">
+                  Add phases
+                </Button>
+              </Link>
+            )}
+          </div>
+        </FadeIn>
       ) : (
-        <div className="space-y-8">
-          <PhaseSwimlane phases={phases} pins={pins} />
-          <PersonalityCard phases={phases} />
-          <InsightsPanel phases={phases} />
-          {isOwner && <RediscoveryNudges phases={phases} />}
-          {isOwner && <RecommendationsPanel phases={phases} />}
-          <CommentsSectionWithOwn
-            timelineId={timeline.id}
-            initialComments={commentList}
-            currentUserId={currentUserId}
-            ownCommentIds={ownCommentIds}
-          />
-          {isOwner && versions.length > 0 && (
-            <VersionHistory versions={versions} currentPhases={phases} />
+        <StaggerContainer className="relative space-y-8" staggerDelay={0.08}>
+          <StaggerItem>
+            <PhaseSwimlane phases={phases} pins={pins} />
+          </StaggerItem>
+          <StaggerItem>
+            <PersonalityCard phases={phases} />
+          </StaggerItem>
+          <StaggerItem>
+            <InsightsPanel phases={phases} />
+          </StaggerItem>
+          {isOwner && (
+            <StaggerItem>
+              <RediscoveryNudges phases={phases} />
+            </StaggerItem>
           )}
-        </div>
+          {isOwner && (
+            <StaggerItem>
+              <RecommendationsPanel phases={phases} />
+            </StaggerItem>
+          )}
+          <StaggerItem>
+            <CommentsSectionWithOwn
+              timelineId={timeline.id}
+              initialComments={commentList}
+              currentUserId={currentUserId}
+              ownCommentIds={ownCommentIds}
+            />
+          </StaggerItem>
+          {isOwner && versions.length > 0 && (
+            <StaggerItem>
+              <VersionHistory versions={versions} currentPhases={phases} />
+            </StaggerItem>
+          )}
+        </StaggerContainer>
       )}
     </div>
   );

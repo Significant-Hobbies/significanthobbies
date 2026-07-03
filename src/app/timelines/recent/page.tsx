@@ -1,6 +1,13 @@
 import { desc, eq } from 'drizzle-orm';
 import Link from 'next/link';
 
+import {
+  FadeIn,
+  GridBackground,
+  SpotlightCard,
+  StaggerContainer,
+  StaggerItem,
+} from '~/components/aceternity';
 import { timelines, users } from '~/db/schema';
 import { parseJSONColumn } from '~/lib/utils';
 import { db } from '~/server/db';
@@ -41,22 +48,30 @@ export default async function RecentTimelinesPage() {
 
   return (
     <main className="mx-auto max-w-3xl px-4 py-12">
-      <Link href="/" className="text-xs text-muted-foreground hover:underline">
-        ← Significant Hobbies
-      </Link>
-      <h1 className="mt-3 text-3xl font-bold tracking-tight text-foreground">
-        Recent public timelines
-      </h1>
-      <p className="mt-2 text-sm text-muted-foreground">
-        Newest first. Browse how other people have mapped their hobby phases.
-      </p>
+      {/* Header with grid background + fade-in */}
+      <div className="relative mb-2">
+        <GridBackground />
+        <FadeIn className="relative">
+          <Link href="/" className="text-xs text-muted-foreground hover:underline">
+            ← Significant Hobbies
+          </Link>
+          <h1 className="mt-3 text-3xl font-bold tracking-tight text-foreground">
+            Recent public timelines
+          </h1>
+          <p className="mt-2 text-sm text-muted-foreground">
+            Newest first. Browse how other people have mapped their hobby phases.
+          </p>
+        </FadeIn>
+      </div>
 
       {rows.length === 0 ? (
-        <p className="mt-8 text-sm text-muted-foreground">
-          No public timelines yet — be the first to flip yours public from the timeline editor.
-        </p>
+        <FadeIn>
+          <p className="mt-8 text-sm text-muted-foreground">
+            No public timelines yet — be the first to flip yours public from the timeline editor.
+          </p>
+        </FadeIn>
       ) : (
-        <ol className="mt-6 divide-y divide-stone-200">
+        <StaggerContainer className="mt-6 space-y-3">
           {rows.map((t) => {
             const phases = parsePhases(t.phases);
             const labels = phases
@@ -64,41 +79,45 @@ export default async function RecentTimelinesPage() {
               .filter(Boolean)
               .slice(0, 4);
             return (
-              <li key={t.id} className="flex items-baseline gap-4 py-3 text-sm">
-                <div className="flex-1 min-w-0">
-                  <Link
-                    href={t.slug ? `/timeline/${t.slug}` : `/timeline/${t.id}`}
-                    className="block truncate text-base font-medium text-foreground hover:underline"
-                  >
-                    {t.title?.trim() || 'Untitled timeline'}
-                  </Link>
-                  {t.username && (
-                    <Link
-                      href={`/u/${t.username}`}
-                      className="text-xs text-muted-foreground hover:underline"
-                    >
-                      @{t.username}
-                    </Link>
-                  )}
-                  {labels.length > 0 && (
-                    <p className="mt-1 text-xs text-muted-foreground">
-                      {labels.join(' · ')}
-                      {phases.length > labels.length && ` (+${phases.length - labels.length})`}
-                    </p>
-                  )}
-                </div>
-                <span className="font-mono text-[10px] text-muted-foreground/60 tabular-nums">
-                  {(t.updatedAt instanceof Date
-                    ? t.updatedAt
-                    : new Date(Number(t.updatedAt) * 1000)
-                  )
-                    .toISOString()
-                    .slice(0, 10)}
-                </span>
-              </li>
+              <StaggerItem key={t.id}>
+                <SpotlightCard className="shadow-soft" innerClassName="p-4">
+                  <div className="flex items-baseline gap-4 text-sm">
+                    <div className="flex-1 min-w-0">
+                      <Link
+                        href={t.slug ? `/timeline/${t.slug}` : `/timeline/${t.id}`}
+                        className="block truncate text-base font-medium text-foreground hover:underline"
+                      >
+                        {t.title?.trim() || 'Untitled timeline'}
+                      </Link>
+                      {t.username && (
+                        <Link
+                          href={`/u/${t.username}`}
+                          className="text-xs text-muted-foreground hover:underline"
+                        >
+                          @{t.username}
+                        </Link>
+                      )}
+                      {labels.length > 0 && (
+                        <p className="mt-1 text-xs text-muted-foreground">
+                          {labels.join(' · ')}
+                          {phases.length > labels.length && ` (+${phases.length - labels.length})`}
+                        </p>
+                      )}
+                    </div>
+                    <span className="font-mono text-[10px] text-muted-foreground/60 tabular-nums">
+                      {(t.updatedAt instanceof Date
+                        ? t.updatedAt
+                        : new Date(Number(t.updatedAt) * 1000)
+                      )
+                        .toISOString()
+                        .slice(0, 10)}
+                    </span>
+                  </div>
+                </SpotlightCard>
+              </StaggerItem>
             );
           })}
-        </ol>
+        </StaggerContainer>
       )}
     </main>
   );

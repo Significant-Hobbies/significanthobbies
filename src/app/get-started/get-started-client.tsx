@@ -3,6 +3,15 @@
 import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
 
+import {
+  BorderBeam,
+  FadeIn,
+  GridBackground,
+  StaggerContainer,
+  StaggerItem,
+  SpotlightCard,
+  TextGenerateEffect,
+} from '~/components/aceternity';
 import { EmailCapture } from '~/components/email-capture';
 
 type CheckState = 'idle' | 'checking' | 'available' | 'taken' | 'invalid';
@@ -94,85 +103,136 @@ export function GetStartedClient() {
   return (
     <main className="min-h-screen bg-card/40">
       {/* Hero */}
-      <section className="mx-auto max-w-2xl px-4 pt-20 pb-12 text-center">
-        <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
-          Get your hobby profile
-        </h1>
-        <p className="mt-4 text-lg text-muted-foreground">
-          Choose a username and share your hobby journey with the world.
-        </p>
+      <section className="relative overflow-hidden mx-auto max-w-2xl px-4 pt-20 pb-12 text-center">
+        <GridBackground />
+        <FadeIn className="relative">
+          <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
+            <TextGenerateEffect words="Get your hobby profile" />
+          </h1>
+          <p className="mt-4 text-lg text-muted-foreground">
+            Choose a username and share your hobby journey with the world.
+          </p>
+        </FadeIn>
       </section>
 
       {/* Username checker */}
       <section className="mx-auto max-w-xl px-4 pb-12">
-        <div className="rounded-2xl border border-border bg-card p-6 shadow-sm">
-          {/* Input row */}
-          <div className="flex items-center overflow-hidden rounded-xl border border-border bg-card/40 focus-within:border-foreground/30 focus-within:ring-2 focus-within:ring-foreground/20 transition-all">
-            <span className="select-none whitespace-nowrap px-4 py-4 text-base text-muted-foreground/60 font-medium">
-              significanthobbies.com/u/
-            </span>
-            <input
-              type="text"
-              value={input}
-              onChange={handleChange}
-              placeholder="yourname"
-              maxLength={20}
-              autoFocus
-              spellCheck={false}
-              autoCapitalize="none"
-              autoComplete="off"
-              className="min-w-0 flex-1 bg-transparent py-4 pr-4 text-base font-semibold text-foreground placeholder-stone-300 outline-none"
-            />
-          </div>
+        <FadeIn>
+          <SpotlightCard className="shadow-soft" innerClassName="p-6">
+            {/* Input row */}
+            <div className="flex items-center overflow-hidden rounded-xl border border-border bg-card/40 focus-within:border-foreground/30 focus-within:ring-2 focus-within:ring-foreground/20 transition-all">
+              <span className="select-none whitespace-nowrap px-4 py-4 text-base text-muted-foreground/60 font-medium">
+                significanthobbies.com/u/
+              </span>
+              <input
+                type="text"
+                value={input}
+                onChange={handleChange}
+                placeholder="yourname"
+                maxLength={20}
+                autoFocus
+                spellCheck={false}
+                autoCapitalize="none"
+                autoComplete="off"
+                className="min-w-0 flex-1 bg-transparent py-4 pr-4 text-base font-semibold text-foreground placeholder-stone-300 outline-none"
+              />
+            </div>
 
-          {/* Status feedback */}
-          <div className="mt-4 min-h-[4rem]">
-            {state === 'idle' && (
-              <p className="text-sm text-muted-foreground/60">Start typing to check availability</p>
-            )}
+            {/* Status feedback */}
+            <div className="mt-4 min-h-[4rem]">
+              {state === 'idle' && (
+                <p className="text-sm text-muted-foreground/60">
+                  Start typing to check availability
+                </p>
+              )}
 
-            {state === 'checking' && (
-              <div className="flex items-center gap-2 text-sm text-muted-foreground/60">
-                <svg className="h-4 w-4 animate-spin" fill="none" viewBox="0 0 24 24">
-                  <circle
-                    className="opacity-25"
-                    cx="12"
-                    cy="12"
-                    r="10"
-                    stroke="currentColor"
-                    strokeWidth="4"
-                  />
-                  <path
-                    className="opacity-75"
-                    fill="currentColor"
-                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
-                  />
-                </svg>
-                Checking…
-              </div>
-            )}
-
-            {state === 'available' && (
-              <div>
-                <div className="flex items-center gap-2 text-foreground">
-                  <svg
-                    className="h-5 w-5"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    strokeWidth={2.5}
-                  >
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+              {state === 'checking' && (
+                <div className="flex items-center gap-2 text-sm text-muted-foreground/60">
+                  <svg className="h-4 w-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    />
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                    />
                   </svg>
-                  <span className="font-semibold">This username is yours for the taking!</span>
+                  Checking…
                 </div>
-                <Link
-                  href={`/login?callbackUrl=/setup&username=${encodeURIComponent(input)}`}
-                  className="mt-3 inline-flex items-center gap-2 rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow-sm hover:opacity-90 transition-colors"
-                >
-                  Sign up with Google
+              )}
+
+              {state === 'available' && (
+                <div>
+                  <div className="flex items-center gap-2 text-foreground">
+                    <svg
+                      className="h-5 w-5"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      strokeWidth={2.5}
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                    </svg>
+                    <span className="font-semibold">This username is yours for the taking!</span>
+                  </div>
+                  <div className="relative mt-3 inline-flex overflow-hidden rounded-xl">
+                    <BorderBeam size={120} duration={10} />
+                    <Link
+                      href={`/login?callbackUrl=/setup&username=${encodeURIComponent(input)}`}
+                      className="inline-flex items-center gap-2 rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow-sm hover:opacity-90 transition-colors"
+                    >
+                      Sign up with Google
+                      <svg
+                        className="h-4 w-4"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        strokeWidth={2}
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M17 8l4 4m0 0l-4 4m4-4H3"
+                        />
+                      </svg>
+                    </Link>
+                  </div>
+                </div>
+              )}
+
+              {state === 'taken' && (
+                <div>
+                  <div className="flex items-center gap-2 text-destructive">
+                    <svg
+                      className="h-5 w-5"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      strokeWidth={2.5}
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                    <span className="font-semibold">Already taken</span>
+                  </div>
+                  <Link
+                    href={`/u/${input}`}
+                    className="mt-2 inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground hover:underline transition-colors"
+                  >
+                    See their profile →
+                  </Link>
+                </div>
+              )}
+
+              {state === 'invalid' && validationError && (
+                <div className="flex items-start gap-2 text-foreground">
                   <svg
-                    className="h-4 w-4"
+                    className="mt-0.5 h-4 w-4 shrink-0"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -181,56 +241,15 @@ export function GetStartedClient() {
                     <path
                       strokeLinecap="round"
                       strokeLinejoin="round"
-                      d="M17 8l4 4m0 0l-4 4m4-4H3"
+                      d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"
                     />
                   </svg>
-                </Link>
-              </div>
-            )}
-
-            {state === 'taken' && (
-              <div>
-                <div className="flex items-center gap-2 text-destructive">
-                  <svg
-                    className="h-5 w-5"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    strokeWidth={2.5}
-                  >
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                  <span className="font-semibold">Already taken</span>
+                  <span className="text-sm">{validationError}</span>
                 </div>
-                <Link
-                  href={`/u/${input}`}
-                  className="mt-2 inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground hover:underline transition-colors"
-                >
-                  See their profile →
-                </Link>
-              </div>
-            )}
-
-            {state === 'invalid' && validationError && (
-              <div className="flex items-start gap-2 text-foreground">
-                <svg
-                  className="mt-0.5 h-4 w-4 shrink-0"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  strokeWidth={2}
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"
-                  />
-                </svg>
-                <span className="text-sm">{validationError}</span>
-              </div>
-            )}
-          </div>
-        </div>
+              )}
+            </div>
+          </SpotlightCard>
+        </FadeIn>
 
         {/* Example profiles */}
         <div className="mt-6">
@@ -256,15 +275,17 @@ export function GetStartedClient() {
         <p className="mb-4 text-sm font-semibold text-muted-foreground/60">
           What you get with a profile
         </p>
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+        <StaggerContainer className="grid grid-cols-1 gap-3 sm:grid-cols-3">
           {BENEFITS.map(({ icon, title, desc }) => (
-            <div key={title} className="rounded-xl border border-border bg-card p-4 shadow-sm">
-              <div className="mb-2 text-2xl">{icon}</div>
-              <p className="font-semibold text-foreground text-sm">{title}</p>
-              <p className="mt-1 text-xs text-muted-foreground">{desc}</p>
-            </div>
+            <StaggerItem key={title}>
+              <SpotlightCard className="h-full shadow-soft" innerClassName="p-4">
+                <div className="mb-2 text-2xl">{icon}</div>
+                <p className="font-semibold text-foreground text-sm">{title}</p>
+                <p className="mt-1 text-xs text-muted-foreground">{desc}</p>
+              </SpotlightCard>
+            </StaggerItem>
           ))}
-        </div>
+        </StaggerContainer>
       </section>
 
       {/* Email capture */}

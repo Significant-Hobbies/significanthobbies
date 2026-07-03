@@ -2,6 +2,14 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
+import {
+  BorderBeam,
+  FadeIn,
+  GradientMesh,
+  SpotlightCard,
+  StaggerContainer,
+  StaggerItem,
+} from '~/components/aceternity';
 import { AddToMyListButton } from '~/components/add-to-my-list-button';
 import { Lumi } from '~/components/lumi';
 import {
@@ -75,61 +83,70 @@ export default async function FamousBucketListPage({ params }: Props) {
       <div className="bg-primary h-1" />
 
       {/* ── Light header ─────────────────────────────────────────────── */}
-      <section className="bg-card border-b border-border">
-        <div className="mx-auto max-w-3xl px-4 py-10 space-y-6">
-          <Link
-            href="/bucket-lists"
-            className="inline-flex items-center gap-1.5 text-sm text-primary hover:opacity-80 transition-opacity"
-          >
-            ← All bucket lists
-          </Link>
+      <section className="relative bg-card border-b border-border">
+        <GradientMesh />
+        <div className="relative mx-auto max-w-3xl px-4 py-10 space-y-6">
+          <FadeIn>
+            <Link
+              href="/bucket-lists"
+              className="inline-flex items-center gap-1.5 text-sm text-primary hover:opacity-80 transition-opacity"
+            >
+              ← All bucket lists
+            </Link>
+          </FadeIn>
 
-          <div className="flex items-start gap-6">
-            {/* Big emoji */}
-            <div className="text-6xl sm:text-7xl shrink-0">{list.emoji}</div>
-            <div className="flex-1 space-y-2">
-              <h1 className="text-3xl sm:text-4xl font-bold text-foreground text-balance">
-                {list.name}
-              </h1>
-              <p className="text-sm text-primary font-medium">{list.knownFor}</p>
+          <FadeIn delay={0.1}>
+            <div className="flex items-start gap-6">
+              {/* Big emoji */}
+              <div className="text-6xl sm:text-7xl shrink-0">{list.emoji}</div>
+              <div className="flex-1 space-y-2">
+                <h1 className="text-3xl sm:text-4xl font-bold text-foreground text-balance">
+                  {list.name}
+                </h1>
+                <p className="text-sm text-primary font-medium">{list.knownFor}</p>
+              </div>
+              {/* Circular progress — desktop */}
+              <div className="shrink-0 hidden sm:block">
+                <svg width="72" height="72" viewBox="0 0 72 72" className="-rotate-90">
+                  <circle cx="36" cy="36" r={r} fill="none" stroke="#f5f5f4" strokeWidth="5" />
+                  <circle
+                    cx="36"
+                    cy="36"
+                    r={r}
+                    fill="none"
+                    strokeWidth="5"
+                    strokeLinecap="round"
+                    strokeDasharray={circ}
+                    strokeDashoffset={offset}
+                    className="stroke-primary"
+                  />
+                </svg>
+                <p className="text-center text-xs text-muted-foreground mt-1">{pct}% done</p>
+              </div>
             </div>
-            {/* Circular progress — desktop */}
-            <div className="shrink-0 hidden sm:block">
-              <svg width="72" height="72" viewBox="0 0 72 72" className="-rotate-90">
-                <circle cx="36" cy="36" r={r} fill="none" stroke="#f5f5f4" strokeWidth="5" />
-                <circle
-                  cx="36"
-                  cy="36"
-                  r={r}
-                  fill="none"
-                  strokeWidth="5"
-                  strokeLinecap="round"
-                  strokeDasharray={circ}
-                  strokeDashoffset={offset}
-                  className="stroke-primary"
-                />
-              </svg>
-              <p className="text-center text-xs text-muted-foreground mt-1">{pct}% done</p>
-            </div>
-          </div>
+          </FadeIn>
 
           {/* Progress bar — mobile */}
-          <div className="sm:hidden space-y-1">
-            <div className="flex justify-between text-xs text-muted-foreground">
-              <span>
-                {done} of {total} completed
-              </span>
-              <span>{pct}%</span>
+          <FadeIn delay={0.15}>
+            <div className="sm:hidden space-y-1">
+              <div className="flex justify-between text-xs text-muted-foreground">
+                <span>
+                  {done} of {total} completed
+                </span>
+                <span>{pct}%</span>
+              </div>
+              <div className="h-1.5 rounded-full bg-foreground/5 overflow-hidden">
+                <div className="h-full rounded-full bg-primary" style={{ width: `${pct}%` }} />
+              </div>
             </div>
-            <div className="h-1.5 rounded-full bg-foreground/5 overflow-hidden">
-              <div className="h-full rounded-full bg-primary" style={{ width: `${pct}%` }} />
-            </div>
-          </div>
+          </FadeIn>
 
           {list.quote && (
-            <blockquote className="border-l-2 border-lumi pl-4 italic text-muted-foreground text-sm">
-              &ldquo;{list.quote.text}&rdquo;
-            </blockquote>
+            <FadeIn delay={0.2}>
+              <blockquote className="border-l-2 border-lumi pl-4 italic text-muted-foreground text-sm">
+                &ldquo;{list.quote.text}&rdquo;
+              </blockquote>
+            </FadeIn>
           )}
         </div>
       </section>
@@ -137,93 +154,103 @@ export default async function FamousBucketListPage({ params }: Props) {
       {/* ── Items ────────────────────────────────────────────────────── */}
       <section className="mx-auto max-w-3xl px-4 py-10 space-y-6">
         {!isLoggedIn && (
-          <div className="flex items-center gap-3 rounded-xl border border-lumi-200 bg-primary/10 px-5 py-3">
-            <Lumi size={36} float />
-            <p className="text-sm text-foreground">
-              <a href="/login" className="font-semibold text-primary hover:underline">
-                Sign in
-              </a>{' '}
-              to add any of these to your own bucket list.
-            </p>
-          </div>
+          <FadeIn>
+            <div className="flex items-center gap-3 rounded-xl border border-lumi-200 bg-primary/10 px-5 py-3">
+              <Lumi size={36} float />
+              <p className="text-sm text-foreground">
+                <a href="/login" className="font-semibold text-primary hover:underline">
+                  Sign in
+                </a>{' '}
+                to add any of these to your own bucket list.
+              </p>
+            </div>
+          </FadeIn>
         )}
 
-        <ul className="space-y-3">
-          {list.items.map((item, i) => {
-            const cat = item.category ? BUCKET_ITEM_CATEGORIES[item.category] : null;
-            const isDone = item.status === 'done';
+        <SpotlightCard className="shadow-soft" innerClassName="p-0">
+          <div className="relative overflow-hidden rounded-xl">
+            <BorderBeam />
+            <StaggerContainer className="p-1.5">
+              <ul className="space-y-3">
+                {list.items.map((item, i) => {
+                  const cat = item.category ? BUCKET_ITEM_CATEGORIES[item.category] : null;
+                  const isDone = item.status === 'done';
 
-            return (
-              <li
-                key={i}
-                className={`group rounded-2xl border p-5 transition-all duration-200 ${
-                  isDone
-                    ? 'border-lumi-200 bg-primary/10'
-                    : 'border-border bg-card hover:border-border hover:shadow-sm'
-                }`}
-              >
-                <div className="flex items-start gap-4">
-                  {/* Status indicator — coral for done */}
-                  <div
-                    className={`mt-0.5 h-6 w-6 shrink-0 rounded-full border-2 flex items-center justify-center text-xs font-bold ${
-                      isDone
-                        ? 'border-primary bg-primary text-foreground'
-                        : 'border-border text-transparent'
-                    }`}
-                  >
-                    ✓
-                  </div>
-
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-start justify-between gap-3 flex-wrap">
-                      <h3
-                        className={`font-semibold text-foreground ${isDone ? 'line-through text-muted-foreground' : ''}`}
+                  return (
+                    <StaggerItem key={i}>
+                      <li
+                        className={`group rounded-2xl border p-5 transition-all duration-200 ${
+                          isDone
+                            ? 'border-lumi-200 bg-primary/10'
+                            : 'border-border bg-card hover:border-border hover:shadow-sm'
+                        }`}
                       >
-                        {item.title}
-                      </h3>
-                      {cat && (
-                        <span
-                          className={`shrink-0 text-xs rounded-full px-2.5 py-1 font-medium border ${
-                            isDone
-                              ? 'border-lumi-200 text-primary bg-primary/10'
-                              : 'border-border text-muted-foreground bg-card/40'
-                          }`}
-                        >
-                          {cat.emoji} {cat.label}
-                        </span>
-                      )}
-                    </div>
+                        <div className="flex items-start gap-4">
+                          {/* Status indicator — coral for done */}
+                          <div
+                            className={`mt-0.5 h-6 w-6 shrink-0 rounded-full border-2 flex items-center justify-center text-xs font-bold ${
+                              isDone
+                                ? 'border-primary bg-primary text-foreground'
+                                : 'border-border text-transparent'
+                            }`}
+                          >
+                            ✓
+                          </div>
 
-                    <p className="mt-1.5 text-sm text-muted-foreground leading-relaxed">
-                      {item.description}
-                    </p>
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-start justify-between gap-3 flex-wrap">
+                              <h3
+                                className={`font-semibold text-foreground ${isDone ? 'line-through text-muted-foreground' : ''}`}
+                              >
+                                {item.title}
+                              </h3>
+                              {cat && (
+                                <span
+                                  className={`shrink-0 text-xs rounded-full px-2.5 py-1 font-medium border ${
+                                    isDone
+                                      ? 'border-lumi-200 text-primary bg-primary/10'
+                                      : 'border-border text-muted-foreground bg-card/40'
+                                  }`}
+                                >
+                                  {cat.emoji} {cat.label}
+                                </span>
+                              )}
+                            </div>
 
-                    {item.completedNote && (
-                      <div className="mt-2.5 flex items-start gap-2 rounded-lg bg-primary/10 border border-lumi-200 px-3 py-2">
-                        <span className="text-primary text-sm shrink-0">✓</span>
-                        <p className="text-xs text-lumi-600 leading-relaxed">
-                          {item.completedNote}
-                        </p>
-                      </div>
-                    )}
+                            <p className="mt-1.5 text-sm text-muted-foreground leading-relaxed">
+                              {item.description}
+                            </p>
 
-                    {isLoggedIn && (
-                      <div className="mt-3">
-                        <AddToMyListButton
-                          title={item.title}
-                          description={item.description}
-                          category={item.category}
-                          sourceSlug={list.slug}
-                          sourceItemTitle={item.title}
-                        />
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </li>
-            );
-          })}
-        </ul>
+                            {item.completedNote && (
+                              <div className="mt-2.5 flex items-start gap-2 rounded-lg bg-primary/10 border border-lumi-200 px-3 py-2">
+                                <span className="text-primary text-sm shrink-0">✓</span>
+                                <p className="text-xs text-lumi-600 leading-relaxed">
+                                  {item.completedNote}
+                                </p>
+                              </div>
+                            )}
+
+                            {isLoggedIn && (
+                              <div className="mt-3">
+                                <AddToMyListButton
+                                  title={item.title}
+                                  description={item.description}
+                                  category={item.category}
+                                  sourceSlug={list.slug}
+                                  sourceItemTitle={item.title}
+                                />
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </li>
+                    </StaggerItem>
+                  );
+                })}
+              </ul>
+            </StaggerContainer>
+          </div>
+        </SpotlightCard>
 
         {/* Sources */}
         {list.sources && list.sources.length > 0 && (

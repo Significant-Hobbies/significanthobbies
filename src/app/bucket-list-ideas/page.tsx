@@ -1,6 +1,14 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 
+import {
+  CardHoverEffect,
+  FadeIn,
+  GridBackground,
+  SpotlightCard,
+  StaggerContainer,
+  StaggerItem,
+} from '~/components/aceternity';
 import { Lumi } from '~/components/lumi';
 import { BUCKET_ITEM_CATEGORIES, FAMOUS_BUCKET_LISTS } from '~/lib/famous-bucket-lists';
 
@@ -249,42 +257,47 @@ export default function BucketListIdeasPage() {
   return (
     <main className="bg-card">
       {/* ── Hero ─────────────────────────────────────────────────── */}
-      <section className="bg-card pt-16 pb-10 px-4">
-        <div className="mx-auto max-w-4xl">
-          {/* Lumi in a coral-tinted card */}
-          <div className="flex items-center gap-5 rounded-2xl border border-lumi-200 bg-primary/10 px-6 py-5 mb-8 max-w-md">
-            <Lumi size={80} glow float />
-            <div>
-              <p className="text-primary text-sm font-semibold mb-1">
-                Guided by Lumi · {totalIdeas}+ ideas
-              </p>
-              <p className="text-muted-foreground text-sm leading-relaxed">
-                Curated from real bucket lists of presidents, athletes, and icons.
-              </p>
+      <section className="relative bg-card pt-16 pb-10 px-4">
+        <GridBackground />
+        <div className="relative mx-auto max-w-4xl">
+          <FadeIn>
+            {/* Lumi in a coral-tinted card */}
+            <div className="flex items-center gap-5 rounded-2xl border border-lumi-200 bg-primary/10 px-6 py-5 mb-8 max-w-md shadow-soft">
+              <Lumi size={80} glow float />
+              <div>
+                <p className="text-primary text-sm font-semibold mb-1">
+                  Guided by Lumi · {totalIdeas}+ ideas
+                </p>
+                <p className="text-muted-foreground text-sm leading-relaxed">
+                  Curated from real bucket lists of presidents, athletes, and icons.
+                </p>
+              </div>
             </div>
-          </div>
+          </FadeIn>
 
-          <h1 className="text-4xl sm:text-5xl font-bold leading-tight text-foreground text-balance">
-            Bucket list ideas <span className="text-primary">worth doing before you die</span>
-          </h1>
-          <p className="mt-4 text-muted-foreground text-lg max-w-xl">
-            Curated from the verified bucket lists of presidents, athletes, billionaires, and icons
-            — then expanded to cover every kind of life well-lived.
-          </p>
-          <div className="mt-6 flex flex-wrap gap-3">
-            <Link
-              href="/dashboard"
-              className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-semibold text-foreground hover:bg-lumi-600 transition-colors shadow-md"
-            >
-              ✨ Build my bucket list
-            </Link>
-            <Link
-              href="/bucket-lists"
-              className="inline-flex items-center gap-2 rounded-full border border-border px-6 py-3 text-sm font-medium text-muted-foreground hover:border-primary hover:text-primary transition-colors"
-            >
-              See famous lists →
-            </Link>
-          </div>
+          <FadeIn delay={0.1}>
+            <h1 className="text-4xl sm:text-5xl font-bold leading-tight text-foreground text-balance">
+              Bucket list ideas <span className="text-primary">worth doing before you die</span>
+            </h1>
+            <p className="mt-4 text-muted-foreground text-lg max-w-xl">
+              Curated from the verified bucket lists of presidents, athletes, billionaires, and
+              icons — then expanded to cover every kind of life well-lived.
+            </p>
+            <div className="mt-6 flex flex-wrap gap-3">
+              <Link
+                href="/dashboard"
+                className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-semibold text-foreground hover:bg-lumi-600 transition-colors shadow-md"
+              >
+                ✨ Build my bucket list
+              </Link>
+              <Link
+                href="/bucket-lists"
+                className="inline-flex items-center gap-2 rounded-full border border-border px-6 py-3 text-sm font-medium text-muted-foreground hover:border-primary hover:text-primary transition-colors"
+              >
+                See famous lists →
+              </Link>
+            </div>
+          </FadeIn>
         </div>
       </section>
 
@@ -315,29 +328,35 @@ export default function BucketListIdeasPage() {
           const catInfo = BUCKET_ITEM_CATEGORIES[key as keyof typeof BUCKET_ITEM_CATEGORIES];
           return (
             <section key={key} id={key} className="scroll-mt-28 space-y-6">
-              <div className="flex items-center gap-3">
-                <div
-                  className={`h-10 w-10 rounded-xl border ${style.border} ${style.bg} flex items-center justify-center text-xl`}
-                >
-                  {cat.emoji}
-                </div>
-                <div>
-                  <h2 className="text-2xl font-bold text-foreground text-balance">{cat.label}</h2>
-                  <p className={`text-sm ${style.text} font-medium`}>{cat.ideas.length} ideas</p>
-                </div>
-              </div>
-
-              <div className="grid gap-2 sm:grid-cols-2">
-                {cat.ideas.map((idea, i) => (
+              <FadeIn>
+                <div className="flex items-center gap-3">
                   <div
-                    key={i}
-                    className={`flex items-start gap-3 rounded-xl border ${style.border} ${style.bg} px-4 py-3 group`}
+                    className={`h-10 w-10 rounded-xl border ${style.border} ${style.bg} flex items-center justify-center text-xl`}
                   >
-                    <span className={`mt-1.5 h-2 w-2 shrink-0 rounded-full ${style.dot}`} />
-                    <span className="text-sm text-foreground leading-relaxed">{idea}</span>
+                    {cat.emoji}
                   </div>
+                  <div>
+                    <h2 className="text-2xl font-bold text-foreground text-balance">{cat.label}</h2>
+                    <p className={`text-sm ${style.text} font-medium`}>{cat.ideas.length} ideas</p>
+                  </div>
+                </div>
+              </FadeIn>
+
+              <StaggerContainer className="grid gap-2 sm:grid-cols-2">
+                {cat.ideas.map((idea, i) => (
+                  <StaggerItem key={i}>
+                    <SpotlightCard
+                      className={`border ${style.border} ${style.bg} shadow-soft`}
+                      innerClassName="px-4 py-3"
+                    >
+                      <div className="flex items-start gap-3 group">
+                        <span className={`mt-1.5 h-2 w-2 shrink-0 rounded-full ${style.dot}`} />
+                        <span className="text-sm text-foreground leading-relaxed">{idea}</span>
+                      </div>
+                    </SpotlightCard>
+                  </StaggerItem>
                 ))}
-              </div>
+              </StaggerContainer>
 
               {/* Famous person who did something in this category */}
               {(() => {
@@ -346,25 +365,29 @@ export default function BucketListIdeasPage() {
                 ).slice(0, 2);
                 if (famous.length === 0) return null;
                 return (
-                  <div className={`rounded-xl border ${style.border} ${style.bg} px-5 py-4`}>
-                    <p className={`text-sm font-semibold ${style.text} mb-3`}>
-                      Famous people who checked {cat.label.toLowerCase()} off their list
-                    </p>
-                    <div className="flex flex-wrap gap-3">
-                      {famous.map((p) => (
-                        <Link
-                          key={p.slug}
-                          href={`/bucket-lists/${p.slug}`}
-                          className="inline-flex items-center gap-2 text-sm text-foreground hover:text-foreground font-medium transition-colors"
-                          prefetch={false}
-                        >
-                          <span>{p.emoji}</span>
-                          <span>{p.name}</span>
-                          <span className="text-muted-foreground/60 text-xs">→</span>
-                        </Link>
-                      ))}
-                    </div>
-                  </div>
+                  <FadeIn>
+                    <CardHoverEffect className={`border ${style.border} ${style.bg} shadow-soft`}>
+                      <div className="px-5 py-4">
+                        <p className={`text-sm font-semibold ${style.text} mb-3`}>
+                          Famous people who checked {cat.label.toLowerCase()} off their list
+                        </p>
+                        <div className="flex flex-wrap gap-3">
+                          {famous.map((p) => (
+                            <Link
+                              key={p.slug}
+                              href={`/bucket-lists/${p.slug}`}
+                              className="inline-flex items-center gap-2 text-sm text-foreground hover:text-foreground font-medium transition-colors"
+                              prefetch={false}
+                            >
+                              <span>{p.emoji}</span>
+                              <span>{p.name}</span>
+                              <span className="text-muted-foreground/60 text-xs">→</span>
+                            </Link>
+                          ))}
+                        </div>
+                      </div>
+                    </CardHoverEffect>
+                  </FadeIn>
                 );
               })()}
             </section>

@@ -3,6 +3,7 @@
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
+import { FadeIn, SpotlightCard, StaggerContainer, StaggerItem } from '~/components/aceternity';
 import { Button } from '~/components/ui/button';
 import { Input } from '~/components/ui/input';
 import { computePersonality } from '~/lib/personality';
@@ -197,76 +198,85 @@ export function CompareJourneysClient({ userA, userB, paramA, paramB }: Props) {
       {/* Venn-style three-column layout */}
       <div>
         <h3 className="mb-4 text-sm font-semibold text-muted-foreground">Hobby overlap</h3>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <StaggerContainer className="grid grid-cols-1 gap-4 sm:grid-cols-3">
           {/* Only A */}
-          <div className="rounded-xl border border-border bg-card/40 p-4">
-            <p className="mb-3 text-sm font-semibold text-muted-foreground text-center">
-              Only @{userA?.username}
-            </p>
-            {onlyA.length === 0 ? (
-              <p className="text-center text-xs text-muted-foreground/60 py-4">None unique</p>
-            ) : (
-              <div className="flex flex-wrap gap-1.5 justify-center">
-                {onlyA.map((h) => (
-                  <span
-                    key={h}
-                    className="inline-flex rounded-full border border-border bg-card px-2.5 py-0.5 text-xs text-foreground"
-                  >
-                    {h}
-                  </span>
-                ))}
-              </div>
-            )}
-          </div>
+          <StaggerItem>
+            <SpotlightCard className="rounded-xl shadow-soft" innerClassName="p-4">
+              <p className="mb-3 text-sm font-semibold text-muted-foreground text-center">
+                Only @{userA?.username}
+              </p>
+              {onlyA.length === 0 ? (
+                <p className="text-center text-xs text-muted-foreground/60 py-4">None unique</p>
+              ) : (
+                <div className="flex flex-wrap gap-1.5 justify-center">
+                  {onlyA.map((h) => (
+                    <span
+                      key={h}
+                      className="inline-flex rounded-full border border-border bg-card px-2.5 py-0.5 text-xs text-foreground"
+                    >
+                      {h}
+                    </span>
+                  ))}
+                </div>
+              )}
+            </SpotlightCard>
+          </StaggerItem>
 
           {/* Shared — highlighted */}
-          <div className="rounded-xl border border-foreground/30 bg-foreground/10 p-4 shadow-sm">
-            <p className="mb-3 text-sm font-semibold text-foreground text-center">
-              Shared ({shared.length})
-            </p>
-            {shared.length === 0 ? (
-              <p className="text-center text-xs text-muted-foreground/60 py-4">
-                No shared hobbies yet
+          <StaggerItem>
+            <SpotlightCard
+              className="rounded-xl border-foreground/30 bg-foreground/10 shadow-soft"
+              innerClassName="p-4"
+            >
+              <p className="mb-3 text-sm font-semibold text-foreground text-center">
+                Shared ({shared.length})
               </p>
-            ) : (
-              <div className="flex flex-wrap gap-1.5 justify-center">
-                {shared.map((h) => (
-                  <span
-                    key={h}
-                    className="inline-flex rounded-full border border-foreground/30 bg-card px-2.5 py-1 text-xs font-medium text-foreground"
-                  >
-                    {h}
-                  </span>
-                ))}
-              </div>
-            )}
-          </div>
+              {shared.length === 0 ? (
+                <p className="text-center text-xs text-muted-foreground/60 py-4">
+                  No shared hobbies yet
+                </p>
+              ) : (
+                <div className="flex flex-wrap gap-1.5 justify-center">
+                  {shared.map((h) => (
+                    <span
+                      key={h}
+                      className="inline-flex rounded-full border border-foreground/30 bg-card px-2.5 py-1 text-xs font-medium text-foreground"
+                    >
+                      {h}
+                    </span>
+                  ))}
+                </div>
+              )}
+            </SpotlightCard>
+          </StaggerItem>
 
           {/* Only B */}
-          <div className="rounded-xl border border-border bg-card/40 p-4">
-            <p className="mb-3 text-sm font-semibold text-muted-foreground text-center">
-              Only @{userB?.username}
-            </p>
-            {onlyB.length === 0 ? (
-              <p className="text-center text-xs text-muted-foreground/60 py-4">None unique</p>
-            ) : (
-              <div className="flex flex-wrap gap-1.5 justify-center">
-                {onlyB.map((h) => (
-                  <span
-                    key={h}
-                    className="inline-flex rounded-full border border-border bg-card px-2.5 py-0.5 text-xs text-foreground"
-                  >
-                    {h}
-                  </span>
-                ))}
-              </div>
-            )}
-          </div>
-        </div>
+          <StaggerItem>
+            <SpotlightCard className="rounded-xl shadow-soft" innerClassName="p-4">
+              <p className="mb-3 text-sm font-semibold text-muted-foreground text-center">
+                Only @{userB?.username}
+              </p>
+              {onlyB.length === 0 ? (
+                <p className="text-center text-xs text-muted-foreground/60 py-4">None unique</p>
+              ) : (
+                <div className="flex flex-wrap gap-1.5 justify-center">
+                  {onlyB.map((h) => (
+                    <span
+                      key={h}
+                      className="inline-flex rounded-full border border-border bg-card px-2.5 py-0.5 text-xs text-foreground"
+                    >
+                      {h}
+                    </span>
+                  ))}
+                </div>
+              )}
+            </SpotlightCard>
+          </StaggerItem>
+        </StaggerContainer>
       </div>
 
       {/* Stats comparison */}
-      <div className="rounded-xl border border-border bg-card p-6">
+      <SpotlightCard className="rounded-xl shadow-soft" innerClassName="p-6">
         <div className="grid grid-cols-3 mb-3">
           <div className="text-sm font-semibold text-foreground text-center">
             @{userA?.username}
@@ -284,29 +294,34 @@ export function CompareJourneysClient({ userA, userB, paramA, paramB }: Props) {
           a={`${personalityA.archetype.emoji} ${personalityA.archetype.name}`}
           b={`${personalityB.archetype.emoji} ${personalityB.archetype.name}`}
         />
-      </div>
+      </SpotlightCard>
 
       {/* Combined personality */}
-      <div className="rounded-xl border border-foreground/20 bg-gradient-to-br from-foreground/10 to-card/40 p-6">
-        <h3 className="mb-1 text-sm font-semibold text-foreground">Combined personality</h3>
-        <p className="text-xs text-muted-foreground mb-4">
-          If you merged both journeys into one timeline, you would be…
-        </p>
-        <div className="flex items-center gap-3">
-          <span className="text-4xl">{combinedPersonality.archetype.emoji}</span>
-          <div>
-            <p className="text-lg font-bold text-foreground">
-              {combinedPersonality.archetype.name}
-            </p>
-            <p className="text-sm text-muted-foreground">
-              {combinedPersonality.archetype.description}
-            </p>
+      <FadeIn delay={0.1}>
+        <SpotlightCard
+          className="rounded-xl border-foreground/20 bg-gradient-to-br from-foreground/10 to-card/40 shadow-soft"
+          innerClassName="p-6"
+        >
+          <h3 className="mb-1 text-sm font-semibold text-foreground">Combined personality</h3>
+          <p className="text-xs text-muted-foreground mb-4">
+            If you merged both journeys into one timeline, you would be…
+          </p>
+          <div className="flex items-center gap-3">
+            <span className="text-4xl">{combinedPersonality.archetype.emoji}</span>
+            <div>
+              <p className="text-lg font-bold text-foreground">
+                {combinedPersonality.archetype.name}
+              </p>
+              <p className="text-sm text-muted-foreground">
+                {combinedPersonality.archetype.description}
+              </p>
+            </div>
           </div>
-        </div>
-        <p className="mt-4 text-sm text-muted-foreground italic leading-relaxed">
-          {combinedPersonality.narrative}
-        </p>
-      </div>
+          <p className="mt-4 text-sm text-muted-foreground italic leading-relaxed">
+            {combinedPersonality.narrative}
+          </p>
+        </SpotlightCard>
+      </FadeIn>
 
       {/* Try again */}
       <div className="flex justify-center">

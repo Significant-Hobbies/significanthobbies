@@ -2,6 +2,14 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
+import {
+  BorderBeam,
+  FadeIn,
+  GradientMesh,
+  SpotlightCard,
+  StaggerContainer,
+  StaggerItem,
+} from '~/components/aceternity';
 import { JsonLd } from '~/components/json-ld';
 import { type BlogPost, blogPosts, type ContentBlock } from '~/lib/blog-posts';
 
@@ -98,15 +106,17 @@ function BlogContent({ blocks }: { blocks: ContentBlock[] }) {
 
           case 'callout':
             return (
-              <div
-                key={idx}
-                className="scroll-reveal-scale my-8 flex gap-4 rounded-xl border border-primary/30 bg-primary/10 px-6 py-5"
-              >
-                <span className="mt-0.5 shrink-0 text-2xl" role="img" aria-hidden="true">
-                  {block.emoji}
-                </span>
-                <p className="text-base italic leading-relaxed text-lumi-300">{block.text}</p>
-              </div>
+              <FadeIn key={idx} className="my-8">
+                <SpotlightCard
+                  className="border-primary/30 bg-primary/10 shadow-soft"
+                  innerClassName="flex gap-4 px-6 py-5"
+                >
+                  <span className="mt-0.5 shrink-0 text-2xl" role="img" aria-hidden="true">
+                    {block.emoji}
+                  </span>
+                  <p className="text-base italic leading-relaxed text-lumi-300">{block.text}</p>
+                </SpotlightCard>
+              </FadeIn>
             );
 
           case 'divider':
@@ -176,7 +186,7 @@ function RelatedCard({ post }: { post: BlogPost }) {
 
   return (
     <Link href={`/blog/${post.slug}`} className="group block" prefetch={false}>
-      <div className="flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-card p-6 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-foreground/30 hover:shadow-[0_8px_32px_rgba(16,185,129,0.10)]">
+      <SpotlightCard className="shadow-soft" innerClassName="flex h-full flex-col p-6">
         <div className="mb-3 text-3xl transition-transform duration-300 group-hover:scale-110">
           {post.emoji}
         </div>
@@ -197,7 +207,7 @@ function RelatedCard({ post }: { post: BlogPost }) {
             Read →
           </span>
         </div>
-      </div>
+      </SpotlightCard>
     </Link>
   );
 }

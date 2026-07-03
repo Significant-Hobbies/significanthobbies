@@ -1,6 +1,14 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 
+import {
+  FadeIn,
+  GridBackground,
+  SpotlightCard,
+  StaggerContainer,
+  StaggerItem,
+  TextGenerateEffect,
+} from '~/components/aceternity';
 import { JsonLd } from '~/components/json-ld';
 import { Lumi } from '~/components/lumi';
 
@@ -321,37 +329,41 @@ export default function BucketListBefore50Page() {
       <JsonLd data={faqSchema} />
 
       {/* ── Hero ─────────────────────────────────────────────────── */}
-      <section className="bg-card pt-16 pb-10 px-4">
-        <div className="mx-auto max-w-4xl">
-          <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6 mb-8">
-            <Lumi size={88} glow float className="shrink-0" />
-            <div className="space-y-4 text-center sm:text-left">
-              <p className="text-primary text-sm font-semibold">
-                Guided by Lumi · 50 goals worth your best years
-              </p>
-              <h1 className="text-4xl sm:text-5xl font-bold leading-tight text-foreground text-balance">
-                50 Things to Do <span className="text-primary">Before You Turn 50</span>
-              </h1>
-              <p className="text-muted-foreground text-lg max-w-xl">
-                The 40s are peak ambition. Here are 50 goals that reflect depth, legacy, and a life
-                fully inhabited — not just visited.
-              </p>
-              <div className="flex flex-wrap gap-3 justify-center sm:justify-start">
-                <Link
-                  href="/dashboard"
-                  className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-semibold text-foreground hover:bg-lumi-600 transition-colors shadow-md"
-                >
-                  Build my bucket list
-                </Link>
-                <Link
-                  href="/bucket-lists"
-                  className="inline-flex items-center gap-2 rounded-full border border-border px-6 py-3 text-sm font-medium text-muted-foreground hover:border-primary hover:text-primary transition-colors"
-                >
-                  See famous lists →
-                </Link>
+      <section className="relative bg-card pt-16 pb-10 px-4">
+        <GridBackground />
+        <div className="relative mx-auto max-w-4xl">
+          <FadeIn>
+            <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6 mb-8">
+              <Lumi size={88} glow float className="shrink-0" />
+              <div className="space-y-4 text-center sm:text-left">
+                <p className="text-primary text-sm font-semibold">
+                  Guided by Lumi · 50 goals worth your best years
+                </p>
+                <TextGenerateEffect
+                  words="50 Things to Do Before You Turn 50"
+                  className="text-4xl sm:text-5xl font-bold leading-tight text-foreground text-balance"
+                />
+                <p className="text-muted-foreground text-lg max-w-xl">
+                  The 40s are peak ambition. Here are 50 goals that reflect depth, legacy, and a
+                  life fully inhabited — not just visited.
+                </p>
+                <div className="flex flex-wrap gap-3 justify-center sm:justify-start">
+                  <Link
+                    href="/dashboard"
+                    className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-semibold text-foreground hover:bg-lumi-600 transition-colors shadow-md"
+                  >
+                    Build my bucket list
+                  </Link>
+                  <Link
+                    href="/bucket-lists"
+                    className="inline-flex items-center gap-2 rounded-full border border-border px-6 py-3 text-sm font-medium text-muted-foreground hover:border-primary hover:text-primary transition-colors"
+                  >
+                    See famous lists →
+                  </Link>
+                </div>
               </div>
             </div>
-          </div>
+          </FadeIn>
         </div>
       </section>
 
@@ -385,25 +397,33 @@ export default function BucketListBefore50Page() {
 
       {/* ── List ─────────────────────────────────────────────────── */}
       <div className="mx-auto max-w-4xl px-4 pb-16">
-        <div className="grid gap-3 sm:grid-cols-2">
+        <StaggerContainer className="grid gap-3 sm:grid-cols-2">
           {ITEMS.map((item, i) => (
-            <div
-              key={i}
-              className="flex items-start gap-4 rounded-xl border border-lumi-200 bg-primary/10 px-4 py-4 hover:border-primary hover:shadow-sm transition-all"
-            >
-              <span className="text-2xl leading-none mt-0.5">{item.emoji}</span>
-              <div className="space-y-1 min-w-0">
-                <div className="flex items-start gap-2">
-                  <span className="text-xs font-bold text-primary shrink-0 mt-0.5">
-                    {String(i + 1).padStart(2, '0')}
-                  </span>
-                  <p className="font-semibold text-foreground text-sm leading-snug">{item.title}</p>
+            <StaggerItem key={i}>
+              <SpotlightCard
+                className="border border-lumi-200 bg-primary/10 shadow-soft"
+                innerClassName="px-4 py-4"
+              >
+                <div className="flex items-start gap-4 hover:border-primary transition-all">
+                  <span className="text-2xl leading-none mt-0.5">{item.emoji}</span>
+                  <div className="space-y-1 min-w-0">
+                    <div className="flex items-start gap-2">
+                      <span className="text-xs font-bold text-primary shrink-0 mt-0.5">
+                        {String(i + 1).padStart(2, '0')}
+                      </span>
+                      <p className="font-semibold text-foreground text-sm leading-snug">
+                        {item.title}
+                      </p>
+                    </div>
+                    <p className="text-muted-foreground text-xs leading-relaxed pl-5">
+                      {item.desc}
+                    </p>
+                  </div>
                 </div>
-                <p className="text-muted-foreground text-xs leading-relaxed pl-5">{item.desc}</p>
-              </div>
-            </div>
+              </SpotlightCard>
+            </StaggerItem>
           ))}
-        </div>
+        </StaggerContainer>
       </div>
 
       {/* ── FAQ ──────────────────────────────────────────────────── */}

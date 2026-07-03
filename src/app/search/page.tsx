@@ -1,6 +1,13 @@
 import { count, desc, eq, like, or } from 'drizzle-orm';
 import Link from 'next/link';
 
+import {
+  FadeIn,
+  GridBackground,
+  SpotlightCard,
+  StaggerContainer,
+  StaggerItem,
+} from '~/components/aceternity';
 import { timelines, users } from '~/db/schema';
 import { HOBBY_CATEGORIES } from '~/lib/hobbies';
 import { getTimelineUrl } from '~/lib/timeline-url';
@@ -26,19 +33,22 @@ export default async function SearchPage({ searchParams }: Props) {
 
   if (!query) {
     return (
-      <div className="mx-auto max-w-3xl px-4 py-12">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-foreground">Search</h1>
+      <div className="relative mx-auto max-w-3xl px-4 py-12">
+        <GridBackground variant="dots" size={22} />
+        <FadeIn className="relative mb-8">
+          <h1 className="font-serif text-3xl font-semibold text-foreground">Search</h1>
           <p className="mt-2 text-muted-foreground">Find timelines, people, and hobbies.</p>
-        </div>
+        </FadeIn>
         <SearchPageClient initialQuery="" />
-        <div className="mt-12 flex flex-col items-center justify-center rounded-2xl border border-border bg-card/40 py-20 text-center">
-          <span className="mb-4 text-4xl">🔍</span>
-          <p className="text-muted-foreground font-medium">Start typing to search</p>
-          <p className="mt-1 text-sm text-muted-foreground/60">
-            Search for timelines, usernames, or hobbies
-          </p>
-        </div>
+        <FadeIn className="relative mt-12" delay={0.1}>
+          <div className="flex flex-col items-center justify-center rounded-2xl border border-border bg-card/40 py-20 text-center shadow-soft">
+            <span className="mb-4 text-4xl">🔍</span>
+            <p className="text-muted-foreground font-medium">Start typing to search</p>
+            <p className="mt-1 text-sm text-muted-foreground/60">
+              Search for timelines, usernames, or hobbies
+            </p>
+          </div>
+        </FadeIn>
       </div>
     );
   }
@@ -121,16 +131,17 @@ export default async function SearchPage({ searchParams }: Props) {
   ).slice(0, 20);
 
   return (
-    <div className="mx-auto max-w-3xl px-4 py-12">
+    <div className="relative mx-auto max-w-3xl px-4 py-12">
+      <GridBackground variant="dots" size={22} />
       {/* Page header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-foreground">Search</h1>
+      <FadeIn className="relative mb-8">
+        <h1 className="font-serif text-3xl font-semibold text-foreground">Search</h1>
         <p className="mt-2 text-muted-foreground">Find timelines, people, and hobbies.</p>
-      </div>
+      </FadeIn>
 
       <SearchPageClient initialQuery={query} />
 
-      <div className="mt-8 space-y-10">
+      <div className="relative mt-8 space-y-10">
         {/* --- Timelines section --- */}
         <section className="scroll-reveal">
           <h2 className="mb-4 flex items-center gap-2 text-sm font-semibold text-muted-foreground">
@@ -140,31 +151,35 @@ export default async function SearchPage({ searchParams }: Props) {
             </span>
           </h2>
           {timelineResults.length > 0 ? (
-            <div className="space-y-2">
+            <StaggerContainer className="space-y-2">
               {timelineResults.map((t) => {
                 const totalHobbies = new Set(
                   t.phases.flatMap((p) => p.hobbies.map((h) => h.name.toLowerCase()))
                 ).size;
                 const username = t.user?.username ?? t.user?.name;
                 return (
-                  <Link key={t.id} href={getTimelineUrl(t)} prefetch={false}>
-                    <div className="group flex items-center justify-between rounded-xl border border-border bg-card px-4 py-3.5 transition-all hover:border-foreground/30 hover:bg-card/40">
-                      <div>
-                        <p className="font-medium text-foreground group-hover:text-foreground transition-colors">
-                          {t.title ?? 'Hobby Timeline'}
-                        </p>
-                        {username && (
-                          <p className="mt-0.5 text-xs text-muted-foreground/60">@{username}</p>
-                        )}
-                      </div>
-                      <p className="shrink-0 pl-4 text-xs text-muted-foreground/60">
-                        {t.phases.length} phases &middot; {totalHobbies} hobbies
-                      </p>
-                    </div>
-                  </Link>
+                  <StaggerItem key={t.id}>
+                    <Link href={getTimelineUrl(t)} prefetch={false}>
+                      <SpotlightCard className="shadow-soft" innerClassName="p-4">
+                        <div className="group flex items-center justify-between">
+                          <div>
+                            <p className="font-medium text-foreground group-hover:text-foreground transition-colors">
+                              {t.title ?? 'Hobby Timeline'}
+                            </p>
+                            {username && (
+                              <p className="mt-0.5 text-xs text-muted-foreground/60">@{username}</p>
+                            )}
+                          </div>
+                          <p className="shrink-0 pl-4 text-xs text-muted-foreground/60">
+                            {t.phases.length} phases &middot; {totalHobbies} hobbies
+                          </p>
+                        </div>
+                      </SpotlightCard>
+                    </Link>
+                  </StaggerItem>
                 );
               })}
-            </div>
+            </StaggerContainer>
           ) : (
             <div className="rounded-xl border border-border bg-card/40 px-5 py-8 text-center">
               <p className="text-sm text-muted-foreground">
@@ -183,33 +198,33 @@ export default async function SearchPage({ searchParams }: Props) {
             </span>
           </h2>
           {userWithCounts.length > 0 ? (
-            <div className="space-y-2">
+            <StaggerContainer className="space-y-2">
               {userWithCounts.map((user) => (
-                <Link
-                  key={user.id}
-                  href={user.username ? `/u/${user.username}` : '#'}
-                  prefetch={false}
-                >
-                  <div className="group flex items-center gap-3 rounded-xl border border-border bg-card px-4 py-3 transition-all hover:border-foreground/30 hover:bg-card/40">
-                    {/* Avatar */}
-                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-foreground/5 text-sm font-semibold text-muted-foreground border border-border">
-                      {(user.name ?? user.username ?? '?').charAt(0).toUpperCase()}
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="font-medium text-foreground group-hover:text-foreground transition-colors truncate">
-                        {user.name ?? user.username}
-                      </p>
-                      {user.username && (
-                        <p className="text-xs text-muted-foreground/60">@{user.username}</p>
-                      )}
-                    </div>
-                    <p className="shrink-0 text-xs text-muted-foreground/60">
-                      {user._count.timelines} timeline{user._count.timelines !== 1 ? 's' : ''}
-                    </p>
-                  </div>
-                </Link>
+                <StaggerItem key={user.id}>
+                  <Link href={user.username ? `/u/${user.username}` : '#'} prefetch={false}>
+                    <SpotlightCard className="shadow-soft" innerClassName="px-4 py-3">
+                      <div className="group flex items-center gap-3">
+                        {/* Avatar */}
+                        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-foreground/5 text-sm font-semibold text-muted-foreground border border-border">
+                          {(user.name ?? user.username ?? '?').charAt(0).toUpperCase()}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="font-medium text-foreground group-hover:text-foreground transition-colors truncate">
+                            {user.name ?? user.username}
+                          </p>
+                          {user.username && (
+                            <p className="text-xs text-muted-foreground/60">@{user.username}</p>
+                          )}
+                        </div>
+                        <p className="shrink-0 text-xs text-muted-foreground/60">
+                          {user._count.timelines} timeline{user._count.timelines !== 1 ? 's' : ''}
+                        </p>
+                      </div>
+                    </SpotlightCard>
+                  </Link>
+                </StaggerItem>
               ))}
-            </div>
+            </StaggerContainer>
           ) : (
             <div className="rounded-xl border border-border bg-card/40 px-5 py-8 text-center">
               <p className="text-sm text-muted-foreground">

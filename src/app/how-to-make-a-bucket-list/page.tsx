@@ -1,6 +1,14 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 
+import {
+  BorderBeam,
+  FadeIn,
+  GridBackground,
+  SpotlightCard,
+  StaggerContainer,
+  StaggerItem,
+} from '~/components/aceternity';
 import { JsonLd } from '~/components/json-ld';
 import { Lumi } from '~/components/lumi';
 
@@ -94,81 +102,93 @@ export default function HowToMakeABucketListPage() {
       <JsonLd data={faqSchema} />
 
       {/* ── Hero ─────────────────────────────────────────────────── */}
-      <section className="bg-card pt-16 pb-10 px-4">
-        <div className="mx-auto max-w-4xl">
-          <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6 mb-8">
-            <Lumi size={88} glow float className="shrink-0" />
-            <div className="space-y-4 text-center sm:text-left">
-              <p className="text-primary text-sm font-semibold">Guided by Lumi · 6 proven steps</p>
-              <h1 className="text-4xl sm:text-5xl font-bold leading-tight text-foreground text-balance">
-                How to Make a Bucket List{' '}
-                <span className="text-primary">(That You&apos;ll Actually Complete)</span>
-              </h1>
-              <p className="text-muted-foreground text-lg max-w-xl">
-                Most bucket lists are forgotten within a week. Here&apos;s the system that keeps
-                yours alive — from choosing the right goals to reviewing them every quarter.
-              </p>
-              <div className="flex flex-wrap gap-3 justify-center sm:justify-start">
-                <Link
-                  href="/dashboard"
-                  className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-semibold text-foreground hover:bg-lumi-600 transition-colors shadow-md"
-                >
-                  Start my bucket list
-                </Link>
-                <Link
-                  href="/bucket-lists"
-                  className="inline-flex items-center gap-2 rounded-full border border-border px-6 py-3 text-sm font-medium text-muted-foreground hover:border-primary hover:text-primary transition-colors"
-                >
-                  See famous lists →
-                </Link>
+      <section className="relative bg-card pt-16 pb-10 px-4">
+        <GridBackground />
+        <div className="relative mx-auto max-w-4xl">
+          <FadeIn>
+            <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6 mb-8">
+              <Lumi size={88} glow float className="shrink-0" />
+              <div className="space-y-4 text-center sm:text-left">
+                <p className="text-primary text-sm font-semibold">
+                  Guided by Lumi · 6 proven steps
+                </p>
+                <h1 className="text-4xl sm:text-5xl font-bold leading-tight text-foreground text-balance">
+                  How to Make a Bucket List{' '}
+                  <span className="text-primary">(That You&apos;ll Actually Complete)</span>
+                </h1>
+                <p className="text-muted-foreground text-lg max-w-xl">
+                  Most bucket lists are forgotten within a week. Here&apos;s the system that keeps
+                  yours alive — from choosing the right goals to reviewing them every quarter.
+                </p>
+                <div className="flex flex-wrap gap-3 justify-center sm:justify-start">
+                  <Link
+                    href="/dashboard"
+                    className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-semibold text-foreground hover:bg-lumi-600 transition-colors shadow-md"
+                  >
+                    Start my bucket list
+                  </Link>
+                  <Link
+                    href="/bucket-lists"
+                    className="inline-flex items-center gap-2 rounded-full border border-border px-6 py-3 text-sm font-medium text-muted-foreground hover:border-primary hover:text-primary transition-colors"
+                  >
+                    See famous lists →
+                  </Link>
+                </div>
               </div>
             </div>
-          </div>
+          </FadeIn>
         </div>
       </section>
 
       {/* ── Intro ────────────────────────────────────────────────── */}
       <div className="mx-auto max-w-3xl px-4 py-12">
-        <p className="text-foreground text-lg leading-relaxed">
-          The average person writes a bucket list twice in their life: once in their 20s, drunk on
-          possibility, and once facing a health scare or milestone birthday. Both times, the list
-          gets forgotten. The problem isn&apos;t motivation — it&apos;s structure. Here&apos;s what
-          actually works.
-        </p>
+        <FadeIn>
+          <p className="text-foreground text-lg leading-relaxed">
+            The average person writes a bucket list twice in their life: once in their 20s, drunk on
+            possibility, and once facing a health scare or milestone birthday. Both times, the list
+            gets forgotten. The problem isn&apos;t motivation — it&apos;s structure. Here&apos;s
+            what actually works.
+          </p>
+        </FadeIn>
       </div>
 
       {/* ── Steps ────────────────────────────────────────────────── */}
-      <div className="mx-auto max-w-3xl px-4 pb-16 space-y-12">
+      <StaggerContainer className="mx-auto max-w-3xl px-4 pb-16 space-y-12">
         {STEPS.map((step) => (
-          <section key={step.number} className="scroll-mt-20">
-            <div className="flex gap-5">
-              <div className="flex-shrink-0">
-                <div className="h-12 w-12 rounded-full bg-primary flex items-center justify-center">
-                  <span className="text-lg font-bold text-foreground">{step.number}</span>
+          <StaggerItem key={step.number}>
+            <section className="scroll-mt-20">
+              <div className="flex gap-5">
+                <div className="flex-shrink-0">
+                  <div className="h-12 w-12 rounded-full bg-primary flex items-center justify-center">
+                    <span className="text-lg font-bold text-foreground">{step.number}</span>
+                  </div>
+                </div>
+                <div className="space-y-4">
+                  <h2 className="text-xl sm:text-2xl font-bold text-foreground leading-snug text-balance">
+                    {step.title}
+                  </h2>
+                  <p className="text-foreground text-base leading-relaxed">{step.body}</p>
+                  <SpotlightCard
+                    className="border border-lumi-200 bg-primary/10 shadow-soft"
+                    innerClassName="px-5 py-4"
+                  >
+                    <p className="text-sm font-semibold text-lumi-600">Lumi tip: {step.tip}</p>
+                    {step.link && (
+                      <Link
+                        href={step.link.href}
+                        className="mt-2 inline-flex items-center text-sm font-medium text-primary hover:text-lumi-600 transition-colors"
+                        prefetch={false}
+                      >
+                        {step.link.label}
+                      </Link>
+                    )}
+                  </SpotlightCard>
                 </div>
               </div>
-              <div className="space-y-4">
-                <h2 className="text-xl sm:text-2xl font-bold text-foreground leading-snug text-balance">
-                  {step.title}
-                </h2>
-                <p className="text-foreground text-base leading-relaxed">{step.body}</p>
-                <div className="rounded-xl bg-primary/10 border border-lumi-200 px-5 py-4">
-                  <p className="text-sm font-semibold text-lumi-600">Lumi tip: {step.tip}</p>
-                  {step.link && (
-                    <Link
-                      href={step.link.href}
-                      className="mt-2 inline-flex items-center text-sm font-medium text-primary hover:text-lumi-600 transition-colors"
-                      prefetch={false}
-                    >
-                      {step.link.label}
-                    </Link>
-                  )}
-                </div>
-              </div>
-            </div>
-          </section>
+            </section>
+          </StaggerItem>
         ))}
-      </div>
+      </StaggerContainer>
 
       {/* ── FAQ ──────────────────────────────────────────────────── */}
       <section className="bg-card/40 border-t border-border">
@@ -193,26 +213,33 @@ export default function HowToMakeABucketListPage() {
       {/* ── CTA ──────────────────────────────────────────────────── */}
       <section className="bg-primary/10 border-t border-lumi-200">
         <div className="mx-auto max-w-3xl px-4 py-16 text-center space-y-6">
-          <Lumi size={64} glow float className="mx-auto" />
-          <h2 className="text-3xl font-bold text-foreground text-balance">Ready to build yours?</h2>
-          <p className="text-muted-foreground max-w-md mx-auto">
-            Lumi helps you build, track, and review your bucket list — and shows you the famous
-            person whose ambitions look most like yours.
-          </p>
-          <div className="flex flex-wrap gap-3 justify-center">
-            <Link
-              href="/dashboard"
-              className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-semibold text-foreground hover:bg-lumi-600 transition-colors shadow-md"
-            >
-              Start my bucket list
-            </Link>
-            <Link
-              href="/bucket-lists"
-              className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-6 py-3 text-sm font-medium text-foreground hover:border-primary transition-colors"
-            >
-              Browse famous lists →
-            </Link>
-          </div>
+          <SpotlightCard className="shadow-soft" innerClassName="py-8 px-6 space-y-6 text-center">
+            <div className="relative overflow-hidden rounded-xl">
+              <BorderBeam />
+              <Lumi size={64} glow float className="mx-auto" />
+              <h2 className="text-3xl font-bold text-foreground text-balance">
+                Ready to build yours?
+              </h2>
+              <p className="text-muted-foreground max-w-md mx-auto">
+                Lumi helps you build, track, and review your bucket list — and shows you the famous
+                person whose ambitions look most like yours.
+              </p>
+              <div className="flex flex-wrap gap-3 justify-center">
+                <Link
+                  href="/dashboard"
+                  className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-semibold text-foreground hover:bg-lumi-600 transition-colors shadow-md"
+                >
+                  Start my bucket list
+                </Link>
+                <Link
+                  href="/bucket-lists"
+                  className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-6 py-3 text-sm font-medium text-foreground hover:border-primary transition-colors"
+                >
+                  Browse famous lists →
+                </Link>
+              </div>
+            </div>
+          </SpotlightCard>
         </div>
       </section>
     </main>

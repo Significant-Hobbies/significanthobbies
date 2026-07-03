@@ -1,6 +1,14 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 
+import {
+  FadeIn,
+  GridBackground,
+  SpotlightCard,
+  StaggerContainer,
+  StaggerItem,
+  TextGenerateEffect,
+} from '~/components/aceternity';
 import { JsonLd } from '~/components/json-ld';
 
 export const metadata: Metadata = {
@@ -285,25 +293,36 @@ export default function HobbiesToTryPage() {
         }}
       />
 
-      <div className="mb-6">
-        <Link href="/hobbies" className="text-sm text-muted-foreground hover:text-foreground">
-          ← Hobby Directory
-        </Link>
+      {/* Header */}
+      <div className="relative mb-8 overflow-hidden rounded-3xl border border-border/60">
+        <GridBackground variant="dots" size={22} />
+        <FadeIn className="relative p-6 sm:p-8">
+          <Link href="/hobbies" className="text-sm text-muted-foreground hover:text-foreground">
+            ← Hobby Directory
+          </Link>
+          <TextGenerateEffect
+            words="40 New Hobbies to Try in 2026"
+            className="mt-4 text-3xl font-bold text-foreground"
+          />
+        </FadeIn>
       </div>
 
-      <h1 className="text-3xl font-bold text-foreground mb-4">40 New Hobbies to Try in 2026</h1>
-      <p className="text-lg text-muted-foreground mb-4 leading-relaxed">
-        The biggest barrier to starting a new hobby isn&apos;t motivation — it&apos;s friction. The
-        gap between &ldquo;I want to try that&rdquo; and actually doing it is almost always about
-        unclear next steps, not lack of interest.
-      </p>
-      <p className="text-lg text-muted-foreground mb-8 leading-relaxed">
-        This list is organized by effort-to-entry, not by category. Find your current available
-        bandwidth — tonight, this weekend, this month, or this year — and start from there.
-      </p>
+      <FadeIn delay={0.1}>
+        <p className="text-lg text-muted-foreground mb-4 leading-relaxed">
+          The biggest barrier to starting a new hobby isn&apos;t motivation — it&apos;s friction.
+          The gap between &ldquo;I want to try that&rdquo; and actually doing it is almost always
+          about unclear next steps, not lack of interest.
+        </p>
+      </FadeIn>
+      <FadeIn delay={0.18}>
+        <p className="text-lg text-muted-foreground mb-8 leading-relaxed">
+          This list is organized by effort-to-entry, not by category. Find your current available
+          bandwidth — tonight, this weekend, this month, or this year — and start from there.
+        </p>
+      </FadeIn>
 
       {/* Jump links */}
-      <div className="flex flex-wrap gap-2 mb-10">
+      <FadeIn className="flex flex-wrap gap-2 mb-10">
         {SECTIONS.map((s) => (
           <a
             key={s.id}
@@ -313,56 +332,64 @@ export default function HobbiesToTryPage() {
             {s.label}
           </a>
         ))}
-      </div>
+      </FadeIn>
 
       <div className="space-y-12">
         {SECTIONS.map((section) => (
-          <section key={section.id} id={section.id}>
-            <div className="mb-6">
-              <h2 className="text-2xl font-bold text-foreground">{section.label}</h2>
-              <p className="text-muted-foreground mt-1 text-sm">{section.subtitle}</p>
-            </div>
-            <ul className="space-y-4">
-              {section.hobbies.map((hobby) => (
-                <li
-                  key={hobby.name}
-                  className="rounded-xl border border-border bg-card p-5 hover:border-foreground/30 transition-colors"
-                >
-                  <div className="flex items-start justify-between gap-4 flex-wrap">
-                    <Link
-                      href={`/hobbies/${hobbySlug(hobby.name)}`}
-                      className="text-base font-bold text-foreground hover:text-foreground transition-colors"
-                      prefetch={false}
-                    >
-                      {hobby.name}
-                    </Link>
-                    <span
-                      className={`flex-shrink-0 rounded-full border px-3 py-0.5 text-xs font-medium ${section.badgeColor}`}
-                    >
-                      {hobby.time}
-                    </span>
-                  </div>
-                  <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{hobby.what}</p>
-                </li>
-              ))}
-            </ul>
-          </section>
+          <FadeIn key={section.id}>
+            <section id={section.id}>
+              <div className="mb-6">
+                <h2 className="text-2xl font-bold text-foreground">{section.label}</h2>
+                <p className="text-muted-foreground mt-1 text-sm">{section.subtitle}</p>
+              </div>
+              <StaggerContainer className="space-y-4">
+                {section.hobbies.map((hobby) => (
+                  <StaggerItem key={hobby.name}>
+                    <SpotlightCard className="shadow-soft" innerClassName="rounded-xl p-5">
+                      <div className="flex items-start justify-between gap-4 flex-wrap">
+                        <Link
+                          href={`/hobbies/${hobbySlug(hobby.name)}`}
+                          className="text-base font-bold text-foreground hover:text-foreground transition-colors"
+                          prefetch={false}
+                        >
+                          {hobby.name}
+                        </Link>
+                        <span
+                          className={`flex-shrink-0 rounded-full border px-3 py-0.5 text-xs font-medium ${section.badgeColor}`}
+                        >
+                          {hobby.time}
+                        </span>
+                      </div>
+                      <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
+                        {hobby.what}
+                      </p>
+                    </SpotlightCard>
+                  </StaggerItem>
+                ))}
+              </StaggerContainer>
+            </section>
+          </FadeIn>
         ))}
       </div>
 
-      <div className="mt-12 rounded-xl bg-foreground/10 border border-foreground/20 p-8 text-center">
-        <h2 className="text-xl font-bold text-foreground mb-2">Find your perfect hobby</h2>
-        <p className="text-muted-foreground mb-4">
-          Not sure where to start? Our quiz asks about your schedule, personality, and what you want
-          from a hobby — then gives you a personalized shortlist.
-        </p>
-        <Link
-          href="/find-your-hobby"
-          className="inline-flex rounded-lg bg-primary px-6 py-2.5 text-sm font-semibold text-primary-foreground hover:opacity-90 transition-colors"
+      <FadeIn className="mt-12">
+        <SpotlightCard
+          className="border-foreground/20 bg-foreground/10 shadow-soft"
+          innerClassName="rounded-xl p-8 text-center"
         >
-          Take the Quiz →
-        </Link>
-      </div>
+          <h2 className="text-xl font-bold text-foreground mb-2">Find your perfect hobby</h2>
+          <p className="text-muted-foreground mb-4">
+            Not sure where to start? Our quiz asks about your schedule, personality, and what you
+            want from a hobby — then gives you a personalized shortlist.
+          </p>
+          <Link
+            href="/find-your-hobby"
+            className="inline-flex rounded-lg bg-primary px-6 py-2.5 text-sm font-semibold text-primary-foreground hover:opacity-90 transition-colors"
+          >
+            Take the Quiz →
+          </Link>
+        </SpotlightCard>
+      </FadeIn>
     </div>
   );
 }

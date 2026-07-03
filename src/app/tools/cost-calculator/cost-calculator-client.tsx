@@ -2,6 +2,8 @@
 
 import { useEffect, useMemo, useState } from 'react';
 
+import { BorderBeam, FadeIn, NumberTicker, SpotlightCard } from '~/components/aceternity';
+
 const STORAGE_KEY = 'sh-cost-calculator-v1';
 
 interface LineItem {
@@ -68,14 +70,6 @@ function annualize(items: LineItem[]): {
   };
 }
 
-function fmt(n: number): string {
-  return n.toLocaleString('en-US', {
-    style: 'currency',
-    currency: 'USD',
-    maximumFractionDigits: 0,
-  });
-}
-
 export default function CostCalculatorClient() {
   const [items, setItems] = useState<LineItem[]>(SEED_ITEMS);
   const [hobbyName, setHobbyName] = useState('My hobby');
@@ -121,11 +115,11 @@ export default function CostCalculatorClient() {
   }
 
   return (
-    <div className="mx-auto max-w-3xl px-4 py-10">
+    <FadeIn className="mx-auto max-w-3xl px-4 py-10">
       <div className="mb-2 inline-flex items-center gap-2 rounded-full border border-foreground/20 bg-foreground/10 px-3 py-1 text-[11px] font-semibold text-foreground">
         Free tool
       </div>
-      <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+      <h1 className="font-serif text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
         Hobby cost calculator
       </h1>
       <p className="mt-2 text-muted-foreground">
@@ -147,7 +141,7 @@ export default function CostCalculatorClient() {
         ))}
       </div>
 
-      <div className="mt-6 rounded-2xl border border-border bg-card p-5 shadow-sm">
+      <SpotlightCard className="mt-6 rounded-2xl shadow-soft" innerClassName="p-5">
         <label className="block text-sm font-semibold text-muted-foreground">Hobby</label>
         <input
           value={hobbyName}
@@ -207,13 +201,14 @@ export default function CostCalculatorClient() {
         >
           + Add line item
         </button>
-      </div>
+      </SpotlightCard>
 
-      <div className="mt-6 grid gap-3 sm:grid-cols-4">
-        <Stat label="One-time" value={fmt(totals.oneTime)} hint="up-front gear" />
-        <Stat label="Recurring / year" value={fmt(totals.annual)} hint="lessons + subscriptions" />
-        <Stat label="≈ Per month" value={fmt(totals.monthly)} hint="steady state" />
-        <Stat label="Year one" value={fmt(totals.yearOne)} hint="real number" emphasize />
+      <div className="relative mt-6 grid gap-3 overflow-hidden rounded-2xl sm:grid-cols-4">
+        <BorderBeam size={180} duration={10} />
+        <Stat label="One-time" value={totals.oneTime} hint="up-front gear" />
+        <Stat label="Recurring / year" value={totals.annual} hint="lessons + subscriptions" />
+        <Stat label="≈ Per month" value={totals.monthly} hint="steady state" />
+        <Stat label="Year one" value={totals.yearOne} hint="real number" emphasize />
       </div>
 
       <p className="mt-4 text-xs text-muted-foreground">
@@ -229,7 +224,7 @@ export default function CostCalculatorClient() {
           Reset
         </button>
       </p>
-    </div>
+    </FadeIn>
   );
 }
 
@@ -240,7 +235,7 @@ function Stat({
   emphasize = false,
 }: {
   label: string;
-  value: string;
+  value: number;
   hint?: string;
   emphasize?: boolean;
 }) {
@@ -256,7 +251,7 @@ function Stat({
           emphasize ? 'text-foreground' : 'text-foreground'
         }`}
       >
-        {value}
+        $<NumberTicker value={Math.round(value)} />
       </div>
       {hint && <div className="mt-1 text-[11px] text-muted-foreground">{hint}</div>}
     </div>
