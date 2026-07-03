@@ -324,9 +324,14 @@ export const habits = sqliteTable(
     targetFrequency: text('targetFrequency').notNull().default('daily'),
     // Optional emoji icon for visual identity
     icon: text('icon'),
+    // Links to UserQuest.id if this habit was auto-created from a quest
+    sourceQuestId: text('sourceQuestId'),
     createdAt: integer('createdAt', { mode: 'timestamp' }).notNull().default(sql`(unixepoch())`),
   },
-  (table) => [index('Habit_userId_idx').on(table.userId)]
+  (table) => [
+    index('Habit_userId_idx').on(table.userId),
+    index('Habit_sourceQuestId_idx').on(table.sourceQuestId),
+  ]
 );
 
 // Daily habit check-ins — one per habit per day.
@@ -427,6 +432,8 @@ export const userQuests = sqliteTable(
     sourceHobby: text('sourceHobby'),
     // Which timeline generated this quest — null for static quests
     sourceTimelineId: text('sourceTimelineId'),
+    // Which bucket list item this quest was decomposed from — null for non-bucket quests
+    sourceBucketItemId: text('sourceBucketItemId'),
     // The quest title at generation time (so it displays even if the static quest changes)
     title: text('title').notNull(),
     description: text('description'),

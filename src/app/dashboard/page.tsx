@@ -5,6 +5,7 @@ import { redirect } from 'next/navigation';
 
 import { FadeIn, GradientMesh, GridBackground } from '~/components/aceternity';
 import { ActiveQuests } from '~/components/dashboard/active-quests';
+import { BehavioralInsights } from '~/components/dashboard/behavioral-insights';
 import { BucketListSection } from '~/components/bucket-list-section';
 import { CommitmentCard } from '~/components/commitments/commitment-card';
 import { DashboardStats } from '~/components/dashboard/dashboard-stats';
@@ -16,9 +17,18 @@ import { TimelineCard } from '~/components/timeline-card';
 import { RecommendationsPanel } from '~/components/timeline-view/recommendations-panel';
 import { RediscoveryNudges } from '~/components/timeline-view/rediscovery-nudges';
 import { Button } from '~/components/ui/button';
-import { bucketListItems, habitLogs, habits, journalEntries, timelines, users } from '~/db/schema';
+import {
+  bucketListItems,
+  habitLogs,
+  habits,
+  journalEntries,
+  timelines,
+  userQuests,
+  users,
+} from '~/db/schema';
 import { getMyCommitments } from '~/lib/actions/commitments';
-import { getActiveQuests } from '~/lib/actions/user-quests';
+import { getActiveQuests, getCompletedQuests } from '~/lib/actions/user-quests';
+import { computeBehavioralInsights } from '~/lib/behavioral-insights';
 import { computeStreak, type StampRow } from '~/lib/commitments';
 import { getWeeklyReflection } from '~/lib/lumi-coach';
 import { birthDateFromYear, buildLifeGrid, weekIndexForDay } from '~/lib/mortality';
@@ -66,6 +76,8 @@ export default async function DashboardPage() {
     allHabitLogs,
     myJournal,
     activeQuests,
+    completedQuests,
+    abandonedQuestRows,
   ] = await Promise.all([
     db
       .select()
@@ -98,6 +110,12 @@ export default async function DashboardPage() {
       .where(and(eq(journalEntries.userId, session.user.id), eq(journalEntries.dayDate, today)))
       .limit(1),
     getActiveQuests(),
+    getCompletedQuests(),
+    db
+      .select()
+      .from(userQuests)
+      .where(and(eq(userQuests.userId, session.user.id), eq(userQuests.status, 'abandoned')))
+      .orderBy(desc(userQuests.startedAt)),
   ]);
 
   const todayJournal = myJournal[0] ?? null;
@@ -145,6 +163,36 @@ export default async function DashboardPage() {
 
   const allPhases = timelineList.flatMap((t) => t.phases);
   const personality = allPhases.length > 0 ? computePersonality(allPhases) : null;
+
+  // ─── Behavioral insights — computed from real user activity ───
+  const abandonedQuests = abandonedQuestRows.map((r) => ({
+    id: r.id,
+    questId: r.questId,
+    type: r.type,
+    sourceHobby: r.sourceHobby,
+    title: r.title,
+    startedAt: r.startedAt,
+  }));
+  const behavioralInsights = computeBehavioralInsights({
+    completedQuests,
+    activeQuests,
+    abandonedQuests,
+    habitLogs: allHabitLogs.map((l) => ({
+      habitId: l.habitId,
+      dayDate: l.dayDate,
+      completed: l.completed,
+    })),
+    habits: myHabits.map((h) => ({
+      id: h.id,
+      name: h.name,
+      sourceQuestId: h.sourceQuestId,
+      status: h.status,
+    })),
+    timelinePhases: allPhases.map((p) => ({
+      label: p.label,
+      hobbies: (p.hobbies ?? []).map((h) => ({ name: h.name })),
+    })),
+  });
 
   const weeklyReflection = await getWeeklyReflection().catch((err) => {
     console.error('[dashboard] weekly reflection failed', err);
@@ -246,6 +294,11 @@ export default async function DashboardPage() {
       {/* ─── Active quests — the core Timeline→Quest loop ─── */}
       <FadeIn delay={0.1}>
         <ActiveQuests quests={activeQuests} />
+      </FadeIn>
+
+      {/* ─── Behavioral insights — honest patterns from real activity ─── */}
+      <FadeIn delay={0.1}>
+        <BehavioralInsights insights={behavioralInsights} />
       </FadeIn>
 
       {/* ─── Habit heatmap — visual streak display ─── */}

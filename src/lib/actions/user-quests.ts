@@ -3,7 +3,7 @@
 import { and, eq } from 'drizzle-orm';
 import { revalidatePath } from 'next/cache';
 
-import { userQuests, timelines } from '~/db/schema';
+import { habits, userQuests, timelines } from '~/db/schema';
 import { getServerAuthSession } from '~/server/auth';
 import { db } from '~/server/db';
 import type { TimelinePin } from '~/lib/types';
@@ -16,6 +16,7 @@ export type UserQuestRow = {
   type: string;
   sourceHobby: string | null;
   sourceTimelineId: string | null;
+  sourceBucketItemId: string | null;
   title: string;
   description: string | null;
   emoji: string | null;
@@ -36,6 +37,7 @@ export async function startQuest(params: {
   emoji?: string;
   sourceHobby?: string;
   sourceTimelineId?: string;
+  sourceBucketItemId?: string;
 }): Promise<{ success: boolean; error?: string }> {
   const session = await getServerAuthSession();
   if (!session?.user?.id) return { success: false, error: 'Not authenticated' };
@@ -66,12 +68,52 @@ export async function startQuest(params: {
     emoji: params.emoji ?? null,
     sourceHobby: params.sourceHobby ?? null,
     sourceTimelineId: params.sourceTimelineId ?? null,
+    sourceBucketItemId: params.sourceBucketItemId ?? null,
     status: 'active',
   });
+
+  // Auto-create a daily habit for this quest (best-effort — quest still starts if this fails).
+  try {
+    // Fetch the just-created UserQuest row to get its PK id.
+    const [createdQuest] = await db
+      .select({ id: userQuests.id })
+      .from(userQuests)
+      .where(
+        and(
+          eq(userQuests.userId, session.user.id),
+          eq(userQuests.questId, params.questId),
+          eq(userQuests.status, 'active')
+        )
+      )
+      .limit(1);
+
+    if (createdQuest) {
+      // Avoid duplicate habits for the same quest (idempotent).
+      const existingHabit = await db
+        .select({ id: habits.id })
+        .from(habits)
+        .where(eq(habits.sourceQuestId, createdQuest.id))
+        .limit(1);
+
+      if (existingHabit.length === 0) {
+        await db.insert(habits).values({
+          userId: session.user.id,
+          name: params.title,
+          targetFrequency: 'daily',
+          icon: params.emoji ?? null,
+          sourceQuestId: createdQuest.id,
+          status: 'active',
+        });
+      }
+    }
+  } catch {
+    // Habit creation is best-effort; the quest should still start.
+  }
 
   revalidatePath('/dashboard');
   revalidatePath('/side-quests');
   revalidatePath('/timeline');
+  revalidatePath('/life-plan');
 
   return { success: true };
 }
@@ -101,6 +143,16 @@ export async function completeUserQuest(
     .update(userQuests)
     .set({ status: 'completed', completedAt: new Date() })
     .where(eq(userQuests.id, userQuestPkId));
+
+  // Archive the auto-created daily habit for this quest (best-effort).
+  try {
+    await db
+      .update(habits)
+      .set({ status: 'archived' })
+      .where(and(eq(habits.sourceQuestId, userQuestPkId), eq(habits.userId, session.user.id)));
+  } catch {
+    // Best-effort; quest completion should still succeed.
+  }
 
   // Auto-add a pin to the source timeline (the loop!)
   let pinAdded = false;
@@ -163,6 +215,16 @@ export async function abandonQuest(
     .set({ status: 'abandoned' })
     .where(and(eq(userQuests.id, userQuestPkId), eq(userQuests.userId, session.user.id)));
 
+  // Archive the auto-created daily habit for this quest (best-effort).
+  try {
+    await db
+      .update(habits)
+      .set({ status: 'archived' })
+      .where(and(eq(habits.sourceQuestId, userQuestPkId), eq(habits.userId, session.user.id)));
+  } catch {
+    // Best-effort; quest abandonment should still succeed.
+  }
+
   revalidatePath('/dashboard');
   revalidatePath('/side-quests');
 
@@ -187,6 +249,7 @@ export async function getActiveQuests(): Promise<UserQuestRow[]> {
     type: r.type,
     sourceHobby: r.sourceHobby,
     sourceTimelineId: r.sourceTimelineId,
+    sourceBucketItemId: r.sourceBucketItemId,
     title: r.title,
     description: r.description,
     emoji: r.emoji,
@@ -214,6 +277,7 @@ export async function getCompletedQuests(): Promise<UserQuestRow[]> {
     type: r.type,
     sourceHobby: r.sourceHobby,
     sourceTimelineId: r.sourceTimelineId,
+    sourceBucketItemId: r.sourceBucketItemId,
     title: r.title,
     description: r.description,
     emoji: r.emoji,

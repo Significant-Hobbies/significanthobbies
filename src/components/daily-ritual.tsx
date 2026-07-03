@@ -16,6 +16,7 @@ interface Habit {
   status: string;
   targetFrequency: string;
   icon: string | null;
+  sourceQuestId: string | null;
 }
 
 interface HabitLog {
@@ -317,14 +318,21 @@ export function DailyRitual({
                   <div className="flex min-w-0 flex-1 items-center gap-2.5">
                     {habit.icon && <span className="text-lg leading-none">{habit.icon}</span>}
                     <div className="min-w-0">
-                      <p
-                        className={cn(
-                          'text-sm font-medium truncate',
-                          done ? 'text-muted-foreground' : 'text-foreground'
+                      <div className="flex items-center gap-1.5">
+                        <p
+                          className={cn(
+                            'text-sm font-medium truncate',
+                            done ? 'text-muted-foreground' : 'text-foreground'
+                          )}
+                        >
+                          {habit.name}
+                        </p>
+                        {habit.sourceQuestId && (
+                          <span className="shrink-0 rounded-full border border-primary/30 bg-primary/10 px-1.5 py-0.5 text-[9px] font-medium uppercase tracking-wide text-primary">
+                            Quest
+                          </span>
                         )}
-                      >
-                        {habit.name}
-                      </p>
+                      </div>
                       <p className="text-[10px] uppercase tracking-wide text-muted-foreground/60">
                         {freqLabel}
                       </p>

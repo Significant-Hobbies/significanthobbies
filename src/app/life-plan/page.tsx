@@ -10,8 +10,10 @@ import {
   StaggerContainer,
   StaggerItem,
 } from '~/components/aceternity';
+import { QuestChainCard } from '~/components/bucket-list/quest-chain-card';
 import { Lumi } from '~/components/lumi';
 import { bucketListItems, timelines } from '~/db/schema';
+import { getActiveQuests } from '~/lib/actions/user-quests';
 import { BUCKET_ITEM_CATEGORIES, type BucketItemCategory } from '~/lib/famous-bucket-lists';
 import { computePersonality } from '~/lib/personality';
 import type { Phase, TimelineVisibility } from '~/lib/types';
@@ -65,7 +67,7 @@ export default async function LifePlanPage() {
   const session = await getServerAuthSession();
   if (!session?.user) redirect('/login');
 
-  const [rawTimelines, rawBucketItems] = await Promise.all([
+  const [rawTimelines, rawBucketItems, activeQuests] = await Promise.all([
     db
       .select()
       .from(timelines)
@@ -76,6 +78,7 @@ export default async function LifePlanPage() {
       .from(bucketListItems)
       .where(eq(bucketListItems.userId, session.user.id))
       .orderBy(desc(bucketListItems.createdAt)),
+    getActiveQuests(),
   ]);
 
   // Parse all phases
@@ -296,7 +299,7 @@ export default async function LifePlanPage() {
         </div>
       </section>
 
-      {/* ── Future (bucket list by domain) ──────────────────────── */}
+      {/* ── Future (bucket list as quest chains) ────────────────── */}
       {totalPlanned > 0 && (
         <section className="space-y-4">
           <div className="flex items-center justify-between">
@@ -308,38 +311,26 @@ export default async function LifePlanPage() {
               Manage bucket list →
             </Link>
           </div>
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {(Object.keys(BUCKET_ITEM_CATEGORIES) as BucketItemCategory[]).map((cat) => {
-              const items = (bucketByCategory[cat] ?? []).filter((i) => i.status !== 'done');
-              if (items.length === 0) return null;
-              const colors = CATEGORY_COLORS[cat];
-              return (
-                <div key={cat} className={`rounded-xl border ${colors.border} ${colors.bg} p-4`}>
-                  <p className={`text-sm font-semibold ${colors.text} mb-3`}>
-                    {BUCKET_ITEM_CATEGORIES[cat].emoji} {BUCKET_ITEM_CATEGORIES[cat].label}
-                  </p>
-                  <ul className="space-y-1.5">
-                    {items.slice(0, 6).map((item) => (
-                      <li key={item.id} className="flex items-center gap-2 text-sm text-foreground">
-                        <span className={`h-1.5 w-1.5 rounded-full ${colors.dot} shrink-0`} />
-                        <span className="truncate flex-1">{item.title}</span>
-                        {item.targetYear && (
-                          <span className="text-xs text-muted-foreground/60 shrink-0">
-                            {item.targetYear}
-                          </span>
-                        )}
-                      </li>
-                    ))}
-                    {items.length > 6 && (
-                      <li className="text-xs text-muted-foreground/60 pl-3.5">
-                        +{items.length - 6} more
-                      </li>
-                    )}
-                  </ul>
-                </div>
-              );
-            })}
-          </div>
+          <p className="text-sm text-muted-foreground">
+            Each dream, broken into steps you can start today.
+          </p>
+          <StaggerContainer className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {bucketPlanned.map((item) => (
+              <StaggerItem key={item.id}>
+                <QuestChainCard
+                  bucketItemId={item.id}
+                  title={item.title}
+                  category={item.category}
+                  activeQuests={activeQuests.map((q) => ({
+                    id: q.id,
+                    questId: q.questId,
+                    status: q.status,
+                    title: q.title,
+                  }))}
+                />
+              </StaggerItem>
+            ))}
+          </StaggerContainer>
         </section>
       )}
 
