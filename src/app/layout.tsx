@@ -26,6 +26,30 @@ export const metadata: Metadata = {
   },
   description:
     'Map your hobby history across life phases. Discover what rekindled, what persisted, and what to explore next.',
+  keywords: [
+    'hobby discovery',
+    'hobby journal',
+    'life phases hobbies',
+    'hobby timeline',
+    'bucket list',
+    'find your hobby',
+    'hobby quiz',
+    'daily rituals',
+    'habit tracking',
+    'life planner',
+  ],
+  authors: [{ name: 'SignificantHobbies' }],
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+      'max-video-preview': -1,
+    },
+  },
   manifest: '/manifest.json',
   icons: [
     { rel: 'icon', url: '/favicon.ico' },
@@ -44,6 +68,14 @@ export const metadata: Metadata = {
     title: 'SignificantHobbies — Your Hobby Journey',
     description:
       'Map your hobby history across life phases. Discover what rekindled, what persisted, and what to explore next.',
+    images: [
+      {
+        url: 'https://significanthobbies.com/opengraph-image',
+        width: 1200,
+        height: 630,
+        alt: 'SignificantHobbies — Your Hobby Journey',
+      },
+    ],
   },
   alternates: {
     canonical: 'https://significanthobbies.com',
@@ -53,6 +85,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'SignificantHobbies — Your Hobby Journey',
     description: 'Map your hobby history across life phases.',
+    images: ['https://significanthobbies.com/opengraph-image'],
   },
 };
 
@@ -75,6 +108,22 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             description:
               'Map your hobby history across life phases. Discover what rekindled, what persisted, and what to explore next.',
             sameAs: ['https://github.com/sarthak-fleet/significanthobbies'],
+          }}
+        />
+        <JsonLd
+          data={{
+            '@context': 'https://schema.org',
+            '@type': 'WebSite',
+            name: 'SignificantHobbies',
+            url: 'https://significanthobbies.com',
+            description:
+              'Map your hobby history across life phases. Discover what rekindled, what persisted, and what to explore next.',
+            inLanguage: 'en',
+            publisher: {
+              '@type': 'Organization',
+              name: 'SignificantHobbies',
+              url: 'https://significanthobbies.com',
+            },
           }}
         />
         <AnalyticsProvider>
