@@ -1,0 +1,85 @@
+---
+const faqs = [
+  {
+    q: 'What is Significant Hobbies?',
+    a: 'Significant Hobbies is a life planner with two dimensions. The Daily dimension is private: one ritual page with AM and PM prompts, habit check-ins, and a compulsory journal entry. The Living dimension is opt-in public: hobby discovery, a timeline builder, bucket lists, side quests, and shareable user profiles.',
+  },
+  {
+    q: 'Is Significant Hobbies free?',
+    a: 'Yes, Significant Hobbies is free to use. Guest mode lets you build and export timelines without creating an account. Signing in with Google enables saving timelines, daily rituals, habit streaks, and public profiles so your progress persists across devices.',
+  },
+  {
+    q: 'What is the timeline builder?',
+    a: 'The timeline builder is a drag-and-drop tool that maps your hobby history across life phases. You add hobbies to different life periods, visualize insights like rekindled interests and persistence tracking, and export beautiful PNG cards to share or keep privately.',
+  },
+  {
+    q: 'What are side quests?',
+    a: 'Side quests are fifty curated micro-adventures designed to push you out of your comfort zone. Each completed quest earns XP and badges. You track progress, build streaks, and light up your life grid as you work through them, turning small experiments into lasting memories.',
+  },
+  {
+    q: 'What is the life grid?',
+    a: 'The life grid is a mortality-framed visualization of your life in weeks. Based on the 4000 weeks concept, it lights up weeks that contain hobby practice stamps. It connects your daily habits to long-term life planning, showing how each week of practice fills your finite life.',
+  },
+  {
+    q: 'Can I share my hobby journey publicly?',
+    a: 'Yes. Opt-in public profiles at /u/username let you share your timelines, commitments, and earned badges with anyone. Public timelines are shareable via slug URLs, so you can post a link directly without requiring viewers to create an account or sign in.',
+  },
+  {
+    q: 'What is the daily ritual?',
+    a: 'The daily ritual is a private daily page with AM and PM prompts, habit check-ins, and a compulsory journal entry. It connects your daily habits to your longer-term hobby timeline and life grid, so each day of practice shows up as a lit week in your life visualization.',
+  },
+];
+
+const faqJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map((f) => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: {
+      '@type': 'Answer',
+      text: f.a,
+    },
+  })),
+};
+---
+
+<section class="relative border-y border-border bg-card px-6 py-24 lg:px-12">
+  <div class="grid-bg pointer-events-none absolute inset-0" aria-hidden="true" />
+  <div class="relative mx-auto max-w-3xl">
+    <div class="mb-14 text-center">
+      <p class="mb-3 text-sm font-semibold uppercase tracking-wider text-primary">FAQ</p>
+      <h2 class="font-serif text-3xl font-medium tracking-tight text-foreground sm:text-4xl">
+        Questions, answered
+      </h2>
+      <p class="mx-auto mt-3 max-w-xl text-muted-foreground">
+        Everything you need to know before mapping your hobby journey.
+      </p>
+    </div>
+
+    <div class="flex flex-col gap-4">
+      {
+        faqs.map((faq) => (
+          <details class="card-lift group rounded-2xl border border-border bg-background p-5 transition-colors hover:border-muted-foreground/40">
+            <summary class="flex cursor-pointer list-none items-center justify-between gap-4 text-left">
+              <h3 class="text-base font-semibold text-foreground sm:text-lg">{faq.q}</h3>
+              <span
+                class="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full border border-border text-primary transition-transform group-open:rotate-45"
+                aria-hidden="true"
+              >
+                <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                  <path d="M6 1v10M1 6h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+                </svg>
+              </span>
+            </summary>
+            <p class="mt-3 text-sm leading-relaxed text-muted-foreground sm:text-[15px]" style="line-height: 1.6;">
+              {faq.a}
+            </p>
+          </details>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<script type="application/ld+json" set:html={JSON.stringify(faqJsonLd)} />
