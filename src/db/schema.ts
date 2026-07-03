@@ -320,6 +320,10 @@ export const habits = sqliteTable(
     name: text('name').notNull(),
     // 'active' | 'archived'
     status: text('status').notNull().default('active'),
+    // Target frequency: 'daily' | 'weekdays' | '3x_week' | '5x_week'
+    targetFrequency: text('targetFrequency').notNull().default('daily'),
+    // Optional emoji icon for visual identity
+    icon: text('icon'),
     createdAt: integer('createdAt', { mode: 'timestamp' }).notNull().default(sql`(unixepoch())`),
   },
   (table) => [index('Habit_userId_idx').on(table.userId)]

@@ -6,6 +6,7 @@ import { users } from '~/db/schema';
 import {
   createHabit,
   deleteHabit,
+  getAllHabitLogs,
   getDailyCheckin,
   getHabits,
   getHabitLogsForDate,
@@ -31,17 +32,19 @@ export default async function DailyPage() {
   const today = new Date().toISOString().slice(0, 10);
   const isMorning = new Date().getHours() < 12;
 
-  const [userHabits, habitLogs, journalEntry, checkin, profile, me] = await Promise.all([
-    getHabits(),
-    getHabitLogsForDate(today),
-    getJournalEntry(today),
-    getDailyCheckin(today),
-    getUserProfile(),
-    db.query.users.findFirst({
-      where: eq(users.id, session.user.id),
-      columns: { birthYear: true },
-    }),
-  ]);
+  const [userHabits, habitLogs, allHabitLogs, journalEntry, checkin, profile, me] =
+    await Promise.all([
+      getHabits(),
+      getHabitLogsForDate(today),
+      getAllHabitLogs(),
+      getJournalEntry(today),
+      getDailyCheckin(today),
+      getUserProfile(),
+      db.query.users.findFirst({
+        where: eq(users.id, session.user.id),
+        columns: { birthYear: true },
+      }),
+    ]);
 
   const firstName = profile?.name?.split(' ')[0] ?? session.user.name?.split(' ')[0] ?? 'there';
 
@@ -57,6 +60,7 @@ export default async function DailyPage() {
       weeksRemaining={weeksRemaining}
       habits={userHabits}
       habitLogs={habitLogs}
+      allHabitLogs={allHabitLogs}
       journalEntry={journalEntry}
       checkin={checkin}
       actions={{

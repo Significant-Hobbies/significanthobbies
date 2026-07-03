@@ -21,15 +21,22 @@ export async function getHabits() {
   return rows;
 }
 
-export async function createHabit(name: string) {
+export async function createHabit(name: string, targetFrequency?: string, icon?: string) {
   const session = await getServerAuthSession();
   if (!session?.user) return;
   const trimmed = name.trim();
   if (!trimmed) return;
 
+  const freq = ['daily', 'weekdays', '3x_week', '5x_week'].includes(targetFrequency ?? '')
+    ? targetFrequency!
+    : 'daily';
+  const trimmedIcon = icon?.trim() || null;
+
   await db.insert(habits).values({
     userId: session.user.id,
     name: trimmed,
+    targetFrequency: freq,
+    icon: trimmedIcon,
   });
   revalidatePath('/daily');
 }
@@ -55,6 +62,16 @@ export async function getHabitLogsForDate(dayDate: string) {
     .select()
     .from(habitLogs)
     .where(and(eq(habitLogs.userId, session.user.id), eq(habitLogs.dayDate, dayDate)));
+
+  return rows;
+}
+
+// Get all habit logs for the user (for streak computation + weekly progress).
+export async function getAllHabitLogs() {
+  const session = await getServerAuthSession();
+  if (!session?.user) return [];
+
+  const rows = await db.select().from(habitLogs).where(eq(habitLogs.userId, session.user.id));
 
   return rows;
 }
