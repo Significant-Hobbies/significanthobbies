@@ -3,37 +3,37 @@ const famous = [
   {
     name: 'Will Smith',
     slug: 'will-smith',
-    keyword: 'hollywood',
+    img: '/categories/creative-800.webp',
     preview: 'Skydive over the Dubai desert',
   },
   {
     name: 'Barack Obama',
     slug: 'barack-obama',
-    keyword: 'president',
+    img: '/categories/intellectual-800.webp',
     preview: 'Visit every US national park',
   },
   {
     name: 'Serena Williams',
     slug: 'serena-williams',
-    keyword: 'tennis',
+    img: '/categories/physical-800.webp',
     preview: 'Start a foundation for girls',
   },
   {
     name: 'Elon Musk',
     slug: 'elon-musk',
-    keyword: 'rocket',
+    img: '/categories/making-800.webp',
     preview: 'See Earth from space',
   },
   {
     name: 'Richard Branson',
     slug: 'richard-branson',
-    keyword: 'entrepreneur',
+    img: '/categories/outdoor-800.webp',
     preview: 'Cross the Atlantic in a balloon',
   },
   {
     name: 'Mark Zuckerberg',
     slug: 'mark-zuckerberg',
-    keyword: 'technology',
+    img: '/categories/gaming-800.webp',
     preview: 'Learn Mandarin fluently',
   },
 ];
@@ -58,11 +58,11 @@ const famous = [
         famous.map((person) => (
           <a
             href={`/bucket-lists/${person.slug}`}
-            class="card-lift group relative block overflow-hidden rounded-2xl border border-border"
+            class="card-lift group relative block overflow-hidden rounded-2xl border border-border bg-background"
             style="aspect-ratio: 4 / 5;"
           >
             <img
-              src={`https://source.unsplash.com/400x500/?${person.keyword}`}
+              src={person.img}
               alt={`${person.name} — bucket list`}
               loading="lazy"
               class="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
