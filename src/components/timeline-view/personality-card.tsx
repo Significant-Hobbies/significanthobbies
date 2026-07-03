@@ -10,13 +10,13 @@ interface Props {
 const CATEGORY_COLORS: Record<string, string> = {
   Creative: 'bg-pink-400',
   Music: 'bg-violet-400',
-  Physical: 'bg-foreground',
+  Physical: 'bg-growth',
   Intellectual: 'bg-blue-500',
   Gaming: 'bg-indigo-400',
   Outdoor: 'bg-green-400',
   Culinary: 'bg-amber-400',
   Collecting: 'bg-orange-400',
-  Making: 'bg-card/400',
+  Making: 'bg-stone-400',
   Social: 'bg-teal-400',
   Other: 'bg-foreground/15',
 };
@@ -27,7 +27,7 @@ function TraitBar({ label, value }: { label: string; value: number }) {
     <div className="flex items-center gap-2">
       <span className="w-20 shrink-0 text-xs text-muted-foreground">{label}</span>
       <div className="flex-1 h-1.5 rounded-full bg-foreground/5 overflow-hidden">
-        <div className="h-full rounded-full bg-foreground" style={{ width: `${pct}%` }} />
+        <div className="h-full rounded-full bg-growth" style={{ width: `${pct}%` }} />
       </div>
       <span className="w-7 text-right text-xs text-muted-foreground/60">{pct}%</span>
     </div>

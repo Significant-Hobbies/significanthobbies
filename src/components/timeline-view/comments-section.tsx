@@ -152,7 +152,7 @@ export function CommentsSectionWithOwn({
         </div>
       ) : (
         <div className="mb-6 rounded-lg border border-border bg-card/40 px-4 py-3 text-sm text-muted-foreground">
-          <Link href="/api/auth/signin" className="text-foreground hover:underline font-medium">
+          <Link href="/api/auth/signin" className="text-growth hover:underline font-medium">
             Sign in
           </Link>{' '}
           to join the conversation

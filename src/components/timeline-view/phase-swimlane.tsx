@@ -128,7 +128,7 @@ export function PhaseSwimlane({ phases, pins = [] }: Props) {
                               <div
                                 key={i}
                                 className={`h-1 w-3 rounded-full ${
-                                  i < (hobby.intensity ?? 0) ? 'bg-foreground' : 'bg-foreground/10'
+                                  i < (hobby.intensity ?? 0) ? 'bg-growth' : 'bg-foreground/10'
                                 }`}
                               />
                             ))}
@@ -177,7 +177,7 @@ export function PhaseSwimlane({ phases, pins = [] }: Props) {
                 <span className="font-medium text-foreground">{pin.label}</span>
                 <span className="text-muted-foreground/60">{pin.date}</span>
                 {pin.relatedHobby && (
-                  <span className="rounded-full bg-foreground/10 px-1.5 py-0.5 text-[10px] font-medium text-foreground">
+                  <span className="rounded-full bg-growth/15 px-1.5 py-0.5 text-[10px] font-medium text-growth">
                     {pin.relatedHobby}
                   </span>
                 )}

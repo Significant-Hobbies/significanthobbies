@@ -76,18 +76,18 @@ function TemplatePicker({ onPick }: { onPick: (template: TimelineTemplate) => vo
             className="group rounded-xl border border-border bg-card p-5 text-left transition-all hover:border-foreground/30 hover:bg-foreground/10 hover:shadow-sm focus:outline-none focus:ring-2 focus:ring-foreground focus:ring-offset-2"
           >
             <div className="mb-3 text-3xl">{template.emoji}</div>
-            <h3 className="mb-1 text-sm font-semibold text-foreground group-hover:text-foreground transition-colors leading-tight">
+            <h3 className="mb-1 text-sm font-semibold text-foreground group-hover:text-growth transition-colors leading-tight">
               {template.name}
             </h3>
             <p className="mb-3 text-xs text-muted-foreground leading-snug">
               {template.description}
             </p>
             {template.phases.length > 0 ? (
-              <span className="inline-flex items-center rounded-full bg-foreground/5 px-2 py-0.5 text-xs text-muted-foreground group-hover:bg-foreground/10 group-hover:text-foreground transition-colors">
+              <span className="inline-flex items-center rounded-full bg-foreground/5 px-2 py-0.5 text-xs text-muted-foreground group-hover:bg-foreground/10 group-hover:text-growth transition-colors">
                 {template.phases.length} phases
               </span>
             ) : (
-              <span className="inline-flex items-center rounded-full bg-foreground/5 px-2 py-0.5 text-xs text-muted-foreground/60 group-hover:bg-foreground/10 group-hover:text-foreground transition-colors">
+              <span className="inline-flex items-center rounded-full bg-foreground/5 px-2 py-0.5 text-xs text-muted-foreground/60 group-hover:bg-foreground/10 group-hover:text-growth transition-colors">
                 empty
               </span>
             )}
@@ -245,7 +245,7 @@ export function TimelineBuilder({ existing }: Props) {
       <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5">
         <span
           className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
-            allEmpty ? 'bg-foreground/5 text-muted-foreground' : 'bg-foreground/10 text-foreground'
+            allEmpty ? 'bg-foreground/5 text-muted-foreground' : 'bg-growth/15 text-growth'
           }`}
         >
           {phasesWithHobbies}/{totalPhases} phases have hobbies

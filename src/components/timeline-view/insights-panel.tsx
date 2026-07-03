@@ -7,9 +7,9 @@ interface Props {
 }
 
 function phaseTransitionColor(majorChange: string): string {
-  if (majorChange.toLowerCase().includes('gained')) return 'text-foreground';
+  if (majorChange.toLowerCase().includes('gained')) return 'text-growth';
   if (majorChange.toLowerCase().includes('lost')) return 'text-destructive';
-  if (majorChange.toLowerCase().includes('shifted focus')) return 'text-foreground';
+  if (majorChange.toLowerCase().includes('shifted focus')) return 'text-growth';
   return 'text-muted-foreground';
 }
 
@@ -38,7 +38,7 @@ export function InsightsPanel({ phases }: Props) {
             border: '1px solid rgba(16,185,129,0.2)',
           }}
         >
-          <div className="text-2xl font-bold text-foreground">{totalHobbies}</div>
+          <div className="text-2xl font-bold text-emerald-500">{totalHobbies}</div>
           <div className="text-xs text-muted-foreground mt-0.5">total hobbies</div>
         </div>
         <div
@@ -71,7 +71,7 @@ export function InsightsPanel({ phases }: Props) {
             border: '1px solid rgba(245,158,11,0.2)',
           }}
         >
-          <div className="text-2xl font-bold text-foreground">{categoryDiversity}</div>
+          <div className="text-2xl font-bold text-amber-500">{categoryDiversity}</div>
           <div className="text-xs text-muted-foreground mt-0.5">categories</div>
         </div>
       </div>
@@ -120,7 +120,7 @@ export function InsightsPanel({ phases }: Props) {
                         <div
                           key={i}
                           className={`h-2 w-4 rounded-sm ${
-                            i < count ? 'bg-foreground' : 'bg-foreground/10'
+                            i < count ? 'bg-growth' : 'bg-foreground/10'
                           }`}
                         />
                       ))}
