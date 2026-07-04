@@ -10,16 +10,16 @@ import {
   StaggerItem,
 } from '~/components/aceternity';
 import { JsonLd } from '~/components/json-ld';
-import { Lumi } from '~/components/lumi';
+import { Whale } from '~/components/whale';
 
 export const metadata: Metadata = {
   title: "How to Make a Bucket List That You'll Actually Complete — SignificantHobbies",
   description:
-    "A step-by-step guide to making a bucket list you'll actually finish — not just write. Six proven steps, from choosing what scares you to quarterly reviews with Lumi.",
+    "A step-by-step guide to making a bucket list you'll actually finish — not just write. Six proven steps, from choosing what scares you to quarterly reviews with Whale.",
   openGraph: {
     title: "How to Make a Bucket List (That You'll Actually Complete)",
     description:
-      'Most bucket lists die in a drawer. These six steps keep yours alive — from choosing the right goals to reviewing them quarterly with Lumi.',
+      'Most bucket lists die in a drawer. These six steps keep yours alive — from choosing the right goals to reviewing them quarterly with Whale.',
   },
   alternates: { canonical: 'https://significanthobbies.com/how-to-make-a-bucket-list' },
 };
@@ -58,8 +58,8 @@ const STEPS = [
   },
   {
     number: 6,
-    title: 'Review quarterly with Lumi',
-    body: "A bucket list is not a static document. It's a living record of who you're becoming. Review it every 90 days: cross off what you've done (and write a note about how it felt), add what's emerged, and drop what no longer fits. The items you're most reluctant to drop — even though life has moved on — deserve the most attention. Lumi tracks your list over time, surfaces what you've neglected, and helps you see the shape of your ambition from year to year.",
+    title: 'Review quarterly with Whale',
+    body: "A bucket list is not a static document. It's a living record of who you're becoming. Review it every 90 days: cross off what you've done (and write a note about how it felt), add what's emerged, and drop what no longer fits. The items you're most reluctant to drop — even though life has moved on — deserve the most attention. Whale tracks your list over time, surfaces what you've neglected, and helps you see the shape of your ambition from year to year.",
     tip: 'Schedule your next quarterly review before you close this tab.',
   },
 ];
@@ -107,10 +107,10 @@ export default function HowToMakeABucketListPage() {
         <div className="relative mx-auto max-w-4xl">
           <FadeIn>
             <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6 mb-8">
-              <Lumi size={88} glow float className="shrink-0" />
+              <Whale size={88} glow float className="shrink-0" />
               <div className="space-y-4 text-center sm:text-left">
                 <p className="text-primary text-sm font-semibold">
-                  Guided by Lumi · 6 proven steps
+                  Guided by Whale · 6 proven steps
                 </p>
                 <h1 className="text-4xl sm:text-5xl font-bold leading-tight text-foreground text-balance">
                   How to Make a Bucket List{' '}
@@ -172,7 +172,7 @@ export default function HowToMakeABucketListPage() {
                     className="border border-lumi-200 bg-primary/10 shadow-soft"
                     innerClassName="px-5 py-4"
                   >
-                    <p className="text-sm font-semibold text-lumi-600">Lumi tip: {step.tip}</p>
+                    <p className="text-sm font-semibold text-lumi-600">Whale tip: {step.tip}</p>
                     {step.link && (
                       <Link
                         href={step.link.href}
@@ -216,12 +216,12 @@ export default function HowToMakeABucketListPage() {
           <SpotlightCard className="shadow-soft" innerClassName="py-8 px-6 space-y-6 text-center">
             <div className="relative overflow-hidden rounded-xl">
               <BorderBeam />
-              <Lumi size={64} glow float className="mx-auto" />
+              <Whale size={64} glow float className="mx-auto" />
               <h2 className="text-3xl font-bold text-foreground text-balance">
                 Ready to build yours?
               </h2>
               <p className="text-muted-foreground max-w-md mx-auto">
-                Lumi helps you build, track, and review your bucket list — and shows you the famous
+                Whale helps you build, track, and review your bucket list — and shows you the famous
                 person whose ambitions look most like yours.
               </p>
               <div className="flex flex-wrap gap-3 justify-center">

@@ -10,6 +10,8 @@ import {
   StaggerContainer,
   StaggerItem,
 } from '~/components/aceternity';
+import { AmbientMusic } from '~/components/ambient-music';
+import { Whale } from '~/components/whale';
 import {
   arcs,
   bucketListItems,
@@ -153,14 +155,22 @@ export default async function LookBackPage() {
     <div className="relative min-h-screen">
       <GridBackground size={32} />
 
+      {/* Ambient music toggle — top right */}
+      <div className="fixed right-4 top-4 z-50">
+        <AmbientMusic />
+      </div>
+
       <div className="relative mx-auto max-w-2xl px-4 py-12 sm:py-20">
-        {/* Back link */}
-        <Link
-          href="/dashboard"
-          className="mb-8 inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
-        >
-          ← Dashboard
-        </Link>
+        {/* Whale + back link */}
+        <div className="mb-8 flex items-center gap-3">
+          <Whale size={40} float glow />
+          <Link
+            href="/dashboard"
+            className="inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
+          >
+            ← Dashboard
+          </Link>
+        </div>
 
         {hasContent ? (
           <StaggerContainer className="space-y-12">

@@ -447,9 +447,28 @@
 .animate-lumi-glow {
   animation: lumiGlowPulse 3s ease-in-out infinite;
 }
+
+/* ─── Whale mascot animations — slow, calming, breathing ─── */
+@keyframes whaleFloat {
+  0%, 100% { transform: translateY(0) rotate(-1deg); }
+  50%      { transform: translateY(-8px) rotate(1deg); }
+}
+.animate-whale-float {
+  animation: whaleFloat 8s ease-in-out infinite;
+}
+@keyframes whaleGlowPulse {
+  0%, 100% { filter: drop-shadow(0 0 10px oklch(0.82 0.13 88 / 0.35)); }
+  50%      { filter: drop-shadow(0 0 22px oklch(0.82 0.13 88 / 0.6)); }
+}
+.animate-whale-glow {
+  animation: whaleGlowPulse 6s ease-in-out infinite;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .animate-lumi-float,
   .animate-lumi-glow,
+  .animate-whale-float,
+  .animate-whale-glow,
   .animate-float,
   .animate-float2,
   .animate-float3,

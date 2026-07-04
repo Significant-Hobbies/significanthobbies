@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { useId, useMemo, useRef, useState, useTransition } from 'react';
 
-import { Lumi } from '~/components/lumi';
+import { Whale } from '~/components/whale';
 import {
   addBucketListItem,
   removeBucketListItem,
@@ -184,7 +184,7 @@ export function BucketListSection({ initialItems }: Props) {
       {/* ── Header ──────────────────────────────────────────────── */}
       <div className="flex items-start justify-between gap-4">
         <div className="flex items-center gap-3">
-          <Lumi size={44} glow />
+          <Whale size={44} glow />
           <div>
             <h2 className="text-lg font-semibold text-foreground">Your bucket list</h2>
             {total > 0 ? (
@@ -307,7 +307,7 @@ export function BucketListSection({ initialItems }: Props) {
       {suggestions.length > 0 && (
         <div className="space-y-2.5">
           <div className="flex items-center justify-between">
-            <p className="text-sm font-medium text-muted-foreground">Lumi suggests</p>
+            <p className="text-sm font-medium text-muted-foreground">Whale suggests</p>
             <button
               type="button"
               onClick={() => setSuggestionSeed((s) => s + 1)}
@@ -389,11 +389,11 @@ export function BucketListSection({ initialItems }: Props) {
       {/* ── Items list ───────────────────────────────────────────── */}
       {items.length === 0 ? (
         <div className="rounded-2xl border border-dashed border-lumi-200 bg-lumi-50/60 py-14 text-center space-y-4">
-          <Lumi size={64} glow className="mx-auto" />
+          <Whale size={64} glow className="mx-auto" />
           <div>
             <p className="font-semibold text-foreground">Your bucket list is waiting.</p>
             <p className="text-sm text-muted-foreground mt-1 max-w-sm mx-auto">
-              Lumi will help you fill it. Browse famous lists for inspiration, or add your own
+              Whale will help you fill it. Browse famous lists for inspiration, or add your own
               above.
             </p>
           </div>

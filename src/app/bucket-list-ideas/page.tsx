@@ -9,7 +9,7 @@ import {
   StaggerContainer,
   StaggerItem,
 } from '~/components/aceternity';
-import { Lumi } from '~/components/lumi';
+import { Whale } from '~/components/whale';
 import { BUCKET_ITEM_CATEGORIES, FAMOUS_BUCKET_LISTS } from '~/lib/famous-bucket-lists';
 
 export const metadata: Metadata = {
@@ -261,12 +261,12 @@ export default function BucketListIdeasPage() {
         <GridBackground />
         <div className="relative mx-auto max-w-4xl">
           <FadeIn>
-            {/* Lumi in a coral-tinted card */}
+            {/* Whale in a gold-tinted card */}
             <div className="flex items-center gap-5 rounded-2xl border border-lumi-200 bg-primary/10 px-6 py-5 mb-8 max-w-md shadow-soft">
-              <Lumi size={80} glow float />
+              <Whale size={80} glow float />
               <div>
                 <p className="text-primary text-sm font-semibold mb-1">
-                  Guided by Lumi · {totalIdeas}+ ideas
+                  Guided by Whale · {totalIdeas}+ ideas
                 </p>
                 <p className="text-muted-foreground text-sm leading-relaxed">
                   Curated from real bucket lists of presidents, athletes, and icons.
@@ -395,15 +395,15 @@ export default function BucketListIdeasPage() {
         })}
       </div>
 
-      {/* ── Lumi CTA ─────────────────────────────────────────────── */}
+      {/* ── Whale CTA ─────────────────────────────────────────────── */}
       <section className="bg-primary/10 border-t border-lumi-200">
         <div className="mx-auto max-w-3xl px-4 py-16 text-center space-y-6">
-          <Lumi size={64} glow float className="mx-auto" />
+          <Whale size={64} glow float className="mx-auto" />
           <h2 className="text-3xl font-bold text-foreground text-balance">
             Found something that speaks to you?
           </h2>
           <p className="text-muted-foreground max-w-md mx-auto">
-            Lumi tracks your bucket list, shows your personality archetype, and matches you to the
+            Whale tracks your bucket list, shows your personality archetype, and matches you to the
             famous person whose ambitions look most like yours.
           </p>
           <div className="flex flex-wrap gap-3 justify-center">

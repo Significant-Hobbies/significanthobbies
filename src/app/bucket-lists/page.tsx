@@ -10,7 +10,7 @@ import {
   StaggerItem,
   TextGenerateEffect,
 } from '~/components/aceternity';
-import { Lumi } from '~/components/lumi';
+import { Whale } from '~/components/whale';
 import { BUCKET_ITEM_CATEGORIES, FAMOUS_BUCKET_LISTS } from '~/lib/famous-bucket-lists';
 
 export const metadata: Metadata = {
@@ -57,13 +57,13 @@ export default function BucketListsPage() {
         <div className="relative mx-auto max-w-4xl">
           <FadeIn>
             <div className="flex flex-col sm:flex-row items-center sm:items-start gap-8">
-              {/* Lumi left-aligned */}
+              {/* Whale left-aligned */}
               <div className="shrink-0">
-                <Lumi size={100} glow float />
+                <Whale size={100} glow float />
               </div>
               {/* Headline block */}
               <div className="space-y-5 text-center sm:text-left">
-                <p className="text-primary text-sm font-semibold">Guided by Lumi</p>
+                <p className="text-primary text-sm font-semibold">Guided by Whale</p>
                 <TextGenerateEffect
                   words="Your bucket list is a love letter to your future self."
                   className="text-4xl sm:text-5xl lg:text-6xl font-bold leading-[1.08] tracking-tight text-foreground text-balance"
@@ -265,14 +265,14 @@ export default function BucketListsPage() {
       <section className="relative overflow-hidden bg-primary">
         <div className="relative mx-auto max-w-3xl px-4 py-20 text-center space-y-6">
           <div className="flex justify-center">
-            <Lumi size={80} glow float onDark />
+            <Whale size={80} glow float onDark />
           </div>
           <h2 className="text-3xl sm:text-4xl font-bold text-foreground leading-tight text-balance">
             Your turn. What do you want to do
             <br className="hidden sm:block" /> before you die?
           </h2>
           <p className="text-foreground/80 text-base max-w-sm mx-auto">
-            Lumi will help you discover what belongs on your list — based on who you are, not who
+            Whale will help you discover what belongs on your list — based on who you are, not who
             everyone else expects you to be.
           </p>
           <div className="flex flex-wrap gap-3 justify-center">

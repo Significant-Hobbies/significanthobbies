@@ -3,6 +3,7 @@
 import { motion } from 'motion/react';
 
 import { BorderBeam, GradientMesh, SpotlightCard } from '~/components/aceternity';
+import { Whale } from '~/components/whale';
 
 interface ArcCompleteCelebrationProps {
   arc: {
@@ -41,12 +42,22 @@ export function ArcCompleteCelebration({ arc, onDismiss }: ArcCompleteCelebratio
           <GradientMesh variant="gold" />
           <BorderBeam size={220} duration={14} />
 
+          {/* Whale mascot floating calmly above the arc emoji */}
+          <motion.div
+            initial={{ y: 0 }}
+            animate={{ y: [0, -6, 0] }}
+            transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
+            className="relative"
+          >
+            <Whale size={56} glow />
+          </motion.div>
+
           {/* Arc emoji — subtle bounce */}
           <motion.div
             initial={{ y: 0 }}
             animate={{ y: [0, -10, 0] }}
             transition={{ duration: 1.2, repeat: Infinity, ease: 'easeInOut' }}
-            className="relative text-5xl"
+            className="relative mt-3 text-4xl"
             aria-hidden="true"
           >
             {arc.emoji ?? '🔄'}

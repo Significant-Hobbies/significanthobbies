@@ -11,7 +11,7 @@ import {
   StaggerItem,
 } from '~/components/aceternity';
 import { AddToMyListButton } from '~/components/add-to-my-list-button';
-import { Lumi } from '~/components/lumi';
+import { Whale } from '~/components/whale';
 import {
   BUCKET_ITEM_CATEGORIES,
   FAMOUS_BUCKET_LISTS,
@@ -156,7 +156,7 @@ export default async function FamousBucketListPage({ params }: Props) {
         {!isLoggedIn && (
           <FadeIn>
             <div className="flex items-center gap-3 rounded-xl border border-lumi-200 bg-primary/10 px-5 py-3">
-              <Lumi size={36} float />
+              <Whale size={36} float />
               <p className="text-sm text-foreground">
                 <a href="/login" className="font-semibold text-primary hover:underline">
                   Sign in

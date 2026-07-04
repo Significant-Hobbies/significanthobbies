@@ -3,7 +3,7 @@
 import { Check, Flame, RefreshCw } from 'lucide-react';
 import { useState, useTransition } from 'react';
 
-import { Lumi } from '~/components/lumi';
+import { Whale } from '~/components/whale';
 import type { CoachReflection } from '~/lib/lumi-coach';
 import { useReviewStreak } from '~/hooks/use-review-streak';
 
@@ -11,7 +11,7 @@ type Props = {
   initialReflection: CoachReflection | null;
 };
 
-export function LumiWeeklyReview({ initialReflection }: Props) {
+export function WhaleWeeklyReview({ initialReflection }: Props) {
   const [reflection, setReflection] = useState<CoachReflection | null>(initialReflection);
   const [isPending, startTransition] = useTransition();
   const [justMarked, setJustMarked] = useState(false);
@@ -38,19 +38,19 @@ export function LumiWeeklyReview({ initialReflection }: Props) {
 
   return (
     <div className="relative overflow-hidden rounded-2xl border border-lumi-200 bg-lumi-50 p-6 shadow-sm">
-      {/* Decorative Lumi */}
+      {/* Decorative Whale */}
       <div className="absolute -right-4 -top-2 opacity-10 select-none">
-        <Lumi size={120} />
+        <Whale size={120} />
       </div>
 
       <div className="relative">
         {/* Header */}
         <div className="flex items-start justify-between gap-3 mb-4">
           <div className="flex items-center gap-3">
-            <Lumi size={40} glow float />
+            <Whale size={40} glow float />
             <div>
               <div className="flex items-center gap-2">
-                <h3 className="font-bold text-foreground">Weekly check-in with Lumi</h3>
+                <h3 className="font-bold text-foreground">Weekly check-in with Whale</h3>
                 {showStreak && (
                   <span className="inline-flex items-center gap-1 rounded-full bg-lumi-50 px-2 py-0.5 text-xs font-semibold text-lumi-600">
                     <Flame className="h-3 w-3" />

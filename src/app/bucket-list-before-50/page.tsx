@@ -10,7 +10,7 @@ import {
   TextGenerateEffect,
 } from '~/components/aceternity';
 import { JsonLd } from '~/components/json-ld';
-import { Lumi } from '~/components/lumi';
+import { Whale } from '~/components/whale';
 
 export const metadata: Metadata = {
   title: '50 Things to Do Before You Turn 50 — Meaningful Bucket List Goals',
@@ -334,10 +334,10 @@ export default function BucketListBefore50Page() {
         <div className="relative mx-auto max-w-4xl">
           <FadeIn>
             <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6 mb-8">
-              <Lumi size={88} glow float className="shrink-0" />
+              <Whale size={88} glow float className="shrink-0" />
               <div className="space-y-4 text-center sm:text-left">
                 <p className="text-primary text-sm font-semibold">
-                  Guided by Lumi · 50 goals worth your best years
+                  Guided by Whale · 50 goals worth your best years
                 </p>
                 <TextGenerateEffect
                   words="50 Things to Do Before You Turn 50"
@@ -449,10 +449,10 @@ export default function BucketListBefore50Page() {
       {/* ── CTA ──────────────────────────────────────────────────── */}
       <section className="bg-primary/10 border-t border-lumi-200">
         <div className="mx-auto max-w-3xl px-4 py-16 text-center space-y-6">
-          <Lumi size={64} glow float className="mx-auto" />
+          <Whale size={64} glow float className="mx-auto" />
           <h2 className="text-3xl font-bold text-foreground text-balance">Ready to build yours?</h2>
           <p className="text-muted-foreground max-w-md mx-auto">
-            Lumi tracks your goals over time, shows you what you&apos;ve accomplished, and connects
+            Whale tracks your goals over time, shows you what you&apos;ve accomplished, and connects
             your ambitions to the famous people who share them.
           </p>
           <div className="flex flex-wrap gap-3 justify-center">

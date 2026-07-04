@@ -6,6 +6,8 @@ import { useCallback, useRef, useState, useTransition } from 'react';
 import { toast } from 'sonner';
 
 import { BorderBeam, FadeIn, GradientMesh, SpotlightCard } from '~/components/aceternity';
+import { AmbientMusic } from '~/components/ambient-music';
+import { Whale } from '~/components/whale';
 import { createHabit, toggleHabitLog } from '~/lib/actions/daily';
 import { saveOnboardingAnswers, setUsername } from '~/lib/actions/user';
 
@@ -204,6 +206,12 @@ export function OnboardingFlow({ user }: { user: OnboardingUser }) {
   return (
     <div className="relative flex min-h-screen items-center justify-center overflow-hidden px-4 py-12">
       {showMesh && <GradientMesh />}
+
+      {/* Ambient music toggle — top right corner */}
+      <div className="fixed right-4 top-4 z-50">
+        <AmbientMusic />
+      </div>
+
       <FadeIn key={step} className="relative w-full max-w-lg">
         <SpotlightCard className="shadow-soft" innerClassName="px-5 py-8 sm:px-8 sm:py-10">
           <AnimatePresence mode="wait">
@@ -217,6 +225,10 @@ export function OnboardingFlow({ user }: { user: OnboardingUser }) {
               {/* ══ Step 0: Welcome ═══════════════════════════════════════ */}
               {step === 0 && (
                 <div className="flex flex-col items-center text-center">
+                  {/* Whale mascot — floating gently */}
+                  <div className="mb-4">
+                    <Whale size={72} float glow />
+                  </div>
                   {/* Avatar */}
                   <div className="mb-6 flex h-16 w-16 items-center justify-center overflow-hidden rounded-full sm:h-20 sm:w-20">
                     {avatarUrl ? (
@@ -620,6 +632,10 @@ export function OnboardingFlow({ user }: { user: OnboardingUser }) {
               {/* ══ Step 6: First kick ══════════════════════════════════════ */}
               {step === 6 && (
                 <div className="flex flex-col items-center text-center">
+                  {/* Whale — watching calmly */}
+                  <div className="mb-4">
+                    <Whale size={64} float glow />
+                  </div>
                   <ProgressDots current={5} total={TOTAL_STEPS - 1} />
 
                   {!habitId ? (

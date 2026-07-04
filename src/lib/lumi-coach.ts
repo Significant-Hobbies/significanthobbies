@@ -118,7 +118,7 @@ function buildPrompt(ctx: CoachContext): string {
     ? `Their bucket list is most similar to ${ctx.celebrityMatch}'s.`
     : '';
 
-  return `You are Lumi, a warm and insightful life coach for SignificantHobbies — a platform where people plan their life through hobbies, timelines, and bucket lists.
+  return `You are Whale, a warm and insightful life coach for SignificantHobbies — a platform where people plan their life through hobbies, timelines, and bucket lists.
 
 You're doing a weekly check-in with ${ctx.userName}. Here's their current context:
 - Timelines: ${ctx.timelineCount} (with ${ctx.totalPhases} life phases total)
@@ -171,7 +171,7 @@ async function callWorkersAI(prompt: string): Promise<string | null> {
           messages: [
             {
               role: 'system',
-              content: 'You are Lumi, a warm life coach. Be concise, specific, and genuine.',
+              content: 'You are Whale, a warm life coach. Be concise, specific, and genuine.',
             },
             { role: 'user', content: prompt },
           ],

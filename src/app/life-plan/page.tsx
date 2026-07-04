@@ -11,7 +11,7 @@ import {
   StaggerItem,
 } from '~/components/aceternity';
 import { QuestChainCard } from '~/components/bucket-list/quest-chain-card';
-import { Lumi } from '~/components/lumi';
+import { Whale } from '~/components/whale';
 import { bucketListItems, timelines } from '~/db/schema';
 import { getActiveQuests } from '~/lib/actions/user-quests';
 import { BUCKET_ITEM_CATEGORIES, type BucketItemCategory } from '~/lib/famous-bucket-lists';
@@ -138,7 +138,7 @@ export default async function LifePlanPage() {
         <FadeIn>
           <div className="flex items-start justify-between gap-4 flex-wrap">
             <div className="flex items-center gap-4">
-              <Lumi size={52} glow />
+              <Whale size={52} glow />
               <div>
                 <h1 className="text-3xl font-bold text-foreground font-serif">Your life plan</h1>
                 <p className="mt-1 text-muted-foreground">
