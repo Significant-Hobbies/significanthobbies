@@ -1,17 +1,14 @@
 ---
 const steps = [
   {
-    num: '01',
     title: 'Add your life phases',
     desc: 'Name each chapter: Childhood, College, First Job, whatever feels right.',
   },
   {
-    num: '02',
     title: 'Tag every hobby you remember',
     desc: 'Even the ones you only tried once. Swimming at six, pottery last winter.',
   },
   {
-    num: '03',
     title: 'Share your journey',
     desc: 'Export a card, publish a public timeline, or keep it private while you explore.',
   },
@@ -34,36 +31,22 @@ const shareButtons = ['Copy link', 'Export PNG', 'Publish'];
 ---
 
 <section class="relative border-y border-border bg-card px-6 py-24 lg:px-12">
-  <div class="grid-bg pointer-events-none absolute inset-0" aria-hidden="true" />
   <div class="relative mx-auto max-w-5xl">
     <div class="mb-14 text-center">
-      <p class="mb-3 text-sm font-semibold uppercase tracking-wider text-primary">How it works</p>
-      <h2 class="text-3xl font-medium text-foreground sm:text-4xl">Three steps. Under five minutes.</h2>
+      <h2 class="font-serif text-3xl font-medium text-foreground sm:text-4xl">Three steps. Under five minutes.</h2>
       <p class="mx-auto mt-3 max-w-xl text-muted-foreground">
         No template police. You can't really get this wrong.
       </p>
     </div>
 
-    <!-- Steps with connecting line on desktop -->
     <div class="relative grid gap-8 md:grid-cols-3">
-      <!-- Connecting horizontal line (desktop only) -->
-      <div
-        class="pointer-events-none absolute left-0 right-0 top-[88px] hidden h-px md:block"
-        style="background: linear-gradient(to right, transparent, oklch(0.82 0.13 88 / 0.3), oklch(0.82 0.13 88 / 0.3), transparent);"
-        aria-hidden="true"
-      />
-
       {
         steps.map((step, i) => (
           <li class="spotlight-card card-lift shadow-elevated list-none overflow-hidden rounded-2xl border border-border bg-background p-6">
-            <!-- Large faded step number -->
-            <span
-              class="font-serif text-5xl font-semibold"
-              style="color: oklch(0.82 0.13 88 / 0.25); line-height: 1;"
-            >
-              {step.num}
-            </span>
-            <h3 class="mt-3 text-lg font-semibold text-foreground">{step.title}</h3>
+            <h3 class="text-lg font-semibold text-foreground">
+              <span class="mr-1.5 text-muted-foreground">{i + 1}.</span>
+              {step.title}
+            </h3>
             <p class="mt-2 text-sm leading-relaxed text-muted-foreground">{step.desc}</p>
 
             {/* ─── Visual mockup per step ─── */}
@@ -115,7 +98,7 @@ const shareButtons = ['Copy link', 'Export PNG', 'Publish'];
                 <p class="mb-3 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
                   Export &amp; share
                 </p>
-                <div class="gradient-border mb-3 p-3">
+                <div class="mb-3 rounded-lg border border-border bg-background p-3">
                   <div class="flex items-center gap-2">
                     <div class="flex h-6 w-6 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-primary-foreground">
                       A
@@ -140,7 +123,7 @@ const shareButtons = ['Copy link', 'Export PNG', 'Publish'];
     <div class="mt-12 text-center">
       <a
         href="/timeline/new"
-        class="shadow-glow inline-flex rounded-full bg-primary px-7 py-3 text-sm font-semibold text-primary-foreground no-underline transition-opacity hover:opacity-90 focus-visible:ring-2 focus-visible:ring-foreground/50 focus-visible:outline-none"
+        class="inline-flex rounded-full bg-primary px-7 py-3 text-sm font-semibold text-primary-foreground no-underline transition-opacity hover:opacity-90 focus-visible:ring-2 focus-visible:ring-foreground/50 focus-visible:outline-none"
       >
         Start your hobby map →
       </a>

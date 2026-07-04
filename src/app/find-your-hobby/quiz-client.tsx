@@ -1,9 +1,32 @@
 'use client';
 
+import type { LucideIcon } from 'lucide-react';
+import {
+  Activity,
+  BookOpen,
+  ChefHat,
+  Coffee,
+  Download,
+  Dumbbell,
+  Gamepad2,
+  Hammer,
+  HeartHandshake,
+  Lightbulb,
+  MessageCircle,
+  Mountain,
+  Music,
+  Palette,
+  PartyPopper,
+  Pencil,
+  Share2,
+  Users,
+  Wrench,
+  Zap,
+} from 'lucide-react';
 import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
 
-import { BorderBeam, FadeIn, SpotlightCard, TextGenerateEffect } from '~/components/aceternity';
+import { FadeIn, SpotlightCard } from '~/components/aceternity';
 import { EmailCapture } from '~/components/email-capture';
 import { QuizResultCard } from '~/components/quiz-result-card';
 import { trackDiscovery, trackDiscoveryFunnel, trackEvent } from '~/lib/analytics';
@@ -22,7 +45,7 @@ type Category =
   | 'Collecting';
 
 interface QuizOption {
-  emoji: string;
+  icon: LucideIcon;
   label: string;
   categories: Category[];
 }
@@ -45,29 +68,45 @@ const QUESTIONS: QuizQuestion[] = [
   {
     question: "When you have free time, you'd rather...",
     options: [
-      { emoji: '🛠️', label: 'Make something with my hands', categories: ['Creative', 'Making'] },
-      { emoji: '🏃', label: 'Get moving and active', categories: ['Physical', 'Outdoor'] },
-      { emoji: '📖', label: 'Learn something new', categories: ['Intellectual'] },
-      { emoji: '🥂', label: 'Hang out with people', categories: ['Social', 'Culinary'] },
+      { icon: Wrench, label: 'Make something with my hands', categories: ['Creative', 'Making'] },
+      { icon: Activity, label: 'Get moving and active', categories: ['Physical', 'Outdoor'] },
+      { icon: BookOpen, label: 'Learn something new', categories: ['Intellectual'] },
+      { icon: Users, label: 'Hang out with people', categories: ['Social', 'Culinary'] },
     ],
   },
   {
     question: "At a party, you're most likely...",
     options: [
-      { emoji: '✏️', label: 'In the corner sketching or people-watching', categories: ['Creative'] },
-      { emoji: '🎉', label: 'Organizing a group activity', categories: ['Social'] },
-      { emoji: '💬', label: 'Deep in conversation about ideas', categories: ['Intellectual'] },
-      { emoji: '🎮', label: 'Challenging someone to a game', categories: ['Gaming', 'Physical'] },
+      {
+        icon: Pencil,
+        label: 'In the corner sketching or people-watching',
+        categories: ['Creative'],
+      },
+      { icon: PartyPopper, label: 'Organizing a group activity', categories: ['Social'] },
+      {
+        icon: MessageCircle,
+        label: 'Deep in conversation about ideas',
+        categories: ['Intellectual'],
+      },
+      {
+        icon: Gamepad2,
+        label: 'Challenging someone to a game',
+        categories: ['Gaming', 'Physical'],
+      },
     ],
   },
   {
     question: 'Your ideal weekend involves...',
     options: [
-      { emoji: '🥾', label: 'A long hike or bike ride', categories: ['Physical', 'Outdoor'] },
-      { emoji: '🎨', label: 'A workshop or class', categories: ['Making', 'Creative'] },
-      { emoji: '🍝', label: 'Cooking a big meal for friends', categories: ['Culinary', 'Social'] },
+      { icon: Mountain, label: 'A long hike or bike ride', categories: ['Physical', 'Outdoor'] },
+      { icon: Palette, label: 'A workshop or class', categories: ['Making', 'Creative'] },
       {
-        emoji: '🧩',
+        icon: ChefHat,
+        label: 'Cooking a big meal for friends',
+        categories: ['Culinary', 'Social'],
+      },
+      {
+        icon: BookOpen,
         label: 'Getting lost in a book or puzzle',
         categories: ['Intellectual', 'Gaming'],
       },
@@ -77,35 +116,39 @@ const QUESTIONS: QuizQuestion[] = [
     question: 'You feel most satisfied when you...',
     options: [
       {
-        emoji: '✨',
+        icon: Lightbulb,
         label: "Create something that didn't exist before",
         categories: ['Creative', 'Making'],
       },
-      { emoji: '💪', label: 'Push past a physical challenge', categories: ['Physical'] },
+      { icon: Dumbbell, label: 'Push past a physical challenge', categories: ['Physical'] },
       {
-        emoji: '🎵',
+        icon: Music,
         label: 'Master a skill through practice',
         categories: ['Music', 'Intellectual'],
       },
-      { emoji: '🤝', label: 'Connect with others over shared interests', categories: ['Social'] },
+      {
+        icon: HeartHandshake,
+        label: 'Connect with others over shared interests',
+        categories: ['Social'],
+      },
     ],
   },
   {
     question: 'Your energy level right now...',
     options: [
-      { emoji: '⚡', label: 'High — I want to DO something', categories: ['Physical', 'Outdoor'] },
+      { icon: Zap, label: 'High — I want to DO something', categories: ['Physical', 'Outdoor'] },
       {
-        emoji: '🔨',
+        icon: Hammer,
         label: 'Medium — I want to create or build',
         categories: ['Creative', 'Making'],
       },
       {
-        emoji: '😌',
+        icon: Coffee,
         label: 'Chill — I want to relax and explore',
         categories: ['Intellectual', 'Gaming', 'Collecting'],
       },
       {
-        emoji: '🧑‍🤝‍🧑',
+        icon: Users,
         label: 'Social — I want to be around people',
         categories: ['Social', 'Culinary'],
       },
@@ -369,10 +412,9 @@ export function HobbyQuiz() {
         {/* Header */}
         {!isResults && (
           <div className="mb-10 text-center">
-            <p className="mb-2 text-sm font-semibold text-foreground">Free Hobby Quiz</p>
             <h1 className="text-3xl font-bold text-foreground">Find Your Perfect Hobby</h1>
             <p className="mt-3 text-muted-foreground">
-              Answer 5 quick questions and get personalized hobby recommendations.
+              A free quiz — answer 5 quick questions and get personalized hobby recommendations.
             </p>
           </div>
         )}
@@ -409,6 +451,7 @@ export function HobbyQuiz() {
               <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                 {currentQuestion.options.map((option, i) => {
                   const isSelected = selectedOption === i;
+                  const OptionIcon = option.icon;
                   return (
                     <button
                       key={i}
@@ -419,7 +462,10 @@ export function HobbyQuiz() {
                           : 'border-border bg-card'
                       }`}
                     >
-                      <span className="text-2xl">{option.emoji}</span>
+                      <OptionIcon
+                        className={`h-4 w-4 shrink-0 ${isSelected ? 'text-primary' : 'text-muted-foreground'}`}
+                        aria-hidden="true"
+                      />
                       <span
                         className={`text-sm font-medium ${
                           isSelected ? 'text-foreground' : 'text-foreground'
@@ -454,7 +500,6 @@ export function HobbyQuiz() {
           <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
             {/* Archetype reveal */}
             <div className="relative mb-10 overflow-hidden rounded-2xl border border-foreground/20 bg-gradient-to-br from-foreground/10 to-white p-8 text-center shadow-soft">
-              <BorderBeam size={200} duration={12} />
               <div className="mb-4 text-6xl">{archetype.emoji}</div>
               <p className="mb-1 text-sm font-semibold text-foreground">Your Hobby Archetype</p>
               <h1 className="mb-3 text-3xl font-bold text-foreground">{archetype.title}</h1>
@@ -462,17 +507,14 @@ export function HobbyQuiz() {
 
               {topCats.length > 1 && (
                 <div className="mt-4 flex flex-wrap justify-center gap-2">
-                  {topCats.map((cat) => {
-                    const a = ARCHETYPE_MAP[cat];
-                    return (
-                      <span
-                        key={cat}
-                        className="inline-flex items-center gap-1 rounded-full bg-foreground/10 px-3 py-1 text-xs font-medium text-foreground"
-                      >
-                        {a?.emoji} {cat}
-                      </span>
-                    );
-                  })}
+                  {topCats.map((cat) => (
+                    <span
+                      key={cat}
+                      className="inline-flex items-center gap-1 rounded-full bg-foreground/10 px-3 py-1 text-xs font-medium text-foreground"
+                    >
+                      {cat}
+                    </span>
+                  ))}
                 </div>
               )}
             </div>
@@ -484,20 +526,16 @@ export function HobbyQuiz() {
                 Based on your archetype — click any to explore community timelines.
               </p>
               <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-                {recommendedHobbies.map((hobby) => {
-                  const cat = HOBBY_CATEGORIES.find((c) => c.hobbies.includes(hobby));
-                  return (
-                    <Link
-                      key={hobby}
-                      href={`/hobbies/${hobbySlug(hobby)}`}
-                      className="flex flex-col items-center gap-1 rounded-xl border border-border bg-card p-4 text-center text-sm font-medium text-foreground transition-all hover:border-foreground/30 hover:bg-foreground/10 hover:text-foreground hover:shadow-sm"
-                      prefetch={false}
-                    >
-                      <span className="text-2xl">{cat?.emoji ?? '✨'}</span>
-                      <span>{hobby}</span>
-                    </Link>
-                  );
-                })}
+                {recommendedHobbies.map((hobby) => (
+                  <Link
+                    key={hobby}
+                    href={`/hobbies/${hobbySlug(hobby)}`}
+                    className="flex flex-col items-center gap-1 rounded-xl border border-border bg-card p-4 text-center text-sm font-medium text-foreground transition-all hover:border-foreground/30 hover:bg-foreground/10 hover:text-foreground hover:shadow-sm"
+                    prefetch={false}
+                  >
+                    <span>{hobby}</span>
+                  </Link>
+                ))}
               </div>
             </div>
 
@@ -519,9 +557,6 @@ export function HobbyQuiz() {
               </div>
               <div className="grid gap-3">
                 {hobbyExperiments.map((experiment) => {
-                  const category = HOBBY_CATEGORIES.find(
-                    (item) => item.name === experiment.category
-                  );
                   return (
                     <div
                       key={experiment.hobby}
@@ -530,7 +565,7 @@ export function HobbyQuiz() {
                       <div className="mb-3 flex items-start justify-between gap-3">
                         <div>
                           <p className="text-sm font-semibold text-foreground">
-                            {category?.emoji ?? '✨'} {experiment.hobby}
+                            {experiment.hobby}
                           </p>
                           <p className="mt-1 text-xs text-muted-foreground">{experiment.reason}</p>
                         </div>
@@ -580,14 +615,16 @@ export function HobbyQuiz() {
                 onClick={handleShare}
                 className="flex items-center gap-2 rounded-lg border border-border bg-card px-5 py-2.5 text-sm font-medium text-muted-foreground transition-colors hover:border-border hover:bg-card/40"
               >
-                <span>🔗</span> Share your result
+                <Share2 className="h-4 w-4 text-muted-foreground" aria-hidden="true" /> Share your
+                result
               </button>
               <button
                 onClick={handleDownloadCard}
                 disabled={isDownloading}
                 className="flex items-center gap-2 rounded-lg border border-border bg-card px-5 py-2.5 text-sm font-medium text-muted-foreground transition-colors hover:border-border hover:bg-card/40 disabled:opacity-50"
               >
-                <span>⬇️</span> {isDownloading ? 'Downloading...' : 'Download Card'}
+                <Download className="h-4 w-4 text-muted-foreground" aria-hidden="true" />{' '}
+                {isDownloading ? 'Downloading...' : 'Download Card'}
               </button>
               <button
                 onClick={handleRestart}

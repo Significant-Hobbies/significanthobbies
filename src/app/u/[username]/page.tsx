@@ -1,18 +1,10 @@
 import { and, count, desc, eq } from 'drizzle-orm';
-import { ArrowRight, ExternalLink, Pencil, Plus } from 'lucide-react';
+import { ArrowRight, ExternalLink, Pencil, Plus, Trophy } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
-import {
-  FadeIn,
-  GradientMesh,
-  GridBackground,
-  NumberTicker,
-  SpotlightCard,
-  StaggerContainer,
-  StaggerItem,
-} from '~/components/aceternity';
+import { GradientMesh, GridBackground, SpotlightCard } from '~/components/aceternity';
 import { BadgeCollection } from '~/components/badge-collection';
 import { CommitmentCard } from '~/components/commitments/commitment-card';
 import { FollowButton } from '~/components/follow-button';
@@ -203,7 +195,7 @@ export default async function ProfilePage({ params }: Props) {
 
       {/* ─── Section 1 — The Creed ─────────────────────────────────────────
           The opening plaque of the exhibit. Who is this person? */}
-      <FadeIn className="relative">
+      <div className="relative">
         <div className="flex flex-col items-center text-center pt-8 pb-12">
           {/* Avatar — gold-bordered circle, the face on the plaque */}
           <div className="rounded-full p-1 ring-1 ring-[oklch(0.82_0.13_88/0.4)] shadow-[0_0_24px_4px_oklch(0.82_0.13_88/0.12)]">
@@ -310,79 +302,67 @@ export default async function ProfilePage({ params }: Props) {
             )}
           </div>
         </div>
-      </FadeIn>
+      </div>
 
       {/* ─── Section 2 — The Stamp ─────────────────────────────────────────
           Evidence of existence. This person was here. This is what they did. */}
-      <FadeIn className="relative py-12" delay={0.05}>
-        <StaggerContainer className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-          <StaggerItem>
-            <SpotlightCard className="shadow-soft h-full" innerClassName="p-5 text-center">
-              <NumberTicker
-                value={timelineList.length}
-                className="font-serif text-3xl font-semibold text-[oklch(0.82_0.13_88)]"
-              />
-              <p className="mt-1 text-xs text-muted-foreground">
-                {timelineList.length === 1 ? 'timeline' : 'timelines'}
-              </p>
-            </SpotlightCard>
-          </StaggerItem>
-          <StaggerItem>
-            <SpotlightCard className="shadow-soft h-full" innerClassName="p-5 text-center">
-              <NumberTicker
-                value={allHobbies.length}
-                className="font-serif text-3xl font-semibold text-[oklch(0.82_0.13_88)]"
-              />
-              <p className="mt-1 text-xs text-muted-foreground">
-                {allHobbies.length === 1 ? 'hobby pursued' : 'hobbies pursued'}
-              </p>
-            </SpotlightCard>
-          </StaggerItem>
-          <StaggerItem>
-            <SpotlightCard className="shadow-soft h-full" innerClassName="p-5 text-center">
-              <NumberTicker
-                value={completedQuestRows.length}
-                className="font-serif text-3xl font-semibold text-[oklch(0.82_0.13_88)]"
-              />
-              <p className="mt-1 text-xs text-muted-foreground">
-                {completedQuestRows.length === 1 ? 'quest completed' : 'quests completed'}
-              </p>
-            </SpotlightCard>
-          </StaggerItem>
-          <StaggerItem>
-            <SpotlightCard className="shadow-soft h-full" innerClassName="p-5 text-center">
-              {yearsLived > 0 ? (
-                <NumberTicker
-                  value={yearsLived}
-                  className="font-serif text-3xl font-semibold text-[oklch(0.82_0.13_88)]"
-                />
-              ) : (
-                <span className="font-serif text-3xl font-semibold text-muted-foreground/40">
-                  &mdash;
-                </span>
-              )}
-              <p className="mt-1 text-xs text-muted-foreground">
-                {yearsLived === 1 ? 'year lived' : 'years lived'}
-              </p>
-            </SpotlightCard>
-          </StaggerItem>
-        </StaggerContainer>
-      </FadeIn>
+      <div className="relative py-12">
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+          <SpotlightCard className="shadow-soft h-full" innerClassName="p-5 text-center">
+            <span className="font-serif text-3xl font-semibold text-[oklch(0.82_0.13_88)]">
+              {timelineList.length}
+            </span>
+            <p className="mt-1 text-xs text-muted-foreground">
+              {timelineList.length === 1 ? 'timeline' : 'timelines'}
+            </p>
+          </SpotlightCard>
+          <SpotlightCard className="shadow-soft h-full" innerClassName="p-5 text-center">
+            <span className="font-serif text-3xl font-semibold text-[oklch(0.82_0.13_88)]">
+              {allHobbies.length}
+            </span>
+            <p className="mt-1 text-xs text-muted-foreground">
+              {allHobbies.length === 1 ? 'hobby pursued' : 'hobbies pursued'}
+            </p>
+          </SpotlightCard>
+          <SpotlightCard className="shadow-soft h-full" innerClassName="p-5 text-center">
+            <span className="font-serif text-3xl font-semibold text-[oklch(0.82_0.13_88)]">
+              {completedQuestRows.length}
+            </span>
+            <p className="mt-1 text-xs text-muted-foreground">
+              {completedQuestRows.length === 1 ? 'quest completed' : 'quests completed'}
+            </p>
+          </SpotlightCard>
+          <SpotlightCard className="shadow-soft h-full" innerClassName="p-5 text-center">
+            {yearsLived > 0 ? (
+              <span className="font-serif text-3xl font-semibold text-[oklch(0.82_0.13_88)]">
+                {yearsLived}
+              </span>
+            ) : (
+              <span className="font-serif text-3xl font-semibold text-muted-foreground/40">
+                &mdash;
+              </span>
+            )}
+            <p className="mt-1 text-xs text-muted-foreground">
+              {yearsLived === 1 ? 'year lived' : 'years lived'}
+            </p>
+          </SpotlightCard>
+        </div>
+      </div>
 
       {/* ─── Section 3 — Past Arcs ─────────────────────────────────────────
           The chapters of their life, rendered as exhibit panels. */}
       {timelineList.length > 0 && (
-        <FadeIn className="relative py-12" delay={0.1}>
-          <h2 className="mb-6 text-center font-serif text-sm uppercase tracking-[0.2em] text-muted-foreground">
-            Past Arcs
+        <div className="relative py-12">
+          <h2 className="mb-6 text-center font-serif text-xl font-semibold text-foreground">
+            Past arcs
           </h2>
-          <StaggerContainer className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             {timelineList.map((t) => {
               const timelineHobbies = [
                 ...new Set(t.phases.flatMap((p) => p.hobbies.map((h) => h.name))),
               ];
               return (
-                <StaggerItem key={t.id}>
+                <div key={t.id}>
                   <Link href={getTimelineUrl(t)} prefetch={false} className="block h-full">
                     <SpotlightCard className="shadow-soft h-full" innerClassName="p-6">
                       <div className="flex items-start justify-between gap-3">
@@ -427,16 +407,16 @@ export default async function ProfilePage({ params }: Props) {
                       </div>
                     </SpotlightCard>
                   </Link>
-                </StaggerItem>
+                </div>
               );
             })}
-          </StaggerContainer>
-        </FadeIn>
+          </div>
+        </div>
       )}
 
       {/* Empty-state for timelines — only for the owner, kept quiet */}
       {timelineList.length === 0 && isOwner && (
-        <FadeIn className="relative py-12" delay={0.1}>
+        <div className="relative py-12">
           <div className="rounded-xl border border-border bg-card/30 p-10 text-center">
             <p className="font-serif text-lg text-muted-foreground">
               You haven&rsquo;t built a timeline yet.
@@ -450,36 +430,38 @@ export default async function ProfilePage({ params }: Props) {
               </Button>
             </Link>
           </div>
-        </FadeIn>
+        </div>
       )}
 
       {/* ─── Section 4 — The Evidence ──────────────────────────────────────
           Completed quests. Proof of what they've done, not a leaderboard. */}
       {completedQuestRows.length > 0 && (
-        <FadeIn className="relative py-12" delay={0.1}>
-          <h2 className="mb-6 text-center font-serif text-sm uppercase tracking-[0.2em] text-muted-foreground">
-            The Evidence
+        <div className="relative py-12">
+          <h2 className="mb-6 text-center font-serif text-xl font-semibold text-foreground">
+            The evidence
           </h2>
-          <StaggerContainer className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {completedQuestRows.map((q) => (
-              <StaggerItem key={q.id}>
+              <div key={q.id}>
                 <SpotlightCard className="shadow-soft h-full" innerClassName="p-5">
                   <div className="flex items-start gap-3">
-                    <span className="text-2xl leading-none">{q.emoji ?? '🏆'}</span>
+                    <span className="text-2xl leading-none">
+                      {q.emoji ?? <Trophy className="h-5 w-5 text-muted-foreground" />}
+                    </span>
                     <div className="min-w-0 flex-1">
                       <h3 className="font-serif text-sm font-semibold text-foreground leading-snug">
                         {q.title}
                       </h3>
-                      <span className="mt-1.5 inline-flex items-center gap-1 rounded-full border border-[oklch(0.82_0.13_88/0.3)] bg-[oklch(0.82_0.13_88/0.08)] px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide text-[oklch(0.82_0.13_88)]">
+                      <span className="mt-1.5 inline-flex items-center gap-1 rounded-full border border-[oklch(0.82_0.13_88/0.3)] bg-[oklch(0.82_0.13_88/0.08)] px-2 py-0.5 text-[10px] font-medium text-[oklch(0.82_0.13_88)]">
                         Completed
                       </span>
                     </div>
                   </div>
                 </SpotlightCard>
-              </StaggerItem>
+              </div>
             ))}
-          </StaggerContainer>
-        </FadeIn>
+          </div>
+        </div>
       )}
 
       {/* ─── Remaining exhibit rooms ───────────────────────────────────────

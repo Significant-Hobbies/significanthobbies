@@ -1,7 +1,7 @@
 import { eq } from 'drizzle-orm';
 import { notFound, redirect } from 'next/navigation';
 
-import { BorderBeam, FadeIn, SpotlightCard } from '~/components/aceternity';
+import { SpotlightCard } from '~/components/aceternity';
 import { TimelineBuilder } from '~/components/timeline-builder/builder';
 import { timelines, users } from '~/db/schema';
 import type { Phase, TimelineData, TimelineVisibility } from '~/lib/types';
@@ -49,18 +49,15 @@ export default async function EditTimelinePage({ params }: Props) {
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-12">
-      <FadeIn className="mb-8">
+      <div className="mb-8">
         <SpotlightCard className="shadow-soft" innerClassName="p-6">
           <h1 className="text-2xl font-bold text-foreground">Edit timeline</h1>
           <p className="mt-1 text-muted-foreground">Update phases and hobbies, then save.</p>
         </SpotlightCard>
-      </FadeIn>
-      <FadeIn delay={0.1}>
-        <div className="relative overflow-hidden rounded-xl border border-border bg-card/40 shadow-soft">
-          <BorderBeam />
-          <TimelineBuilder existing={timeline} />
-        </div>
-      </FadeIn>
+      </div>
+      <div className="relative overflow-hidden rounded-xl border border-border bg-card/40 shadow-soft">
+        <TimelineBuilder existing={timeline} />
+      </div>
     </div>
   );
 }

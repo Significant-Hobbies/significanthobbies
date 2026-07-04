@@ -10,7 +10,7 @@ import {
   StaggerItem,
 } from '~/components/aceternity';
 import { Whale } from '~/components/whale';
-import { BUCKET_ITEM_CATEGORIES, FAMOUS_BUCKET_LISTS } from '~/lib/famous-bucket-lists';
+import { FAMOUS_BUCKET_LISTS } from '~/lib/famous-bucket-lists';
 
 export const metadata: Metadata = {
   title: '1000+ Bucket List Ideas for 2025 — SignificantHobbies',
@@ -288,7 +288,7 @@ export default function BucketListIdeasPage() {
                 href="/dashboard"
                 className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-semibold text-foreground hover:bg-lumi-600 transition-colors shadow-md"
               >
-                ✨ Build my bucket list
+                Build my bucket list
               </Link>
               <Link
                 href="/bucket-lists"
@@ -313,7 +313,7 @@ export default function BucketListIdeasPage() {
                   href={`#${key}`}
                   className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-medium transition-colors ${style.bg} ${style.border} ${style.text}`}
                 >
-                  {cat.emoji} {cat.label}
+                  {cat.label}
                 </a>
               );
             })}
@@ -325,20 +325,12 @@ export default function BucketListIdeasPage() {
       <div className="mx-auto max-w-5xl px-4 py-12 space-y-16">
         {Object.entries(IDEAS_BY_CATEGORY).map(([key, cat]) => {
           const style = CATEGORY_STYLES[cat.color as keyof typeof CATEGORY_STYLES];
-          const catInfo = BUCKET_ITEM_CATEGORIES[key as keyof typeof BUCKET_ITEM_CATEGORIES];
           return (
             <section key={key} id={key} className="scroll-mt-28 space-y-6">
               <FadeIn>
-                <div className="flex items-center gap-3">
-                  <div
-                    className={`h-10 w-10 rounded-xl border ${style.border} ${style.bg} flex items-center justify-center text-xl`}
-                  >
-                    {cat.emoji}
-                  </div>
-                  <div>
-                    <h2 className="text-2xl font-bold text-foreground text-balance">{cat.label}</h2>
-                    <p className={`text-sm ${style.text} font-medium`}>{cat.ideas.length} ideas</p>
-                  </div>
+                <div>
+                  <h2 className="text-2xl font-bold text-foreground text-balance">{cat.label}</h2>
+                  <p className={`text-sm ${style.text} font-medium`}>{cat.ideas.length} ideas</p>
                 </div>
               </FadeIn>
 
@@ -379,7 +371,6 @@ export default function BucketListIdeasPage() {
                               className="inline-flex items-center gap-2 text-sm text-foreground hover:text-foreground font-medium transition-colors"
                               prefetch={false}
                             >
-                              <span>{p.emoji}</span>
                               <span>{p.name}</span>
                               <span className="text-muted-foreground/60 text-xs">→</span>
                             </Link>
@@ -411,7 +402,7 @@ export default function BucketListIdeasPage() {
               href="/dashboard"
               className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-semibold text-foreground hover:bg-lumi-600 transition-colors shadow-md"
             >
-              ✨ Start my bucket list
+              Start my bucket list
             </Link>
             <Link
               href="/bucket-lists"

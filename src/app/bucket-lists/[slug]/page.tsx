@@ -3,7 +3,6 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
 import {
-  BorderBeam,
   FadeIn,
   GradientMesh,
   SpotlightCard,
@@ -169,7 +168,6 @@ export default async function FamousBucketListPage({ params }: Props) {
 
         <SpotlightCard className="shadow-soft" innerClassName="p-0">
           <div className="relative overflow-hidden rounded-xl">
-            <BorderBeam />
             <StaggerContainer className="p-1.5">
               <ul className="space-y-3">
                 {list.items.map((item, i) => {
@@ -212,7 +210,7 @@ export default async function FamousBucketListPage({ params }: Props) {
                                       : 'border-border text-muted-foreground bg-card/40'
                                   }`}
                                 >
-                                  {cat.emoji} {cat.label}
+                                  {cat.label}
                                 </span>
                               )}
                             </div>

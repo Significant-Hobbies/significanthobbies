@@ -34,9 +34,6 @@ export default function HobbiesPage() {
           aria-hidden="true"
         />
         <FadeIn className="relative px-6 pt-16 pb-12 text-center sm:px-10">
-          <p className="mb-3 text-xs font-medium uppercase tracking-[0.25em] text-primary/80">
-            The Catalog
-          </p>
           <h1 className="font-serif text-4xl font-semibold tracking-tight text-foreground sm:text-5xl md:text-6xl">
             Hobby Directory
           </h1>
@@ -44,22 +41,9 @@ export default function HobbiesPage() {
             A curated index of pursuits worth a life. Browse by category, then dive into the
             community timeline behind each one.
           </p>
-          {/* Stats */}
-          <div className="mt-6 flex items-center justify-center gap-6 text-sm">
-            <div className="flex items-baseline gap-1.5">
-              <span className="font-serif text-2xl font-semibold text-foreground">
-                {totalHobbies}
-              </span>
-              <span className="text-muted-foreground">hobbies</span>
-            </div>
-            <span className="h-4 w-px bg-border" aria-hidden="true" />
-            <div className="flex items-baseline gap-1.5">
-              <span className="font-serif text-2xl font-semibold text-foreground">
-                {totalCategories}
-              </span>
-              <span className="text-muted-foreground">categories</span>
-            </div>
-          </div>
+          <p className="mt-4 text-sm text-muted-foreground">
+            {totalHobbies} hobbies across {totalCategories} categories.
+          </p>
         </FadeIn>
       </div>
 
@@ -107,9 +91,6 @@ export default function HobbiesPage() {
                       {/* Overlaid content at the bottom of the image */}
                       <div className="absolute inset-x-0 bottom-0 p-3">
                         <div className="mb-1 flex items-center gap-1.5">
-                          <span className="text-lg leading-none drop-shadow-sm">
-                            {category.emoji}
-                          </span>
                           <span className="rounded-full bg-background/60 px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground backdrop-blur-sm">
                             {category.hobbies.length}
                           </span>
@@ -135,12 +116,6 @@ export default function HobbiesPage() {
             <StaggerItem key={category.name}>
               {/* Section header */}
               <div className="mb-5 flex items-center gap-3">
-                <span
-                  className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-xl"
-                  aria-hidden="true"
-                >
-                  {category.emoji}
-                </span>
                 <Link href={`/hobbies/category/${catSlug}`} prefetch={false} className="group">
                   <h2 className="font-serif text-2xl font-semibold tracking-tight text-foreground transition-colors group-hover:text-primary">
                     {category.name}
@@ -158,7 +133,7 @@ export default function HobbiesPage() {
                   <Link
                     key={hobby}
                     href={`/hobbies/${encodeURIComponent(hobby.toLowerCase().replace(/\s+/g, '-'))}`}
-                    title={`${category.emoji} ${category.name}`}
+                    title={category.name}
                     prefetch={false}
                   >
                     <div
@@ -191,9 +166,6 @@ export default function HobbiesPage() {
             style={{ background: 'oklch(0.82 0.13 88)' }}
             aria-hidden="true"
           />
-          <p className="mb-2 text-xs font-medium uppercase tracking-[0.25em] text-primary/80">
-            Inspiration
-          </p>
           <h2 className="font-serif text-2xl font-semibold text-foreground sm:text-3xl">
             Famous Hobby Journeys
           </h2>

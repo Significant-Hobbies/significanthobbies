@@ -151,12 +151,9 @@ export default async function HobbyDetailPage({ params }: Props) {
           ← All hobbies
         </Link>
       </div>
-      <FadeIn className="mb-8 flex items-center gap-3">
-        <span className="text-4xl">{category.emoji}</span>
-        <div>
-          <h1 className="text-3xl font-bold text-foreground">{hobbyName}</h1>
-          <p className="text-muted-foreground text-sm">{category.name}</p>
-        </div>
+      <FadeIn className="mb-8">
+        <h1 className="text-3xl font-bold text-foreground">{hobbyName}</h1>
+        <p className="text-muted-foreground text-sm">{category.name}</p>
       </FadeIn>
 
       {/* Popularity */}
@@ -205,7 +202,6 @@ export default async function HobbyDetailPage({ params }: Props) {
                   i === 0 ? 'p-5' : 'px-5 py-3'
                 }`}
               >
-                <span className={i === 0 ? 'text-3xl' : 'text-xl'}>{r.icon}</span>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
                     <span
@@ -245,17 +241,10 @@ export default async function HobbyDetailPage({ params }: Props) {
             {relatedPosts.map((post) => (
               <Link key={post.slug} href={`/blog/${post.slug}`} prefetch={false}>
                 <div className="group rounded-xl border border-border bg-card p-4 transition-colors hover:border-foreground/30">
-                  <div className="flex items-center gap-3">
-                    <span className="text-2xl">{post.emoji}</span>
-                    <div>
-                      <h3 className="font-medium text-foreground group-hover:text-foreground transition-colors">
-                        {post.title}
-                      </h3>
-                      <p className="text-xs text-muted-foreground mt-0.5">
-                        {post.readTime} min read
-                      </p>
-                    </div>
-                  </div>
+                  <h3 className="font-medium text-foreground group-hover:text-foreground transition-colors">
+                    {post.title}
+                  </h3>
+                  <p className="text-xs text-muted-foreground mt-0.5">{post.readTime} min read</p>
                 </div>
               </Link>
             ))}
@@ -317,7 +306,7 @@ export default async function HobbyDetailPage({ params }: Props) {
       {otherHobbies.length > 0 && (
         <div className="mb-8">
           <h2 className="mb-4 text-sm font-semibold text-muted-foreground">
-            {category.emoji} Other {category.name.toLowerCase()} hobbies
+            Other {category.name.toLowerCase()} hobbies
           </h2>
           <div className="flex flex-wrap gap-2">
             {otherHobbies.map((h) => (
@@ -330,7 +319,7 @@ export default async function HobbyDetailPage({ params }: Props) {
                   variant="outline"
                   className="border-border text-muted-foreground hover:border-foreground/30 hover:text-foreground cursor-pointer transition-colors"
                 >
-                  {category.emoji} {h}
+                  {h}
                 </Badge>
               </Link>
             ))}
@@ -358,11 +347,15 @@ export default async function HobbyDetailPage({ params }: Props) {
                   prefetch={false}
                 >
                   <SpotlightCard className="h-full p-4" innerClassName="h-full">
-                    <div className="flex items-center gap-2 mb-1">
-                      <span className="text-lg">{affinityCategory?.emoji ?? '🎯'}</span>
+                    <div className="mb-1">
                       <span className="font-semibold text-foreground text-sm group-hover:text-foreground transition-colors">
                         {affinity.name}
                       </span>
+                      {affinityCategory && (
+                        <span className="ml-2 text-xs text-muted-foreground">
+                          {affinityCategory.name}
+                        </span>
+                      )}
                     </div>
                     <p className="text-xs text-muted-foreground leading-relaxed">
                       {affinity.reason}

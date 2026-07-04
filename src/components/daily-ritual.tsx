@@ -190,7 +190,7 @@ export function DailyRitual({
       <section className="relative overflow-hidden rounded-2xl border border-border/50 p-6 sm:p-8">
         <GradientMesh variant={isMorning ? 'gold' : 'sage'} />
         <div className="relative">
-          <div className="flex items-center gap-2 text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground/60">
+          <div className="flex items-center gap-2 text-xs font-medium text-muted-foreground/60">
             {isMorning ? (
               <Sunrise className="h-3.5 w-3.5 text-primary" />
             ) : (
@@ -204,7 +204,7 @@ export function DailyRitual({
           {weeksRemaining !== null && (
             <div className="mt-4 flex items-center gap-3">
               <div className="flex items-center gap-2 rounded-lg border border-border/60 bg-card/50 px-3 py-1.5">
-                <div className="h-2 w-2 rounded-full bg-primary animate-pulse-soft" />
+                <div className="h-2 w-2 rounded-full bg-primary" />
                 <span className="text-sm text-muted-foreground">
                   <span className="font-serif font-medium tabular-nums text-foreground">
                     {weeksRemaining.toLocaleString()}
@@ -362,7 +362,7 @@ export function DailyRitual({
                     {/* Weekly progress bar */}
                     <div className="h-1 w-24 overflow-hidden rounded-full bg-foreground/10">
                       <div
-                        className="h-full rounded-full bg-primary transition-all duration-500"
+                        className="h-full rounded-full bg-primary transition-all duration-200"
                         style={{ width: `${weeklyPct}%` }}
                       />
                     </div>
@@ -469,9 +469,7 @@ export function DailyRitual({
         <div className="rounded-xl border border-border bg-card/50 p-5 shadow-soft">
           <div className="flex items-center gap-2 mb-2">
             <Sunrise className="h-3.5 w-3.5 text-primary" />
-            <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-              This morning you wrote
-            </p>
+            <p className="text-xs font-medium text-muted-foreground">This morning you wrote</p>
           </div>
           <p className="text-sm text-foreground/80 leading-relaxed whitespace-pre-wrap">
             {amEntry}

@@ -390,7 +390,6 @@ export default function BucketListBefore30Page() {
                 innerClassName="px-4 py-4"
               >
                 <div className="flex items-start gap-4 hover:border-primary transition-all group">
-                  <span className="text-2xl leading-none mt-0.5">{item.emoji}</span>
                   <div className="space-y-1 min-w-0">
                     <div className="flex items-start gap-2">
                       <span className="text-xs font-bold text-primary shrink-0 mt-0.5">

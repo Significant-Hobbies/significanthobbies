@@ -1,14 +1,7 @@
 import { desc, eq } from 'drizzle-orm';
 import { redirect } from 'next/navigation';
 
-import {
-  FadeIn,
-  GridBackground,
-  StaggerContainer,
-  StaggerItem,
-  SpotlightCard,
-  TextGenerateEffect,
-} from '~/components/aceternity';
+import { GridBackground, SpotlightCard } from '~/components/aceternity';
 import { CommitmentCard } from '~/components/commitments/commitment-card';
 import { StartCommitmentForm } from '~/components/commitments/start-commitment-form';
 import { timelines, users } from '~/db/schema';
@@ -61,14 +54,12 @@ export default async function CommitmentsPage() {
     <div className="mx-auto max-w-3xl px-4 py-10 sm:py-14 space-y-12">
       <header className="relative space-y-2 overflow-hidden rounded-2xl px-6 py-8">
         <GridBackground />
-        <FadeIn className="relative">
-          <h1 className="text-2xl font-semibold text-foreground">
-            <TextGenerateEffect words="Commitments" />
-          </h1>
+        <div className="relative">
+          <h1 className="text-2xl font-semibold text-foreground">Commitments</h1>
           <p className="text-sm text-muted-foreground max-w-lg">
             Practice daily, log proof with stamps. Track your commitment journey.
           </p>
-        </FadeIn>
+        </div>
       </header>
 
       <StartCommitmentForm suggestions={suggestions} weeksRemaining={weeksRemaining} />
@@ -83,9 +74,9 @@ export default async function CommitmentsPage() {
           {active.length === 0 ? (
             <p className="text-sm text-muted-foreground">None right now.</p>
           ) : (
-            <StaggerContainer className="grid gap-3 sm:grid-cols-2">
+            <div className="grid gap-3 sm:grid-cols-2">
               {active.map((c) => (
-                <StaggerItem key={c.id}>
+                <div key={c.id}>
                   <SpotlightCard className="shadow-soft" innerClassName="p-0">
                     <CommitmentCard
                       id={c.id}
@@ -99,9 +90,9 @@ export default async function CommitmentsPage() {
                       className="border-0 bg-transparent shadow-none"
                     />
                   </SpotlightCard>
-                </StaggerItem>
+                </div>
               ))}
-            </StaggerContainer>
+            </div>
           )}
         </section>
       )}
@@ -109,9 +100,9 @@ export default async function CommitmentsPage() {
       {completed.length > 0 && (
         <section className="space-y-3">
           <h2 className="text-sm font-medium text-foreground">Completed ({completed.length})</h2>
-          <StaggerContainer className="grid gap-3 sm:grid-cols-2">
+          <div className="grid gap-3 sm:grid-cols-2">
             {completed.map((c) => (
-              <StaggerItem key={c.id}>
+              <div key={c.id}>
                 <SpotlightCard className="shadow-soft" innerClassName="p-0">
                   <CommitmentCard
                     id={c.id}
@@ -123,9 +114,9 @@ export default async function CommitmentsPage() {
                     className="border-0 bg-transparent shadow-none"
                   />
                 </SpotlightCard>
-              </StaggerItem>
+              </div>
             ))}
-          </StaggerContainer>
+          </div>
         </section>
       )}
     </div>

@@ -1,8 +1,9 @@
 'use client';
 
+import { RotateCcw } from 'lucide-react';
 import { motion } from 'motion/react';
 
-import { BorderBeam, GradientMesh, SpotlightCard } from '~/components/aceternity';
+import { GradientMesh, SpotlightCard } from '~/components/aceternity';
 import { Whale } from '~/components/whale';
 
 interface ArcCompleteCelebrationProps {
@@ -40,7 +41,6 @@ export function ArcCompleteCelebration({ arc, onDismiss }: ArcCompleteCelebratio
           spotlightColor="oklch(0.82 0.13 88 / 0.14)"
         >
           <GradientMesh variant="gold" />
-          <BorderBeam size={220} duration={14} />
 
           {/* Whale mascot floating calmly above the arc emoji */}
           <motion.div
@@ -52,16 +52,10 @@ export function ArcCompleteCelebration({ arc, onDismiss }: ArcCompleteCelebratio
             <Whale size={56} glow />
           </motion.div>
 
-          {/* Arc emoji — subtle bounce */}
-          <motion.div
-            initial={{ y: 0 }}
-            animate={{ y: [0, -10, 0] }}
-            transition={{ duration: 1.2, repeat: Infinity, ease: 'easeInOut' }}
-            className="relative mt-3 text-4xl"
-            aria-hidden="true"
-          >
-            {arc.emoji ?? '🔄'}
-          </motion.div>
+          {/* Arc emoji */}
+          <div className="relative mt-3 text-4xl" aria-hidden="true">
+            {arc.emoji ?? <RotateCcw className="h-8 w-8 text-muted-foreground" />}
+          </div>
 
           <h2 className="relative mt-5 font-serif text-2xl font-semibold tracking-tight text-foreground">
             Arc complete
@@ -76,7 +70,7 @@ export function ArcCompleteCelebration({ arc, onDismiss }: ArcCompleteCelebratio
           <button
             type="button"
             onClick={onDismiss}
-            className="relative mt-7 inline-flex items-center justify-center rounded-lg bg-primary px-6 py-2.5 text-sm font-medium text-primary-foreground transition-all hover:opacity-90 hover:shadow-glow"
+            className="relative mt-7 inline-flex items-center justify-center rounded-lg bg-primary px-6 py-2.5 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90"
           >
             Continue
           </button>

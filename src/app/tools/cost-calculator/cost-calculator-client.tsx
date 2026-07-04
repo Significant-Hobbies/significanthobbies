@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from 'react';
 
-import { BorderBeam, FadeIn, NumberTicker, SpotlightCard } from '~/components/aceternity';
+import { FadeIn, NumberTicker, SpotlightCard } from '~/components/aceternity';
 
 const STORAGE_KEY = 'sh-cost-calculator-v1';
 
@@ -116,15 +116,12 @@ export default function CostCalculatorClient() {
 
   return (
     <FadeIn className="mx-auto max-w-3xl px-4 py-10">
-      <div className="mb-2 inline-flex items-center gap-2 rounded-full border border-foreground/20 bg-foreground/10 px-3 py-1 text-[11px] font-semibold text-foreground">
-        Free tool
-      </div>
       <h1 className="font-serif text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
         Hobby cost calculator
       </h1>
       <p className="mt-2 text-muted-foreground">
-        Add every cost in one place — equipment, lessons, subscriptions, supplies — and see the
-        honest year-one and steady-state numbers before you commit.
+        A free tool — add every cost in one place, from equipment to lessons, subscriptions, and
+        supplies, and see the honest year-one and steady-state numbers before you commit.
       </p>
 
       <div className="mt-6 flex flex-wrap items-center gap-2 text-xs">
@@ -204,7 +201,6 @@ export default function CostCalculatorClient() {
       </SpotlightCard>
 
       <div className="relative mt-6 grid gap-3 overflow-hidden rounded-2xl sm:grid-cols-4">
-        <BorderBeam size={180} duration={10} />
         <Stat label="One-time" value={totals.oneTime} hint="up-front gear" />
         <Stat label="Recurring / year" value={totals.annual} hint="lessons + subscriptions" />
         <Stat label="≈ Per month" value={totals.monthly} hint="steady state" />

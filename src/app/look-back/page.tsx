@@ -1,9 +1,9 @@
 import { and, desc, eq } from 'drizzle-orm';
+import { BookOpen } from 'lucide-react';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 
 import {
-  FadeIn,
   GradientMesh,
   GridBackground,
   SpotlightCard,
@@ -179,7 +179,6 @@ export default async function LookBackPage() {
                 <SpotlightCard className="relative overflow-hidden rounded-2xl border border-border/50 bg-card p-8 shadow-soft sm:p-10">
                   {section.kind === 'opening' && <GradientMesh variant="gold" />}
                   <div className="relative">
-                    {section.emoji && <span className="mb-4 block text-3xl">{section.emoji}</span>}
                     {section.title && (
                       <h2 className="mb-5 font-serif text-2xl font-semibold text-foreground sm:text-3xl">
                         {section.title}
@@ -208,7 +207,7 @@ export default async function LookBackPage() {
           <SpotlightCard className="relative overflow-hidden rounded-2xl border border-border/50 bg-card p-12 text-center shadow-soft">
             <GradientMesh variant="gold" />
             <div className="relative">
-              <span className="mb-4 block text-4xl">📖</span>
+              <BookOpen className="mx-auto mb-4 h-8 w-8 text-muted-foreground" aria-hidden="true" />
               <h2 className="font-serif text-2xl font-semibold text-foreground">
                 Your story is waiting to be written
               </h2>

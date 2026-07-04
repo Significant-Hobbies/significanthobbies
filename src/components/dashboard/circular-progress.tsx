@@ -63,7 +63,7 @@ export function CircularProgress({
             stroke="oklch(0.82 0.13 88)"
             strokeDasharray={circumference}
             strokeDashoffset={offset}
-            className="transition-all duration-700 ease-out"
+            className="transition-all duration-200 ease-out"
             style={{
               filter: isComplete ? 'drop-shadow(0 0 6px oklch(0.82 0.13 88 / 0.5))' : 'none',
             }}

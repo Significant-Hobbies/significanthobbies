@@ -43,11 +43,6 @@ const heroPhases = [
   },
 ];
 
-const stats = [
-  { value: '108', label: 'hobbies' },
-  { value: '10', label: 'categories' },
-  { value: 'Free', label: 'forever' },
-];
 ---
 
 <Layout title={TITLE} description={DESCRIPTION}>
@@ -70,24 +65,13 @@ const stats = [
       aria-hidden="true"
       style="background: linear-gradient(to top, oklch(0.15 0.005 285 / 0.92) 0%, oklch(0.15 0.005 285 / 0.55) 40%, oklch(0.15 0.005 285 / 0.35) 100%);"
     />
-    <!-- Premium gradient mesh overlay — gold / sage / blue radial blooms -->
-    <div class="hero-mesh pointer-events-none absolute inset-0" aria-hidden="true" />
-    <!-- Dot grid texture -->
-    <div class="grid-bg pointer-events-none absolute inset-0" aria-hidden="true" />
-
     <div class="relative z-10 mx-auto w-full max-w-5xl px-6 py-20 text-center lg:px-12 lg:py-24">
-      <!-- Eyebrow pill -->
-      <div class="mb-6 inline-flex items-center gap-2 rounded-full border border-border bg-card/60 px-4 py-1.5 text-xs font-medium text-muted-foreground backdrop-blur-sm">
-        <span class="h-1.5 w-1.5 rounded-full bg-primary" />
-        Your life in hobbies, mapped and remembered
-      </div>
-
       <h1
         class="font-serif text-4xl font-medium tracking-tight text-foreground sm:text-5xl lg:text-6xl"
-        style="line-height: 1.08;"
+        style="line-height: 1.12; text-wrap: balance;"
       >
         The hobbies that shaped you.<br />
-        <span class="gold-text">The life you still want to live.</span>
+        <em>The life you still want to live.</em>
       </h1>
 
       <p class="mx-auto mt-6 max-w-xl text-base text-muted-foreground sm:text-lg" style="line-height: 1.5;">
@@ -98,7 +82,7 @@ const stats = [
       <div class="mt-8 flex flex-wrap items-center justify-center gap-3">
         <a
           href="/timeline/new"
-          class="shadow-glow rounded-full bg-primary px-7 py-3 text-sm font-semibold text-primary-foreground no-underline transition-opacity hover:opacity-90 focus-visible:ring-2 focus-visible:ring-foreground/50 focus-visible:outline-none"
+          class="rounded-full bg-primary px-7 py-3 text-sm font-semibold text-primary-foreground no-underline transition-opacity hover:opacity-90 focus-visible:ring-2 focus-visible:ring-foreground/50 focus-visible:outline-none"
         >
           Start your hobby map
         </a>
@@ -108,22 +92,10 @@ const stats = [
         >
           Build your bucket list
         </a>
-        <a
-          href="/daily"
-          class="rounded-full border border-border bg-card/40 px-7 py-3 text-sm font-medium text-foreground no-underline backdrop-blur-sm transition-colors hover:border-muted-foreground focus-visible:ring-2 focus-visible:ring-foreground/50 focus-visible:outline-none"
-        >
-          Start your daily practice
-        </a>
       </div>
 
       <!-- ─── Product mockup: browser window + timeline UI ─── -->
       <div class="relative mx-auto mt-14 max-w-4xl">
-        <!-- Gold glow behind the mockup -->
-        <div
-          class="pointer-events-none absolute -inset-x-8 -inset-y-6 z-0"
-          aria-hidden="true"
-          style="background: radial-gradient(ellipse 70% 60% at 50% 50%, oklch(0.82 0.13 88 / 0.18), transparent 70%);"
-        />
         <div class="browser-mockup shadow-float relative z-10 text-left">
           <!-- Browser chrome bar -->
           <div class="browser-mockup-bar">
@@ -167,20 +139,7 @@ const stats = [
         </div>
       </div>
 
-      <!-- ─── Trust indicators ─── -->
-      <div class="mt-10 flex flex-col items-center gap-4">
-        <p class="text-sm text-muted-foreground">No sign-up required to start</p>
-        <div class="flex flex-wrap items-center justify-center gap-3">
-          {
-            stats.map((s) => (
-              <div class="flex items-center gap-1.5 rounded-full border border-border bg-card/50 px-3 py-1 text-xs backdrop-blur-sm">
-                <span class="font-semibold text-foreground">{s.value}</span>
-                <span class="text-muted-foreground">{s.label}</span>
-              </div>
-            ))
-          }
-        </div>
-      </div>
+      <p class="mt-10 text-sm text-muted-foreground">Free. No sign-up required to start.</p>
     </div>
   </section>
 

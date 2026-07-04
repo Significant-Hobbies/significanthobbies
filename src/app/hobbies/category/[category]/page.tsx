@@ -150,10 +150,7 @@ export default async function CategoryPage({ params }: Props) {
         <GridBackground variant="lines" size={28} color="oklch(0.97 0.003 285 / 0.10)" />
         <div className="absolute inset-0 bg-gradient-to-t from-background/85 via-background/30 to-transparent" />
         <FadeIn className="absolute bottom-0 left-0 right-0 p-5 sm:p-6" y={16}>
-          <div className="flex items-center gap-2.5">
-            <span className="text-3xl">{cat.emoji}</span>
-            <h1 className="text-2xl sm:text-3xl font-semibold text-foreground">{cat.name}</h1>
-          </div>
+          <h1 className="text-2xl sm:text-3xl font-semibold text-foreground">{cat.name}</h1>
           <p className="mt-1 text-sm text-foreground/70">{cat.hobbies.length} hobbies</p>
         </FadeIn>
       </div>
@@ -273,7 +270,7 @@ export default async function CategoryPage({ params }: Props) {
                   variant="outline"
                   className="border-border text-muted-foreground hover:border-foreground/30 hover:text-foreground cursor-pointer transition-colors py-1 px-3"
                 >
-                  {c.emoji} {c.name}
+                  {c.name}
                 </Badge>
               </Link>
             );

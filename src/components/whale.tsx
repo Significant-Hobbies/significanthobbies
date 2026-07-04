@@ -8,11 +8,9 @@ type WhaleProps = SVGProps<SVGSVGElement> & {
 };
 
 // ─── Whale mascot ───────────────────────────────────────────────────────────
-// A small floating whale — calm, wise, present. Not cartoonish.
-// Warm gold/amber palette to match the brand. Slow breathing animation.
-//
-// Replaces the old "Lumi" oval mascot. The whale symbolizes long journeys,
-// deep wisdom, and gentle presence. It drifts, it doesn't bounce.
+// A small golden whale, tail flukes lifted mid-dive. Calm closed eye, soft
+// belly highlight, gentle spout. Drawn to read as "whale" from 28px to 180px.
+// Iterated visually in screenshots/whale-lab.html.
 
 export function Whale({
   size = 80,
@@ -22,11 +20,10 @@ export function Whale({
   className = '',
   ...props
 }: WhaleProps) {
-  const body = onDark ? '#d4a843' : '#d4a843'; // gold-500
-  const belly = onDark ? '#e8c770' : '#e8c770'; // lighter gold
-  const deep = onDark ? '#b8862a' : '#b8862a'; // darker gold for depth
-  const eye = onDark ? '#1a0a00' : '#1a0a00';
-  const sparkle = onDark ? '#e8c770' : '#d4a843';
+  const body = '#d4a843'; // gold-500
+  const belly = '#e8c770'; // lighter gold
+  const deep = '#b8862a'; // darker gold
+  const eye = '#1a0a00';
 
   const animClasses = [
     className,
@@ -39,8 +36,8 @@ export function Whale({
   return (
     <svg
       width={size}
-      height={size}
-      viewBox="0 0 120 100"
+      height={size * 0.75}
+      viewBox="0 0 240 180"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       className={animClasses}
@@ -48,85 +45,54 @@ export function Whale({
       role="img"
       {...props}
     >
-      {/* Soft glow aura */}
-      {glow && <ellipse cx="60" cy="55" rx="55" ry="40" fill={body} opacity="0.08" />}
-
-      {/* Tail — elegant flowing shape */}
+      {/* Body: soft bean, blunt head left, tapering toward the tail */}
       <path
-        d="M95 50 Q108 38, 112 30 Q115 42, 108 52 Q115 62, 112 74 Q108 66, 95 54"
-        fill={deep}
-        opacity="0.85"
-      />
-
-      {/* Main body — rounded, gentle, whale-like */}
-      <path
-        d="M15 55
-           Q15 35, 40 30
-           Q65 27, 88 38
-           Q98 43, 98 52
-           Q98 62, 88 67
-           Q65 78, 40 75
-           Q15 72, 15 55Z"
+        d="M 20 95
+           C 20 66, 52 50, 92 50
+           C 128 50, 154 62, 164 80
+           C 167 86, 168 92, 166 98
+           C 162 108, 150 115, 134 119
+           C 104 127, 60 123, 38 110
+           C 26 103, 20 99, 20 95 Z"
         fill={body}
       />
-
-      {/* Belly — lighter underside for depth */}
+      {/* Tail: narrow stock curving up into two smooth rounded flukes */}
       <path
-        d="M22 58
-           Q25 68, 45 70
-           Q65 72, 85 65
-           Q92 62, 92 56
-           Q88 64, 70 66
-           Q50 68, 30 64
-           Q24 62, 22 58Z"
+        d="M 156 92
+           C 163 88, 168 81, 170 73
+           C 172 60, 178 49, 188 42
+           C 191 40, 194 41, 194 44
+           C 192 53, 190 62, 191 69
+           C 198 64, 207 62, 216 63
+           C 219 63, 220 66, 218 69
+           C 209 74, 202 82, 197 92
+           C 193 101, 184 107, 173 106
+           C 165 105, 159 99, 156 92 Z"
+        fill={body}
+      />
+      {/* Belly highlight */}
+      <path
+        d="M 28 103 C 55 118, 100 122, 138 114 C 110 124, 62 122, 34 108 Z"
         fill={belly}
-        opacity="0.5"
+        opacity="0.55"
       />
-
-      {/* Fin — small, delicate */}
-      <path d="M45 68 Q42 78, 38 82 Q48 80, 52 72" fill={deep} opacity="0.7" />
-
-      {/* Eye — small, calm, half-lidded (not wide-eyed cartoon) */}
+      {/* Eye: calm, closed arc */}
       <path
-        d="M32 48 Q35 45, 39 48"
+        d="M 50 84 Q 55 80, 60 84"
         stroke={eye}
-        strokeWidth="2"
+        strokeWidth="3"
         strokeLinecap="round"
         fill="none"
       />
-      {/* Eye shine — tiny, subtle */}
-      <circle cx="36" cy="47" r="0.8" fill="white" opacity="0.6" />
-
-      {/* Smile — gentle, barely there */}
+      {/* Spout: two soft arcs */}
       <path
-        d="M28 56 Q33 59, 38 56"
-        stroke={deep}
-        strokeWidth="1.5"
+        d="M 86 42 C 84 34, 86 26, 92 20 M 96 42 C 97 34, 102 28, 110 25"
+        stroke={onDark ? belly : deep}
+        strokeWidth="2.5"
         strokeLinecap="round"
+        opacity="0.45"
         fill="none"
-        opacity="0.5"
       />
-
-      {/* Blowhole — tiny dot, anatomical detail */}
-      <circle cx="55" cy="33" r="1.5" fill={deep} opacity="0.4" />
-
-      {/* Water spout — gentle, calming */}
-      <path
-        d="M55 33 Q53 22, 56 15 Q58 8, 55 3"
-        stroke={sparkle}
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        fill="none"
-        opacity="0.4"
-      />
-      {/* Water droplets */}
-      <circle cx="58" cy="18" r="1.2" fill={sparkle} opacity="0.5" />
-      <circle cx="52" cy="12" r="0.8" fill={sparkle} opacity="0.4" />
-
-      {/* Tiny bubbles trailing behind */}
-      <circle cx="8" cy="50" r="1.5" fill={sparkle} opacity="0.3" />
-      <circle cx="5" cy="45" r="1" fill={sparkle} opacity="0.2" />
-      <circle cx="3" cy="55" r="0.8" fill={sparkle} opacity="0.15" />
     </svg>
   );
 }
@@ -140,7 +106,7 @@ export function WhaleWordmark({
 }) {
   return (
     <span className={`inline-flex items-center gap-1.5 font-bold tracking-tight ${className}`}>
-      <Whale size={28} onDark={onDark} />
+      <Whale size={30} onDark={onDark} />
       <span>Significant Hobbies</span>
     </span>
   );

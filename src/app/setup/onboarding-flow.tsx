@@ -1,11 +1,23 @@
 'use client';
 
+import {
+  Check,
+  CheckCircle2,
+  Clock,
+  CloudFog,
+  CloudRain,
+  Flame,
+  HelpCircle,
+  Minus,
+  Square,
+  type LucideIcon,
+} from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { AnimatePresence, motion } from 'motion/react';
 import { useCallback, useRef, useState, useTransition } from 'react';
 import { toast } from 'sonner';
 
-import { BorderBeam, FadeIn, GradientMesh, SpotlightCard } from '~/components/aceternity';
+import { FadeIn, GradientMesh, SpotlightCard } from '~/components/aceternity';
 import { AmbientMusic } from '~/components/ambient-music';
 import { Whale } from '~/components/whale';
 import { createHabit, toggleHabitLog } from '~/lib/actions/daily';
@@ -60,12 +72,12 @@ function ProgressDots({ current, total }: { current: number; total: number }) {
 
 // ─── Option card for single-select questions ─────────────────────────────────
 function OptionCard({
-  emoji,
+  icon: Icon,
   label,
   selected,
   onClick,
 }: {
-  emoji: string;
+  icon: LucideIcon;
   label: string;
   selected: boolean;
   onClick: () => void;
@@ -78,15 +90,9 @@ function OptionCard({
         selected ? 'border-primary shadow-soft' : 'border-border'
       }`}
     >
-      <span className="text-2xl" aria-hidden="true">
-        {emoji}
-      </span>
+      <Icon className="h-6 w-6 shrink-0 text-muted-foreground" aria-hidden="true" />
       <span className="flex-1 text-base font-medium text-foreground">{label}</span>
-      {selected && (
-        <span className="text-lg font-bold text-primary" aria-hidden="true">
-          ✓
-        </span>
-      )}
+      {selected && <Check className="h-5 w-5 text-primary" aria-hidden="true" />}
     </button>
   );
 }
@@ -304,9 +310,7 @@ export function OnboardingFlow({ user }: { user: OnboardingUser }) {
                         spellCheck={false}
                       />
                       {isUsernameValid && (
-                        <span className="text-lg font-bold text-growth" aria-hidden="true">
-                          ✓
-                        </span>
+                        <Check className="h-5 w-5 text-growth" aria-hidden="true" />
                       )}
                     </div>
 
@@ -535,7 +539,7 @@ export function OnboardingFlow({ user }: { user: OnboardingUser }) {
 
                   <div className="flex flex-col gap-3">
                     <OptionCard
-                      emoji="✅"
+                      icon={CheckCircle2}
                       label="Recently — within the last month"
                       selected={lastFinished === 'recently'}
                       onClick={() => {
@@ -544,7 +548,7 @@ export function OnboardingFlow({ user }: { user: OnboardingUser }) {
                       }}
                     />
                     <OptionCard
-                      emoji="🕐"
+                      icon={Clock}
                       label="A few months ago"
                       selected={lastFinished === 'months_ago'}
                       onClick={() => {
@@ -553,7 +557,7 @@ export function OnboardingFlow({ user }: { user: OnboardingUser }) {
                       }}
                     />
                     <OptionCard
-                      emoji="🌫️"
+                      icon={CloudFog}
                       label="I can't remember"
                       selected={lastFinished === 'cant_remember'}
                       onClick={() => {
@@ -562,7 +566,7 @@ export function OnboardingFlow({ user }: { user: OnboardingUser }) {
                       }}
                     />
                     <OptionCard
-                      emoji="❓"
+                      icon={HelpCircle}
                       label="Does finishing even matter?"
                       selected={lastFinished === 'doesnt_matter'}
                       onClick={() => {
@@ -590,7 +594,7 @@ export function OnboardingFlow({ user }: { user: OnboardingUser }) {
 
                   <div className="flex flex-col gap-3">
                     <OptionCard
-                      emoji="🔥"
+                      icon={Flame}
                       label="Excited — there's things I want to do"
                       selected={nextYearFeeling === 'excited'}
                       onClick={() => {
@@ -599,7 +603,7 @@ export function OnboardingFlow({ user }: { user: OnboardingUser }) {
                       }}
                     />
                     <OptionCard
-                      emoji="😐"
+                      icon={Minus}
                       label="Neutral — it'll be what it'll be"
                       selected={nextYearFeeling === 'neutral'}
                       onClick={() => {
@@ -608,7 +612,7 @@ export function OnboardingFlow({ user }: { user: OnboardingUser }) {
                       }}
                     />
                     <OptionCard
-                      emoji="🌧️"
+                      icon={CloudRain}
                       label="Dread — I know how it'll go"
                       selected={nextYearFeeling === 'dread'}
                       onClick={() => {
@@ -617,7 +621,7 @@ export function OnboardingFlow({ user }: { user: OnboardingUser }) {
                       }}
                     />
                     <OptionCard
-                      emoji="⬜"
+                      icon={Square}
                       label="Blank — I don't feel anything about it"
                       selected={nextYearFeeling === 'blank'}
                       onClick={() => {
@@ -765,11 +769,8 @@ export function OnboardingFlow({ user }: { user: OnboardingUser }) {
               {/* ══ Step 7: Done ═══════════════════════════════════════════ */}
               {step === 7 && (
                 <div className="relative flex flex-col items-center text-center">
-                  <BorderBeam size={160} duration={10} />
                   <div className="mb-2 flex h-14 w-14 items-center justify-center rounded-full bg-growth-soft">
-                    <span className="text-2xl text-growth" aria-hidden="true">
-                      ✓
-                    </span>
+                    <Check className="h-6 w-6 text-growth" aria-hidden="true" />
                   </div>
 
                   <h2

@@ -1,10 +1,10 @@
 'use client';
 
+import { Compass, Link2, Map } from 'lucide-react';
 import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
 
 import {
-  BorderBeam,
   FadeIn,
   GridBackground,
   StaggerContainer,
@@ -24,17 +24,17 @@ const EXAMPLE_PROFILES = [
 
 const BENEFITS = [
   {
-    icon: '🔗',
+    icon: Link2,
     title: 'Shareable URL',
     desc: 'Your own significanthobbies.com/u/yourname',
   },
   {
-    icon: '🎭',
+    icon: Compass,
     title: 'Hobby personality',
     desc: 'Discover your archetype',
   },
   {
-    icon: '🗺️',
+    icon: Map,
     title: 'Hobby timeline',
     desc: 'Map your journey across life phases',
   },
@@ -182,7 +182,6 @@ export function GetStartedClient() {
                     <span className="font-semibold">This username is yours for the taking!</span>
                   </div>
                   <div className="relative mt-3 inline-flex overflow-hidden rounded-xl">
-                    <BorderBeam size={120} duration={10} />
                     <Link
                       href={`/login?callbackUrl=/setup&username=${encodeURIComponent(input)}`}
                       className="inline-flex items-center gap-2 rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow-sm hover:opacity-90 transition-colors"
@@ -276,10 +275,10 @@ export function GetStartedClient() {
           What you get with a profile
         </p>
         <StaggerContainer className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-          {BENEFITS.map(({ icon, title, desc }) => (
+          {BENEFITS.map(({ icon: Icon, title, desc }) => (
             <StaggerItem key={title}>
               <SpotlightCard className="h-full shadow-soft" innerClassName="p-4">
-                <div className="mb-2 text-2xl">{icon}</div>
+                <Icon className="mb-2 h-4 w-4 text-primary" aria-hidden="true" />
                 <p className="font-semibold text-foreground text-sm">{title}</p>
                 <p className="mt-1 text-xs text-muted-foreground">{desc}</p>
               </SpotlightCard>

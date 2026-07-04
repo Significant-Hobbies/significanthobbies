@@ -135,7 +135,7 @@ export function HabitsSection({
       {habitsTotal > 0 && (
         <div className="h-1.5 w-full overflow-hidden rounded-full bg-foreground/10">
           <div
-            className="h-full rounded-full bg-primary transition-all duration-500"
+            className="h-full rounded-full bg-primary transition-all duration-200"
             style={{ width: `${(habitsDone / habitsTotal) * 100}%` }}
           />
         </div>
@@ -230,7 +230,7 @@ export function HabitsSection({
                   {/* Weekly progress bar */}
                   <div className="h-1 w-24 overflow-hidden rounded-full bg-foreground/10">
                     <div
-                      className="h-full rounded-full bg-primary transition-all duration-500"
+                      className="h-full rounded-full bg-primary transition-all duration-200"
                       style={{ width: `${weeklyPct}%` }}
                     />
                   </div>

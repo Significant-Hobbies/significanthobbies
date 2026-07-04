@@ -3,7 +3,7 @@
 import { Check, Edit3, Feather, Sparkles, X } from 'lucide-react';
 import { useState, useTransition } from 'react';
 
-import { BorderBeam, GradientMesh, SpotlightCard } from '~/components/aceternity';
+import { GradientMesh, SpotlightCard } from '~/components/aceternity';
 import { Button } from '~/components/ui/button';
 import { updateCreed } from '~/lib/actions/user';
 import { cn } from '~/lib/utils';
@@ -138,7 +138,7 @@ export function Creed({ creed, userName }: CreedProps) {
               size="sm"
               onClick={handleSave}
               disabled={isPending || !draft.trim() || overLimit}
-              className="gap-1.5 bg-primary text-primary-foreground hover:opacity-90 hover:shadow-glow"
+              className="gap-1.5 bg-primary text-primary-foreground hover:opacity-90"
             >
               <Check className="h-3.5 w-3.5" />
               {isPending ? 'Saving…' : 'Save creed'}
@@ -157,12 +157,6 @@ export function Creed({ creed, userName }: CreedProps) {
       spotlightColor="oklch(0.82 0.13 88 / 0.08)"
     >
       <GradientMesh variant="gold" />
-      <BorderBeam
-        size={180}
-        duration={14}
-        colorFrom="oklch(0.82 0.13 88)"
-        colorTo="oklch(0.82 0.13 88 / 0.6)"
-      />
 
       {/* Edit button — top-right, ghost, muted */}
       <div className="absolute right-3 top-3 z-20">

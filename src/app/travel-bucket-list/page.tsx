@@ -511,7 +511,7 @@ export default function TravelBucketListPage() {
                   href={`#${region.id}`}
                   className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-medium transition-colors ${s.badge}`}
                 >
-                  {region.emoji} {region.label}
+                  {region.label}
                 </a>
               );
             })}
@@ -527,20 +527,13 @@ export default function TravelBucketListPage() {
           return (
             <section key={region.id} id={region.id} className="scroll-mt-28 space-y-6">
               <FadeIn>
-                <div className="flex items-center gap-3">
-                  <div
-                    className={`h-10 w-10 rounded-xl border ${s.border} ${s.bg} flex items-center justify-center text-xl`}
-                  >
-                    {region.emoji}
-                  </div>
-                  <div>
-                    <h2 className="text-2xl font-bold text-foreground text-balance">
-                      {region.label}
-                    </h2>
-                    <p className={`text-sm ${s.text} font-medium`}>
-                      {region.items.length} destinations
-                    </p>
-                  </div>
+                <div>
+                  <h2 className="text-2xl font-bold text-foreground text-balance">
+                    {region.label}
+                  </h2>
+                  <p className={`text-sm ${s.text} font-medium`}>
+                    {region.items.length} destinations
+                  </p>
                 </div>
               </FadeIn>
 

@@ -8,7 +8,7 @@ import { Whale } from '~/components/whale';
 const DISMISS_KEY = 'whale-floating-dismissed';
 
 const SHORTCUTS = [
-  { label: '✨ My bucket list', href: '/dashboard' },
+  { label: 'My bucket list', href: '/dashboard' },
   { label: 'Browse famous lists', href: '/bucket-lists' },
   { label: '150+ ideas', href: '/bucket-list-ideas' },
 ];
@@ -70,11 +70,6 @@ export function FloatingWhale() {
 
       {/* Floating Whale button */}
       <div className="relative flex items-center justify-center">
-        {/* Gold glow ring */}
-        <span
-          className="absolute inset-0 rounded-full bg-primary/20 blur-md scale-125 animate-pulse-soft"
-          aria-hidden
-        />
         <button
           type="button"
           className="relative flex items-center justify-center rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"

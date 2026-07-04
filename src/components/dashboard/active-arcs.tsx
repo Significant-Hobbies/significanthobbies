@@ -1,11 +1,11 @@
 'use client';
 
-import { Check, Compass, Flame, Target, Trophy, X } from 'lucide-react';
+import { Check, Compass, Flame, RotateCcw, Target, Trophy, X } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState, useTransition } from 'react';
 
-import { BorderBeam, SpotlightCard, StaggerContainer, StaggerItem } from '~/components/aceternity';
+import { SpotlightCard } from '~/components/aceternity';
 import { ArcCompleteCelebration } from '~/components/dashboard/arc-complete-celebration';
 import { Button } from '~/components/ui/button';
 import { completeArc, abandonArc } from '~/lib/actions/arcs';
@@ -165,7 +165,7 @@ export function ActiveArcs({ arcs }: ActiveArcsProps) {
         </p>
       </div>
 
-      <StaggerContainer className="space-y-4">
+      <div className="space-y-4">
         {arcs.map((arc) => {
           const meta = ARC_TYPE_META[arc.type] ?? ARC_TYPE_META.custom!;
           const ArcIcon = meta.icon;
@@ -175,14 +175,12 @@ export function ActiveArcs({ arcs }: ActiveArcsProps) {
           const days = daysSince(arc.startedAt);
 
           return (
-            <StaggerItem key={arc.id}>
+            <div key={arc.id}>
               <SpotlightCard className="relative overflow-hidden rounded-2xl border border-border bg-card shadow-soft">
-                {activeQuests.length > 0 && <BorderBeam duration={12} />}
-
                 {/* Arc header */}
                 <div className="flex items-start gap-4 border-b border-border/50 p-5">
                   <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-2xl">
-                    {arc.emoji ?? '🎯'}
+                    {arc.emoji ?? <Target className="h-5 w-5 text-muted-foreground" />}
                   </div>
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center gap-2">
@@ -205,7 +203,7 @@ export function ActiveArcs({ arcs }: ActiveArcsProps) {
                     <div className="mt-2 flex items-center gap-3">
                       <div className="h-1.5 w-24 overflow-hidden rounded-full bg-muted">
                         <div
-                          className="h-full rounded-full bg-primary transition-all duration-700"
+                          className="h-full rounded-full bg-primary transition-all duration-200"
                           style={{
                             width: `${allDone ? 100 : (completedQuests.length / arc.quests.length) * 100}%`,
                           }}
@@ -237,7 +235,7 @@ export function ActiveArcs({ arcs }: ActiveArcsProps) {
                         )}
                       >
                         <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary/5 text-base">
-                          {quest.emoji ?? '🔄'}
+                          {quest.emoji ?? <RotateCcw className="h-4 w-4 text-muted-foreground" />}
                         </div>
                         <div className="min-w-0 flex-1">
                           <div className="flex items-center gap-2">
@@ -318,10 +316,10 @@ export function ActiveArcs({ arcs }: ActiveArcsProps) {
                   )}
                 </div>
               </SpotlightCard>
-            </StaggerItem>
+            </div>
           );
         })}
-      </StaggerContainer>
+      </div>
 
       <ArcCompleteCelebration arc={completedArc} onDismiss={handleDismissCelebration} />
     </section>

@@ -1,9 +1,9 @@
 import { and, desc, eq } from 'drizzle-orm';
-import { Clock, Compass, Plus, Sparkles } from 'lucide-react';
+import { BookOpen, Clock, Compass, Plus, Sparkles } from 'lucide-react';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 
-import { FadeIn, GradientMesh, GridBackground } from '~/components/aceternity';
+import { GradientMesh, GridBackground } from '~/components/aceternity';
 import { EmptyStateCard } from '~/components/dashboard/empty-state-card';
 import { HabitsSection } from '~/components/dashboard/habits-section';
 import { JournalSection } from '~/components/dashboard/journal-section';
@@ -188,7 +188,7 @@ export default async function DashboardPage() {
           )}
 
           {/* Life grid — the visual centerpiece */}
-          <FadeIn className="relative" delay={0.1}>
+          <div className="relative">
             {hasBirthYear ? (
               <LifeGrid grid={lifeGrid} />
             ) : (
@@ -202,7 +202,7 @@ export default async function DashboardPage() {
                 </p>
               </div>
             )}
-          </FadeIn>
+          </div>
 
           {/* Weeks stats */}
           {hasBirthYear && (
@@ -216,7 +216,7 @@ export default async function DashboardPage() {
           )}
 
           {/* Timelines — the list below the grid */}
-          <FadeIn className="space-y-4" delay={0.15}>
+          <div className="space-y-4">
             <div className="flex items-center justify-between gap-3">
               <h2 className="font-serif text-lg font-semibold text-foreground">Timelines</h2>
               <Link href="/timeline/new">
@@ -260,43 +260,37 @@ export default async function DashboardPage() {
                 })}
               </div>
             )}
-          </FadeIn>
+          </div>
 
           {/* Link to arcs page */}
-          <FadeIn delay={0.2}>
-            <Link
-              href="/arcs"
-              className="group flex items-center justify-between rounded-xl border border-border/50 bg-card/50 px-5 py-4 transition-colors hover:border-primary/30 hover:bg-primary/5"
-            >
-              <div>
-                <p className="font-serif text-sm font-medium text-foreground">
-                  Arcs & side quests →
-                </p>
-                <p className="mt-0.5 text-xs text-muted-foreground">
-                  Your active chapters, rediscovery quests, and insights
-                </p>
-              </div>
-              <Compass className="h-5 w-5 text-muted-foreground transition-colors group-hover:text-primary" />
-            </Link>
-          </FadeIn>
+          <Link
+            href="/arcs"
+            className="group flex items-center justify-between rounded-xl border border-border/50 bg-card/50 px-5 py-4 transition-colors hover:border-primary/30 hover:bg-primary/5"
+          >
+            <div>
+              <p className="font-serif text-sm font-medium text-foreground">Arcs & side quests →</p>
+              <p className="mt-0.5 text-xs text-muted-foreground">
+                Your active chapters, rediscovery quests, and insights
+              </p>
+            </div>
+            <Compass className="h-5 w-5 text-muted-foreground transition-colors group-hover:text-primary" />
+          </Link>
 
           {/* Link to look-back */}
-          <FadeIn delay={0.25}>
-            <Link
-              href="/look-back"
-              className="group relative flex items-center justify-between overflow-hidden rounded-xl border border-primary/20 bg-primary/5 px-5 py-4 transition-colors hover:border-primary/40 hover:bg-primary/10"
-            >
-              <div>
-                <p className="font-serif text-sm font-medium text-foreground">
-                  Read your life back →
-                </p>
-                <p className="mt-0.5 text-xs text-muted-foreground">
-                  Your story, told back to you as a narrative
-                </p>
-              </div>
-              <span className="text-2xl">📖</span>
-            </Link>
-          </FadeIn>
+          <Link
+            href="/look-back"
+            className="group relative flex items-center justify-between overflow-hidden rounded-xl border border-primary/20 bg-primary/5 px-5 py-4 transition-colors hover:border-primary/40 hover:bg-primary/10"
+          >
+            <div>
+              <p className="font-serif text-sm font-medium text-foreground">
+                Read your life back →
+              </p>
+              <p className="mt-0.5 text-xs text-muted-foreground">
+                Your story, told back to you as a narrative
+              </p>
+            </div>
+            <BookOpen className="h-5 w-5 text-muted-foreground transition-colors group-hover:text-primary" />
+          </Link>
         </div>
       </section>
 
@@ -304,36 +298,32 @@ export default async function DashboardPage() {
           2. HABITS (middle)
           Always visible, always checkable. Interactive habit toggles.
           ════════════════════════════════════════════════════════════════════════ */}
-      <FadeIn delay={0.1}>
-        <HabitsSection
-          today={today}
-          habits={habitsForSection}
-          habitLogs={habitLogsForSection}
-          allHabitLogs={allHabitLogsForSection}
-          actions={{
-            createHabit,
-            deleteHabit,
-            toggleHabitLog,
-          }}
-        />
-      </FadeIn>
+      <HabitsSection
+        today={today}
+        habits={habitsForSection}
+        habitLogs={habitLogsForSection}
+        allHabitLogs={allHabitLogsForSection}
+        actions={{
+          createHabit,
+          deleteHabit,
+          toggleHabitLog,
+        }}
+      />
 
       {/* ════════════════════════════════════════════════════════════════════════
           3. JOURNAL (bottom, first-class)
           The quiet moment at the end. AM/PM entries, writable directly.
           ════════════════════════════════════════════════════════════════════════ */}
-      <FadeIn delay={0.1}>
-        <JournalSection
-          today={today}
-          isMorning={isMorning}
-          journalEntry={todayJournal}
-          checkin={todayCheckin}
-          actions={{
-            saveJournalEntry,
-            saveDailyCheckin,
-          }}
-        />
-      </FadeIn>
+      <JournalSection
+        today={today}
+        isMorning={isMorning}
+        journalEntry={todayJournal}
+        checkin={todayCheckin}
+        actions={{
+          saveJournalEntry,
+          saveDailyCheckin,
+        }}
+      />
     </div>
   );
 }

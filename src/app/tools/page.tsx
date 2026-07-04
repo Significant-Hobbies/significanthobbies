@@ -1,3 +1,5 @@
+import type { LucideIcon } from 'lucide-react';
+import { Calculator, Package, Scale, Target, Timer } from 'lucide-react';
 import type { Metadata } from 'next';
 import Link from 'next/link';
 
@@ -5,7 +7,6 @@ import {
   CardHoverEffect,
   FadeIn,
   GridBackground,
-  SpotlightCard,
   StaggerContainer,
   StaggerItem,
 } from '~/components/aceternity';
@@ -17,7 +18,7 @@ export const metadata: Metadata = {
 };
 
 interface Tool {
-  emoji: string;
+  icon: LucideIcon;
   title: string;
   description: string;
   href: string;
@@ -26,7 +27,7 @@ interface Tool {
 
 const TOOLS: Tool[] = [
   {
-    emoji: '🎯',
+    icon: Target,
     title: 'Hobby Finder Quiz',
     description:
       'Answer 5 questions and get personalized hobby recommendations matched to your personality, schedule, and interests.',
@@ -34,7 +35,7 @@ const TOOLS: Tool[] = [
     badge: 'Popular',
   },
   {
-    emoji: '⏱️',
+    icon: Timer,
     title: 'Time Calculator',
     description:
       "Find out how much free time you actually have for hobbies each week — and discover hidden hours you didn't know existed.",
@@ -42,21 +43,21 @@ const TOOLS: Tool[] = [
     badge: 'New',
   },
   {
-    emoji: '⚖️',
+    icon: Scale,
     title: 'Hobby Comparison',
     description:
       'Compare two hobbies side by side on cost, time commitment, skill curve, and more to find the right fit.',
     href: '/compare',
   },
   {
-    emoji: '🧰',
+    icon: Package,
     title: 'Starter Kits',
     description:
       'Run a first hobby experiment with nearby materials, a small budget, and a clear signal for whether to keep going.',
     href: '/starter-kits',
   },
   {
-    emoji: '💰',
+    icon: Calculator,
     title: 'Cost Calculator',
     description:
       'Add equipment, lessons, subscriptions and supplies — see the honest year-one and steady-state cost before you commit.',
@@ -77,15 +78,12 @@ export default function ToolsPage() {
       <section className="relative overflow-hidden px-4 py-16 sm:py-24">
         <GridBackground variant="dots" size={22} />
         <FadeIn className="relative mx-auto max-w-3xl text-center">
-          <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-foreground/20 bg-foreground/10 px-4 py-1.5 text-sm font-semibold text-foreground">
-            <span className="h-1.5 w-1.5 rounded-full bg-foreground" />
-            Free Tools
-          </div>
           <h1 className="mb-4 font-serif text-4xl font-semibold tracking-tight text-foreground sm:text-5xl">
             Hobby Tools
           </h1>
           <p className="mx-auto max-w-xl text-lg text-muted-foreground">
-            Practical tools to help you discover, plan, and commit to hobbies that actually stick.
+            Free, practical tools to help you discover, plan, and commit to hobbies that actually
+            stick.
           </p>
         </FadeIn>
       </section>
@@ -113,10 +111,7 @@ export default function ToolsPage() {
                       </div>
                     )}
 
-                    {/* Emoji */}
-                    <div className="mb-4 text-4xl transition-transform duration-300 group-hover:scale-110">
-                      {tool.emoji}
-                    </div>
+                    <tool.icon className="mb-4 h-4 w-4 text-primary" aria-hidden="true" />
 
                     {/* Content */}
                     <h2 className="mb-2 text-lg font-bold text-foreground transition-colors group-hover:text-foreground">

@@ -3,14 +3,7 @@ import { ArrowLeft, Pencil, User } from 'lucide-react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
-import {
-  BorderBeam,
-  FadeIn,
-  GradientMesh,
-  SpotlightCard,
-  StaggerContainer,
-  StaggerItem,
-} from '~/components/aceternity';
+import { GradientMesh, SpotlightCard } from '~/components/aceternity';
 import { CommentsSectionWithOwn } from '~/components/timeline-view/comments-section';
 import { ExportButton } from '~/components/timeline-view/export-button';
 import { InsightsPanel } from '~/components/timeline-view/insights-panel';
@@ -171,20 +164,19 @@ export default async function TimelineBySlugPage({ params }: Props) {
     <div className="relative mx-auto max-w-6xl px-4 py-10">
       <GradientMesh />
       {/* Breadcrumb */}
-      <FadeIn className="relative mb-6">
+      <div className="relative mb-6">
         <Link
           href={`/u/${username}`}
           className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors"
         >
           <ArrowLeft className="h-3.5 w-3.5" />@{username}
         </Link>
-      </FadeIn>
+      </div>
 
       {/* Header */}
-      <FadeIn className="relative mb-8" delay={0.05}>
+      <div className="relative mb-8">
         <SpotlightCard className="shadow-soft" innerClassName="p-6">
           <div className="relative overflow-hidden rounded-xl">
-            <BorderBeam size={200} duration={15} />
             <div className="flex items-start justify-between gap-4 flex-wrap">
               <div>
                 <h1 className="font-serif text-2xl font-semibold text-foreground">
@@ -247,10 +239,10 @@ export default async function TimelineBySlugPage({ params }: Props) {
             </div>
           </div>
         </SpotlightCard>
-      </FadeIn>
+      </div>
 
       {phases.length === 0 ? (
-        <FadeIn className="relative">
+        <div className="relative">
           <div className="rounded-xl border border-border bg-card/40 p-12 text-center">
             <p className="text-muted-foreground">No phases yet.</p>
             {isOwner && (
@@ -261,42 +253,42 @@ export default async function TimelineBySlugPage({ params }: Props) {
               </Link>
             )}
           </div>
-        </FadeIn>
+        </div>
       ) : (
-        <StaggerContainer className="relative space-y-8" staggerDelay={0.08}>
-          <StaggerItem>
+        <div className="relative space-y-8">
+          <div>
             <PhaseSwimlane phases={phases} pins={pins} />
-          </StaggerItem>
-          <StaggerItem>
+          </div>
+          <div>
             <PersonalityCard phases={phases} />
-          </StaggerItem>
-          <StaggerItem>
+          </div>
+          <div>
             <InsightsPanel phases={phases} />
-          </StaggerItem>
+          </div>
           {isOwner && (
-            <StaggerItem>
+            <div>
               <RediscoveryNudges phases={phases} />
-            </StaggerItem>
+            </div>
           )}
           {isOwner && (
-            <StaggerItem>
+            <div>
               <RecommendationsPanel phases={phases} />
-            </StaggerItem>
+            </div>
           )}
-          <StaggerItem>
+          <div>
             <CommentsSectionWithOwn
               timelineId={timeline.id}
               initialComments={commentList}
               currentUserId={currentUserId}
               ownCommentIds={ownCommentIds}
             />
-          </StaggerItem>
+          </div>
           {isOwner && versions.length > 0 && (
-            <StaggerItem>
+            <div>
               <VersionHistory versions={versions} currentPhases={phases} />
-            </StaggerItem>
+            </div>
           )}
-        </StaggerContainer>
+        </div>
       )}
     </div>
   );

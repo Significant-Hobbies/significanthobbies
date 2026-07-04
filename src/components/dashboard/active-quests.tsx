@@ -1,11 +1,11 @@
 'use client';
 
-import { Check, Compass } from 'lucide-react';
+import { Check, Compass, RotateCcw } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState, useTransition } from 'react';
 
-import { BorderBeam, SpotlightCard, StaggerContainer, StaggerItem } from '~/components/aceternity';
+import { SpotlightCard } from '~/components/aceternity';
 import { ArcCompleteCelebration } from '~/components/dashboard/arc-complete-celebration';
 import { Button } from '~/components/ui/button';
 import { abandonQuest, completeUserQuest } from '~/lib/actions/user-quests';
@@ -115,30 +115,28 @@ export function ActiveQuests({ quests }: ActiveQuestsProps) {
           </p>
           <Link
             href="/timeline"
-            className="mt-6 inline-flex items-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground transition-all hover:opacity-90 hover:shadow-glow"
+            className="mt-6 inline-flex items-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90"
           >
             Explore your timeline
           </Link>
         </SpotlightCard>
       ) : (
-        <StaggerContainer className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {quests.map((quest) => {
             const days = daysSince(quest.startedAt);
             const isStale = days > 7;
             const completed = justCompletedId === quest.id;
 
             return (
-              <StaggerItem key={quest.id}>
+              <div key={quest.id}>
                 <SpotlightCard
                   className={cn('h-full shadow-soft', isStale && 'border-primary/40')}
                   innerClassName="flex h-full flex-col p-5"
                   spotlightColor="oklch(0.82 0.13 88 / 0.10)"
                 >
-                  {isStale && <BorderBeam duration={15} />}
-
                   {/* Emoji icon */}
                   <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-2xl">
-                    {quest.emoji ?? '🔄'}
+                    {quest.emoji ?? <RotateCcw className="h-5 w-5 text-muted-foreground" />}
                   </div>
 
                   {/* Title + description */}
@@ -192,10 +190,10 @@ export function ActiveQuests({ quests }: ActiveQuestsProps) {
                     </Button>
                   </div>
                 </SpotlightCard>
-              </StaggerItem>
+              </div>
             );
           })}
-        </StaggerContainer>
+        </div>
       )}
 
       {/* Arc completion celebration overlay */}

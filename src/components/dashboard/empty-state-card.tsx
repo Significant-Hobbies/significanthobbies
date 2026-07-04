@@ -2,7 +2,7 @@
 
 import { type LucideIcon, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
-import { type ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
 import { SpotlightCard } from '~/components/aceternity';
 import { cn } from '~/lib/utils';
@@ -66,7 +66,7 @@ export function EmptyStateCard({
 
       <Link
         href={href}
-        className="mt-6 inline-flex items-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground transition-all hover:opacity-90 hover:shadow-glow"
+        className="mt-6 inline-flex items-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90"
       >
         {ctaLabel}
         <ArrowRight className="h-4 w-4" />

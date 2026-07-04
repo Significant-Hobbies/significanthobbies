@@ -1,16 +1,29 @@
 'use client';
 
+import type { LucideIcon } from 'lucide-react';
+import {
+  Briefcase,
+  Car,
+  ChefHat,
+  Dumbbell,
+  Heart,
+  Home,
+  Moon,
+  Smartphone,
+  Sparkles,
+  Timer,
+} from 'lucide-react';
 import Link from 'next/link';
 import { useMemo, useState } from 'react';
 
-import { BorderBeam, FadeIn, NumberTicker, SpotlightCard } from '~/components/aceternity';
+import { FadeIn, NumberTicker, SpotlightCard } from '~/components/aceternity';
 
 const TOTAL_HOURS = 168;
 
 interface SliderInput {
   id: string;
   label: string;
-  emoji: string;
+  icon: LucideIcon;
   min: number;
   max: number;
   default: number;
@@ -21,7 +34,7 @@ const INPUTS: SliderInput[] = [
   {
     id: 'work',
     label: 'Work / School',
-    emoji: '💼',
+    icon: Briefcase,
     min: 0,
     max: 80,
     default: 40,
@@ -30,7 +43,7 @@ const INPUTS: SliderInput[] = [
   {
     id: 'commute',
     label: 'Commute',
-    emoji: '🚗',
+    icon: Car,
     min: 0,
     max: 20,
     default: 5,
@@ -39,7 +52,7 @@ const INPUTS: SliderInput[] = [
   {
     id: 'sleep',
     label: 'Sleep',
-    emoji: '😴',
+    icon: Moon,
     min: 28,
     max: 70,
     default: 56,
@@ -48,7 +61,7 @@ const INPUTS: SliderInput[] = [
   {
     id: 'eating',
     label: 'Cooking & Eating',
-    emoji: '🍳',
+    icon: ChefHat,
     min: 0,
     max: 20,
     default: 10,
@@ -57,7 +70,7 @@ const INPUTS: SliderInput[] = [
   {
     id: 'chores',
     label: 'Chores & Errands',
-    emoji: '🧹',
+    icon: Home,
     min: 0,
     max: 20,
     default: 5,
@@ -66,7 +79,7 @@ const INPUTS: SliderInput[] = [
   {
     id: 'family',
     label: 'Family & Relationships',
-    emoji: '❤️',
+    icon: Heart,
     min: 0,
     max: 30,
     default: 10,
@@ -75,7 +88,7 @@ const INPUTS: SliderInput[] = [
   {
     id: 'exercise',
     label: 'Exercise',
-    emoji: '🏃',
+    icon: Dumbbell,
     min: 0,
     max: 15,
     default: 3,
@@ -84,7 +97,7 @@ const INPUTS: SliderInput[] = [
   {
     id: 'screen',
     label: 'Screen Time (social media, TV)',
-    emoji: '📱',
+    icon: Smartphone,
     min: 0,
     max: 40,
     default: 15,
@@ -158,16 +171,12 @@ export function TimeCalculatorClient() {
       {/* Hero */}
       <section className="relative overflow-hidden px-4 py-16 sm:py-24">
         <FadeIn className="relative mx-auto max-w-2xl text-center">
-          <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-foreground/20 bg-foreground/10 px-4 py-1.5 text-sm font-semibold text-foreground">
-            <span className="h-1.5 w-1.5 rounded-full bg-foreground" />
-            Free Tool
-          </div>
           <h1 className="mb-4 font-serif text-4xl font-semibold tracking-tight text-foreground sm:text-5xl">
             Hobby Time Calculator
           </h1>
           <p className="mx-auto max-w-xl text-lg text-muted-foreground">
-            Find out how many hours you actually have for hobbies each week — and where your time is
-            really going.
+            A free tool to find out how many hours you actually have for hobbies each week — and
+            where your time is really going.
           </p>
         </FadeIn>
       </section>
@@ -187,7 +196,10 @@ export function TimeCalculatorClient() {
                   <div key={inp.id}>
                     <div className="mb-2 flex items-center justify-between gap-2">
                       <label className="flex flex-wrap items-center gap-2 text-sm font-medium text-foreground">
-                        <span className="text-base">{inp.emoji}</span>
+                        <inp.icon
+                          className="h-4 w-4 shrink-0 text-muted-foreground"
+                          aria-hidden="true"
+                        />
                         {inp.label}
                         {sleepNote && (
                           <span className="text-xs font-normal text-muted-foreground/60">
@@ -229,7 +241,6 @@ export function TimeCalculatorClient() {
                 : 'border-foreground/20 bg-foreground/10'
             }`}
           >
-            <BorderBeam size={200} duration={10} />
             {overBudget ? (
               <>
                 <p className="mb-1 text-sm font-semibold text-destructive">Over budget</p>
@@ -303,7 +314,7 @@ export function TimeCalculatorClient() {
               {hobbyFits.length > 0 && (
                 <div className="rounded-2xl border border-border bg-card p-6 shadow-sm">
                   <div className="mb-3 flex items-center gap-2">
-                    <span className="text-xl">✨</span>
+                    <Sparkles className="h-4 w-4 text-primary" aria-hidden="true" />
                     <h3 className="font-bold text-foreground">That&apos;s enough time for:</h3>
                   </div>
                   <ul className="space-y-1.5">
@@ -320,7 +331,7 @@ export function TimeCalculatorClient() {
               {screenTime > 0 && (
                 <div className="rounded-2xl border border-primary/30 bg-primary/10 p-6 shadow-sm">
                   <div className="mb-2 flex items-center gap-2">
-                    <span className="text-xl">📱</span>
+                    <Smartphone className="h-4 w-4 text-primary" aria-hidden="true" />
                     <h3 className="font-bold text-foreground">Screen time swap</h3>
                   </div>
                   <p className="text-sm text-muted-foreground">
@@ -335,7 +346,7 @@ export function TimeCalculatorClient() {
 
               <div className="rounded-2xl border border-blue-200 bg-blue-50 p-6 shadow-sm">
                 <div className="mb-2 flex items-center gap-2">
-                  <span className="text-xl">⏱️</span>
+                  <Timer className="h-4 w-4 text-primary" aria-hidden="true" />
                   <h3 className="font-bold text-foreground">The 30-minute rule</h3>
                 </div>
                 <p className="text-sm text-muted-foreground">

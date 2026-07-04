@@ -1,12 +1,6 @@
 import Link from 'next/link';
 
-import {
-  BorderBeam,
-  FadeIn,
-  GridBackground,
-  SpotlightCard,
-  TextGenerateEffect,
-} from '~/components/aceternity';
+import { GridBackground, SpotlightCard } from '~/components/aceternity';
 import { JsonLd } from '~/components/json-ld';
 import { TimelineBuilder } from '~/components/timeline-builder/builder';
 
@@ -27,34 +21,28 @@ export default function NewTimelinePage() {
           offers: { '@type': 'Offer', price: '0' },
         }}
       />
-      {/* Header with grid background + fade-in */}
+      {/* Header with grid background */}
       <div className="relative mb-8">
         <GridBackground />
-        <FadeIn className="relative">
+        <div className="relative">
           <Link
             href="/"
             className="mb-4 inline-flex items-center text-sm text-muted-foreground hover:text-foreground transition-colors"
           >
             ← Back
           </Link>
-          <TextGenerateEffect
-            words="Build your hobby timeline"
-            className="text-2xl font-bold text-foreground"
-          />
+          <h1 className="text-2xl font-bold text-foreground">Build your hobby timeline</h1>
           <p className="mt-1 text-muted-foreground">
             Add life phases and the hobbies that defined each one.
           </p>
-        </FadeIn>
+        </div>
       </div>
-      {/* Builder panel with spotlight glow + animated border beam */}
-      <FadeIn delay={0.1}>
-        <SpotlightCard className="shadow-soft" innerClassName="p-1">
-          <div className="relative overflow-hidden rounded-xl">
-            <BorderBeam />
-            <TimelineBuilder />
-          </div>
-        </SpotlightCard>
-      </FadeIn>
+      {/* Builder panel with spotlight glow */}
+      <SpotlightCard className="shadow-soft" innerClassName="p-1">
+        <div className="relative overflow-hidden rounded-xl">
+          <TimelineBuilder />
+        </div>
+      </SpotlightCard>
     </div>
   );
 }

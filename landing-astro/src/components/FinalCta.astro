@@ -1,19 +1,52 @@
 ---
-const statParts = ['108 hobbies', '10 categories', '50 side quests', 'Free forever'];
+// Final CTA — the quiet close. The whale drifts above the heading; one
+// sentence, two actions, nothing else.
 ---
 
 <section class="relative overflow-hidden bg-background px-6 py-28 text-center lg:px-12 lg:py-36">
-  <div class="grid-bg pointer-events-none absolute inset-0" aria-hidden="true" />
-  <!-- Radial gold glow behind the text -->
-  <div
-    class="pointer-events-none absolute inset-0"
-    aria-hidden="true"
-    style="background: radial-gradient(ellipse 50% 50% at 50% 45%, oklch(0.82 0.13 88 / 0.12), transparent 70%);"
-  />
-
   <div class="relative mx-auto max-w-3xl">
-    <h2 class="font-serif text-4xl font-medium tracking-tight sm:text-5xl lg:text-6xl" style="line-height: 1.1;">
-      <span class="shimmer-text">Your hobbies are your story.</span>
+    <!-- Whale — small golden whale, tail lifted, drifting gently -->
+    <svg
+      width="88"
+      height="66"
+      viewBox="0 0 240 180"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      class="whale-drift mx-auto mb-8"
+      aria-hidden="true"
+    >
+      <path
+        d="M 20 95 C 20 66, 52 50, 92 50 C 128 50, 154 62, 164 80 C 167 86, 168 92, 166 98 C 162 108, 150 115, 134 119 C 104 127, 60 123, 38 110 C 26 103, 20 99, 20 95 Z"
+        fill="#d4a843"
+      />
+      <path
+        d="M 156 92 C 163 88, 168 81, 170 73 C 172 60, 178 49, 188 42 C 191 40, 194 41, 194 44 C 192 53, 190 62, 191 69 C 198 64, 207 62, 216 63 C 219 63, 220 66, 218 69 C 209 74, 202 82, 197 92 C 193 101, 184 107, 173 106 C 165 105, 159 99, 156 92 Z"
+        fill="#d4a843"
+      />
+      <path
+        d="M 28 103 C 55 118, 100 122, 138 114 C 110 124, 62 122, 34 108 Z"
+        fill="#e8c770"
+        opacity="0.55"
+      />
+      <path
+        d="M 50 84 Q 55 80, 60 84"
+        stroke="#1a0a00"
+        stroke-width="3"
+        stroke-linecap="round"
+        fill="none"
+      />
+      <path
+        d="M 86 42 C 84 34, 86 26, 92 20 M 96 42 C 97 34, 102 28, 110 25"
+        stroke="#e8c770"
+        stroke-width="2.5"
+        stroke-linecap="round"
+        opacity="0.45"
+        fill="none"
+      />
+    </svg>
+
+    <h2 class="font-serif text-4xl font-medium tracking-tight text-foreground sm:text-5xl" style="line-height: 1.15;">
+      Your hobbies are your story.
     </h2>
     <p class="mx-auto mt-5 max-w-xl text-lg text-muted-foreground">
       Map what shaped you. Discover what to try next. No sign-up required to start.
@@ -22,7 +55,7 @@ const statParts = ['108 hobbies', '10 categories', '50 side quests', 'Free forev
     <div class="mt-9 flex flex-wrap justify-center gap-4">
       <a
         href="/timeline/new"
-        class="shadow-glow rounded-full bg-primary px-8 py-3.5 text-sm font-semibold text-primary-foreground no-underline transition-opacity hover:opacity-90 focus-visible:ring-2 focus-visible:ring-foreground/50 focus-visible:outline-none"
+        class="rounded-full bg-primary px-8 py-3.5 text-sm font-semibold text-primary-foreground no-underline transition-opacity hover:opacity-90 focus-visible:ring-2 focus-visible:ring-foreground/50 focus-visible:outline-none"
       >
         Start your hobby map →
       </a>
@@ -33,17 +66,18 @@ const statParts = ['108 hobbies', '10 categories', '50 side quests', 'Free forev
         Find your hobby →
       </a>
     </div>
-
-    <!-- Stats row -->
-    <div class="mt-12 flex flex-wrap items-center justify-center gap-x-3 gap-y-2 text-sm text-muted-foreground">
-      {
-        statParts.map((part, i) => (
-          <>
-            {i > 0 && <span class="text-border">·</span>}
-            <span class="font-medium text-foreground/80">{part}</span>
-          </>
-        ))
-      }
-    </div>
   </div>
 </section>
+
+<style>
+  @keyframes whaleDrift {
+    0%, 100% { transform: translateY(0) rotate(-1deg); }
+    50% { transform: translateY(-8px) rotate(1deg); }
+  }
+  .whale-drift {
+    animation: whaleDrift 8s ease-in-out infinite;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .whale-drift { animation: none; }
+  }
+</style>

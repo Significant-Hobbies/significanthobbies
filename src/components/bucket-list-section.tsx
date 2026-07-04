@@ -1,5 +1,6 @@
 'use client';
 
+import { CalendarDays, Globe, Lock, Sparkles } from 'lucide-react';
 import Link from 'next/link';
 import { useId, useMemo, useRef, useState, useTransition } from 'react';
 
@@ -284,8 +285,8 @@ export function BucketListSection({ initialItems }: Props) {
                     {celebrity.sharedCategories.slice(0, 3).map((cat) => {
                       const info = BUCKET_ITEM_CATEGORIES[cat];
                       return info ? (
-                        <span key={cat} className="text-sm" title={info.label}>
-                          {info.emoji}
+                        <span key={cat} className="text-xs text-muted-foreground">
+                          {info.label}
                         </span>
                       ) : null;
                     })}
@@ -325,7 +326,6 @@ export function BucketListSection({ initialItems }: Props) {
                 disabled={isPending}
                 className="group inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3 py-1.5 text-xs text-foreground hover:border-lumi-200 hover:bg-lumi-50 hover:text-lumi-600 hover:-translate-y-0.5 transition-all disabled:opacity-50 disabled:hover:translate-y-0"
               >
-                <span>{s.emoji}</span>
                 <span className="line-clamp-1 max-w-[180px]">{s.title}</span>
                 <span className="text-muted-foreground/40 group-hover:text-lumi transition-colors">
                   +
@@ -365,9 +365,9 @@ export function BucketListSection({ initialItems }: Props) {
               aria-label="Category"
             >
               <option value="">No category</option>
-              {CATEGORY_OPTIONS.map(([key, { label, emoji }]) => (
+              {CATEGORY_OPTIONS.map(([key, { label }]) => (
                 <option key={key} value={key}>
-                  {emoji} {label}
+                  {label}
                 </option>
               ))}
             </select>
@@ -430,12 +430,10 @@ export function BucketListSection({ initialItems }: Props) {
               >
                 {/* Celebration sparkle */}
                 {celebrating && (
-                  <span
-                    className="animate-bucket-sparkle pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-xl text-lumi select-none"
+                  <Sparkles
+                    className="animate-bucket-sparkle pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-lumi select-none"
                     aria-hidden
-                  >
-                    ✨
-                  </span>
+                  />
                 )}
 
                 {/* Status toggle — 3-state cycle */}
@@ -472,21 +470,18 @@ export function BucketListSection({ initialItems }: Props) {
                     {item.sourceSlug && (
                       <a
                         href={`/bucket-lists/${item.sourceSlug}`}
-                        className="ml-1.5 text-xs text-muted-foreground/40 hover:text-lumi transition-colors no-underline"
+                        className="ml-1.5 inline-flex align-middle text-muted-foreground/40 hover:text-lumi transition-colors no-underline"
                         onClick={(e) => e.stopPropagation()}
                         title="From this famous list"
+                        aria-label="From this famous list"
                       >
-                        ✨
+                        <Sparkles className="h-3.5 w-3.5" aria-hidden="true" />
                       </a>
                     )}
                   </span>
                   {(cat || item.targetYear) && (
                     <div className="flex items-center gap-2 mt-0.5">
-                      {cat && (
-                        <span className="text-xs text-muted-foreground/60">
-                          {cat.emoji} {cat.label}
-                        </span>
-                      )}
+                      {cat && <span className="text-xs text-muted-foreground/60">{cat.label}</span>}
                       {item.targetYear && (
                         <span className="text-xs text-muted-foreground/60">
                           · by {item.targetYear}
@@ -501,7 +496,7 @@ export function BucketListSection({ initialItems }: Props) {
                   <YearEditor id={item.id} year={item.targetYear} onSet={handleSetYear} />
                   <button
                     onClick={() => handleToggleVisibility(item.id, item.visibility)}
-                    className={`text-base transition-colors ${
+                    className={`transition-colors ${
                       isPublic
                         ? 'text-lumi'
                         : 'text-muted-foreground/40 hover:text-muted-foreground/60'
@@ -513,7 +508,11 @@ export function BucketListSection({ initialItems }: Props) {
                     }
                     aria-label={isPublic ? 'Make private' : 'Make public'}
                   >
-                    {isPublic ? '🌐' : '🔒'}
+                    {isPublic ? (
+                      <Globe className="h-4 w-4" aria-hidden="true" />
+                    ) : (
+                      <Lock className="h-4 w-4" aria-hidden="true" />
+                    )}
                   </button>
                   <button
                     onClick={() => handleRemove(item.id)}
@@ -531,7 +530,7 @@ export function BucketListSection({ initialItems }: Props) {
 
       {total > 0 && publicCount === 0 && (
         <p className="text-center text-xs text-muted-foreground/60">
-          Items are private by default. Hover an item and click 🔒 to share it on your public
+          Items are private by default. Hover an item and click the lock to share it on your public
           profile.
         </p>
       )}
@@ -593,11 +592,11 @@ function YearEditor({
         setValue(year ? String(year) : '');
         setEditing(true);
       }}
-      className="text-base text-muted-foreground/40 hover:text-lumi transition-colors"
+      className="text-muted-foreground/40 hover:text-lumi transition-colors"
       title={year ? `Target: ${year} — click to edit` : 'Set a target year'}
       aria-label="Set target year"
     >
-      🗓️
+      <CalendarDays className="h-4 w-4" aria-hidden="true" />
     </button>
   );
 }

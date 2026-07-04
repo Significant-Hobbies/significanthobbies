@@ -1,4 +1,6 @@
-import { SpotlightCard, StaggerContainer, StaggerItem } from '~/components/aceternity';
+import { Lightbulb, Repeat, Scale, TrendingUp, type LucideIcon } from 'lucide-react';
+
+import { SpotlightCard } from '~/components/aceternity';
 import { cn } from '~/lib/utils';
 import type { BehavioralInsight } from '~/lib/behavioral-insights';
 
@@ -6,11 +8,30 @@ interface BehavioralInsightsProps {
   insights: BehavioralInsight[];
 }
 
-const TYPE_STYLES: Record<BehavioralInsight['type'], { label: string; className: string }> = {
-  pattern: { label: 'Pattern', className: 'border-primary/30 bg-primary/10 text-primary' },
-  progress: { label: 'Progress', className: 'border-growth/30 bg-growth/10 text-growth' },
-  contrast: { label: 'Contrast', className: 'border-blue-400/30 bg-blue-400/10 text-blue-400' },
-  nudge: { label: 'Nudge', className: 'border-amber-500/30 bg-amber-500/10 text-amber-500' },
+const TYPE_STYLES: Record<
+  BehavioralInsight['type'],
+  { label: string; className: string; icon: LucideIcon }
+> = {
+  pattern: {
+    label: 'Pattern',
+    className: 'border-primary/30 bg-primary/10 text-primary',
+    icon: Repeat,
+  },
+  progress: {
+    label: 'Progress',
+    className: 'border-growth/30 bg-growth/10 text-growth',
+    icon: TrendingUp,
+  },
+  contrast: {
+    label: 'Contrast',
+    className: 'border-blue-400/30 bg-blue-400/10 text-blue-400',
+    icon: Scale,
+  },
+  nudge: {
+    label: 'Nudge',
+    className: 'border-amber-500/30 bg-amber-500/10 text-amber-500',
+    icon: Lightbulb,
+  },
 };
 
 export function BehavioralInsights({ insights }: BehavioralInsightsProps) {
@@ -26,20 +47,21 @@ export function BehavioralInsights({ insights }: BehavioralInsightsProps) {
         <p className="text-sm text-muted-foreground">Based on what you&apos;ve actually done</p>
       </div>
 
-      <StaggerContainer className="grid gap-4 sm:grid-cols-2">
+      <div className="grid gap-4 sm:grid-cols-2">
         {insights.map((insight) => {
           const style = TYPE_STYLES[insight.type];
+          const InsightIcon = style.icon;
           return (
-            <StaggerItem key={insight.id}>
+            <div key={insight.id}>
               <SpotlightCard
                 className="h-full shadow-soft"
                 innerClassName="flex h-full flex-col p-5"
                 spotlightColor="oklch(0.82 0.13 88 / 0.10)"
               >
-                {/* Header row: emoji + type badge */}
+                {/* Header row: icon + type badge */}
                 <div className="mb-3 flex items-center justify-between gap-3">
-                  <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-primary/10 text-xl">
-                    {insight.emoji}
+                  <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-primary/10">
+                    <InsightIcon className="h-5 w-5 text-muted-foreground" />
                   </div>
                   <span
                     className={cn(
@@ -63,16 +85,16 @@ export function BehavioralInsights({ insights }: BehavioralInsightsProps) {
                 <div className="mt-auto pt-4">
                   <div className="h-0.5 w-full overflow-hidden rounded-full bg-foreground/10">
                     <div
-                      className="h-full rounded-full bg-primary transition-all duration-500"
+                      className="h-full rounded-full bg-primary transition-all duration-200"
                       style={{ width: `${insight.confidence}%` }}
                     />
                   </div>
                 </div>
               </SpotlightCard>
-            </StaggerItem>
+            </div>
           );
         })}
-      </StaggerContainer>
+      </div>
     </section>
   );
 }

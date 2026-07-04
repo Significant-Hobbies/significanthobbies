@@ -82,10 +82,7 @@ export function WhaleWeeklyReview({ initialReflection }: Props) {
         {/* Due badge */}
         {showDueBadge && (
           <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-lumi px-3 py-1 text-xs font-semibold text-foreground">
-            <span className="relative flex h-2 w-2">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-card opacity-75" />
-              <span className="relative inline-flex h-2 w-2 rounded-full bg-card" />
-            </span>
+            <span className="inline-flex h-2 w-2 rounded-full bg-card" />
             {daysSince === null
               ? "Your first check-in — let's start"
               : `Review due · last checked in ${daysSince}d ago`}

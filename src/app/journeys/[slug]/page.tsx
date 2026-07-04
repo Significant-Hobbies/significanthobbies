@@ -3,7 +3,6 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
 import {
-  BorderBeam,
   FadeIn,
   GradientMesh,
   SpotlightCard,
@@ -277,7 +276,6 @@ export default async function JourneyDetailPage({ params }: Props) {
         {/* CTA */}
         <FadeIn>
           <div className="relative overflow-hidden rounded-xl border border-border bg-foreground/10 p-6 text-center shadow-soft">
-            <BorderBeam size={200} duration={12} />
             <h2 className="mb-2 text-base font-bold text-foreground">Map your own hobby journey</h2>
             <p className="mb-4 text-sm text-muted-foreground">
               What hobbies have shaped your life? Create your own timeline.

@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 
-import { BorderBeam } from '~/components/aceternity';
 import { Button } from '~/components/ui/button';
 import { authClient } from '~/lib/auth-client';
 import { captureAuthFailure } from '~/lib/foundry-monitoring';
@@ -39,7 +38,6 @@ export function LoginForm() {
 
   return (
     <div className="relative overflow-hidden rounded-lg">
-      <BorderBeam size={120} duration={10} />
       <Button
         onClick={handleGoogle}
         disabled={loading}

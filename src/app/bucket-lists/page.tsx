@@ -46,7 +46,6 @@ function getDominantCategory(slug: string) {
 // Computed from source data so it never drifts
 const TOTAL_ITEMS = FAMOUS_BUCKET_LISTS.reduce((sum, p) => sum + p.items.length, 0);
 const TOTAL_PEOPLE = FAMOUS_BUCKET_LISTS.length;
-const TOTAL_CATEGORIES = Object.keys(BUCKET_ITEM_CATEGORIES).length;
 
 export default function BucketListsPage() {
   return (
@@ -77,7 +76,7 @@ export default function BucketListsPage() {
                     href="/dashboard"
                     className="inline-flex items-center gap-2 rounded-full bg-primary px-8 py-3.5 text-sm font-bold text-foreground hover:bg-lumi-600 active:scale-95 transition-all duration-150 shadow-md"
                   >
-                    ✨ Start my list
+                    Start my list
                   </Link>
                   <a
                     href="#lists"
@@ -93,12 +92,12 @@ export default function BucketListsPage() {
           {/* Category pills */}
           <FadeIn delay={0.2}>
             <div className="flex flex-wrap gap-2 justify-center mt-10">
-              {Object.entries(BUCKET_ITEM_CATEGORIES).map(([key, { label, emoji }]) => (
+              {Object.entries(BUCKET_ITEM_CATEGORIES).map(([key, { label }]) => (
                 <span
                   key={key}
                   className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card/40 px-3 py-1 text-xs text-muted-foreground"
                 >
-                  {emoji} {label}
+                  {label}
                 </span>
               ))}
             </div>
@@ -106,27 +105,12 @@ export default function BucketListsPage() {
         </div>
       </section>
 
-      {/* ── Stats bar ────────────────────────────────────────────────────── */}
+      {/* ── Quiet stats line ─────────────────────────────────────────────── */}
       <section className="border-y border-border bg-card">
-        <div className="mx-auto max-w-4xl px-4 py-5">
-          <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-3">
-            {[
-              { value: TOTAL_PEOPLE, label: 'famous people' },
-              { value: TOTAL_ITEMS, label: 'verified items' },
-              { value: TOTAL_CATEGORIES, label: 'categories' },
-              { value: '100%', label: 'free' },
-            ].map(({ value, label }, i) => (
-              <div key={i} className="flex items-center gap-2 text-sm">
-                <span className="text-xl font-bold text-primary">{value}</span>
-                <span className="text-muted-foreground">{label}</span>
-                {i < 3 && (
-                  <span className="hidden sm:inline-block ml-8 text-muted-foreground/40 select-none">
-                    ·
-                  </span>
-                )}
-              </div>
-            ))}
-          </div>
+        <div className="mx-auto max-w-4xl px-4 py-5 text-center">
+          <p className="text-sm text-muted-foreground">
+            {TOTAL_ITEMS} verified items from {TOTAL_PEOPLE} remarkable people, free to browse.
+          </p>
         </div>
       </section>
 
@@ -280,7 +264,7 @@ export default function BucketListsPage() {
               href="/dashboard"
               className="inline-flex items-center gap-2 rounded-full bg-card px-7 py-3.5 text-sm font-bold text-primary hover:bg-foreground/5 active:scale-95 transition-all duration-150 shadow-lg"
             >
-              ✨ Start my bucket list
+              Start my bucket list
             </Link>
             <Link
               href="/find-your-hobby"

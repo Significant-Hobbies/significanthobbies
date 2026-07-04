@@ -4,16 +4,9 @@ import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { Suspense, useCallback, useEffect, useMemo, useState } from 'react';
 
-import {
-  BorderBeam,
-  FadeIn,
-  GridBackground,
-  NumberTicker,
-  StaggerContainer,
-  StaggerItem,
-  SpotlightCard,
-  TextGenerateEffect,
-} from '~/components/aceternity';
+import { Check, ClipboardList, Dices, Target, Users, X } from 'lucide-react';
+
+import { FadeIn, GridBackground, SpotlightCard } from '~/components/aceternity';
 import { AccountabilityCircles } from '~/components/accountability-circles';
 import { useQuestProgress } from '~/hooks/use-quest-progress';
 import { getBadgeById } from '~/lib/badges';
@@ -129,7 +122,6 @@ function QuestCard({
 
   return (
     <SpotlightCard className="mx-auto w-full max-w-lg shadow-soft" innerClassName="p-8">
-      {isCompleted && <BorderBeam />}
       {/* Emoji */}
       <div className="mb-5 text-center text-6xl">{quest.emoji}</div>
 
@@ -174,16 +166,17 @@ function QuestCard({
             className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card/40 px-5 py-2.5 text-sm font-medium text-muted-foreground transition-all hover:border-border hover:bg-foreground/5"
           >
             Completed
-            <span className="text-foreground">&#10003;</span>
+            <Check className="h-4 w-4 text-foreground" />
             <span className="ml-1 text-xs text-muted-foreground/60">(undo)</span>
           </button>
         ) : (
           <button
             type="button"
             onClick={() => onComplete(quest.id)}
-            className="inline-flex items-center gap-1.5 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow-sm transition-all hover:-translate-y-0.5 hover:opacity-90 hover:shadow-md"
+            className="inline-flex items-center gap-1.5 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow-sm transition-opacity hover:opacity-90"
           >
-            Mark Complete &#10003;
+            Mark Complete
+            <Check className="h-4 w-4" />
           </button>
         )}
 
@@ -193,7 +186,8 @@ function QuestCard({
             onClick={onRollAgain}
             className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-5 py-2.5 text-sm font-medium text-foreground transition-all hover:border-foreground/30 hover:text-foreground"
           >
-            {rollLabel ?? 'Roll Again'} &#127922;
+            {rollLabel ?? 'Roll Again'}
+            <Dices className="h-4 w-4 text-muted-foreground" />
           </button>
         )}
 
@@ -249,15 +243,13 @@ function ProgressBar({ completed, total }: { completed: number; total: number })
     <div className="mb-8">
       <div className="mb-2 flex items-center justify-between text-sm">
         <span className="font-medium text-foreground">
-          <NumberTicker value={completed} /> / {total} completed
+          {completed} / {total} completed
         </span>
-        <span className="text-muted-foreground/60">
-          <NumberTicker value={pct} />%
-        </span>
+        <span className="text-muted-foreground/60">{pct}%</span>
       </div>
       <div className="h-3 w-full overflow-hidden rounded-full bg-foreground/5">
         <div
-          className="h-full rounded-full bg-foreground transition-all duration-500"
+          className="h-full rounded-full bg-foreground transition-all duration-200"
           style={{ width: `${pct}%` }}
         />
       </div>
@@ -419,11 +411,11 @@ function SideQuestsInner() {
 
   const showSavePrompt = completedCount >= 3 && !savePromptDismissed;
 
-  const TABS: { id: Tab; label: string }[] = [
-    { id: 'random', label: '\u{1F3B2} Random' },
-    { id: 'pick', label: '\u{1F3AF} Help Me Pick' },
-    { id: 'board', label: '\u{1F4CB} Quest Board' },
-    { id: 'circles', label: '\u{1F91D} Circles' },
+  const TABS: { id: Tab; label: string; icon: typeof Dices }[] = [
+    { id: 'random', label: 'Random', icon: Dices },
+    { id: 'pick', label: 'Help Me Pick', icon: Target },
+    { id: 'board', label: 'Quest Board', icon: ClipboardList },
+    { id: 'circles', label: 'Circles', icon: Users },
   ];
 
   return (
@@ -438,7 +430,7 @@ function SideQuestsInner() {
           </div>
 
           <h1 className="mb-4 text-4xl font-bold tracking-tight text-foreground sm:text-5xl md:text-6xl">
-            <TextGenerateEffect words="50 Quests to Make Life Interesting" />
+            50 Quests to Make Life Interesting
           </h1>
 
           <p className="mx-auto max-w-xl text-lg text-muted-foreground sm:text-xl">
@@ -471,7 +463,10 @@ function SideQuestsInner() {
                   : 'text-muted-foreground hover:text-foreground'
               }`}
             >
-              <span>{tab.label}</span>
+              <span className="inline-flex items-center gap-1.5">
+                <tab.icon className="h-4 w-4 text-muted-foreground" />
+                {tab.label}
+              </span>
               {activeTab === tab.id && (
                 <span className="absolute inset-x-2 bottom-0 h-0.5 rounded-full bg-foreground" />
               )}
@@ -570,8 +565,7 @@ function SideQuestsInner() {
               {showSavePrompt && (
                 <div className="mb-8 flex items-center justify-between rounded-xl border border-primary/30 bg-primary/10 px-5 py-3">
                   <p className="text-sm text-foreground">
-                    <span className="mr-1">&#128190;</span> Save your progress — sign in to keep
-                    your quests across devices.{' '}
+                    Save your progress — sign in to keep your quests across devices.{' '}
                     <Link
                       href="/login"
                       className="font-semibold text-foreground hover:text-foreground"
@@ -585,7 +579,7 @@ function SideQuestsInner() {
                     className="ml-4 shrink-0 text-muted-foreground/60 hover:text-muted-foreground"
                     aria-label="Dismiss"
                   >
-                    &#10005;
+                    <X className="h-4 w-4" />
                   </button>
                 </div>
               )}
@@ -601,22 +595,21 @@ function SideQuestsInner() {
                       <span className="text-xl">{cat.emoji}</span>
                       <h3 className="text-lg font-bold text-foreground">{cat.label}</h3>
                       <span className="text-sm text-muted-foreground/60">
-                        <NumberTicker value={catCompleted} />/{quests.length} completed
+                        {catCompleted}/{quests.length} completed
                       </span>
                     </div>
 
-                    <StaggerContainer className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                       {quests.map((quest) => {
                         const done = isCompleted(quest.id);
                         const expanded = expandedCards.has(quest.id);
 
                         return (
-                          <StaggerItem key={quest.id}>
+                          <div key={quest.id}>
                             <SpotlightCard
                               className={`shadow-soft ${done ? 'border-foreground/20' : ''}`}
                               innerClassName="p-0"
                             >
-                              {done && <BorderBeam />}
                               <div className="flex items-start gap-3 p-4">
                                 {/* Checkbox */}
                                 <button
@@ -699,10 +692,10 @@ function SideQuestsInner() {
                                 </div>
                               )}
                             </SpotlightCard>
-                          </StaggerItem>
+                          </div>
                         );
                       })}
-                    </StaggerContainer>
+                    </div>
                   </div>
                 );
               })}

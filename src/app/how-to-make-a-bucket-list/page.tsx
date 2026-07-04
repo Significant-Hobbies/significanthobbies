@@ -2,7 +2,6 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 
 import {
-  BorderBeam,
   FadeIn,
   GridBackground,
   SpotlightCard,
@@ -215,7 +214,6 @@ export default function HowToMakeABucketListPage() {
         <div className="mx-auto max-w-3xl px-4 py-16 text-center space-y-6">
           <SpotlightCard className="shadow-soft" innerClassName="py-8 px-6 space-y-6 text-center">
             <div className="relative overflow-hidden rounded-xl">
-              <BorderBeam />
               <Whale size={64} glow float className="mx-auto" />
               <h2 className="text-3xl font-bold text-foreground text-balance">
                 Ready to build yours?

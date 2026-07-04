@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 
-import { BorderBeam, FadeIn, GradientMesh, SpotlightCard } from '~/components/aceternity';
+import { FadeIn, GradientMesh, SpotlightCard } from '~/components/aceternity';
 import { HOBBY_CATEGORIES } from '~/lib/hobbies';
 
 function slugify(s: string): string {
@@ -30,10 +30,7 @@ export default function RandomHobby() {
       <GradientMesh />
       <FadeIn className="relative" delay={0.1}>
         <SpotlightCard className="rounded-2xl shadow-soft" innerClassName="p-12 text-center">
-          <div className="relative overflow-hidden rounded-2xl">
-            <BorderBeam size={180} duration={8} />
-            <p className="font-mono text-sm text-muted-foreground">{msg}</p>
-          </div>
+          <p className="font-mono text-sm text-muted-foreground">{msg}</p>
         </SpotlightCard>
       </FadeIn>
     </main>

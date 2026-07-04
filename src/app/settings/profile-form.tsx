@@ -3,7 +3,6 @@
 import { useRouter } from 'next/navigation';
 import { useState, useTransition } from 'react';
 
-import { BorderBeam } from '~/components/aceternity';
 import { updateProfile } from '~/lib/actions/user';
 
 interface ProfileFormProps {
@@ -144,7 +143,6 @@ export function ProfileForm({
 
       {/* Submit */}
       <div className="relative overflow-hidden rounded-lg pt-2">
-        <BorderBeam size={120} duration={10} />
         <button
           type="submit"
           disabled={isPending}
