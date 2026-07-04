@@ -26,7 +26,11 @@ interface HabitLog {
 }
 
 interface HabitsActions {
-  createHabit: (name: string, targetFrequency?: string, icon?: string) => Promise<void>;
+  createHabit: (
+    name: string,
+    targetFrequency?: string,
+    icon?: string
+  ) => Promise<{ id: string; name: string } | null>;
   deleteHabit: (id: string) => Promise<void>;
   toggleHabitLog: (habitId: string, dayDate: string, completed: boolean) => Promise<void>;
 }

@@ -86,6 +86,10 @@ export const users = sqliteTable('User', {
   // The user's personal creed — their declaration of what they're about.
   // "I am someone who..." — the emotional anchor of the product.
   creed: text('creed'),
+  // JSON: onboarding diagnostic answers (agency state detection)
+  onboardingData: text('onboardingData'),
+  // When the user completed onboarding (null = not yet)
+  onboardingCompletedAt: integer('onboardingCompletedAt', { mode: 'timestamp' }),
   completedQuests: text('completedQuests').notNull().default('[]'),
   earnedBadges: text('earnedBadges').notNull().default('[]'),
   createdAt: integer('createdAt', { mode: 'timestamp' }).notNull().default(sql`(unixepoch())`),

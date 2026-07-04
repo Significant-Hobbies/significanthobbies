@@ -21,25 +21,33 @@ export async function getHabits() {
   return rows;
 }
 
-export async function createHabit(name: string, targetFrequency?: string, icon?: string) {
+export async function createHabit(
+  name: string,
+  targetFrequency?: string,
+  icon?: string
+): Promise<{ id: string; name: string } | null> {
   const session = await getServerAuthSession();
-  if (!session?.user) return;
+  if (!session?.user) return null;
   const trimmed = name.trim();
-  if (!trimmed) return;
+  if (!trimmed) return null;
 
   const freq = ['daily', 'weekdays', '3x_week', '5x_week'].includes(targetFrequency ?? '')
     ? targetFrequency!
     : 'daily';
   const trimmedIcon = icon?.trim() || null;
 
-  await db.insert(habits).values({
-    userId: session.user.id,
-    name: trimmed,
-    targetFrequency: freq,
-    icon: trimmedIcon,
-  });
+  const [habit] = await db
+    .insert(habits)
+    .values({
+      userId: session.user.id,
+      name: trimmed,
+      targetFrequency: freq,
+      icon: trimmedIcon,
+    })
+    .returning({ id: habits.id, name: habits.name });
   revalidatePath('/daily');
   revalidatePath('/dashboard');
+  return habit ?? null;
 }
 
 export async function deleteHabit(id: string) {

@@ -39,7 +39,11 @@ interface Checkin {
 }
 
 interface Actions {
-  createHabit: (name: string, targetFrequency?: string, icon?: string) => Promise<void>;
+  createHabit: (
+    name: string,
+    targetFrequency?: string,
+    icon?: string
+  ) => Promise<{ id: string; name: string } | null>;
   deleteHabit: (id: string) => Promise<void>;
   toggleHabitLog: (habitId: string, dayDate: string, completed: boolean) => Promise<void>;
   saveJournalEntry: (
@@ -107,11 +111,11 @@ export function DailyRitual({
   const router = useRouter();
 
   const greeting = isMorning ? `Good morning, ${firstName}.` : `Good evening, ${firstName}.`;
-  const prompt = isMorning ? "What's your focus today?" : 'How did your day go?';
+  const prompt = isMorning ? 'What will you change today?' : 'What did you change today?';
   const journalTitle = isMorning ? 'Morning Focus' : 'Evening Reflection';
   const journalPlaceholder = isMorning
-    ? 'The one thing that would make today worth living…'
-    : 'Be honest. What happened, and what did it mean?';
+    ? 'What will you change today? One sentence is enough.'
+    : 'What did you change today? One sentence is enough.';
 
   const dateString = new Date().toLocaleDateString('en-US', {
     weekday: 'long',
@@ -508,7 +512,9 @@ export function DailyRitual({
 
         {!canSave && !saved && (
           <span className="text-xs text-muted-foreground/60">
-            {isMorning ? 'Add your focus to save.' : 'Add your entry to save.'}
+            {isMorning
+              ? 'What will you change today? One sentence is enough.'
+              : 'What did you change today? One sentence is enough.'}
           </span>
         )}
       </div>

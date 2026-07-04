@@ -162,6 +162,40 @@ export async function updateCreed(creed: string): Promise<{ success: boolean; er
   return { success: true };
 }
 
+// ─── Onboarding ─────────────────────────────────────────────────────────────
+// The onboarding questions are diagnostic — they detect the user's agency state
+// and seed the first loop. The answers are stored as JSON for the look-back to
+// reference later.
+
+const OnboardingDataSchema = z.object({
+  droppedHobby: z.string().max(200).optional(),
+  lastFinished: z.enum(['recently', 'months_ago', 'cant_remember', 'doesnt_matter']).optional(),
+  nextYearFeeling: z.enum(['excited', 'neutral', 'dread', 'blank']).optional(),
+});
+
+export type OnboardingData = z.infer<typeof OnboardingDataSchema>;
+
+export async function saveOnboardingAnswers(
+  data: OnboardingData
+): Promise<{ success: boolean; error?: string }> {
+  const session = await getServerAuthSession();
+  if (!session?.user?.id) return { success: false, error: 'Not authenticated' };
+
+  const parsed = OnboardingDataSchema.parse(data);
+
+  await db
+    .update(users)
+    .set({
+      onboardingData: JSON.stringify(parsed),
+      onboardingCompletedAt: new Date(),
+    })
+    .where(eq(users.id, session.user.id));
+
+  revalidatePath('/dashboard');
+
+  return { success: true };
+}
+
 const QuestProgressArraySchema = z.array(z.string().max(100)).max(500);
 
 export async function syncQuestProgress(completedQuests: string[], earnedBadges: string[]) {

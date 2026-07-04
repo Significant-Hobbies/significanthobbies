@@ -50,8 +50,8 @@ export function JournalSection({
 
   const journalTitle = isMorning ? 'Morning Focus' : 'Evening Reflection';
   const journalPlaceholder = isMorning
-    ? 'The one thing that would make today worth living…'
-    : 'Be honest. What happened, and what did it mean?';
+    ? 'What will you change today? One sentence is enough.'
+    : 'What did you change today? One sentence is enough.';
 
   async function handleSave() {
     setSaving(true);
@@ -79,7 +79,12 @@ export function JournalSection({
   return (
     <div className="space-y-4">
       <div className="flex items-baseline justify-between gap-3">
-        <h2 className="font-serif text-xl font-semibold text-foreground">Journal</h2>
+        <div>
+          <h2 className="font-serif text-xl font-semibold text-foreground">Journal</h2>
+          <p className="mt-0.5 text-xs text-muted-foreground/70">
+            Proof for yourself, not anyone else
+          </p>
+        </div>
         <span className="text-xs text-muted-foreground/60">
           {isMorning ? 'Morning' : 'Evening'}
         </span>
@@ -156,7 +161,9 @@ export function JournalSection({
 
         {!canSave && !saved && (
           <span className="text-xs text-muted-foreground/60">
-            {isMorning ? 'Add your focus to save.' : 'Add your entry to save.'}
+            {isMorning
+              ? 'What will you change today? One sentence is enough.'
+              : 'What did you change today? One sentence is enough.'}
           </span>
         )}
       </div>

@@ -67,7 +67,7 @@ export interface LookBackData {
 
 export interface NarrativeSection {
   id: string;
-  kind: 'opening' | 'timeline' | 'quests' | 'habits' | 'journal' | 'arcs' | 'closing';
+  kind: 'opening' | 'timeline' | 'quests' | 'habits' | 'agency' | 'journal' | 'arcs' | 'closing';
   title: string;
   paragraphs: string[];
   emoji?: string;
@@ -105,6 +105,12 @@ export function generateLookBack(data: LookBackData): NarrativeSection[] {
   // ─── Habits ────────────────────────────────────────────────────────────────
   if (hasHabits) {
     sections.push(generateHabitStory(data, name));
+  }
+
+  // ─── Agency state ──────────────────────────────────────────────────────────
+  const agency = detectAgencyState(data);
+  if (agency) {
+    sections.push(agency);
   }
 
   // ─── Journal ───────────────────────────────────────────────────────────────
@@ -470,6 +476,12 @@ function generateJournalStory(data: LookBackData, name: string): NarrativeSectio
 function generateClosing(data: LookBackData, name: string, hasPhases: boolean): NarrativeSection {
   const paragraphs: string[] = [];
 
+  // Trajectory — how this month compares to last month
+  const trajectory = computeTrajectory(data);
+  if (trajectory.narrative) {
+    paragraphs.push(trajectory.narrative);
+  }
+
   // Rediscovery
   if (hasPhases) {
     const rediscovery = findRediscoveryOpportunities(data.phases);
@@ -504,6 +516,167 @@ function generateClosing(data: LookBackData, name: string, hasPhases: boolean): 
     paragraphs,
     emoji: '🌅',
   };
+}
+
+// ─── Agency state detection ──────────────────────────────────────────────────
+
+function detectAgencyState(data: LookBackData): NarrativeSection | null {
+  const now = Date.now();
+  const thirtyDaysAgo = now - 30 * 24 * 60 * 60 * 1000;
+  const sevenDaysAgo = now - 7 * 24 * 60 * 60 * 1000;
+
+  // Habit logs in the last 7 days (completed)
+  const recentHabitLogs = data.habitLogs.filter(
+    (l) => l.completed && new Date(l.dayDate).getTime() >= sevenDaysAgo
+  );
+  // Habit logs in the last 30 days (completed)
+  const monthHabitLogs = data.habitLogs.filter(
+    (l) => l.completed && new Date(l.dayDate).getTime() >= thirtyDaysAgo
+  );
+  // Journal entries in the last 30 days
+  const monthJournal = data.journalEntries.filter(
+    (e) => new Date(e.dayDate).getTime() >= thirtyDaysAgo
+  );
+  // Active quests
+  const activeQuests = data.activeQuests;
+  // Abandoned quests (all-time — the data set is per-user)
+  const abandonedCount = data.abandonedQuests.length;
+  const completedCount = data.completedQuests.length;
+
+  // Any activity at all in the last 30 days?
+  const anyActivity =
+    monthHabitLogs.length > 0 || monthJournal.length > 0 || activeQuests.length > 0;
+
+  // ─── Numbness: no activity at all for 30+ days ───
+  if (!anyActivity) {
+    return {
+      id: 'agency',
+      kind: 'agency',
+      title: 'Where you are right now',
+      paragraphs: [
+        "It's been quiet. That's okay. The grid is still there. The habits are still there. One check. That's all the system needs to restart.",
+      ],
+      emoji: '🌙',
+    };
+  }
+
+  // ─── Avoidance: habit logs but abandoned more quests than completed ───
+  if (monthHabitLogs.length > 0 && abandonedCount > completedCount && abandonedCount > 0) {
+    return {
+      id: 'agency',
+      kind: 'agency',
+      title: 'Where you are right now',
+      paragraphs: [
+        "You've been starting things and stopping. That's not failure — that's your brain protecting you from disappointment. But the pattern is: the trying hurts more than the not-trying. The fix isn't motivation. It's smaller targets.",
+      ],
+      emoji: '🪞',
+    };
+  }
+
+  // ─── Passivity: no habit logs in 30 days + stale/no quests + no journal ───
+  if (monthHabitLogs.length === 0 && monthJournal.length === 0 && activeQuests.length === 0) {
+    return {
+      id: 'agency',
+      kind: 'agency',
+      title: 'Where you are right now',
+      paragraphs: [
+        "You haven't shown up in a while. That's not laziness — that's your brain conserving itself because it learned that effort doesn't convert. The smallest thing that breaks it: one habit. Today.",
+      ],
+      emoji: '🌫️',
+    };
+  }
+
+  // ─── Agency: habit logs in last 7 days + active quests + journal entries ───
+  if (recentHabitLogs.length > 0 && activeQuests.length > 0 && monthJournal.length > 0) {
+    return {
+      id: 'agency',
+      kind: 'agency',
+      title: 'Where you are right now',
+      paragraphs: [
+        "Right now, you're showing up. That's not a feeling — it's a pattern. Your brain is learning that action creates consequence.",
+      ],
+      emoji: '🔥',
+    };
+  }
+
+  // ─── Partial agency: some activity but not all signals ───
+  // Show up when there's meaningful activity but not the full agency pattern.
+  if (anyActivity) {
+    return {
+      id: 'agency',
+      kind: 'agency',
+      title: 'Where you are right now',
+      paragraphs: [
+        "Right now, you're showing up. That's not a feeling — it's a pattern. Your brain is learning that action creates consequence.",
+      ],
+      emoji: '🔥',
+    };
+  }
+
+  return null;
+}
+
+// ─── Trajectory ──────────────────────────────────────────────────────────────
+
+function computeTrajectory(data: LookBackData): {
+  direction: 'up' | 'down' | 'flat' | 'unknown';
+  narrative: string;
+} {
+  const now = Date.now();
+  const thirtyDaysAgo = now - 30 * 24 * 60 * 60 * 1000;
+  const sixtyDaysAgo = now - 60 * 24 * 60 * 60 * 1000;
+
+  // Count activity events in the last 30 days
+  const recentHabitLogs = data.habitLogs.filter(
+    (l) => l.completed && new Date(l.dayDate).getTime() >= thirtyDaysAgo
+  ).length;
+  const recentJournal = data.journalEntries.filter(
+    (e) => new Date(e.dayDate).getTime() >= thirtyDaysAgo
+  ).length;
+  const recentActivity = recentHabitLogs + recentJournal;
+
+  // Count activity events in the 30 days before that
+  const priorHabitLogs = data.habitLogs.filter(
+    (l) =>
+      l.completed &&
+      new Date(l.dayDate).getTime() >= sixtyDaysAgo &&
+      new Date(l.dayDate).getTime() < thirtyDaysAgo
+  ).length;
+  const priorJournal = data.journalEntries.filter(
+    (e) =>
+      new Date(e.dayDate).getTime() >= sixtyDaysAgo && new Date(e.dayDate).getTime() < thirtyDaysAgo
+  ).length;
+  const priorActivity = priorHabitLogs + priorJournal;
+
+  // No prior data to compare against
+  if (priorActivity === 0 && recentActivity === 0) {
+    return { direction: 'unknown', narrative: '' };
+  }
+  if (priorActivity === 0) {
+    // Recent activity but no prior — can't meaningfully say "up", skip
+    return { direction: 'unknown', narrative: '' };
+  }
+
+  // Determine direction with a 20% threshold to detect "flat"
+  const ratio = recentActivity / priorActivity;
+  if (ratio > 1.2) {
+    return {
+      direction: 'up',
+      narrative:
+        "You're showing up more than you used to. That's not motivation returning. That's your brain relearning that action creates consequence.",
+    };
+  } else if (ratio < 0.8) {
+    return {
+      direction: 'down',
+      narrative:
+        "You're showing up less than you used to. That's not decline — it's a dip. Dips happen. The line isn't broken, it's bending.",
+    };
+  } else {
+    return {
+      direction: 'flat',
+      narrative: "You're consistent. That's its own kind of strength.",
+    };
+  }
 }
 
 // ─── Helpers ────────────────────────────────────────────────────────────────
