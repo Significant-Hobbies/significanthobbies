@@ -1,5 +1,7 @@
 # significanthobbies — PROJECT STATUS
 
+Last updated: 2026-07-10
+
 Last updated: 2026-07-03
 
 ## Why / What
@@ -147,6 +149,7 @@ All events carry `project_id: "significanthobbies"`. Implementation: `trackDisco
 4. Turn side quests, XP, and badges into a coherent progression system only if they improve hobby follow-through.
 5. Review raw HTML rendering paths before making them user-sourced.
 6. Wire habits and commitments — allow a habit to be linked to a commitment (e.g. "practice guitar" habit auto-stamps the commitment).
+7. **Closure gate:** capture the 7-day quiz funnel result in PostHog, then freeze the winning discovery path and pause feature development.
 
 ### Deferred
 
@@ -159,7 +162,8 @@ All events carry `project_id: "significanthobbies"`. Implementation: `trackDisco
 - Side quests, XP, and badges documented as concepts but not a coherent progression system.
 - Audit residuals: review `dangerouslySetInnerHTML` in `hobbies-for-resume/page.tsx` and `side-quests-client.tsx` if data becomes user-sourced; local `.env.local` secret hygiene is operator-owned.
 - First-time user journey to a meaningful public timeline still needs tightening.
+- Product development is paused pending the 7-day quiz funnel evidence; no new discovery or progression features should start before that readout.
 
 ### Blocked
 
-- (none)
+- 7-day PostHog quiz-funnel evidence has not been supplied in-repo; closure cannot be marked complete without the operator readout.
