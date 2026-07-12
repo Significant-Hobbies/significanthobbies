@@ -9,14 +9,19 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-export default async function NewBucketListPage({ searchParams }: { searchParams: Promise<{ quest?: string }> }) {
+export default async function NewBucketListPage({ searchParams }: { searchParams: Promise<{ quest?: string; idea?: string; source?: string }> }) {
   const session = await getServerAuthSession();
-  const { quest: questId } = await searchParams;
+  const { quest: questId, idea, source } = await searchParams;
   const quest = questId ? getQuestById(questId) : null;
+  const queuedIdea = idea?.trim().slice(0, 140);
   return (
     <BucketListWorkspace
       isAuthenticated={Boolean(session?.user)}
-      queuedQuest={quest ? { id: quest.id, title: quest.title } : null}
+      queuedQuest={quest
+        ? { id: quest.id, title: quest.title }
+        : queuedIdea
+          ? { id: `video:${source?.trim().slice(0, 80) || "idea"}`, title: queuedIdea }
+          : null}
     />
   );
 }

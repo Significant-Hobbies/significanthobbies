@@ -3,6 +3,7 @@ import type { MetadataRoute } from 'next';
 import { blogPosts } from '~/lib/blog-posts';
 import { FAMOUS_BUCKET_LISTS } from '~/lib/famous-bucket-lists';
 import { HOBBY_CATEGORIES } from '~/lib/hobbies';
+import { getVideoCanonicalUrl, publishedVideos } from '~/lib/videos';
 
 export const revalidate = 3600;
 
@@ -100,6 +101,16 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: 'monthly',
       priority: 0.7,
     },
+    ...(publishedVideos.length > 0
+      ? [
+          {
+            url: `${baseUrl}/videos`,
+            lastModified: now,
+            changeFrequency: 'weekly' as const,
+            priority: 0.8,
+          },
+        ]
+      : []),
     ...categoryPages,
     {
       url: `${baseUrl}/hobbies-for-adults`,
@@ -194,5 +205,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...bucketListPages,
     ...hobbyPages,
     ...blogPages,
+    ...publishedVideos.map((video) => ({
+      url: getVideoCanonicalUrl(video),
+      lastModified: new Date(video.uploadDate),
+      changeFrequency: 'monthly' as const,
+      priority: 0.8,
+    })),
   ];
 }

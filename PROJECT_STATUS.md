@@ -58,6 +58,7 @@ Build pipeline (`scripts/cf-build.mjs`): Next build → patch sparse pnpm store 
 
 ## Timeline
 
+- **2026-07-12** — Completed the explicitly approved Life Bingo and video/agent discovery exception: private and shareable bucket lists, curated video routes and video sitemap, and agent-readable Markdown discovery endpoints.
 - **2026-07-03** — Chose the hobby quiz (`/find-your-hobby`) as the single primary discovery UX. Hid the other three discovery surfaces (taxonomy `/hobbies`, community `/explore`, famous journeys `/journeys`) from the homepage, nav, and footer (code retained, just unreachable from the main entry point). Instrumented the quiz with a canonical 3-step PostHog funnel: `discovery_started` → `discovery_engaged` → `hobby_committed` (7-day conversion window).
 - **2026-07-02** — Merged today-little-log into significanthobbies. Added daily ritual (`/daily`), 4 new DB tables (habits, habit_logs, journal_entries, daily_checkins), dashboard integration (habits + journal summary), nav/footer/manifesto updated to reflect two dimensions (Daily + Living).
 - **2026-07-02** — Added global try/catch error handler to OpenNext worker (`worker.mjs`).
@@ -105,12 +106,16 @@ Build pipeline (`scripts/cf-build.mjs`): Next build → patch sparse pnpm store 
 - **Public sharing**: `/u/[username]`, `/u/[username]/[slug]` public journeys.
 - **Discovery**: `/find-your-hobby` (primary — hobby quiz), `/explore`, `/hobbies`, `/hobbies/[hobby]`, `/hobbies/category/[category]`, `/hobbies/random`, `/search`. The taxonomy (`/hobbies`), community (`/explore`), and famous journeys (`/journeys`) surfaces are hidden from the homepage/nav/footer; the quiz is the single primary discovery entry point.
 - **Content/SEO**: bucket lists, side quests, compare journeys, hobby guides (`hobbies-for-resume`, mental health, adults, cheap hobbies, etc.).
+- **Life Bingo**: `/life-bingo`, `/bucket-list`, `/bucket-list/[id]`, and public `/b/[slug]` sharing.
+- **Video and agent discovery**: `/videos`, `/videos/[slug]`, `/video-sitemap.xml`, `/llms.txt`, `/llms-full.txt`, and Markdown content negotiation for agent-readable routes.
 - **Tools**: time calculator, cost calculator.
 - **Account**: `/dashboard`, `/settings`, `/login`, `/get-started`.
 - **Manifesto**: `/manifesto` — mortality frame as mission, not feature.
 
 ### Features shipped
 
+- Life Bingo list creation, completion tracking, Bingo presentation, visibility controls, and public sharing.
+- Curated video library with hobby cross-links, structured discovery metadata, and agent-readable content endpoints.
 - **Daily ritual** (`/daily`): AM/PM prompts, habit check-ins (simple, no scoring), compulsory journal entry, inline habit management. Merged from today-little-log.
 - **Dashboard integration**: today's habits summary + journal prompt alongside commitments and life grid.
 - **Manifesto** (`/manifesto`): mortality frame as mission, two dimensions (Daily + Living), journal as bridge.
@@ -142,6 +147,8 @@ All events carry `project_id: "significanthobbies"`. Implementation: `trackDisco
 **Decision rule:** measure for 7 days. If `discovery_started → hobby_committed` conversion is strong, keep the quiz as primary and consider retiring the hidden surfaces. If weak, re-surface one alternative and re-measure.
 
 ## Todo / Planned / Deferred / Blocked
+
+Approved exception completed on 2026-07-12: Life Bingo bucket-list creation/sharing and the curated video plus agent-readable discovery surfaces were implemented without reopening the broader discovery/progression roadmap.
 
 ### Planned
 

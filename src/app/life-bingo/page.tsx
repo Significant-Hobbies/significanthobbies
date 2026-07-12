@@ -13,7 +13,10 @@ export const metadata: Metadata = {
     title: "Life Bingo — Make Life Less Repetitive",
     description: "A bucket list you can actually play. Make a personal board in under a minute.",
     type: "website",
+    url: "/life-bingo",
+    images: [{ url: "/life-bingo/opengraph-image", width: 1200, height: 630, alt: "Create a playable Life Bingo bucket list" }],
   },
+  twitter: { card: "summary_large_image", title: "Life Bingo — Make Life Less Repetitive", description: "A bucket list you can actually play.", images: ["/life-bingo/opengraph-image"] },
 };
 
 const sample = generateLifeBingo({
