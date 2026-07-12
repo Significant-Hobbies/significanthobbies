@@ -12,10 +12,7 @@ export function LoginForm() {
   async function handleGoogle() {
     setLoading(true);
     try {
-      const result = await authClient.signIn.social({
-        provider: 'google',
-        callbackURL: '/dashboard',
-      });
+      const result = await authClient.signIn.social({ provider: 'google', callbackURL });
       if (result?.error) {
         captureAuthFailure({
           provider: 'google',

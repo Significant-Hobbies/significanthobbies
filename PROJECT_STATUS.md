@@ -1,5 +1,7 @@
 # significanthobbies — PROJECT STATUS
 
+> 2026-07-12 exception: Life Bingo and the video/discovery engine were explicitly approved for completion while the discovery-funnel closure gate remains in effect for other feature work.
+
 Last updated: 2026-07-10
 
 Last updated: 2026-07-03

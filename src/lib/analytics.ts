@@ -29,7 +29,11 @@ const POSTHOG_KEY =
 const POSTHOG_HOST = 'https://us.i.posthog.com';
 
 /** The product-specific action behind a `core_action` event. */
-export type CoreAction = 'timeline_saved' | 'timeline_exported';
+export type CoreAction =
+  | 'timeline_saved'
+  | 'timeline_exported'
+  | 'bucket_list_saved'
+  | 'bucket_list_completed';
 
 interface AnalyticsEventMap {
   /** First session after an account is created. */
