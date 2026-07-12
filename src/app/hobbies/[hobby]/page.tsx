@@ -163,7 +163,10 @@ export default async function HobbyDetailPage({ params }: Props) {
       {relatedVideos.length > 0 && (
         <section className="mb-10" aria-labelledby="hobby-videos-heading">
           <div className="mb-4 flex items-center justify-between gap-4">
-            <h2 id="hobby-videos-heading" className="text-sm font-medium uppercase tracking-wide text-muted-foreground">
+            <h2
+              id="hobby-videos-heading"
+              className="text-sm font-medium uppercase tracking-wide text-muted-foreground"
+            >
               Watch and learn
             </h2>
             <Link href="/videos" className="text-xs font-semibold text-foreground hover:opacity-70">

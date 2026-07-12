@@ -71,7 +71,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       title: `${cat.name} Hobbies to Try`,
       description: `Explore ${cat.hobbies.length} practical ${cat.name.toLowerCase()} hobbies and find a path to begin.`,
       url: `/hobbies/category/${slug}`,
-      images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: `${cat.name} hobbies` }],
+      images: [{ url: '/opengraph-image', width: 1200, height: 630, alt: `${cat.name} hobbies` }],
     },
   };
 }

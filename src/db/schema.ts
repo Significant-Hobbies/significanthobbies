@@ -168,30 +168,32 @@ export const timelines = sqliteTable(
 );
 
 export const bucketLists = sqliteTable(
-  "BucketList",
+  'BucketList',
   {
-    id: text("id").primaryKey().$defaultFn(() => createId()),
-    userId: text("userId")
+    id: text('id')
+      .primaryKey()
+      .$defaultFn(() => createId()),
+    userId: text('userId')
       .notNull()
-      .references(() => users.id, { onDelete: "cascade" }),
-    title: text("title").notNull(),
-    subtitle: text("subtitle").notNull().default(""),
-    horizon: text("horizon").notNull(),
-    size: integer("size").notNull(),
-    boldness: text("boldness").notNull(),
-    defaultView: text("defaultView").notNull().default("LIST"),
-    intentions: text("intentions").notNull().default("[]"),
-    items: text("items").notNull().default("[]"),
-    visibility: text("visibility").notNull().default("PRIVATE"),
-    slug: text("slug").unique(),
-    createdAt: integer("createdAt", { mode: "timestamp" }).notNull().default(sql`(unixepoch())`),
-    updatedAt: integer("updatedAt", { mode: "timestamp" }).notNull().default(sql`(unixepoch())`),
+      .references(() => users.id, { onDelete: 'cascade' }),
+    title: text('title').notNull(),
+    subtitle: text('subtitle').notNull().default(''),
+    horizon: text('horizon').notNull(),
+    size: integer('size').notNull(),
+    boldness: text('boldness').notNull(),
+    defaultView: text('defaultView').notNull().default('LIST'),
+    intentions: text('intentions').notNull().default('[]'),
+    items: text('items').notNull().default('[]'),
+    visibility: text('visibility').notNull().default('PRIVATE'),
+    slug: text('slug').unique(),
+    createdAt: integer('createdAt', { mode: 'timestamp' }).notNull().default(sql`(unixepoch())`),
+    updatedAt: integer('updatedAt', { mode: 'timestamp' }).notNull().default(sql`(unixepoch())`),
   },
   (table) => [
-    index("BucketList_userId_idx").on(table.userId),
-    index("BucketList_slug_idx").on(table.slug),
-    index("BucketList_visibility_idx").on(table.visibility),
-  ],
+    index('BucketList_userId_idx').on(table.userId),
+    index('BucketList_slug_idx').on(table.slug),
+    index('BucketList_visibility_idx').on(table.visibility),
+  ]
 );
 
 export const likes = sqliteTable(
