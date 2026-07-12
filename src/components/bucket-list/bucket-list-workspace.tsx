@@ -488,26 +488,28 @@ export function BucketListWorkspace({
         </div>
       </div>
 
-      <main className="mx-auto max-w-6xl px-4 py-7 sm:py-10">
-        <div className="mb-6 grid gap-3 sm:grid-cols-[1fr_auto] sm:items-center">
-          <div>
-            <p className="text-xs font-semibold text-stone-500">
-              {progress?.completed} of {progress?.total} lived
-              {progress && progress.lines.length > 0 && <span className="ml-2 text-emerald-700">· {progress.lines.length} Bingo {progress.lines.length === 1 ? "line" : "lines"}</span>}
-            </p>
-            <div className="mt-2 h-1.5 max-w-md overflow-hidden rounded-full bg-stone-200">
-              <div className="h-full rounded-full bg-emerald-700 transition-all duration-500" style={{ width: `${progress?.percentage ?? 0}%` }} />
+      <main className="mx-auto max-w-6xl px-4 py-4 sm:py-6">
+        {activeView === "LIST" && (
+          <div className="mx-auto mb-6 grid max-w-3xl gap-3 sm:grid-cols-[1fr_auto] sm:items-center">
+            <div>
+              <p className="text-xs font-semibold text-stone-500">
+                {progress?.completed} of {progress?.total} lived
+                {progress && progress.lines.length > 0 && <span className="ml-2 text-emerald-700">· {progress.lines.length} Bingo {progress.lines.length === 1 ? "line" : "lines"}</span>}
+              </p>
+              <div className="mt-2 h-1.5 max-w-md overflow-hidden rounded-full bg-stone-200">
+                <div className="h-full rounded-full bg-emerald-700 transition-all duration-500" style={{ width: `${progress?.percentage ?? 0}%` }} />
+              </div>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              <Input value={newItem} onChange={(event) => setNewItem(event.target.value)} onKeyDown={(event) => event.key === "Enter" && addItem()} placeholder="Add something you want to do…" aria-label="New bucket-list item" className="h-11 w-full border-stone-300 bg-white sm:h-9 sm:w-64" maxLength={180} />
+              <Button variant="outline" size="sm" onClick={() => addItem()} disabled={!newItem.trim()} className="min-h-11 border-stone-300 bg-white sm:min-h-8"><Plus className="h-3.5 w-3.5" /> Add</Button>
             </div>
           </div>
-          <div className="flex flex-wrap gap-2">
-            <Input value={newItem} onChange={(event) => setNewItem(event.target.value)} onKeyDown={(event) => event.key === "Enter" && addItem()} placeholder="Add something you want to do…" aria-label="New bucket-list item" className="h-11 w-full border-stone-300 bg-white sm:h-9 sm:w-64" maxLength={180} />
-            <Button variant="outline" size="sm" onClick={() => addItem()} disabled={!newItem.trim()} className="min-h-11 border-stone-300 bg-white sm:min-h-8"><Plus className="h-3.5 w-3.5" /> Add</Button>
-          </div>
-        </div>
+        )}
 
         {activeView === "BINGO" ? (
-          <div ref={boardExportRef} className="mx-auto max-w-4xl">
-            <BingoBoard draft={draft} onSelectItem={openEditor} onSelectEmpty={(position) => {
+          <div ref={boardExportRef} className="mx-auto max-w-[45rem]">
+            <BingoBoard compact draft={draft} onSelectItem={openEditor} onSelectEmpty={(position) => {
               const text = window.prompt("What do you want to put here?");
               if (!text?.trim()) return;
               changeDraft((current) => ({ ...current, items: [...current.items, createCustomItem(text.trim().slice(0, 180), position)] }));

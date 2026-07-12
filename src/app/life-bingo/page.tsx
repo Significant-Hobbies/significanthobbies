@@ -33,7 +33,7 @@ export default function LifeBingoPage() {
   return (
     <div className="overflow-hidden bg-[#f7f1e7] text-stone-900">
       <section
-        className="relative px-4 pb-20 pt-14 sm:pb-28 sm:pt-24"
+        className="relative px-4 pb-14 pt-10 sm:pb-24 sm:pt-24"
         style={{
           backgroundImage:
             "radial-gradient(circle at 8% 12%, rgba(205,222,201,.58), transparent 31%), radial-gradient(circle at 92% 74%, rgba(226,197,178,.38), transparent 27%)",
@@ -44,10 +44,10 @@ export default function LifeBingoPage() {
             <div className="mb-6 inline-flex rotate-[-2deg] items-center gap-2 rounded-full border border-[#c9bfae] bg-[#fffaf0] px-4 py-2 text-[0.68rem] font-bold uppercase tracking-[0.18em] text-emerald-800 shadow-sm">
               <Sparkles className="h-3.5 w-3.5" /> Bucket list, but playable
             </div>
-            <h1 className="max-w-2xl font-serif text-[clamp(4rem,9vw,7.8rem)] font-semibold leading-[0.82] tracking-[-0.065em] text-[#1d3028]">
+            <h1 className="max-w-2xl font-serif text-[clamp(3.35rem,8.5vw,7.2rem)] font-semibold leading-[0.86] tracking-[-0.058em] text-[#1d3028]">
               Make life less repetitive.
             </h1>
-            <p className="mt-7 max-w-xl text-lg leading-relaxed text-stone-600 sm:text-xl">
+            <p className="mt-6 max-w-xl text-base leading-relaxed text-stone-600 sm:mt-7 sm:text-xl">
               Turn the things you keep saying “someday” about into a beautiful board of real experiences. Then go live them.
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">

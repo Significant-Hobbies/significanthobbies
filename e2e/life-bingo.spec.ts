@@ -43,7 +43,8 @@ test.describe("Life Bingo and Bucket List", () => {
     await expect(page.getByRole("heading", { name: "A season of saying yes" })).toBeVisible();
     await page.getByRole("button", { name: /Make my version/i }).click();
     await expect(page).toHaveURL(/\/bucket-list\/new/);
-    await expect(page.getByText("0 of 9 lived")).toBeVisible();
+    await expect(page.getByLabel(/Bingo board/i)).toBeVisible();
+    await expect(page.locator('[aria-label$=", completed"]')).toHaveCount(0);
   });
 
   test("has no horizontal overflow on a phone", async ({ page }) => {
