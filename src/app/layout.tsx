@@ -126,21 +126,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             },
           }}
         />
-        <JsonLd
-          data={{
-            '@context': 'https://schema.org',
-            '@type': 'WebSite',
-            name: 'SignificantHobbies',
-            url: 'https://significanthobbies.com',
-            description:
-              'Discover meaningful hobbies, try Side Quests, map your hobby journey, and create a playable Life Bingo bucket list.',
-            potentialAction: {
-              '@type': 'SearchAction',
-              target: 'https://significanthobbies.com/search?q={search_term_string}',
-              'query-input': 'required name=search_term_string',
-            },
-          }}
-        />
         <AnalyticsProvider>
           <Providers>
             <a
