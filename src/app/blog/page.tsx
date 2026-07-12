@@ -16,6 +16,20 @@ export const metadata: Metadata = {
   title: 'The Hobby Journal',
   description:
     'Thoughts on hobbies, identity, and living curiously. Articles on the psychology of leisure, rekindled passions, and finding what matters.',
+  alternates: { canonical: '/blog' },
+  openGraph: {
+    title: 'The Hobby Journal',
+    description: 'Useful ideas for finding hobbies, beginning again, and living more curiously.',
+    url: '/blog',
+    images: [
+      {
+        url: '/opengraph-image',
+        width: 1200,
+        height: 630,
+        alt: 'The Significant Hobbies journal',
+      },
+    ],
+  },
 };
 
 const CATEGORY_COLORS: Record<string, { bg: string; text: string; border: string }> = {

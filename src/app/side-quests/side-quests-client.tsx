@@ -689,6 +689,14 @@ function SideQuestsInner() {
                                     Add to timeline
                                     <span>&#8594;</span>
                                   </Link>
+                                  <Link
+                                    href={`/bucket-list/new?quest=${quest.id}`}
+                                    className="ml-4 mt-3 inline-flex items-center gap-1 text-xs font-semibold text-foreground hover:text-foreground"
+                                    prefetch={false}
+                                  >
+                                    Add to Life Bingo
+                                    <span>&#8594;</span>
+                                  </Link>
                                 </div>
                               )}
                             </SpotlightCard>

@@ -64,8 +64,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const cat = slugToCategory(slug);
   if (!cat) return { title: 'Category — SignificantHobbies' };
   return {
-    title: `${cat.name} Hobbies — SignificantHobbies`,
+    title: `${cat.name} Hobbies to Try`,
     description: `Explore ${cat.hobbies.length} ${cat.name.toLowerCase()} hobbies. Browse community timelines, find tools, and discover your next ${cat.name.toLowerCase()} passion.`,
+    alternates: { canonical: `/hobbies/category/${slug}` },
+    openGraph: {
+      title: `${cat.name} Hobbies to Try`,
+      description: `Explore ${cat.hobbies.length} practical ${cat.name.toLowerCase()} hobbies and find a path to begin.`,
+      url: `/hobbies/category/${slug}`,
+      images: [{ url: '/opengraph-image', width: 1200, height: 630, alt: `${cat.name} hobbies` }],
+    },
   };
 }
 
@@ -93,7 +100,8 @@ export default async function CategoryPage({ params }: Props) {
     .leftJoin(users, eq(timelines.userId, users.id))
     .where(eq(timelines.visibility, 'PUBLIC'))
     .orderBy(desc(timelines.updatedAt))
-    .limit(100);
+    .limit(100)
+    .catch(() => []);
 
   const matchingTimelines = rawTimelines.filter((t) => {
     const phases = parseJSONColumn<Phase[]>(t.phases, [], 'hobby-category:filter:phases');

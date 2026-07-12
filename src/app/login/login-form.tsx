@@ -6,16 +6,13 @@ import { Button } from '~/components/ui/button';
 import { authClient } from '~/lib/auth-client';
 import { captureAuthFailure } from '~/lib/foundry-monitoring';
 
-export function LoginForm() {
+export function LoginForm({ callbackURL = '/dashboard' }: { callbackURL?: string }) {
   const [loading, setLoading] = useState(false);
 
   async function handleGoogle() {
     setLoading(true);
     try {
-      const result = await authClient.signIn.social({
-        provider: 'google',
-        callbackURL: '/dashboard',
-      });
+      const result = await authClient.signIn.social({ provider: 'google', callbackURL });
       if (result?.error) {
         captureAuthFailure({
           provider: 'google',

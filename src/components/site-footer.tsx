@@ -102,7 +102,7 @@ export function SiteFooter() {
           </div>
         </div>
 
-        <div className="mt-8 flex flex-col items-center justify-between gap-2 border-t border-border pt-6 text-xs text-muted-foreground/60 sm:flex-row">
+        <div className="mt-8 flex flex-col items-center justify-between gap-2 border-t border-border pt-6 text-xs text-muted-foreground sm:flex-row">
           <span>
             Made by{' '}
             <a href="https://sarthakagrawal.dev" className="hover:text-foreground">

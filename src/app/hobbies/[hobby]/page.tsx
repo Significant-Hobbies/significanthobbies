@@ -5,6 +5,7 @@ import { notFound } from 'next/navigation';
 import { FadeIn, SpotlightCard } from '~/components/aceternity';
 import { HobbyRoadmapCard } from '~/components/hobby-roadmap-card';
 import { JsonLd } from '~/components/json-ld';
+import { VideoCard } from '~/components/video/video-card';
 import { Badge } from '~/components/ui/badge';
 import { timelines, users } from '~/db/schema';
 import { blogPosts } from '~/lib/blog-posts';
@@ -16,6 +17,7 @@ import { safeDecodeURIComponent } from '~/lib/slug';
 import { getTimelineUrl } from '~/lib/timeline-url';
 import type { Phase } from '~/lib/types';
 import { parseJSONColumn } from '~/lib/utils';
+import { getVideosForHobby } from '~/lib/videos';
 import { getServerAuthSession } from '~/server/auth';
 import { db } from '~/server/db';
 
@@ -107,6 +109,7 @@ export default async function HobbyDetailPage({ params }: Props) {
       );
     })
     .slice(0, 2);
+  const relatedVideos = getVideosForHobby(hobbySlug);
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-12">
@@ -151,10 +154,32 @@ export default async function HobbyDetailPage({ params }: Props) {
           ← All hobbies
         </Link>
       </div>
+
       <FadeIn className="mb-8">
         <h1 className="text-3xl font-bold text-foreground">{hobbyName}</h1>
         <p className="text-muted-foreground text-sm">{category.name}</p>
       </FadeIn>
+
+      {relatedVideos.length > 0 && (
+        <section className="mb-10" aria-labelledby="hobby-videos-heading">
+          <div className="mb-4 flex items-center justify-between gap-4">
+            <h2
+              id="hobby-videos-heading"
+              className="text-sm font-medium uppercase tracking-wide text-muted-foreground"
+            >
+              Watch and learn
+            </h2>
+            <Link href="/videos" className="text-xs font-semibold text-foreground hover:opacity-70">
+              All videos →
+            </Link>
+          </div>
+          <div className="grid gap-4 sm:grid-cols-2">
+            {relatedVideos.slice(0, 2).map((video) => (
+              <VideoCard key={video.slug} video={video} />
+            ))}
+          </div>
+        </section>
+      )}
 
       {/* Popularity */}
       <FadeIn className="mb-8 flex items-center gap-3" delay={0.08}>

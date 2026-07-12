@@ -16,9 +16,18 @@ export const metadata = {
   robots: { index: false, follow: false },
 };
 
-export default async function LoginPage() {
+export default async function LoginPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ callbackUrl?: string }>;
+}) {
   const session = await getServerAuthSession();
   if (session?.user) redirect('/');
+  const { callbackUrl: requestedCallback } = await searchParams;
+  const callbackUrl =
+    requestedCallback?.startsWith('/') && !requestedCallback.startsWith('//')
+      ? requestedCallback
+      : '/dashboard';
 
   return (
     <div className="relative flex min-h-[80vh] items-center justify-center overflow-hidden px-4 py-12">
@@ -35,7 +44,7 @@ export default async function LoginPage() {
             </p>
           </div>
 
-          <LoginForm />
+          <LoginForm callbackURL={callbackUrl} />
 
           <div className="mt-6 space-y-2.5">
             <p className="text-xs font-medium text-foreground">What you get</p>
@@ -49,7 +58,7 @@ export default async function LoginPage() {
           <p className="mt-6 text-xs text-muted-foreground/60">
             Or{' '}
             <Link
-              href="/timeline/new"
+              href={callbackUrl.startsWith('/bucket-list') ? '/bucket-list/new' : '/timeline/new'}
               className="text-foreground underline underline-offset-2 hover:opacity-70"
             >
               continue as guest
