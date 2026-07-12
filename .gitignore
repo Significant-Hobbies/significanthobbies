@@ -12,8 +12,6 @@
 
 # testing
 /coverage
-/playwright-report
-/test-results
 
 # next.js
 /.next/
@@ -69,4 +67,3 @@ cache.bin
 screenshots/
 scripts/screenshot-daily.mjs
 scripts/screenshot-review.mjs
-.gstack/

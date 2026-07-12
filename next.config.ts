@@ -20,8 +20,6 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       { protocol: 'https', hostname: 'lh3.googleusercontent.com' }, // Google OAuth avatars
       { protocol: 'https', hostname: 'api.dicebear.com' }, // DiceBear avatars
-      { protocol: 'https', hostname: 'i.ytimg.com' }, // YouTube video thumbnails
-      { protocol: 'https', hostname: 'img.youtube.com' }, // YouTube fallback thumbnails
     ],
   },
   async headers() {

@@ -16,7 +16,6 @@ export const metadata = {
   title: 'Hobby Directory — SignificantHobbies',
   description:
     'Browse 110+ hobbies across 10 categories. Find your next passion — from creative arts and music to outdoor adventures and making.',
-  alternates: { canonical: '/hobbies' },
 };
 
 export default function HobbiesPage() {
