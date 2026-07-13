@@ -10,12 +10,13 @@ import {
   StaggerItem,
 } from '~/components/aceternity';
 import { JsonLd } from '~/components/json-ld';
-import { type BlogPost, blogPosts, type ContentBlock } from '~/lib/blog-posts';
+import type { BlogPost, ContentBlock } from '~/lib/blog-posts';
+import { editorialArticles, getEditorialArticle } from '~/lib/editorial-content';
 
 /* ─── Static generation ──────────────────────────────────────────────────────── */
 
 export function generateStaticParams() {
-  return blogPosts.map((post) => ({ slug: post.slug }));
+  return editorialArticles.map((post) => ({ slug: post.slug }));
 }
 
 export async function generateMetadata({
@@ -24,12 +25,30 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const post = blogPosts.find((p) => p.slug === slug);
+  const post = getEditorialArticle(slug);
   if (!post) return { title: 'Not Found' };
 
+  const canonical = `https://significanthobbies.com/blog/${post.slug}`;
+  const thumbnail = post.package?.youtube?.thumbnailUrl;
   return {
     title: post.title,
     description: post.excerpt,
+    alternates: { canonical },
+    openGraph: {
+      type: 'article',
+      url: canonical,
+      title: post.title,
+      description: post.excerpt,
+      ...(thumbnail
+        ? { images: [{ url: thumbnail }], videos: [{ url: post.package!.youtube!.url }] }
+        : {}),
+    },
+    twitter: {
+      card: thumbnail ? 'summary_large_image' : 'summary',
+      title: post.title,
+      description: post.excerpt,
+      ...(thumbnail ? { images: [thumbnail] } : {}),
+    },
   };
 }
 
@@ -215,11 +234,11 @@ function RelatedCard({ post }: { post: BlogPost }) {
 
 export default async function BlogPostPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const post = blogPosts.find((p) => p.slug === slug);
+  const post = getEditorialArticle(slug);
 
   if (!post) notFound();
 
-  const relatedPosts = blogPosts.filter((p) => p.slug !== slug).slice(0, 2);
+  const relatedPosts = editorialArticles.filter((p) => p.slug !== slug).slice(0, 2);
 
   const style = categoryStyle(post.category);
 
@@ -240,8 +259,36 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
             '@type': 'Organization',
             name: 'SignificantHobbies',
           },
+          mainEntityOfPage: `https://significanthobbies.com/blog/${post.slug}`,
         }}
       />
+      {post.package?.youtube && (
+        <JsonLd
+          data={{
+            '@context': 'https://schema.org',
+            '@type': 'VideoObject',
+            name: post.title,
+            description: post.excerpt,
+            uploadDate: post.package.youtube.publishedAt,
+            contentUrl: post.package.youtube.url,
+            embedUrl: `https://www.youtube-nocookie.com/embed/${post.package.youtube.videoId}`,
+            ...(post.package.youtube.thumbnailUrl
+              ? { thumbnailUrl: post.package.youtube.thumbnailUrl }
+              : {}),
+            ...(post.package.youtube.chapters?.length
+              ? {
+                  hasPart: post.package.youtube.chapters.map((chapter, index, chapters) => ({
+                    '@type': 'Clip',
+                    name: chapter.title,
+                    startOffset: chapter.startSeconds,
+                    ...(chapters[index + 1] ? { endOffset: chapters[index + 1].startSeconds } : {}),
+                    url: `${post.package!.youtube!.url}&t=${chapter.startSeconds}`,
+                  })),
+                }
+              : {}),
+          }}
+        />
+      )}
       {/* Back link */}
       <div className="border-b border-border px-4 py-3">
         <div className="mx-auto max-w-3xl">
@@ -300,7 +347,87 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
       {/* Article body */}
       <article className="px-4 py-14">
         <div className="mx-auto max-w-3xl">
+          {post.package?.youtube && (
+            <div className="mb-10 overflow-hidden rounded-2xl border border-border shadow-sm">
+              <div className="relative aspect-video">
+                <iframe
+                  src={`https://www.youtube-nocookie.com/embed/${post.package.youtube.videoId}`}
+                  title={post.title}
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                  className="absolute inset-0 h-full w-full"
+                />
+              </div>
+            </div>
+          )}
           <BlogContent blocks={post.content} />
+          {post.package && (
+            <div className="mt-12 space-y-10">
+              {post.package.takeaways.length > 0 && (
+                <section>
+                  <h2 className="mb-4 text-2xl font-bold text-foreground">Key takeaways</h2>
+                  <ul className="space-y-2">
+                    {post.package.takeaways.map((takeaway) => (
+                      <li key={takeaway} className="flex gap-3 text-lg text-foreground">
+                        <span aria-hidden="true">✓</span>
+                        <span>{takeaway}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </section>
+              )}
+              {post.package.productActions.length > 0 && (
+                <section>
+                  <h2 className="mb-4 text-2xl font-bold text-foreground">Put it into practice</h2>
+                  <div className="flex flex-wrap gap-3">
+                    {post.package.productActions.map((action) => (
+                      <Link
+                        key={action.url}
+                        href={action.url}
+                        className="rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground"
+                      >
+                        {action.label} →
+                      </Link>
+                    ))}
+                  </div>
+                </section>
+              )}
+              <section>
+                <h2 className="mb-4 text-2xl font-bold text-foreground">Related hobbies</h2>
+                <div className="flex flex-wrap gap-2">
+                  {post.package.relatedHobbies.map((hobby) => (
+                    <Link
+                      key={hobby}
+                      href={`/hobbies/${encodeURIComponent(hobby.toLowerCase().replace(/\s+/g, '-'))}`}
+                      className="rounded-full border border-border px-4 py-2 text-sm text-foreground hover:border-foreground/30"
+                    >
+                      {hobby}
+                    </Link>
+                  ))}
+                </div>
+              </section>
+              {post.package.sources.length > 0 && (
+                <section>
+                  <h2 className="mb-4 text-2xl font-bold text-foreground">Sources</h2>
+                  <ol className="space-y-3 text-sm text-muted-foreground">
+                    {post.package.sources.map((source) => (
+                      <li key={source.url}>
+                        <a
+                          href={source.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="font-medium text-foreground underline underline-offset-4"
+                        >
+                          {source.title}
+                        </a>
+                        {source.claim ? <span> — {source.claim}</span> : null}
+                      </li>
+                    ))}
+                  </ol>
+                </section>
+              )}
+            </div>
+          )}
         </div>
       </article>
 

@@ -22,6 +22,12 @@ const nextConfig: NextConfig = {
       { protocol: 'https', hostname: 'api.dicebear.com' }, // DiceBear avatars
     ],
   },
+  async redirects() {
+    return [
+      { source: '/videos', destination: '/blog', permanent: true },
+      { source: '/videos/:slug', destination: '/blog/:slug', permanent: true },
+    ];
+  },
   async headers() {
     return [
       {

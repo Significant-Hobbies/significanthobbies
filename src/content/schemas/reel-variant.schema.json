@@ -1,0 +1,81 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://significanthobbies.com/schemas/reel-variant/v1",
+  "title": "Significant Hobbies canonical reel variant v1",
+  "type": "object",
+  "required": [
+    "id",
+    "state",
+    "format",
+    "hypothesis",
+    "hook",
+    "payoff",
+    "targetDurationSeconds",
+    "scenes",
+    "visualDirection",
+    "caption",
+    "cta",
+    "destinationUrl",
+    "tags",
+    "provenance",
+    "receipts",
+    "metrics"
+  ],
+  "properties": {
+    "id": { "type": "string", "minLength": 1 },
+    "state": { "enum": ["draft", "approved", "exported", "rendered", "posted"] },
+    "format": { "type": "string", "minLength": 1 },
+    "hypothesis": { "type": "string", "minLength": 1 },
+    "hook": { "type": "string", "minLength": 1 },
+    "payoff": { "type": "string", "minLength": 1 },
+    "targetDurationSeconds": { "type": "number", "exclusiveMinimum": 0 },
+    "scenes": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["label", "durationSeconds", "narration", "onScreenText", "visual"],
+        "properties": {
+          "label": { "type": "string", "minLength": 1 },
+          "durationSeconds": { "type": "number", "exclusiveMinimum": 0 },
+          "narration": { "type": "string", "minLength": 1 },
+          "onScreenText": { "type": ["string", "null"] },
+          "visual": { "type": "string", "minLength": 1 }
+        },
+        "additionalProperties": false
+      }
+    },
+    "visualDirection": { "type": "string", "minLength": 1 },
+    "caption": { "type": "string", "minLength": 1 },
+    "cta": { "type": "string", "minLength": 1 },
+    "destinationUrl": { "type": "string", "format": "uri" },
+    "tags": { "type": "array", "minItems": 1, "items": { "type": "string" } },
+    "provenance": {
+      "type": "object",
+      "required": [
+        "sourceIds",
+        "sourceUrls",
+        "generatedAt",
+        "approvedAt",
+        "approvedBy",
+        "audience"
+      ],
+      "properties": {
+        "sourceIds": { "type": "array", "minItems": 1, "items": { "type": "string" } },
+        "sourceUrls": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "format": "uri" }
+        },
+        "generatedAt": { "type": "string", "format": "date-time" },
+        "approvedAt": { "type": "string", "format": "date-time" },
+        "approvedBy": { "type": "string", "minLength": 1 },
+        "audience": { "type": ["string", "null"] }
+      },
+      "additionalProperties": false
+    },
+    "receipts": { "type": "array", "items": { "$ref": "content-receipt.schema.json" } },
+    "metrics": { "type": "array", "items": { "type": "object" } }
+  },
+  "additionalProperties": false
+}

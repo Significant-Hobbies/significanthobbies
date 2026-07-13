@@ -10,7 +10,8 @@ import {
   StaggerItem,
 } from '~/components/aceternity';
 import { EmailCapture } from '~/components/email-capture';
-import { type BlogPost, blogPosts } from '~/lib/blog-posts';
+import type { BlogPost } from '~/lib/blog-posts';
+import { editorialArticles } from '~/lib/editorial-content';
 
 export const metadata: Metadata = {
   title: 'The Hobby Journal',
@@ -137,7 +138,7 @@ function PostCard({ post, featured = false }: { post: BlogPost; featured?: boole
 }
 
 export default function BlogPage() {
-  const [featured, ...rest] = blogPosts;
+  const [featured, ...rest] = editorialArticles;
 
   return (
     <div className="min-h-screen bg-background">
