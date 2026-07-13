@@ -7,7 +7,7 @@ import { HobbyRoadmapCard } from '~/components/hobby-roadmap-card';
 import { JsonLd } from '~/components/json-ld';
 import { Badge } from '~/components/ui/badge';
 import { timelines, users } from '~/db/schema';
-import { blogPosts } from '~/lib/blog-posts';
+import { getEditorialArticlesForHobby } from '~/lib/editorial-content';
 import { getCategoryForHobby, HOBBY_CATEGORIES } from '~/lib/hobbies';
 import { getRelatedHobbies } from '~/lib/hobby-affinities';
 import { getResourcesForHobby } from '~/lib/hobby-resources';
@@ -95,18 +95,7 @@ export default async function HobbyDetailPage({ params }: Props) {
   const roadmap = getRoadmapForHobby(hobbyName);
   const crossCategoryHobbies = getRelatedHobbies(hobbyName);
 
-  const relatedPosts = blogPosts
-    .filter((post) => {
-      const search = hobbyName.toLowerCase();
-      return (
-        post.title.toLowerCase().includes(search) ||
-        post.excerpt.toLowerCase().includes(search) ||
-        post.content.some(
-          (block) => block.type === 'paragraph' && block.text.toLowerCase().includes(search)
-        )
-      );
-    })
-    .slice(0, 2);
+  const relatedPosts = getEditorialArticlesForHobby(hobbyName);
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-12">

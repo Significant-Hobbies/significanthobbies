@@ -1,6 +1,6 @@
 import type { MetadataRoute } from 'next';
 
-import { blogPosts } from '~/lib/blog-posts';
+import { editorialArticles } from '~/lib/editorial-content';
 import { FAMOUS_BUCKET_LISTS } from '~/lib/famous-bucket-lists';
 import { HOBBY_CATEGORIES } from '~/lib/hobbies';
 
@@ -37,7 +37,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }))
   );
 
-  const blogPages = blogPosts.map((post) => ({
+  const blogPages = editorialArticles.map((post) => ({
     url: `${baseUrl}/blog/${post.slug}`,
     lastModified: now,
     changeFrequency: 'monthly' as const,

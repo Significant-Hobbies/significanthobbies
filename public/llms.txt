@@ -10,6 +10,7 @@ Next.js on Cloudflare Workers. Google auth for saving timelines; public explore 
 - [Explore](https://significanthobbies.com/explore): Community timelines and inspiration
 - [Hobbies](https://significanthobbies.com/hobbies): Hobby taxonomy and category browse
 - [Blog](https://significanthobbies.com/blog): Articles on hobbies and life phases
+- [Full article index](https://significanthobbies.com/llms-full.txt): Canonical legacy and package-backed articles
 - [Start a timeline](https://significanthobbies.com/timeline/new): Create your journey (auth)
 - [Privacy](https://significanthobbies.com/privacy): Privacy policy
 - [Terms](https://significanthobbies.com/terms): Terms of use

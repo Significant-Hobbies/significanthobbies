@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://significanthobbies.com/schemas/content-receipt/v1",
+  "title": "Significant content receipt v1",
+  "type": "object",
+  "required": [
+    "schema",
+    "receiptId",
+    "stage",
+    "packageId",
+    "packageRevision",
+    "variantId",
+    "attributionKey",
+    "provider",
+    "status",
+    "externalId",
+    "externalUrl",
+    "occurredAt",
+    "metrics",
+    "evidenceWindow",
+    "details"
+  ],
+  "properties": {
+    "schema": { "const": "significant-content-receipt/v1" },
+    "receiptId": { "type": "string", "pattern": "^scr_[a-f0-9]{64}$" },
+    "stage": { "enum": ["render", "upload", "metrics"] },
+    "packageId": { "type": "string" },
+    "packageRevision": { "type": "integer", "minimum": 1 },
+    "variantId": { "type": "string" },
+    "attributionKey": { "type": "string" },
+    "provider": { "type": "string" },
+    "status": { "enum": ["completed", "published", "scheduled", "collected"] },
+    "externalId": { "type": ["string", "null"] },
+    "externalUrl": { "type": ["string", "null"], "format": "uri" },
+    "occurredAt": { "type": "string", "format": "date-time" },
+    "metrics": { "type": ["object", "null"] },
+    "evidenceWindow": { "type": ["object", "null"] },
+    "details": { "type": ["object", "null"] }
+  },
+  "additionalProperties": false
+}

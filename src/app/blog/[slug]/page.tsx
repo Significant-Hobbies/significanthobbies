@@ -10,12 +10,14 @@ import {
   StaggerItem,
 } from '~/components/aceternity';
 import { JsonLd } from '~/components/json-ld';
-import { type BlogPost, blogPosts, type ContentBlock } from '~/lib/blog-posts';
+import type { BlogPost, ContentBlock } from '~/lib/blog-posts';
+import { editorialArticles, getEditorialArticle } from '~/lib/editorial-content';
+import { buildArticleJsonLd, buildArticleMetadata, buildVideoJsonLd } from '~/lib/editorial-seo';
 
 /* ─── Static generation ──────────────────────────────────────────────────────── */
 
 export function generateStaticParams() {
-  return blogPosts.map((post) => ({ slug: post.slug }));
+  return editorialArticles.map((post) => ({ slug: post.slug }));
 }
 
 export async function generateMetadata({
@@ -24,13 +26,10 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const post = blogPosts.find((p) => p.slug === slug);
+  const post = getEditorialArticle(slug);
   if (!post) return { title: 'Not Found' };
 
-  return {
-    title: post.title,
-    description: post.excerpt,
-  };
+  return buildArticleMetadata(post);
 }
 
 /* ─── Category color helper ──────────────────────────────────────────────────── */
@@ -137,7 +136,7 @@ function BlogContent({ blocks }: { blocks: ContentBlock[] }) {
                   &ldquo;{block.text}&rdquo;
                 </p>
                 {block.attribution && (
-                  <cite className="mt-2 block text-sm text-muted-foreground/60 not-italic">
+                  <cite className="mt-2 block text-sm text-muted-foreground not-italic">
                     — {block.attribution}
                   </cite>
                 )}
@@ -162,9 +161,7 @@ function BlogContent({ blocks }: { blocks: ContentBlock[] }) {
                   </div>
                 </div>
                 {block.caption && (
-                  <p className="mt-3 text-center text-sm text-muted-foreground/60">
-                    {block.caption}
-                  </p>
+                  <p className="mt-3 text-center text-sm text-muted-foreground">{block.caption}</p>
                 )}
               </div>
             );
@@ -201,7 +198,7 @@ function RelatedCard({ post }: { post: BlogPost }) {
           {post.excerpt}
         </p>
         <div className="mt-4 flex items-center justify-between border-t border-border pt-3">
-          <span className="text-xs text-muted-foreground/60">{post.readTime} min read</span>
+          <span className="text-xs text-muted-foreground">{post.readTime} min read</span>
           <span className="text-xs font-semibold text-foreground opacity-0 transition-opacity group-hover:opacity-100">
             Read →
           </span>
@@ -215,39 +212,25 @@ function RelatedCard({ post }: { post: BlogPost }) {
 
 export default async function BlogPostPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const post = blogPosts.find((p) => p.slug === slug);
+  const post = getEditorialArticle(slug);
 
   if (!post) notFound();
 
-  const relatedPosts = blogPosts.filter((p) => p.slug !== slug).slice(0, 2);
+  const relatedPosts = editorialArticles.filter((p) => p.slug !== slug).slice(0, 2);
 
   const style = categoryStyle(post.category);
+  const videoJsonLd = buildVideoJsonLd(post);
 
   return (
     <div className="min-h-screen bg-background">
-      <JsonLd
-        data={{
-          '@context': 'https://schema.org',
-          '@type': 'Article',
-          headline: post.title,
-          description: post.excerpt,
-          datePublished: post.publishedAt,
-          author: {
-            '@type': 'Organization',
-            name: 'SignificantHobbies',
-          },
-          publisher: {
-            '@type': 'Organization',
-            name: 'SignificantHobbies',
-          },
-        }}
-      />
+      <JsonLd data={buildArticleJsonLd(post)} />
+      {videoJsonLd && <JsonLd data={videoJsonLd} />}
       {/* Back link */}
       <div className="border-b border-border px-4 py-3">
         <div className="mx-auto max-w-3xl">
           <Link
             href="/blog"
-            className="inline-flex items-center gap-1.5 text-sm text-muted-foreground/60 transition-colors hover:text-foreground"
+            className="inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
           >
             <span>←</span>
             <span>Blog</span>
@@ -277,7 +260,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
               </svg>
               {post.readTime} min read
             </span>
-            <span className="text-xs text-muted-foreground/60">{post.publishedAt}</span>
+            <span className="text-xs text-muted-foreground">{post.publishedAt}</span>
           </div>
 
           {/* Emoji */}
@@ -300,7 +283,87 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
       {/* Article body */}
       <article className="px-4 py-14">
         <div className="mx-auto max-w-3xl">
+          {post.package?.youtube && (
+            <div className="mb-10 overflow-hidden rounded-2xl border border-border shadow-sm">
+              <div className="relative aspect-video">
+                <iframe
+                  src={`https://www.youtube-nocookie.com/embed/${post.package.youtube.videoId}`}
+                  title={post.title}
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                  className="absolute inset-0 h-full w-full"
+                />
+              </div>
+            </div>
+          )}
           <BlogContent blocks={post.content} />
+          {post.package && (
+            <div className="mt-12 space-y-10">
+              {post.package.takeaways.length > 0 && (
+                <section>
+                  <h2 className="mb-4 text-2xl font-bold text-foreground">Key takeaways</h2>
+                  <ul className="space-y-2">
+                    {post.package.takeaways.map((takeaway) => (
+                      <li key={takeaway} className="flex gap-3 text-lg text-foreground">
+                        <span aria-hidden="true">✓</span>
+                        <span>{takeaway}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </section>
+              )}
+              {post.package.productActions.length > 0 && (
+                <section>
+                  <h2 className="mb-4 text-2xl font-bold text-foreground">Put it into practice</h2>
+                  <div className="flex flex-wrap gap-3">
+                    {post.package.productActions.map((action) => (
+                      <Link
+                        key={action.url}
+                        href={action.url}
+                        className="rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground"
+                      >
+                        {action.label} →
+                      </Link>
+                    ))}
+                  </div>
+                </section>
+              )}
+              <section>
+                <h2 className="mb-4 text-2xl font-bold text-foreground">Related hobbies</h2>
+                <div className="flex flex-wrap gap-2">
+                  {post.package.relatedHobbies.map((hobby) => (
+                    <Link
+                      key={hobby}
+                      href={`/hobbies/${encodeURIComponent(hobby.toLowerCase().replace(/\s+/g, '-'))}`}
+                      className="rounded-full border border-border px-4 py-2 text-sm text-foreground hover:border-foreground/30"
+                    >
+                      {hobby}
+                    </Link>
+                  ))}
+                </div>
+              </section>
+              {post.package.sources.length > 0 && (
+                <section>
+                  <h2 className="mb-4 text-2xl font-bold text-foreground">Sources</h2>
+                  <ol className="space-y-3 text-sm text-muted-foreground">
+                    {post.package.sources.map((source) => (
+                      <li key={source.url}>
+                        <a
+                          href={source.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="font-medium text-foreground underline underline-offset-4"
+                        >
+                          {source.title}
+                        </a>
+                        {source.claim ? <span> — {source.claim}</span> : null}
+                      </li>
+                    ))}
+                  </ol>
+                </section>
+              )}
+            </div>
+          )}
         </div>
       </article>
 
@@ -311,9 +374,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
             {/* Divider with label */}
             <div className="mb-8 flex items-center gap-4">
               <div className="h-px flex-1 bg-foreground/10" />
-              <p className="text-sm font-semibold text-muted-foreground/60">
-                More from the journal
-              </p>
+              <p className="text-sm font-semibold text-muted-foreground">More from the journal</p>
               <div className="h-px flex-1 bg-foreground/10" />
             </div>
 
@@ -348,7 +409,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
           <div className="mt-5">
             <Link
               href="/blog"
-              className="text-sm text-muted-foreground/60 transition-colors hover:text-muted-foreground"
+              className="text-sm text-muted-foreground transition-colors hover:text-foreground"
             >
               ← Back to all articles
             </Link>

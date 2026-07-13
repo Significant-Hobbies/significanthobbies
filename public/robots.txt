@@ -1,5 +1,8 @@
 User-agent: *
 Allow: /
+
+Sitemap: https://significanthobbies.com/sitemap.xml
+Sitemap: https://significanthobbies.com/video-sitemap.xml
 Disallow: /api/
 Disallow: /setup
 Disallow: /timeline/new

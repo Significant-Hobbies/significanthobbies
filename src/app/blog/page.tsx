@@ -10,7 +10,8 @@ import {
   StaggerItem,
 } from '~/components/aceternity';
 import { EmailCapture } from '~/components/email-capture';
-import { type BlogPost, blogPosts } from '~/lib/blog-posts';
+import type { BlogPost } from '~/lib/blog-posts';
+import { editorialArticles } from '~/lib/editorial-content';
 
 export const metadata: Metadata = {
   title: 'The Hobby Journal',
@@ -71,9 +72,9 @@ function PostCardContent({ post, featured = false }: { post: BlogPost; featured?
           >
             {post.category}
           </span>
-          <span className="text-xs text-muted-foreground/60">{post.readTime} min read</span>
-          <span className="text-xs text-muted-foreground/40">·</span>
-          <span className="text-xs text-muted-foreground/60">{post.publishedAt}</span>
+          <span className="text-xs text-muted-foreground">{post.readTime} min read</span>
+          <span className="text-xs text-muted-foreground">·</span>
+          <span className="text-xs text-muted-foreground">{post.publishedAt}</span>
         </div>
 
         {/* Title */}
@@ -104,7 +105,7 @@ function PostCardContent({ post, featured = false }: { post: BlogPost; featured?
           </div>
         ) : (
           <div className="mt-4 flex items-center justify-between border-t border-border pt-4">
-            <span className="text-xs text-muted-foreground/60">{post.readTime} min read</span>
+            <span className="text-xs text-muted-foreground">{post.readTime} min read</span>
             <span className="text-xs font-semibold text-foreground opacity-0 transition-opacity duration-200 group-hover:opacity-100">
               Read →
             </span>
@@ -137,7 +138,7 @@ function PostCard({ post, featured = false }: { post: BlogPost; featured?: boole
 }
 
 export default function BlogPage() {
-  const [featured, ...rest] = blogPosts;
+  const [featured, ...rest] = editorialArticles;
 
   return (
     <div className="min-h-screen bg-background">
@@ -181,7 +182,7 @@ export default function BlogPage() {
           {/* Featured post */}
           {featured && (
             <FadeIn className="mb-10">
-              <p className="mb-4 text-sm font-semibold text-muted-foreground/60">Featured</p>
+              <p className="mb-4 text-sm font-semibold text-muted-foreground">Featured</p>
               <PostCard post={featured} featured />
             </FadeIn>
           )}
@@ -200,7 +201,7 @@ export default function BlogPage() {
           {/* Divider */}
           <FadeIn className="mb-10 flex items-center gap-4">
             <div className="h-px flex-1 bg-foreground/10" />
-            <p className="text-sm font-semibold text-muted-foreground/60">All articles</p>
+            <p className="text-sm font-semibold text-muted-foreground">All articles</p>
             <div className="h-px flex-1 bg-foreground/10" />
           </FadeIn>
 
@@ -231,7 +232,7 @@ export default function BlogPage() {
           <div className="mt-5">
             <Link
               href="/"
-              className="text-sm text-muted-foreground/60 transition-colors hover:text-muted-foreground"
+              className="text-sm text-muted-foreground transition-colors hover:text-foreground"
             >
               ← Back to SignificantHobbies
             </Link>

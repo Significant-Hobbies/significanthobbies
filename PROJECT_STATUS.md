@@ -1,8 +1,6 @@
 # significanthobbies — PROJECT STATUS
 
-Last updated: 2026-07-10
-
-Last updated: 2026-07-03
+Last updated: 2026-07-13
 
 ## Why / What
 
@@ -47,6 +45,7 @@ A life planner with two dimensions. **Daily** (private): one daily ritual page �
 | `pnpm preview` | opennextjs-cloudflare preview |
 | `pnpm typecheck` / `pnpm test` / `pnpm test:coverage` / `pnpm test:e2e` / `pnpm test:e2e:ui` | TS + vitest (v8 coverage thresholds on core `src/lib` modules) + playwright |
 | `pnpm lint` / `pnpm check` | lint + biome check |
+| `pnpm content <command>` | Validate, create, inspect, export, apply receipts to, and report on versioned content packages |
 
 CI: `.github/workflows/deploy.yml` — auto-deploy on `main`, preview on PR. `.github/workflows/ci.yml` — lint + typecheck + `test:coverage` (v8 thresholds on core `src/lib` modules).
 
@@ -56,6 +55,8 @@ Build pipeline (`scripts/cf-build.mjs`): Next build → patch sparse pnpm store 
 
 ## Timeline
 
+- **2026-07-13 — Significant content web acceptance:** extracted deterministic Article/VideoObject metadata and video-sitemap builders, added Markdown content negotiation with `Vary: Accept`, and exercised the real blog routes for canonical/OG/Article JSON-LD, 308 retired-video redirects, landmarks, axe accessibility, and horizontal overflow at 320/768/1440 widths. The audit fixed real muted-text contrast failures. Focused tests, typecheck, and the 265-page production build pass; package-backed video metadata is additionally covered by a deterministic fixture because canonical content currently has no published video package.
+- **2026-07-13** — Implemented the Significant Hobbies half of the content flywheel on `feature/significant-content-flywheel`: versioned JSON packages and receipts, deterministic CLI, legacy/package blog adapter, canonical article enrichment, hobby/LLM discovery, video sitemap, and permanent retired-video redirects. Pending review/merge and the separate Reel Pipeline/OpenClaw work; no content, upload, deploy, post, or schedule was created.
 - **2026-07-12** — Completed the explicitly approved Life Bingo exception: private and shareable bucket lists with list and Bingo presentations.
 - **2026-07-03** — Chose the hobby quiz (`/find-your-hobby`) as the single primary discovery UX. Hid the other three discovery surfaces (taxonomy `/hobbies`, community `/explore`, famous journeys `/journeys`) from the homepage, nav, and footer (code retained, just unreachable from the main entry point). Instrumented the quiz with a canonical 3-step PostHog funnel: `discovery_started` → `discovery_engaged` → `hobby_committed` (7-day conversion window).
 - **2026-07-02** — Merged today-little-log into significanthobbies. Added daily ritual (`/daily`), 4 new DB tables (habits, habit_logs, journal_entries, daily_checkins), dashboard integration (habits + journal summary), nav/footer/manifesto updated to reflect two dimensions (Daily + Living).
@@ -153,6 +154,7 @@ All events carry `project_id: "significanthobbies"`. Implementation: `trackDisco
 5. Review raw HTML rendering paths before making them user-sourced.
 6. Wire habits and commitments — allow a habit to be linked to a commitment (e.g. "practice guitar" habit auto-stamps the commitment).
 7. **Closure gate:** capture the 7-day quiz funnel result in PostHog, then freeze the winning discovery path and pause feature development.
+8. Review and merge the Significant Hobbies content-flywheel branch after the shared cross-repository OpenSpec verification is complete; the canonical package document intentionally remains empty until topics are selected.
 
 ### Deferred
 
