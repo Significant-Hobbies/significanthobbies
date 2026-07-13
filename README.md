@@ -10,7 +10,7 @@ Map your hobby history across life phases. Visualize insights. Share your journe
 | Database | Turso (libSQL); Drizzle ORM |
 | Auth | better-auth + Google OAuth |
 | Analytics | PostHog (via `local posthog-js wrapper`) |
-| CI/CD | GitHub Actions (`.github/workflows/deploy.yml`) — auto-deploy to Cloudflare on push to `main`, preview deploy on PR |
+| CI/CD | GitHub Actions (`.github/workflows/deploy.yml`) — manual production deploy from `main` |
 
 ## Quick Start
 

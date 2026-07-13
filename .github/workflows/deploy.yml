@@ -3,7 +3,6 @@ on:
   workflow_dispatch:
 jobs:
   deploy-production:
-    if: github.event_name == 'push'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
@@ -19,7 +18,10 @@ jobs:
             corepack prepare pnpm@10.33.2 --activate
           fi
       - run: pnpm install --frozen-lockfile --ignore-scripts
-      - run: pnpm cf:build
+      # Build the deploy artifact without populateCache. The package-level
+      # cf:build command also warms a local cache through Wrangler, which needs
+      # Cloudflare credentials and is not required to produce .open-next/.
+      - run: node scripts/cf-build.mjs
       - uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}

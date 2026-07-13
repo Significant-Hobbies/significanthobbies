@@ -47,7 +47,7 @@ A life planner with two dimensions. **Daily** (private): one daily ritual page �
 | `pnpm lint` / `pnpm check` | lint + biome check |
 | `pnpm content <command>` | Validate, create, inspect, export, apply receipts to, and report on versioned content packages |
 
-CI: `.github/workflows/deploy.yml` — auto-deploy on `main`, preview on PR. `.github/workflows/ci.yml` — lint + typecheck + `test:coverage` (v8 thresholds on core `src/lib` modules).
+CI: `.github/workflows/deploy.yml` — manual production deploy from `main`. `.github/workflows/ci.yml` — lint + typecheck + `test:coverage` (v8 thresholds on core `src/lib` modules).
 
 **Entrypoints:** `worker.mjs` · Next.js App Router handlers · `scripts/cf-build.mjs` · `landing-astro/`.
 
