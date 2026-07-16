@@ -23,5 +23,5 @@ Next.js on Cloudflare Workers. Google auth for saving timelines; public explore 
 
 ## Optional
 
-- [GitHub](https://github.com/sarthak-fleet/significanthobbies): Source
+- [GitHub](https://github.com/Significant-Hobbies/significanthobbies): Source
 - [Foundry](https://sassmaker.com): Fleet context

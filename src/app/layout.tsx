@@ -107,7 +107,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             url: 'https://significanthobbies.com',
             description:
               'Map your hobby history across life phases. Discover what rekindled, what persisted, and what to explore next.',
-            sameAs: ['https://github.com/sarthak-fleet/significanthobbies'],
+            sameAs: ['https://github.com/Significant-Hobbies/significanthobbies'],
           }}
         />
         <JsonLd
