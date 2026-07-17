@@ -1,0 +1,32 @@
+{
+  "name": "Significant Hobbies",
+  "version": "1",
+  "url": "https://significanthobbies.com",
+  "llms": "https://significanthobbies.com/llms.txt",
+  "llmsFull": "https://significanthobbies.com/llms-full.txt",
+  "sitemap": "https://significanthobbies.com/sitemap.xml",
+  "markdown": {
+    "suffix": ".md",
+    "negotiation": true
+  },
+  "surfaces": [
+    {
+      "id": "home",
+      "url": "https://significanthobbies.com/",
+      "md": "https://significanthobbies.com/index.md",
+      "kind": "static",
+      "description": "Product home"
+    },
+    {
+      "id": "explore",
+      "url": "https://significanthobbies.com/explore",
+      "md": null,
+      "kind": "static",
+      "description": "Public hobby timelines"
+    }
+  ],
+  "auth": {
+    "public": true,
+    "notes": "Auth-walled app routes are not agent-indexed unless listed here."
+  }
+}

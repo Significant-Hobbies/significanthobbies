@@ -1,27 +1,18 @@
 # Significant Hobbies
 
-> Map your hobby history across life phases. Discover what rekindled, what persisted, and what to explore next — with shareable public journeys.
-
-Next.js on Cloudflare Workers. Google auth for saving timelines; public explore and blog content for discovery.
+> Life planner for private daily rituals and public living — hobbies, bucket lists, and side quests over time.
 
 ## Product
 
-- [Home](https://significanthobbies.com/): Landing and value proposition
-- [Explore](https://significanthobbies.com/explore): Community timelines and inspiration
-- [Hobbies](https://significanthobbies.com/hobbies): Hobby taxonomy and category browse
-- [Blog](https://significanthobbies.com/blog): Articles on hobbies and life phases
-- [Full article index](https://significanthobbies.com/llms-full.txt): Canonical legacy and package-backed articles
-- [Start a timeline](https://significanthobbies.com/timeline/new): Create your journey (auth)
-- [Privacy](https://significanthobbies.com/privacy): Privacy policy
-- [Terms](https://significanthobbies.com/terms): Terms of use
+- [Home](https://significanthobbies.com/): Product landing
+- [Explore](https://significanthobbies.com/explore): Public hobby timelines
 
-## SEO guides
+## Machine surfaces
 
-- [What are significant hobbies?](https://significanthobbies.com/what-are-significant-hobbies): Concept explainer
-- [Hobbies for adults](https://significanthobbies.com/hobbies-for-adults): Starter guide
-- [Hobbies to try](https://significanthobbies.com/hobbies-to-try): Curated suggestions
+- [Agent catalog](https://significanthobbies.com/api/ai): JSON inventory of public surfaces
+- [Homepage markdown](https://significanthobbies.com/index.md): Product brief without JS
+- [This index](https://significanthobbies.com/llms.txt)
 
 ## Optional
 
-- [GitHub](https://github.com/Significant-Hobbies/significanthobbies): Source
-- [Foundry](https://sassmaker.com): Fleet context
+- [Foundry](https://sassmaker.com): Parent fleet showcase
