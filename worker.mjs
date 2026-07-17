@@ -56,13 +56,7 @@ const CACHEABLE_EXACT = new Set([
   '/privacy',
   '/terms',
 ]);
-const CACHEABLE_PREFIXES = [
-  '/tools',
-  '/blog',
-  '/hobbies',
-  '/bucket-lists',
-  '/hobbies/category',
-];
+const CACHEABLE_PREFIXES = ['/tools', '/blog', '/hobbies', '/bucket-lists', '/hobbies/category'];
 function isCacheableDocumentPath(pathname) {
   if (!pathname) return false;
   if (CACHEABLE_EXACT.has(pathname)) return true;
