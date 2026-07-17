@@ -1,5 +1,8 @@
 # SignificantHobbies
 
+**Product:** [significanthobbies.com](https://significanthobbies.com)
+
+
 Map your hobby history across life phases. Visualize insights. Share your journey. Discover what to explore next.
 
 ## Deployment & External Services
