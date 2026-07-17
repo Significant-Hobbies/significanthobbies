@@ -7,19 +7,6 @@
 - [Home](https://significanthobbies.com/): Product landing
 - [Explore](https://significanthobbies.com/explore): Public hobby timelines
 
-
-## Free tools & funnels
-
-- [Tools hub](https://significanthobbies.com/tools): Calculators and helpers
-- [Time calculator](https://significanthobbies.com/tools/time-calculator): Hobby time cost
-- [Cost calculator](https://significanthobbies.com/tools/cost-calculator): Hobby budget
-- [Find your hobby](https://significanthobbies.com/find-your-hobby): Guided discovery
-- [Get started](https://significanthobbies.com/get-started): Onboarding
-- [Compare hobbies](https://significanthobbies.com/compare): Side-by-side
-- [Starter kits](https://significanthobbies.com/starter-kits)
-- [Life bingo](https://significanthobbies.com/life-bingo)
-- [Bucket list ideas](https://significanthobbies.com/bucket-list-ideas)
-
 ## Machine surfaces
 
 - [Agent catalog](https://significanthobbies.com/api/ai): JSON inventory of public surfaces

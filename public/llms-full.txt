@@ -1,0 +1,43 @@
+# Significant Hobbies — full agent brief
+
+Life planner for private daily rituals and public living — hobbies, bucket lists, and side quests over time.
+
+## Index
+
+# Significant Hobbies
+
+Life planner: private daily rituals + public living (hobbies, bucket lists, side quests).
+
+## What it is
+
+- Hobby timelines and public exploration
+- Private rituals and progress tracking
+- Editorial content for agents at `/llms-full.txt`
+
+## Agent entrypoints
+
+- https://significanthobbies.com/llms.txt
+- https://significanthobbies.com/llms-full.txt
+- https://significanthobbies.com/api/ai
+- https://significanthobbies.com/index.md
+
+Auth-walled personal data is not agent-indexed.
+
+## Product links
+
+- Home: https://significanthobbies.com/ — Product landing
+- Explore: https://significanthobbies.com/explore — Public hobby timelines
+
+## Machine surfaces
+
+- https://significanthobbies.com/llms.txt
+- https://significanthobbies.com/llms-full.txt
+- https://significanthobbies.com/api/ai
+- https://significanthobbies.com/index.md
+- https://significanthobbies.com/sitemap.xml
+- https://significanthobbies.com/robots.txt
+
+## Contact / fleet
+
+- Fleet: https://sassmaker.com
+- Agent email for directory verification: sarthakagrawal@agentmail.to

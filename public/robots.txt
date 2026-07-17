@@ -12,3 +12,4 @@ Sitemap: https://significanthobbies.com/sitemap.xml
 Allow: /llms.txt
 Allow: /index.md
 Allow: /api/ai
+Allow: /llms-full.txt
