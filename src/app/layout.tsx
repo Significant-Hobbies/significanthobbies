@@ -52,8 +52,10 @@ export const metadata: Metadata = {
   },
   manifest: '/manifest.json',
   icons: [
-    { rel: 'icon', url: '/favicon.ico' },
+    { rel: 'icon', url: '/favicon.svg', type: 'image/svg+xml' },
     { rel: 'icon', url: '/icon.svg', type: 'image/svg+xml' },
+    { rel: 'icon', url: '/favicon.ico', sizes: 'any' },
+    { rel: 'apple-touch-icon', url: '/apple-touch-icon.png' },
   ],
   appleWebApp: {
     capable: true,
