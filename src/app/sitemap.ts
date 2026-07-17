@@ -143,6 +143,73 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: 'weekly',
       priority: 0.8,
     },
+    // Free tools + acquisition funnels
+    {
+      url: `${baseUrl}/tools`,
+      lastModified: now,
+      changeFrequency: 'weekly',
+      priority: 0.9,
+    },
+    {
+      url: `${baseUrl}/tools/time-calculator`,
+      lastModified: now,
+      changeFrequency: 'monthly',
+      priority: 0.85,
+    },
+    {
+      url: `${baseUrl}/tools/cost-calculator`,
+      lastModified: now,
+      changeFrequency: 'monthly',
+      priority: 0.85,
+    },
+    {
+      url: `${baseUrl}/find-your-hobby`,
+      lastModified: now,
+      changeFrequency: 'monthly',
+      priority: 0.9,
+    },
+    {
+      url: `${baseUrl}/get-started`,
+      lastModified: now,
+      changeFrequency: 'monthly',
+      priority: 0.85,
+    },
+    {
+      url: `${baseUrl}/about`,
+      lastModified: now,
+      changeFrequency: 'monthly',
+      priority: 0.6,
+    },
+    {
+      url: `${baseUrl}/search`,
+      lastModified: now,
+      changeFrequency: 'weekly',
+      priority: 0.55,
+    },
+    {
+      url: `${baseUrl}/hobbies/random`,
+      lastModified: now,
+      changeFrequency: 'weekly',
+      priority: 0.6,
+    },
+    {
+      url: `${baseUrl}/llms.txt`,
+      lastModified: now,
+      changeFrequency: 'weekly',
+      priority: 0.4,
+    },
+    {
+      url: `${baseUrl}/llms-full.txt`,
+      lastModified: now,
+      changeFrequency: 'weekly',
+      priority: 0.4,
+    },
+    {
+      url: `${baseUrl}/index.md`,
+      lastModified: now,
+      changeFrequency: 'weekly',
+      priority: 0.4,
+    },
     {
       url: `${baseUrl}/side-quests`,
       lastModified: now,
