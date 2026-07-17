@@ -1,52 +1,82 @@
 /**
- * Portable agent-edge handler — copy or generate into each product.
+ * Portable agent-edge handler (fleet GEO standard).
  * Spec: fleet-ops/docs/agent-indexing-standard.md
- *
- * Usage in worker.mjs (before openNext.fetch):
- *   import { handleAgentEdge } from './agent-edge.mjs'
- *   const agent = handleAgentEdge(request)
- *   if (agent) return agent
  */
 
-/** @type {{ name: string, url: string, llmsTxt: string, indexMd: string, catalog: object, llmsFull?: string | null }} */
 export const AGENT_SURFACE = {
-  "name": "Significant Hobbies",
-  "url": "https://significanthobbies.com",
-  "llmsTxt": "# Significant Hobbies\n\n> Life planner for private daily rituals and public living — hobbies, bucket lists, and side quests over time.\n\n## Product\n\n- [Home](https://significanthobbies.com/): Product landing\n- [Explore](https://significanthobbies.com/explore): Public hobby timelines\n\n## Machine surfaces\n\n- [Agent catalog](https://significanthobbies.com/api/ai): JSON inventory of public surfaces\n- [Homepage markdown](https://significanthobbies.com/index.md): Product brief without JS\n- [This index](https://significanthobbies.com/llms.txt)\n\n## Optional\n\n- [Foundry](https://sassmaker.com): Parent fleet showcase\n",
-  "indexMd": "# Significant Hobbies\n\nLife planner: private daily rituals + public living (hobbies, bucket lists, side quests).\n\n## What it is\n\n- Hobby timelines and public exploration\n- Private rituals and progress tracking\n- Editorial content for agents at `/llms-full.txt`\n\n## Agent entrypoints\n\n- https://significanthobbies.com/llms.txt\n- https://significanthobbies.com/llms-full.txt\n- https://significanthobbies.com/api/ai\n- https://significanthobbies.com/index.md\n\nAuth-walled personal data is not agent-indexed.\n",
-  "catalog": {
-    "name": "Significant Hobbies",
-    "version": "1",
-    "url": "https://significanthobbies.com",
-    "llms": "https://significanthobbies.com/llms.txt",
-    "llmsFull": "https://significanthobbies.com/llms-full.txt",
-    "sitemap": "https://significanthobbies.com/sitemap.xml",
-    "markdown": {
-      "suffix": ".md",
-      "negotiation": true
+  name: 'Significant Hobbies',
+  url: 'https://significanthobbies.com',
+  llmsTxt:
+    '# Significant Hobbies\n' +
+    '\n' +
+    '> Life planner for private daily rituals and public living — hobbies, bucket lists, and side quests over time.\n' +
+    '\n' +
+    '## Product\n' +
+    '\n' +
+    '- [Home](https://significanthobbies.com/): Product landing\n' +
+    '- [Explore](https://significanthobbies.com/explore): Public hobby timelines\n' +
+    '\n' +
+    '## Machine surfaces\n' +
+    '\n' +
+    '- [Agent catalog](https://significanthobbies.com/api/ai): JSON inventory of public surfaces\n' +
+    '- [Homepage markdown](https://significanthobbies.com/index.md): Product brief without JS\n' +
+    '- [This index](https://significanthobbies.com/llms.txt)\n' +
+    '\n' +
+    '## Optional\n' +
+    '\n' +
+    '- [Foundry](https://sassmaker.com): Parent fleet showcase\n',
+  indexMd:
+    '# Significant Hobbies\n' +
+    '\n' +
+    'Life planner: private daily rituals + public living (hobbies, bucket lists, side quests).\n' +
+    '\n' +
+    '## What it is\n' +
+    '\n' +
+    '- Hobby timelines and public exploration\n' +
+    '- Private rituals and progress tracking\n' +
+    '- Editorial content for agents at `/llms-full.txt`\n' +
+    '\n' +
+    '## Agent entrypoints\n' +
+    '\n' +
+    '- https://significanthobbies.com/llms.txt\n' +
+    '- https://significanthobbies.com/llms-full.txt\n' +
+    '- https://significanthobbies.com/api/ai\n' +
+    '- https://significanthobbies.com/index.md\n' +
+    '\n' +
+    'Auth-walled personal data is not agent-indexed.\n',
+  catalog: {
+    name: 'Significant Hobbies',
+    version: '1',
+    url: 'https://significanthobbies.com',
+    llms: 'https://significanthobbies.com/llms.txt',
+    llmsFull: 'https://significanthobbies.com/llms-full.txt',
+    sitemap: 'https://significanthobbies.com/sitemap.xml',
+    markdown: {
+      suffix: '.md',
+      negotiation: true,
     },
-    "surfaces": [
+    surfaces: [
       {
-        "id": "home",
-        "url": "https://significanthobbies.com/",
-        "md": "https://significanthobbies.com/index.md",
-        "kind": "static",
-        "description": "Product home"
+        id: 'home',
+        url: 'https://significanthobbies.com/',
+        md: 'https://significanthobbies.com/index.md',
+        kind: 'static',
+        description: 'Product home',
       },
       {
-        "id": "explore",
-        "url": "https://significanthobbies.com/explore",
-        "md": null,
-        "kind": "static",
-        "description": "Public hobby timelines"
-      }
+        id: 'explore',
+        url: 'https://significanthobbies.com/explore',
+        md: null,
+        kind: 'static',
+        description: 'Public hobby timelines',
+      },
     ],
-    "auth": {
-      "public": true,
-      "notes": "Auth-walled app routes are not agent-indexed unless listed here."
-    }
+    auth: {
+      public: true,
+      notes: 'Auth-walled app routes are not agent-indexed unless listed here.',
+    },
   },
-  "llmsFull": null
+  llmsFull: null,
 };
 
 /**
@@ -59,6 +89,7 @@ export function handleAgentEdge(request) {
   const path = url.pathname === '' ? '/' : url.pathname;
 
   if (path === '/llms.txt') {
+    if (AGENT_SURFACE.skipLlms) return null;
     return text(AGENT_SURFACE.llmsTxt, 'text/plain; charset=utf-8');
   }
   if (path === '/llms-full.txt' && AGENT_SURFACE.llmsFull) {
@@ -68,7 +99,6 @@ export function handleAgentEdge(request) {
     return text(AGENT_SURFACE.indexMd, 'text/markdown; charset=utf-8');
   }
   if (path === '/api/ai') {
-    // Re-bind origin so preview/custom domains stay correct
     const catalog = {
       ...AGENT_SURFACE.catalog,
       url: url.origin,
@@ -85,7 +115,6 @@ export function handleAgentEdge(request) {
     return json(catalog);
   }
 
-  // Homepage markdown negotiation
   if ((path === '/' || path === '') && wantsMarkdown(request)) {
     return text(AGENT_SURFACE.indexMd, 'text/markdown; charset=utf-8', {
       Link: '</index.md>; rel="alternate"; type="text/markdown"',
