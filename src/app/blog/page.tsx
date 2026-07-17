@@ -14,7 +14,7 @@ import type { BlogPost } from '~/lib/blog-posts';
 import { editorialArticles } from '~/lib/editorial-content';
 
 export const metadata: Metadata = {
-  title: 'The Hobby Journal',
+  title: 'Blog',
   description:
     'Thoughts on hobbies, identity, and living curiously. Articles on the psychology of leisure, rekindled passions, and finding what matters.',
 };

@@ -21,6 +21,7 @@ const NAV_LINKS = [
   { href: '/life-bingo', label: 'Life Bingo' },
   { href: '/side-quests', label: 'Side Quests' },
   { href: '/daily', label: 'Daily' },
+  { href: '/blog', label: 'Blog' },
 ];
 
 export async function Nav() {
