@@ -23,7 +23,7 @@ const OG_IMAGE = `${SITE_URL}/opengraph-image`;
         background: oklch(0.15 0.005 285);
         padding: 6rem 1.5rem;
       }
-      #lcp-shell h1 {
+      #lcp-shell .lcp-title {
         margin: 0;
         max-width: 42rem;
         font-size: clamp(2.5rem, 5vw, 4.5rem);
@@ -97,11 +97,11 @@ const OG_IMAGE = `${SITE_URL}/opengraph-image`;
     />
   </head>
   <body class="antialiased lcp-pending">
-    <div id="lcp-shell">
-      <h1>
+    <div id="lcp-shell" aria-hidden="true">
+      <div class="lcp-title">
         <span class="lcp-line">The hobbies that shaped you.</span>
         <span class="lcp-line lcp-muted">The life you still want to live.</span>
-      </h1>
+      </div>
     </div>
     <script is:inline>
       // Signed-in users skip the static landing — matches src/middleware.ts redirect.
