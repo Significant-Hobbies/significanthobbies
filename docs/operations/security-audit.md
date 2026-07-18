@@ -7,7 +7,7 @@ description: 2026-03-28 security audit snapshot for significanthobbies — secre
 
 > Snapshot from 2026-03-28. Action items at the bottom are still open unless
 > marked done. Live secret hygiene is operator-owned; agents must not read,
-> print, or commit secrets (see [`AGENTS.md`](../../AGENTS.md)).
+> print, or commit secrets (see the [agent bootloader](https://github.com/Significant-Hobbies/significanthobbies/blob/main/agents.md)).
 
 **Date**: 2026-03-28 | **Status**: Paused
 

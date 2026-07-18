@@ -16,9 +16,9 @@ timeline builder, bucket lists, side quests, SEO blog, and public user
 profiles. The mortality frame (life grid, manifesto) connects both dimensions.
 Deployed at `significanthobbies.com` on Cloudflare Workers via OpenNext.
 
-- **Live status:** [`STATUS.md`](../STATUS.md)
-- **Agent bootloader:** [`AGENTS.md`](../AGENTS.md)
-- **Public README:** [`README.md`](../README.md)
+- **Live status:** [`STATUS.md`](https://github.com/Significant-Hobbies/significanthobbies/blob/main/STATUS.md)
+- **Agent bootloader:** [`agents.md`](https://github.com/Significant-Hobbies/significanthobbies/blob/main/agents.md)
+- **Public README:** [`README.md`](https://github.com/Significant-Hobbies/significanthobbies/blob/main/README.md)
 
 ## Start here
 
