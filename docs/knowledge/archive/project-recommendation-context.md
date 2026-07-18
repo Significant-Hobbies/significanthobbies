@@ -1,4 +1,10 @@
-# Project Recommendation Context
+# Project Recommendation Context (archive)
+
+> **Archive snapshot.** A CodeVetter Repo Unpacked-inspired audit generated
+> 2026-06-06 for Starboard recommendations. Preserved as a historical record
+> of the project's feature map and stack inventory at that point. Current
+> product framing lives in [`../product/overview.md`](../../product/overview.md)
+> and current architecture in [`../architecture/overview.md`](../../architecture/overview.md).
 
 Generated: 2026-06-06T21:14:19.621Z (tooling note refreshed 2026-06-20)
 

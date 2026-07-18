@@ -1,4 +1,14 @@
+---
+title: Security audit
+description: 2026-03-28 security audit snapshot for significanthobbies — secrets, deployment, code security, and open action items.
+---
+
 # Security Audit — significanthobbies
+
+> Snapshot from 2026-03-28. Action items at the bottom are still open unless
+> marked done. Live secret hygiene is operator-owned; agents must not read,
+> print, or commit secrets (see [`AGENTS.md`](../../AGENTS.md)).
+
 **Date**: 2026-03-28 | **Status**: Paused
 
 ## Secrets in Git History

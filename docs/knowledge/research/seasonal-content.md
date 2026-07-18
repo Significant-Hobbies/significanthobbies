@@ -1,4 +1,12 @@
-# Seasonal & Time-Based Hobby Content Research
+---
+title: Seasonal & time-based hobby content research
+description: Seasonal hobby content calendar — feeds blog and SEO content planning. Durable reference.
+---
+
+# Seasonal & time-based hobby content research
+
+> Durable reference for seasonal content planning. Feeds blog and SEO content
+> scheduling.
 
 **Date**: 2026-03-15
 **Purpose**: Blog post ideas targeting seasonal search spikes for SignificantHobbies

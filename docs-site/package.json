@@ -1,0 +1,18 @@
+{
+  "name": "significanthobbies-docs",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Docs tooling only (Blume presentation layer). Markdown under ../docs/ is the source of truth; this package only renders it. Install here only to build/validate docs.",
+  "scripts": {
+    "build": "blume build",
+    "preview": "blume preview",
+    "dev": "blume dev"
+  },
+  "devDependencies": {
+    "blume": "0.8.0"
+  },
+  "engines": {
+    "node": ">=22.12"
+  }
+}

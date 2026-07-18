@@ -1,4 +1,11 @@
-# Side Quests, Badges & Timeline Pins
+# Side Quests, Badges & Timeline Pins (archive)
+
+> **Archive snapshot.** The 2026-03-06 design for side quests, badges, and
+> timeline pins. Shipped and now reflected in `src/lib/side-quests.ts` (50
+> static quests) and the `UserQuest`/`Arc` tables. Preserved as the design
+> record. Current state in
+> [`../product/overview.md`](../../product/overview.md) and
+> [`../architecture/data-model.md`](../../architecture/data-model.md).
 
 ## Overview
 

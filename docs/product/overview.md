@@ -1,4 +1,15 @@
-# Product
+---
+title: Product overview
+description: SignificantHobbies — a life planner with two dimensions (Daily + Living). Product thesis, users, brand, design principles, and the mortality frame.
+---
+
+# Product overview
+
+> A life planner with two dimensions. **Daily** (private): one ritual page with
+> AM/PM prompts, habit check-ins, and a compulsory journal entry. **Living**
+> (opt-in public): hobby discovery, timeline builder, bucket lists, side
+> quests, SEO blog, and public user profiles. The mortality frame (life grid,
+> manifesto) connects both dimensions.
 
 ## Register
 
@@ -43,3 +54,40 @@ Emotional goal: users should feel seen, inspired, and gently nudged — not trac
 - Reduced motion support on all animations (globals.css already has prefers-reduced-motion fallbacks).
 - Lumi is described via aria-label; decorative instances are aria-hidden.
 - Color is never the only signal — category tags use both emoji and text labels.
+
+## Two dimensions
+
+The product merged with `today-little-log` on 2026-07-02 (see
+[`knowledge/archive/merge-plan-tll.md`](../knowledge/archive/merge-plan-tll.md)).
+The merge produced one coherent thesis:
+
+- **Daily (private):** one `/daily` ritual page — AM/PM prompts, habit
+  check-ins (simple, no scoring), compulsory journal entry at the bottom.
+  Structurally private: no visibility field, no public API, no sharing.
+- **Living (opt-in public):** hobbies, bucket lists, side quests, timelines,
+  public profiles. Opt-in public per item.
+- **The journal is the bridge.** You write about practicing your hobby, and
+  that connects to your timeline and commitments.
+- **The mortality frame connects both.** A finite life is the reason daily
+  practice and life aspirations both matter. The life grid (`src/lib/mortality.ts`)
+  and the manifesto (`/manifesto`) make this concrete.
+
+### What we deliberately do not do
+
+- No scoring, no streaks on daily practice. "We don't shame you for missed
+  days." Habits are simple check-ins.
+- No broad social network, paid coaching, marketplace, or creator monetization.
+- No large SEO expansion until the core hobby journey loop sharpens.
+- No coherent XP/badge progression system until follow-through value is proven.
+
+## Discovery — the quiz is primary
+
+The hobby quiz at `/find-your-hobby` is the single primary discovery UX
+(chosen 2026-07-03). The other three discovery surfaces — taxonomy directory
+(`/hobbies`), community explore (`/explore`), famous journeys (`/journeys`) —
+are hidden from the homepage/nav/footer but their code and routes are intact;
+they remain reachable via deep links, SEO pages, and cross-links from the quiz
+result. Re-surface only if the 7-day PostHog funnel underperforms.
+
+See [`discovery-funnel.md`](discovery-funnel.md) for the funnel measurement
+plan.

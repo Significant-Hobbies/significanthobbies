@@ -26,6 +26,9 @@
     "db:seed": "tsx prisma/seed.ts",
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
+    "docs:check": "node scripts/docs-check-links.mjs",
+    "docs:build": "pnpm --filter significanthobbies-docs build",
+    "docs:preview": "pnpm --filter significanthobbies-docs preview",
     "prepare": "husky"
   },
   "dependencies": {

@@ -1,113 +1,118 @@
-# agents.md — significanthobbies
+# AGENTS.md — significanthobbies
 
-## Shared Fleet Standard
+> Concise agent bootloader. Depth lives in [`docs/`](docs/index.md). Live state
+> in [`STATUS.md`](STATUS.md). Full map at [`docs/index.md`](docs/index.md).
 
-Also read and follow the shared fleet-level agent standard at `../AGENTS.md`. Treat this repository as owned product code: protect production stability, keep changes scoped, verify work, and record durable follow-up tasks when something remains incomplete or blocked.
+## Shared fleet standard
 
-## Purpose
-A life planner with two dimensions. **Daily** (private): one ritual page with AM/PM prompts, habit check-ins, and a compulsory journal entry. **Living** (opt-in public): hobby discovery, timeline builder, bucket lists, side quests, SEO blog, and public user profiles. The mortality frame (life grid, manifesto) connects both dimensions.
+Also read and follow the shared fleet-level agent standard at `../AGENTS.md`.
+Treat this repository as owned product code: protect production stability,
+keep changes scoped, verify work, and record durable follow-up tasks when
+something remains incomplete or blocked.
+
+## What this is
+
+A life planner with two dimensions. **Daily** (private): one ritual page with
+AM/PM prompts, habit check-ins, and a compulsory journal entry. **Living**
+(opt-in public): hobby discovery, timeline builder, bucket lists, side quests,
+SEO blog, and public user profiles. The mortality frame (life grid, manifesto)
+connects both dimensions. Deployed at `significanthobbies.com` on Cloudflare
+Workers via OpenNext.
 
 ## Stack
-- Framework: Next.js 16 (App Router, React 19)
-- Language: TypeScript (strict)
-- Styling: Tailwind CSS v4 + shadcn/ui
-- DB: Turso (libSQL) via Drizzle ORM. Local dev: `file:./dev.db`
-- Auth: better-auth (Google OAuth)
-- Testing: Vitest (unit, co-located in `src/lib/*.test.ts`), Playwright (e2e in `e2e/`)
-- Deploy: Cloudflare Workers (`significanthobbies`) via @opennextjs/cloudflare
-- Package manager: pnpm
 
-## Repo structure
-```
-src/
-  app/
-    page.tsx              # Landing
-    setup/                # Username setup (first login)
-    timeline/             # Timeline builder + viewer
-    journeys/             # Famous celebrity hobby journeys
-    side-quests/          # Quest board / gamification
-    commitments/          # Multi-day practice commitments + daily proof stamps
-    explore/              # Aggregate trends
-    hobbies/              # Hobby directory + detail pages
-    blog/                 # SEO blog content
-    dashboard/            # User dashboard (life grid + commitments + daily summary)
-    daily/                # Daily ritual (AM/PM prompts, habits, journal)
-    manifesto/            # Mortality frame as mission
-    find-your-hobby/      # Quiz / recommendation flow
-    compare/              # Hobby comparison
-    u/[username]/         # Public user profiles
-  components/
-    timeline-builder/     # Drag-drop timeline editor (dnd-kit)
-    timeline-view/        # Read-only timeline display
-    commitments/          # Start-commitment + log-stamp forms + commitment card
-    daily-ritual.tsx      # Daily ritual client (AM/PM, habits, journal)
-    life-grid.tsx         # "Life in weeks" mortality grid (4000 weeks)
-    ui/                   # shadcn primitives
-  db/schema.ts            # Drizzle schema (source of truth) — includes daily ritual tables (habits, habit_logs, journal_entries, daily_checkins)
-  lib/
-    actions/              # Server actions ("use server", Zod-validated)
-    actions/daily.ts      # Daily ritual server actions (habits, journal, checkins)
-    commitments.ts        # Streak math, proof-type inference, streak badges (pure)
-    mortality.ts          # Weeks-lived + life-grid math from birthYear (pure)
-    hobbies.ts            # 60-concept hobby taxonomy (static TS array)
-    recommendations.ts    # Hobby suggestion logic
-    insights.ts           # Timeline insight computations
-    personality.ts        # Quiz personality scoring
-    side-quests.ts        # Quest definitions (50 micro-adventures, static)
-    famous-journeys.ts    # Celebrity journey data (static)
-    badges.ts             # Badge evaluation logic
-  server/auth/            # better-auth config
-e2e/                      # Playwright specs
-prisma/seed.ts            # Hobby catalog seed (uses Drizzle now — legacy dir name only)
-drizzle.config.ts         # Turso dialect
-```
+- **Framework:** Next.js 16 (App Router, React 19) + TypeScript (strict)
+- **Styling:** Tailwind CSS v4 + shadcn/ui
+- **DB:** Turso (libSQL) via Drizzle ORM. Local dev: `file:./dev.db`
+- **Auth:** better-auth (Google OAuth)
+- **Testing:** Vitest (unit, co-located in `src/lib/*.test.ts`), Playwright (e2e in `e2e/`)
+- **Deploy:** Cloudflare Workers (`significanthobbies`) via `@opennextjs/cloudflare`
+- **Package manager:** pnpm (workspace: `.` + `landing-astro` + `docs-site`)
 
-## Key commands
+## Essential commands
+
 ```bash
-pnpm dev              # next dev (localhost:3000)
-pnpm build            # next build
-pnpm test             # vitest run (unit)
-pnpm test:e2e         # playwright test
-pnpm db:push          # drizzle-kit push (apply schema to DB)
-pnpm db:generate      # drizzle-kit generate (migration files)
-pnpm db:studio        # drizzle-kit studio
-pnpm db:seed          # tsx prisma/seed.ts (hobby catalog seed)
+pnpm install
+cp .env.example .env          # fill in DATABASE_URL, BETTER_AUTH_SECRET, GOOGLE_CLIENT_*
+pnpm db:push                  # apply Drizzle schema to local SQLite (dev.db)
+pnpm db:seed                  # seed hobby catalog (tsx prisma/seed.ts — legacy dir name)
+pnpm dev                      # next dev on localhost:3000
+
+pnpm typecheck                # tsc --noEmit
+pnpm test                     # vitest run
+pnpm test:coverage            # vitest with v8 coverage thresholds on core src/lib
+pnpm test:e2e                 # playwright (assumes pnpm dev on :3000)
+pnpm lint                     # biome check .
+pnpm build                    # next build + inline critical CSS
+
+pnpm docs:check               # markdown link + frontmatter validation (no deps)
+pnpm docs:build               # blume build (presentation layer only) → docs-site/dist/
 ```
 
-## Architecture notes
-- **`prisma/` directory is legacy naming** — seed script now uses Drizzle. `src/db/schema.ts` is the source of truth.
-- **JSON-in-SQLite pattern**: structured data (phases, completedQuests, earnedBadges) stored as JSON strings in text columns, parsed/serialized in server actions.
-- **60-concept hobby taxonomy**: static TS array in `src/lib/hobbies.ts`. Recommendation engine uses quiz-based personality scoring.
-- **Gamification**: 50 curated side-quests (micro-adventures), XP, badges, quest progress tracked in DB. `use-quest-progress.ts` hook manages state.
-- **Commitments & stamps**: a commitment is an N-day (default 30) goal to show up daily for a hobby. Each calendar day the user logs a "stamp" — a proof URL (YouTube, photo, any URL) that they practiced. One stamp per day per commitment, enforced by a unique index on `(commitmentId, dayDate)`. Streak math (`src/lib/commitments.ts`) is pure and tested; streak badges (7/30/100/365-day) are merged into `earnedBadges` by the `logStamp` server action. The "life in weeks" mortality grid (`src/lib/mortality.ts` + `LifeGrid` component) lights up weeks that contain stamps.
-- **Drag-drop timeline** via dnd-kit. Timeline export via `html-to-image` (client-side PNG).
-- **Guest mode**: timeline builder works without sign-in (URL state). Sign-in required for persistence.
-- **Public profiles** at `/u/[username]`.
-- **SEO-first**: many routes are static/ISR pages targeting hobby keywords. Full sitemap at `src/app/sitemap.ts`.
-- **SaaS Maker**: feedback, testimonials, changelog-widget live. (SaaS Maker analytics removed — PostHog is the analytics path.)
-- Pre-push hook runs lint.
-- **Deep Study theme**: saturated deep-teal body (OKLCH), cream ink, gold (Lumi) accents. Fraunces serif for display headings via `next/font`. Magic UI motion primitives (`motion` package) in `src/components/magicui/`. All colors are CSS tokens — avoid hardcoded stone/emerald/white.
-- **Images**: curated Unsplash photos (free license) downloaded and optimized to WebP via `scripts/optimize-images.mjs` (uses `sharp`). Hero photo in `landing-astro/public/hero/`, category headers in `public/categories/`. Category image helpers in `src/lib/category-images.ts`.
+Full command list in `package.json`. Schema changes: edit `src/db/schema.ts`,
+`pnpm db:push` (dev) or `pnpm db:generate` (migration). **Do not run prod
+migrations or deploys.**
 
-<!-- FLEET-GUIDANCE:START -->
+## Critical constraints
 
-## Fleet Guidance
+- **Do not deploy, migrate, release, or rotate credentials.** Production
+  deploys are manual (`workflow_dispatch`) and operator-owned.
+- **Do not read, print, or commit secrets** (`.env`, `.env.local`, `.dev.vars`,
+  Turso tokens, OAuth secrets). Local secret hygiene is operator-owned. See
+  [`docs/operations/security-audit.md`](docs/operations/security-audit.md).
+- **`prisma/` is a legacy directory name.** The seed script uses Drizzle.
+  `src/db/schema.ts` is the source of truth. Do not reintroduce Prisma.
+- **No scoring on daily practice.** Habits are simple check-ins. Commitments
+  have streaks; the daily ritual does not. See
+  [`docs/architecture/decisions.md`](docs/architecture/decisions.md) A4.
+- **The hobby quiz is the single primary discovery UX.** Do not re-surface
+  `/hobbies`, `/explore`, `/journeys` from the homepage/nav/footer until the
+  7-day PostHog funnel readout is in. See
+  [`docs/product/discovery-funnel.md`](docs/product/discovery-funnel.md).
+- **Astro owns anon `GET /`.** Do not add per-request dynamic content to the
+  homepage without rebuilding the Astro overlay. See
+  [`docs/architecture/decisions.md`](docs/architecture/decisions.md) A1.
+- **Pre-push hook** runs `pnpm lint` + a secret-pattern scan. Do not weaken
+  the secret patterns; exclude false-positive file patterns instead.
+- **Markdown in `docs/` is the source of truth.** Blume only renders it. See
+  [`docs/maintenance.md`](docs/maintenance.md).
 
-### Adding Tasks
-- Add durable work items in SaaS Maker Cockpit Tasks when the task affects product behavior, deployment, user feedback, or fleet maintenance.
-- Include the project slug, a concise title, acceptance criteria, priority/status, and links to relevant code, issues, traces, or dashboards.
-- If task discovery starts locally in an editor or agent session, mirror the durable next step back into SaaS Maker before handoff.
+## Documentation navigation
 
-### Using SaaS Maker
-- Treat SaaS Maker as the system of record for project metadata, feedback, tasks, analytics, testimonials, changelog, and fleet visibility.
-- Prefer API-first workflows through `fnd api`, the SDK, or widgets instead of one-off scripts when interacting with SaaS Maker features.
-- Keep this agent file aligned with the project record when operating rules, integrations, or deployment conventions change.
+| If you want to… | Read |
+| --- | --- |
+| Live status / blockers / next steps | [`STATUS.md`](STATUS.md) |
+| Product thesis, two dimensions, brand | [`docs/product/overview.md`](docs/product/overview.md) |
+| Discovery funnel (quiz-as-primary) | [`docs/product/discovery-funnel.md`](docs/product/discovery-funnel.md) |
+| Runtime shape (Worker, Astro overlay, storage) | [`docs/architecture/overview.md`](docs/architecture/overview.md) |
+| Durable architectural decisions + the why | [`docs/architecture/decisions.md`](docs/architecture/decisions.md) |
+| Data model + invariants enforced by indexes | [`docs/architecture/data-model.md`](docs/architecture/data-model.md) |
+| Dev workflow (setup, schema, CI, build) | [`docs/development/workflows.md`](docs/development/workflows.md) |
+| Testing (Vitest, Playwright, coverage) | [`docs/development/testing.md`](docs/development/testing.md) |
+| Operations runbook (deploy, cache, failures) | [`docs/operations/runbook.md`](docs/operations/runbook.md) |
+| Scheduled jobs (smoke, weekly, CI, docs) | [`docs/operations/jobs.md`](docs/operations/jobs.md) |
+| Security audit | [`docs/operations/security-audit.md`](docs/operations/security-audit.md) |
+| Durable learnings | [`docs/knowledge/learnings.md`](docs/knowledge/learnings.md) |
+| Failed approaches / resolved traps | [`docs/knowledge/failed-approaches.md`](docs/knowledge/failed-approaches.md) |
+| How to edit this docs system | [`docs/maintenance.md`](docs/maintenance.md) |
+| Full docs map | [`docs/index.md`](docs/index.md) |
 
-### Free AI First
-- Prefer free/local AI paths for routine development and analysis: the `free-ai` gateway, local models, provider free tiers, and cached context.
-- Escalate to paid models only when complexity, correctness risk, or missing capability justifies the cost.
-- Note any paid-AI use in the task or handoff when it materially affects cost, reproducibility, or future maintenance.
+## Documentation-maintenance rules
 
-<!-- FLEET-GUIDANCE:END -->
+1. **One fact, one home.** If a fact lives in code, link to the code. If a
+   fact has a canonical doc, edit that doc — do not add a second home.
+2. **Do not duplicate easily-discoverable facts** (route lists, script names,
+   binding config, schema fields). Link to the code instead.
+3. **Do not invent information.** Mark unresolved questions in `STATUS.md`.
+4. **Preserve snapshots.** `docs/knowledge/archive/` files are snapshots — do
+   not rewrite their bodies to "update" them. Update the current doc and let
+   the archive stay a snapshot.
+5. **Prefer `git mv`** when reorganizing so rename history is preserved.
+6. **Validate before committing docs changes:** `pnpm docs:check`.
+7. Full rules in [`docs/maintenance.md`](docs/maintenance.md).
 
 ## Active context
+
+See [`STATUS.md`](STATUS.md) for the current objective, active work, blockers,
+and next steps. Do not start new discovery or progression features before the
+7-day quiz-funnel readout.

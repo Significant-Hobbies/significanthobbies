@@ -67,3 +67,12 @@ cache.bin
 screenshots/
 scripts/screenshot-daily.mjs
 scripts/screenshot-review.mjs
+
+# Blume docs build output (presentation layer only; markdown in docs/ is source of truth)
+docs-site/dist/
+docs-site/.blume/
+docs-site/node_modules/
+
+# Local agent logs / scratch (never commit agent session artifacts)
+.agent-logs/
+*.agent.log
