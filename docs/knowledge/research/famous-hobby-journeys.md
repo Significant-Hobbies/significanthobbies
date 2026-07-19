@@ -1,4 +1,12 @@
-# Famous Hobby Journeys Research - Volume 2
+---
+title: Famous hobby journeys research (v2)
+description: Research data for celebrity hobby journeys — feeds src/lib/famous-journeys.ts. Durable reference, not a snapshot.
+---
+
+# Famous hobby journeys research (v2)
+
+> Durable reference data that feeds `src/lib/famous-journeys.ts` and the
+> `/journeys` route. v1 is preserved as `famous-hobby-journeys-v1.md`.
 
 **Date:** 2026-03-15
 **Purpose:** Research for Significant Hobbies - 20 additional famous people with documented hobby journeys

@@ -1,4 +1,9 @@
-# significanthobbies — PROJECT STATUS
+# significanthobbies — PROJECT STATUS (snapshot 2026-07-13)
+
+> **Archive snapshot.** The detailed live-status log was preserved here when
+> `STATUS.md` was introduced as the short live-status view. Do not edit this
+> body to "update" it — update [`STATUS.md`](../../../STATUS.md) instead. This
+> snapshot is kept for historical reference and reachable via the Blume build.
 
 Last updated: 2026-07-13
 

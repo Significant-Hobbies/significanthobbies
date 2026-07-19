@@ -1,4 +1,12 @@
-# Hobby Blog Keyword Research & Content Plan
+---
+title: Hobby blog keyword research & content plan
+description: SEO keyword research for the blog — feeds src/lib/blog-posts.ts and the /blog routes. Durable reference for content planning.
+---
+
+# Hobby blog keyword research & content plan
+
+> Durable reference for blog content planning. Feeds `src/lib/blog-posts.ts`
+> and the `/blog` routes.
 
 **Date:** 2026-03-15
 **Purpose:** Identify high-volume, searchable blog topics related to hobbies for organic traffic acquisition.

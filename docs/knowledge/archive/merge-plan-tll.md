@@ -1,4 +1,11 @@
-# Merge Plan — today-little-log × significanthobbies
+# Merge Plan — today-little-log × significanthobbies (archive)
+
+> **Archive snapshot.** The TLL → significanthobbies merge completed
+> 2026-07-02 (see `project-status-2026-07-13.md` timeline). This plan is
+> preserved as the durable record of what came over, what was dropped, and the
+> open questions at merge time. The merged daily ritual is documented in
+> [`../product/overview.md`](../../product/overview.md) and
+> [`../architecture/data-model.md`](../../architecture/data-model.md).
 
 Last updated: 2026-07-02
 

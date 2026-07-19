@@ -1,3 +1,8 @@
+---
+title: New things — study queue
+description: Short stubs for non-standard tech in this repo — JSON-in-SQLite, Astro overlay, dnd-kit, html-to-image, personality scoring, life-phase analysis. 3-5 lines each.
+---
+
 # new-things — study queue
 
 Short stubs for non-standard tech in this repo. 3–5 lines each. Fill `Why here:`

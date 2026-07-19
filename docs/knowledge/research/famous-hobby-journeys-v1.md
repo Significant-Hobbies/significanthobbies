@@ -1,4 +1,12 @@
-# Famous Hobby Journeys Research
+---
+title: Famous hobby journeys research (v1)
+description: Initial research data for celebrity hobby journeys — feeds src/lib/famous-journeys.ts. Superseded by v2 but preserved as the base set.
+---
+
+# Famous hobby journeys research (v1)
+
+> Initial research set. Superseded by `famous-hobby-journeys.md` (v2) but
+> preserved as the base 15-journey set that v2 adds to.
 
 Research compiled: 2026-03-15
 Purpose: Content pages for Significant Hobbies -- real hobby timelines of famous people showing how hobbies shaped who they became.
