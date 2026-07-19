@@ -63,15 +63,18 @@ node scripts/docs-check-links.mjs
 # or
 pnpm docs:check
 
-# Build the docs site with Blume (presentation layer only)
-cd docs-site && pnpm install --frozen-lockfile
+# Build the docs site with Blume (presentation layer only).
+# No docs-site lockfile is committed yet, so use a plain install (the CI
+# workflow does the same). Switch to --frozen-lockfile once one is committed.
+pnpm install --filter significanthobbies-docs...
 pnpm docs:build     # → docs-site/dist/
 pnpm docs:preview
 ```
 
-CI (`.github/workflows/docs.yml`) runs `docs:check` and `docs:build` on PRs
-touching `docs/`, `STATUS.md`, `AGENTS.md`, `README.md`, `blume.config.ts`,
-`package.json`, `scripts/docs-check-links.mjs`, or the workflow itself.
+CI (`.github/workflows/docs.yml`) runs the link check then the Blume build on
+pushes to `main` and PRs touching `docs/`, `STATUS.md`, `AGENTS.md`,
+`README.md`, `docs-site/`, `scripts/docs-check-links.mjs`, or the workflow
+itself.
 
 ## Blume
 

@@ -17,7 +17,7 @@ yourself after learning; never invent rationale.
 ## Astro overlay on Next.js (run_worker_first)
 - What: Landing page is Astro, main app is Next.js — deployed as an overlay with `run_worker_first` bypass
 - Why here: TBD
-- Gotcha (from code): `package.json:9` — build script includes `node scripts/run-overlay-astro-landing.mjs` — overlays Astro build onto Next.js output; Astro owns `GET /`
+- Gotcha (from code): `scripts/cf-build.mjs` runs `node scripts/run-overlay-astro-landing.mjs --strict` (invoked by `pnpm cf:build`, not plain `pnpm build`) — overlays the Astro build onto `.open-next/assets/`; Astro owns `GET /`
 - Source: https://docs.astro.build/en/guides/integrations-guide/
 
 ## Personality-based recommendation scoring

@@ -39,10 +39,12 @@ description: GitHub Actions cron schedules for significanthobbies — production
 
 - **Workflow:** `.github/workflows/docs.yml` (added in this consolidation)
 - **Trigger:** push to `main` or PR touching `docs/**`, `STATUS.md`,
-  `AGENTS.md`, `README.md`, `blume.config.ts`, `package.json`,
+  `AGENTS.md`, `README.md`, `docs-site/**`,
   `scripts/docs-check-links.mjs`, or the workflow itself.
-- **What:** `node scripts/docs-check-links.mjs` (link + frontmatter validation,
-  no network) and `pnpm run docs:build` (Blume build). See
+- **What:** two jobs. `docs-check` runs `node scripts/docs-check-links.mjs`
+  (link + frontmatter validation, no network, Node built-ins only).
+  `docs-build` then installs the `significanthobbies-docs` workspace and runs
+  `pnpm run build` in `docs-site/` (Blume build). See
   [`maintenance.md`](../maintenance.md).
 
 ## Deploy — manual

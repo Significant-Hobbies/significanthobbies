@@ -105,12 +105,19 @@ React tree on every request.
 
 **Why:** This is what makes the Beasties-inlined critical CSS actually reach
 the browser. Without an incremental cache the runtime re-renders from
-`page.js` and the inlined CSS is lost. The app is fully prerendered (no runtime
-revalidation), so this is the correct override.
+`page.js` and the inlined CSS is lost. Most routes are prerendered at build
+time, so serving prerendered HTML from the assets binding is the correct
+default.
 
-**Constraint:** If a route ever needs runtime revalidation (ISR with
-`revalidate`), this override will serve stale prerendered HTML instead. Do not
-add `revalidate` to a route without revisiting this config. See
+**Constraint:** A few routes opt into runtime behaviour and are the exception,
+not the rule: `src/app/hobbies/[hobby]/page.tsx` and `src/app/explore/page.tsx`
+use `export const revalidate` (ISR — 3600s and 300s respectively),
+`src/app/sitemap.ts` uses `revalidate = 3600`, and `src/app/look-back/page.tsx`
+and `src/app/timelines/recent/page.tsx` use `export const dynamic =
+'force-dynamic'`. With the static-assets incremental cache, ISR routes are
+served from the last build output rather than revalidating on the OpenNext
+runtime — verify a new `revalidate` route actually updates before relying on
+it, and grep `src/app` for `revalidate`/`dynamic` for the current set. See
 [`operations/runbook.md`](../operations/runbook.md) for the cache-purge
 procedure.
 

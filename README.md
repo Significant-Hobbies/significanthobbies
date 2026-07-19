@@ -12,7 +12,7 @@ Map your hobby history across life phases. Visualize insights. Share your journe
 | Hosting | Cloudflare Workers (`significanthobbies`) via `@opennextjs/cloudflare`; routes `significanthobbies.com` + `www.significanthobbies.com`. PRs deploy a `significanthobbies-preview` env on `*.workers.dev`. |
 | Database | Turso (libSQL); Drizzle ORM |
 | Auth | better-auth + Google OAuth |
-| Analytics | PostHog (via `local posthog-js wrapper`) |
+| Analytics | PostHog via an isomorphic wrapper (`src/lib/analytics.ts`) — `posthog-js` in the browser, direct capture-API `fetch` in server actions |
 | CI/CD | GitHub Actions (`.github/workflows/deploy.yml`) — manual production deploy from `main` |
 
 ## Quick Start
@@ -76,17 +76,27 @@ pnpm test:e2e:ui     # playwright UI mode
 
 | Route | Description |
 |-------|-------------|
-| `/` | Landing page |
+A representative slice — `src/app/` is the source of truth for the full route
+set (Daily ritual, bucket lists, commitments, side quests, tools, SEO
+landing pages, etc.).
+
+| Route | Description |
+|-------|-------------|
+| `/` | Landing page (static Astro overlay for anon `GET /`) |
 | `/login` | Google sign in |
 | `/setup` | Set your username (first login) |
+| `/dashboard` | Signed-in home (anon `/` redirects here when authed) |
+| `/daily` | Daily ritual — AM/PM prompts, habit check-ins, journal (private) |
 | `/timeline/new` | Build a new timeline |
-| `/timeline/[id]` | View your timeline with insights |
+| `/timeline/[id]` | View/own your timeline with insights |
 | `/timeline/[id]/edit` | Edit your timeline |
-| `/t/[slug]` | Shared timeline (public/unlisted) |
 | `/u/[username]` | User profile + hobby portfolio |
-| `/hobbies` | Browse hobby categories |
-| `/hobbies/[hobby]` | Hobby detail + who does it |
-| `/explore` | Aggregate trends (coming soon) |
+| `/u/[username]/[slug]` | Shared timeline (public/unlisted) |
+| `/b/[slug]` | Shared bucket list (public/unlisted) |
+| `/find-your-hobby` | Hobby quiz (primary discovery UX) |
+| `/hobbies` | Browse hobby categories (hidden from nav; SEO/deep-link) |
+| `/hobbies/[hobby]` | Hobby detail |
+| `/explore` | Public hobby timelines (hidden from nav; SEO/deep-link) |
 
 ## Stack
 
@@ -95,14 +105,14 @@ pnpm test:e2e:ui     # playwright UI mode
 - **Auth**: better-auth (Google OAuth)
 - **UI**: Tailwind CSS v4 + shadcn/ui + @dnd-kit for drag/drop
 - **Export**: html-to-image (client-side PNG)
-- **Testing**: Vitest + Playwright (e2e), Lighthouse CI
+- **Testing**: Vitest (unit) + Playwright (e2e, with `@axe-core/playwright` for accessibility)
 
 ## Features
 
 - **Timeline builder** — drag/drop phases, add hobbies, auto-save for guests
 - **Insights** — rekindled hobbies, persistence tracking, phase-by-phase changes
 - **Export** — beautiful PNG card + JSON export
-- **Profile** — `/@username` portfolio of your public timelines
+- **Profile** — `/u/[username]` portfolio of your public timelines
 - **Discovery** — personalized hobby suggestions + directory
 - **Guest mode** — build and export without an account
 

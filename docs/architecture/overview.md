@@ -59,7 +59,11 @@ See [`decisions.md`](decisions.md) A1 for why this split exists.
 `open-next.config.ts` uses `staticAssetsIncrementalCache` so prerendered HTML
 (including Beasties-inlined CSS) is served from the assets binding instead of
 re-rendering the React tree on every request. Without this override the
-runtime re-renders from `page.js` and the inlined CSS is lost.
+runtime re-renders from `page.js` and the inlined CSS is lost. Most routes are
+prerendered at build time; a few opt into ISR (`revalidate`) or
+`force-dynamic` — see [`decisions.md`](decisions.md) A6 for the exceptions and
+the caveat that ISR routes are served from the last build output under this
+cache.
 
 ## Preview environment
 
