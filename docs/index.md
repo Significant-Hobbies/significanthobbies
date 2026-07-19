@@ -26,6 +26,7 @@ Deployed at `significanthobbies.com` on Cloudflare Workers via OpenNext.
 | --- | --- |
 | Understand what this product is and is not | [`product/overview.md`](product/overview.md) |
 | Understand the discovery funnel and why the quiz is primary | [`product/discovery-funnel.md`](product/discovery-funnel.md) |
+| See the monthly life-review feature | [`product/trajectory.md`](product/trajectory.md) |
 | See the runtime shape (Worker, Astro overlay, storage) | [`architecture/overview.md`](architecture/overview.md) |
 | Understand the non-obvious architectural choices | [`architecture/decisions.md`](architecture/decisions.md) |
 | See the data model and the invariants enforced by indexes | [`architecture/data-model.md`](architecture/data-model.md) |
@@ -43,6 +44,12 @@ Deployed at `significanthobbies.com` on Cloudflare Workers via OpenNext.
   brand, design principles, what we deliberately do not do
 - [`product/discovery-funnel.md`](product/discovery-funnel.md) — quiz-as-primary
   decision, PostHog 3-step funnel, hidden surfaces, decision rule
+- [`product/trajectory.md`](product/trajectory.md) — monthly life-review
+  across 4 buckets; free-form ideals, no score, eras make
+  goalpost-moving visible
+- [`product/trajectory-build-plan.md`](product/trajectory-build-plan.md) —
+  concrete build plan for the Trajectory feature: schema, routes,
+  components, ritual integration, testing, rollout
 
 ### Architecture
 

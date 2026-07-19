@@ -518,6 +518,84 @@ export const arcs = sqliteTable(
   (table) => [index('Arc_userId_status_idx').on(table.userId, table.status)]
 );
 
+// ─── Trajectory (monthly life-review) ──────────────────────────────────────
+// Private monthly life-review across 4 fixed buckets (Health, Finance,
+// Knowledge, Relationships). Users author a free-form ideal per bucket and
+// reflect monthly against it. No score — the gap between current and ideal
+// is the score; the app never computes one. See
+// docs/product/trajectory.md for the design and
+// docs/product/trajectory-build-plan.md for the build plan.
+//
+// An "era" is a stretch of time during which the user held a particular
+// ideal for a bucket. Changing the ideal closes the current era (with a
+// user-declared outcome: completed | abandoned) and opens a new one. This
+// makes goalpost-moving visible on the graph — the thesis of the feature.
+
+export const trajectoryEras = sqliteTable(
+  'TrajectoryEra',
+  {
+    id: text('id')
+      .primaryKey()
+      .$defaultFn(() => createId()),
+    userId: text('userId')
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
+    // 'health' | 'finance' | 'knowledge' | 'relationships' — fixed for v1.
+    bucket: text('bucket').notNull(),
+    // Free-form ideal text (1-3 sentences). Stable for the era's lifetime.
+    idealText: text('idealText').notNull(),
+    // 'active' | 'completed' | 'abandoned'
+    status: text('status').notNull().default('active'),
+    openedAt: integer('openedAt', { mode: 'timestamp' }).notNull().default(sql`(unixepoch())`),
+    closedAt: integer('closedAt', { mode: 'timestamp' }),
+    createdAt: integer('createdAt', { mode: 'timestamp' }).notNull().default(sql`(unixepoch())`),
+    updatedAt: integer('updatedAt', { mode: 'timestamp' }).notNull().default(sql`(unixepoch())`),
+  },
+  (table) => [
+    index('TrajectoryEra_userId_idx').on(table.userId),
+    // Query index for "all eras for this user, this bucket, in status order."
+    // The one-active-era-per-bucket invariant is enforced in the server
+    // action (setIdeal closes the current active era in a transaction before
+    // opening a new one) — a partial unique index on `status='active'` isn't
+    // cleanly expressible in Drizzle's SQLite API, and a non-partial unique
+    // index on (userId, bucket, status) would wrongly block multiple
+    // completed/abandoned eras for the same bucket.
+    index('TrajectoryEra_userId_bucket_status_idx').on(table.userId, table.bucket, table.status),
+  ]
+);
+
+export const trajectoryEntries = sqliteTable(
+  'TrajectoryEntry',
+  {
+    id: text('id')
+      .primaryKey()
+      .$defaultFn(() => createId()),
+    eraId: text('eraId')
+      .notNull()
+      .references(() => trajectoryEras.id, { onDelete: 'cascade' }),
+    userId: text('userId')
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
+    // Denormalized from era for cheap per-bucket queries.
+    bucket: text('bucket').notNull(),
+    // Calendar month in YYYY-MM (user-local)
+    monthKey: text('monthKey').notNull(),
+    // Free-form monthly reflection
+    reflection: text('reflection').notNull().default(''),
+    // JSON array: [{ "label": "runway months", "value": 7 }, ...]
+    // Free-form per design choice #3. Empty array if no numeric inputs.
+    numbers: text('numbers').notNull().default('[]'),
+    createdAt: integer('createdAt', { mode: 'timestamp' }).notNull().default(sql`(unixepoch())`),
+    updatedAt: integer('updatedAt', { mode: 'timestamp' }).notNull().default(sql`(unixepoch())`),
+  },
+  (table) => [
+    // One entry per era per month — prevents duplicate monthly reflections.
+    uniqueIndex('TrajectoryEntry_eraId_monthKey_key').on(table.eraId, table.monthKey),
+    index('TrajectoryEntry_userId_idx').on(table.userId),
+    index('TrajectoryEntry_userId_bucket_idx').on(table.userId, table.bucket),
+  ]
+);
+
 // Simple cuid-like ID generator using nanoid pattern
 function createId(): string {
   const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';

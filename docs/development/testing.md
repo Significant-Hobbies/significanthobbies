@@ -30,12 +30,14 @@ Tested modules (non-exhaustive — see `src/lib/*.test.ts` for the full list):
 - `hobby-roadmap.test.ts` — roadmap generation
 - `rediscovery.test.ts` — dropped-hobby rediscovery
 - `accountability-circles.test.ts` — accountability circle logic
+- `trajectory.test.ts` — month-end window logic, chart series extraction,
+  era summaries, JSON number parsing
 - `json-ld.test.ts` (in `src/components/`) — JSON-LD structured data
 
 The pure modules (`commitments.ts`, `mortality.ts`, `personality.ts`,
-`insights.ts`, `bucket-list-insights.ts`, `life-bingo.ts`) are the
-highest-value test targets — they have no DB/auth dependencies and are the
-core product logic.
+`insights.ts`, `bucket-list-insights.ts`, `life-bingo.ts`, `trajectory.ts`)
+are the highest-value test targets — they have no DB/auth dependencies and
+are the core product logic.
 
 ## E2E tests — Playwright
 
@@ -48,6 +50,7 @@ In `e2e/`. Run with `pnpm test:e2e` (assumes `pnpm dev` is running on :3000) or
   retired-video redirects, landmarks, axe accessibility, overflow at
   320/768/1440 widths
 - `daily.spec.ts` — daily ritual
+- `trajectory.spec.ts` — Trajectory redirect + nav visibility
 - `life-bingo.spec.ts` — bucket lists + Bingo presentation
 - `quiz.spec.ts` — hobby quiz
 - `hobbies.spec.ts`, `explore.spec.ts`, `journeys.spec.ts` — discovery surfaces

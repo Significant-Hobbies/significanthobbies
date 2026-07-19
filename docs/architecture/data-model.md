@@ -70,6 +70,17 @@ sourceTimelineId, sourceBucketItemId, arcId, status). The unique index
 duplicate active quests. `Arc` (title, type, sourceBucketItemId,
 sourceTimelineId, status) groups quests into life chapters.
 
+### Trajectory (monthly life-review)
+
+`TrajectoryEra` (userId, bucket, idealText, status `active` | `completed` |
+`abandoned`, openedAt, closedAt) and `TrajectoryEntry` (eraId, userId,
+bucket, monthKey `YYYY-MM`, reflection, numbers as JSON). Private only — no
+visibility fields. The one-active-era-per-bucket invariant is enforced in
+the `setIdeal` server action (transaction closes the current active era
+before opening a new one) — a partial unique index on `status='active'`
+isn't cleanly expressible in Drizzle's SQLite API. See
+[`product/trajectory.md`](../product/trajectory.md) for the design.
+
 ## JSON-in-SQLite pattern
 
 Structured fields stored as JSON strings in `text` columns:
@@ -79,6 +90,7 @@ Structured fields stored as JSON strings in `text` columns:
 | `User` | `onboardingData`, `completedQuests`, `earnedBadges` |
 | `Timeline` | `phases`, `pins`, `versions` |
 | `BucketList` | `intentions`, `items` |
+| `TrajectoryEntry` | `numbers` (array of `{ label, value }`) |
 
 Parsed/serialized in server actions (`src/lib/actions/`). Default `'[]'` for
 array fields. See [`decisions.md`](decisions.md) A2 for the constraint: no
@@ -95,6 +107,7 @@ indexed queries on nested fields.
 | `Like_userId_timelineId_key` | `Like` | `(userId, timelineId)` | One like per user per timeline |
 | `Follow_followerId_followingId_key` | `Follow` | `(followerId, followingId)` | One follow per pair |
 | `UserQuest_userId_questId_active_key` | `UserQuest` | `(userId, questId, status)` | No duplicate active quests |
+| `TrajectoryEntry_eraId_monthKey_key` | `TrajectoryEntry` | `(eraId, monthKey)` | One reflection per era per month |
 
 ## Migrations
 

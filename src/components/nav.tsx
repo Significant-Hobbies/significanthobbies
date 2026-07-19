@@ -21,6 +21,7 @@ const NAV_LINKS = [
   { href: '/life-bingo', label: 'Life Bingo' },
   { href: '/side-quests', label: 'Side Quests' },
   { href: '/daily', label: 'Daily' },
+  { href: '/trajectory', label: 'Trajectory' },
   { href: '/blog', label: 'Blog' },
 ];
 
@@ -82,6 +83,11 @@ export async function Nav() {
                       Commitments
                     </Link>
                   </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link href="/trajectory" prefetch={false}>
+                      Trajectory
+                    </Link>
+                  </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <NavSignOut />
                 </DropdownMenuContent>
@@ -132,6 +138,11 @@ export async function Nav() {
                 <DropdownMenuItem asChild>
                   <Link href="/commitments" prefetch={false}>
                     Commitments
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link href="/trajectory" prefetch={false}>
+                    Trajectory
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />

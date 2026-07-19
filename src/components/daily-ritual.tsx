@@ -1,13 +1,15 @@
 'use client';
 
 import { useState, useTransition } from 'react';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { Check, Flame, Plus, Sparkles, Sunrise, Sunset, Trash2 } from 'lucide-react';
+import { Check, Flame, Plus, Sparkles, Sunrise, Sunset, Trash2, X } from 'lucide-react';
 
 import { GradientMesh, SpotlightCard } from '~/components/aceternity';
 import { CircularProgress } from '~/components/dashboard/circular-progress';
 import { Button } from '~/components/ui/button';
 import { computeStreak, computeWeeklyProgress } from '~/lib/habit-utils';
+import { BUCKET_LABELS, type TrajectoryBucket } from '~/lib/trajectory';
 import { cn } from '~/lib/utils';
 
 interface Habit {
@@ -54,6 +56,12 @@ interface Actions {
   saveDailyCheckin: (dayDate: string, amCompleted: boolean, pmCompleted: boolean) => Promise<void>;
 }
 
+interface TrajectoryNudge {
+  active: boolean;
+  targetMonth: string | null;
+  bucketsPending: TrajectoryBucket[];
+}
+
 interface Props {
   firstName: string;
   today: string;
@@ -64,6 +72,7 @@ interface Props {
   allHabitLogs: HabitLog[];
   journalEntry: JournalEntry | null;
   checkin: Checkin | null;
+  trajectoryNudge?: TrajectoryNudge;
   actions: Actions;
 }
 
@@ -93,6 +102,7 @@ export function DailyRitual({
   allHabitLogs,
   journalEntry: initialJournal,
   checkin: initialCheckin,
+  trajectoryNudge,
   actions,
 }: Props) {
   const [habits, setHabits] = useState(initialHabits);
@@ -105,6 +115,7 @@ export function DailyRitual({
   const [newHabitFreq, setNewHabitFreq] = useState('daily');
   const [newHabitIcon, setNewHabitIcon] = useState('');
   const [showHabitManager, setShowHabitManager] = useState(false);
+  const [nudgeDismissed, setNudgeDismissed] = useState(false);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [, startTransition] = useTransition();
@@ -216,6 +227,42 @@ export function DailyRitual({
           )}
         </div>
       </section>
+
+      {/* ─── Trajectory month-end nudge ─── */}
+      {trajectoryNudge?.active && !nudgeDismissed && (
+        <section
+          className="relative overflow-hidden rounded-xl border border-primary/25 bg-primary/[0.06] px-5 py-4"
+          data-testid="trajectory-nudge"
+        >
+          <div className="flex items-start justify-between gap-3">
+            <div className="space-y-1.5">
+              <p className="font-serif text-sm font-medium text-foreground">
+                Month-end — a quiet moment to look back
+              </p>
+              <p className="text-xs leading-relaxed text-muted-foreground">
+                {trajectoryNudge.targetMonth} still open for{' '}
+                {trajectoryNudge.bucketsPending.map((b) => BUCKET_LABELS[b]).join(', ')}. The gap is
+                the whole point.
+              </p>
+              <Link
+                href="/trajectory"
+                prefetch={false}
+                className="inline-block pt-1 text-xs font-medium text-primary underline decoration-primary/40 underline-offset-4 hover:decoration-primary"
+              >
+                Open Trajectory →
+              </Link>
+            </div>
+            <button
+              type="button"
+              onClick={() => setNudgeDismissed(true)}
+              aria-label="Dismiss nudge"
+              className="shrink-0 rounded-md p-1 text-muted-foreground hover:bg-background/60 hover:text-foreground transition-colors"
+            >
+              <X className="h-4 w-4" />
+            </button>
+          </div>
+        </section>
+      )}
 
       {/* ─── AM/PM check-in rings ─── */}
       <div className="flex items-center justify-center gap-12 rounded-xl border border-border bg-card p-6 shadow-soft">

@@ -63,6 +63,14 @@ is the bridge between daily practice and life aspirations.
   the hidden surfaces need to be re-surfaced? (Blocked on PostHog readout.)
 - Should the content-flywheel canonical package document be populated before
   or after the branch merge? (Pending topic selection.)
+- **Trajectory feature** (built 2026-07-19): private monthly life-review
+  across Health/Finance/Knowledge/Relationships. Design in
+  [`docs/product/trajectory.md`](docs/product/trajectory.md), build plan in
+  [`docs/product/trajectory-build-plan.md`](docs/product/trajectory-build-plan.md).
+  Shipped to local dev: schema applied, `/trajectory` route + components,
+  daily ritual month-end nudge, nav link, unit tests (35 passing, coverage
+  above thresholds), e2e spec. Not yet deployed — production deploy is
+  operator-owned.
 
 ## Deploy fingerprint
 

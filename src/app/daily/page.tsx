@@ -16,6 +16,7 @@ import {
   saveJournalEntry,
   toggleHabitLog,
 } from '~/lib/actions/daily';
+import { getActiveMonthEndNudge } from '~/lib/actions/trajectory';
 import { birthDateFromYear, buildLifeGrid } from '~/lib/mortality';
 import { getServerAuthSession } from '~/server/auth';
 import { db } from '~/server/db';
@@ -32,7 +33,7 @@ export default async function DailyPage() {
   const today = new Date().toISOString().slice(0, 10);
   const isMorning = new Date().getHours() < 12;
 
-  const [userHabits, habitLogs, allHabitLogs, journalEntry, checkin, profile, me] =
+  const [userHabits, habitLogs, allHabitLogs, journalEntry, checkin, profile, me, trajectoryNudge] =
     await Promise.all([
       getHabits(),
       getHabitLogsForDate(today),
@@ -44,6 +45,7 @@ export default async function DailyPage() {
         where: eq(users.id, session.user.id),
         columns: { birthYear: true },
       }),
+      getActiveMonthEndNudge(),
     ]);
 
   const firstName = profile?.name?.split(' ')[0] ?? session.user.name?.split(' ')[0] ?? 'there';
@@ -63,6 +65,7 @@ export default async function DailyPage() {
       allHabitLogs={allHabitLogs}
       journalEntry={journalEntry}
       checkin={checkin}
+      trajectoryNudge={trajectoryNudge}
       actions={{
         createHabit,
         deleteHabit,

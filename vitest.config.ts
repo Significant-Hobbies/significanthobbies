@@ -25,6 +25,7 @@ export default defineConfig({
         'src/lib/recommendations.ts',
         'src/lib/rediscovery.ts',
         'src/lib/slug.ts',
+        'src/lib/trajectory.ts',
       ],
       exclude: [
         '**/*.test.ts',
