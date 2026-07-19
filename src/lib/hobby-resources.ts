@@ -1,4 +1,4 @@
-export type ResourceType = 'curated' | 'sponsored' | 'own';
+type ResourceType = 'curated' | 'sponsored' | 'own';
 
 export type HobbyResource = {
   name: string;

@@ -6,8 +6,6 @@ import { users } from '~/db/schema';
 import { auth } from '~/lib/auth';
 import { db } from '~/server/db';
 
-export { auth };
-
 export type AppSession = {
   user: {
     id: string;

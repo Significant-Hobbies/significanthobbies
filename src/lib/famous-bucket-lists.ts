@@ -1,4 +1,4 @@
-export type BucketItemStatus = 'planned' | 'in_progress' | 'done';
+type BucketItemStatus = 'planned' | 'in_progress' | 'done';
 
 export type BucketItemCategory =
   | 'travel'
@@ -8,7 +8,7 @@ export type BucketItemCategory =
   | 'social'
   | 'humanitarian';
 
-export type FamousBucketItem = {
+type FamousBucketItem = {
   title: string;
   description: string;
   category: BucketItemCategory;
@@ -16,7 +16,7 @@ export type FamousBucketItem = {
   completedNote?: string;
 };
 
-export type FamousBucketSource = {
+type FamousBucketSource = {
   label: string; // e.g. "CNN Politics, Feb 2017"
   url: string; // actual verified URL
 };

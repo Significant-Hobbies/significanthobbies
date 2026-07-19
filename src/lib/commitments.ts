@@ -1,8 +1,6 @@
 // Commitments & stamps — pure logic (no DB). Server actions live in
 // src/lib/actions/commitments.ts and call into these helpers.
 
-export type CommitmentStatus = 'active' | 'completed' | 'abandoned';
-
 export type ProofType = 'youtube' | 'video' | 'image' | 'url' | 'text';
 
 export type StampRow = {
@@ -11,15 +9,6 @@ export type StampRow = {
   proofUrl: string;
   proofType: string;
   note: string | null;
-};
-
-export type CommitmentRow = {
-  id: string;
-  hobbyName: string;
-  goalDays: number;
-  status: string;
-  startDate: Date;
-  stamps: StampRow[];
 };
 
 export type StreakInfo = {
@@ -159,7 +148,7 @@ export function isCommitmentComplete(stamps: StampRow[], goalDays: number): bool
 // live separately from evaluateBadges() and are merged into earnedBadges by
 // the stamp server action.
 
-export const STREAK_BADGES: { id: string; threshold: number }[] = [
+const STREAK_BADGES: { id: string; threshold: number }[] = [
   { id: 'showed-up', threshold: 7 },
   { id: 'month-of-marks', threshold: 30 },
   { id: 'iron-streak', threshold: 100 },

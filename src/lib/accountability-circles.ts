@@ -76,7 +76,7 @@ export function buildCirclePlan(
   };
 }
 
-export function buildCheckInPrompt(circle: HobbyCircle, quests: SideQuest[]): string {
+function buildCheckInPrompt(circle: HobbyCircle, quests: SideQuest[]): string {
   const focusLabel =
     circle.focus === 'balanced'
       ? 'balanced hobbies'
