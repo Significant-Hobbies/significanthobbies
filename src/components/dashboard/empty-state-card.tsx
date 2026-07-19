@@ -1,6 +1,6 @@
 'use client';
 
-import { type LucideIcon, ArrowRight } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 import type { ReactNode } from 'react';
 
@@ -8,8 +8,10 @@ import { SpotlightCard } from '~/components/aceternity';
 import { cn } from '~/lib/utils';
 
 interface Props {
-  /** Lucide icon rendered large as the visual element. */
-  icon: LucideIcon;
+  /** Icon element rendered large as the visual element. Pass a JSX element
+   *  (e.g. `<Sparkles />`) rather than the component itself — RSC cannot
+   *  serialize component references from Server to Client. */
+  icon: ReactNode;
   /** Headline — the thing to do. */
   title: string;
   /** Supporting copy in muted-foreground. */
@@ -28,7 +30,7 @@ interface Props {
  * the user has no timelines, no commitments, or no habits.
  */
 export function EmptyStateCard({
-  icon: Icon,
+  icon,
   title,
   description,
   ctaLabel,
@@ -52,7 +54,7 @@ export function EmptyStateCard({
           }}
         />
         <div className="relative flex h-16 w-16 items-center justify-center rounded-2xl border border-primary/20 bg-primary/5">
-          <Icon className="h-7 w-7 text-primary" />
+          {icon}
         </div>
       </div>
 

@@ -229,7 +229,7 @@ export default async function DashboardPage() {
 
             {timelineList.length === 0 ? (
               <EmptyStateCard
-                icon={Sparkles}
+                icon={<Sparkles className="h-7 w-7 text-primary" />}
                 title="No timelines yet"
                 description="Sketch the arc of a hobby — phases, milestones, and proof. Your first timeline takes about two minutes."
                 ctaLabel="Build your first timeline"
