@@ -57,12 +57,12 @@ export function SaaSMakerFeedback() {
   );
 }
 
-export function SaaSMakerTestimonials() {
+function SaaSMakerTestimonials() {
   if (!API_KEY) return null;
   return <TestimonialWall projectId={API_KEY} apiBaseUrl={API_BASE} theme="auto" layout="grid" />;
 }
 
-export function SaaSMakerTestimonialsSection() {
+function SaaSMakerTestimonialsSection() {
   const status = useSaaSMakerContentStatus('/v1/testimonials?limit=6');
 
   if (status !== 'ready') return null;
@@ -79,12 +79,12 @@ export function SaaSMakerTestimonialsSection() {
   );
 }
 
-export function SaaSMakerChangelog() {
+function SaaSMakerChangelog() {
   if (!API_KEY) return null;
   return <ChangelogTimeline projectId={API_KEY} apiBaseUrl={API_BASE} theme="auto" />;
 }
 
-export function SaaSMakerChangelogSection() {
+function SaaSMakerChangelogSection() {
   const status = useSaaSMakerContentStatus('/v1/changelog?limit=10');
 
   if (status !== 'ready') return null;

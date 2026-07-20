@@ -96,18 +96,3 @@ export function Whale({
     </svg>
   );
 }
-
-export function WhaleWordmark({
-  className = '',
-  onDark = false,
-}: {
-  className?: string;
-  onDark?: boolean;
-}) {
-  return (
-    <span className={`inline-flex items-center gap-1.5 font-bold tracking-tight ${className}`}>
-      <Whale size={30} onDark={onDark} />
-      <span>Significant Hobbies</span>
-    </span>
-  );
-}

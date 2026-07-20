@@ -2,7 +2,7 @@
 
 import { useMemo } from 'react';
 
-export interface ChartSeries {
+interface ChartSeries {
   label: string;
   points: { monthKey: string; value: number }[];
 }

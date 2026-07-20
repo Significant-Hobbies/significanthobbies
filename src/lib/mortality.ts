@@ -4,9 +4,9 @@
 
 // ≈ 76.9 years. The canonical "4,000 weeks" figure from Oliver Burkeman.
 export const LIFE_EXPECTANCY_WEEKS = 4000;
-export const WEEKS_PER_YEAR = 52;
+const WEEKS_PER_YEAR = 52;
 
-export type LifeGridCell = {
+type LifeGridCell = {
   weekIndex: number; // 0-indexed from birth
   lived: boolean;
   // Whether this week falls within a commitment the user was actively

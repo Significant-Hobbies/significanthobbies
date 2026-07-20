@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 import contentDocumentJson from '~/content/content-packages.json';
 
-export const SITE_URL = 'https://significanthobbies.com';
+const SITE_URL = 'https://significanthobbies.com';
 export const RECEIPT_VERSION = 'significant-content-receipt/v1' as const;
 export const EXPORT_VERSION = 'significant-content-reels/v1' as const;
 
@@ -25,7 +25,7 @@ const metricsSchema = z.object({
   engagementRate: z.number().nonnegative().nullable(),
 });
 
-export const receiptSchema = z
+const receiptSchema = z
   .object({
     schema: z.literal(RECEIPT_VERSION),
     receiptId: z.string().regex(/^scr_[a-f0-9]{64}$/),
@@ -89,7 +89,7 @@ const storedMetricsSchema = metricsSchema.extend({
   collectedAt: z.iso.datetime(),
 });
 
-export const reelVariantSchema = z.object({
+const reelVariantSchema = z.object({
   id: z.string().min(1),
   state: z.enum(lifecycleOrder),
   format: z.string().min(1),
@@ -125,7 +125,7 @@ export const reelVariantSchema = z.object({
   metrics: z.array(storedMetricsSchema).default([]),
 });
 
-export const contentPackageSchema = z.object({
+const contentPackageSchema = z.object({
   id: z.string().min(1),
   revision: z.number().int().positive(),
   state: z.enum(['draft', 'ready', 'published', 'archived']),
@@ -157,7 +157,7 @@ export const contentPackageSchema = z.object({
   reels: z.array(reelVariantSchema),
 });
 
-export const contentDocumentSchema = z
+const contentDocumentSchema = z
   .object({ schemaVersion: z.literal(1), packages: z.array(contentPackageSchema) })
   .superRefine((document, ctx) => {
     const ids = new Set<string>();
@@ -301,10 +301,9 @@ function addIssue(ctx: z.RefinementCtx, packageIndex: number, field: string, mes
 
 export type ContentDocument = z.infer<typeof contentDocumentSchema>;
 export type ContentPackage = z.infer<typeof contentPackageSchema>;
-export type ReelVariant = z.infer<typeof reelVariantSchema>;
-export type ContentReceipt = z.infer<typeof receiptSchema>;
+type ContentReceipt = z.infer<typeof receiptSchema>;
 
-export function normalizeText(value: string): string {
+function normalizeText(value: string): string {
   return value
     .normalize('NFKC')
     .trim()
@@ -313,7 +312,7 @@ export function normalizeText(value: string): string {
     .trim();
 }
 
-export function normalizeHook(value: string): string {
+function normalizeHook(value: string): string {
   return normalizeText(value).replace(/^(watch|wait for it)\s+/, '');
 }
 
@@ -338,7 +337,7 @@ export function parseContentDocument(input: unknown): ContentDocument {
   return result.data;
 }
 
-export const contentDocument = parseContentDocument(contentDocumentJson);
+const contentDocument = parseContentDocument(contentDocumentJson);
 
 export function getPublishedPackages(
   document: ContentDocument = contentDocument
@@ -385,7 +384,7 @@ export function exportPackage(pkg: ContentPackage, exportedAt: string) {
   };
 }
 
-export function receiptKey(receipt: ContentReceipt): string {
+function receiptKey(receipt: ContentReceipt): string {
   return receipt.receiptId;
 }
 

@@ -15,10 +15,6 @@ const CATEGORY_IMAGE_SLUGS: Record<string, string> = {
   Social: 'social',
 };
 
-export function categoryImageSlug(name: string): string | null {
-  return CATEGORY_IMAGE_SLUGS[name] ?? null;
-}
-
 export function categoryImageSrc(name: string, width: number = 800): string | null {
   const slug = CATEGORY_IMAGE_SLUGS[name];
   if (!slug) return null;

@@ -1,13 +1,9 @@
 export { AnimatedTabs } from './animated-tabs';
 export { BorderBeam } from './border-beam';
-export { BentoCard, BentoGrid } from './bento-grid';
 export { CardHoverEffect } from './card-hover-effect';
 export { FadeIn, StaggerContainer, StaggerItem } from './fade-in';
 export { GradientMesh } from './gradient-mesh';
-export { FloatingNavbar } from './floating-navbar';
 export { GridBackground } from './grid-background';
 export { NumberTicker } from './number-ticker';
-export { Skeleton, SkeletonCard } from './skeleton';
-export { Spotlight } from './spotlight';
 export { SpotlightCard } from './spotlight-card';
 export { TextGenerateEffect } from './text-generate';

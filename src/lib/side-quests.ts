@@ -603,10 +603,6 @@ export function getQuestById(id: string): SideQuest | undefined {
   return SIDE_QUESTS.find((q) => q.id === id);
 }
 
-export function getQuestsByCategory(category: QuestCategory): SideQuest[] {
-  return SIDE_QUESTS.filter((q) => q.category === category);
-}
-
 export type QuestFilters = {
   vibe?: 'solo' | 'social' | 'either';
   energy?: 'chill' | 'active' | 'creative';

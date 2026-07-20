@@ -1,4 +1,4 @@
-export const LIFE_BINGO_DRAFT_VERSION = 1 as const;
+const LIFE_BINGO_DRAFT_VERSION = 1 as const;
 export const LIFE_BINGO_STORAGE_KEY = 'significant-hobbies:bucket-list-draft:v1';
 
 export const BINGO_INTENTIONS = [
@@ -33,8 +33,8 @@ export type BingoBoldness = 'cozy' | 'brave' | 'bold';
 export type BingoBoardSize = 3 | 5;
 export type BingoVisibility = 'PRIVATE' | 'UNLISTED' | 'PUBLIC';
 export type BucketListView = 'LIST' | 'BINGO';
-export type BingoEffort = 'tiny' | 'medium' | 'bold';
-export type BingoTone = 'moss' | 'clay' | 'marigold' | 'sky' | 'rose' | 'ink';
+type BingoEffort = 'tiny' | 'medium' | 'bold';
+type BingoTone = 'moss' | 'clay' | 'marigold' | 'sky' | 'rose' | 'ink';
 
 export type BucketListItem = {
   id: string;

@@ -1,6 +1,4 @@
-import { SIDE_QUESTS } from './side-quests';
-
-export type BadgeCategory = 'quest' | 'category' | 'hobby' | 'timeline' | 'secret';
+type BadgeCategory = 'quest' | 'category' | 'hobby' | 'timeline' | 'secret';
 
 export type Badge = {
   id: string;
@@ -203,59 +201,4 @@ export const BADGES: Badge[] = [
 
 export function getBadgeById(id: string): Badge | undefined {
   return BADGES.find((b) => b.id === id);
-}
-
-/**
- * Evaluate which badges a user has earned based on completed quest IDs.
- * Note: hobby/timeline badges (rekindler, storyteller, polymath, deep-diver, full-circle)
- * require external data beyond quest completion and are not evaluated here.
- */
-export function evaluateBadges(completedQuestIds: string[]): string[] {
-  // Deduplicate IDs
-  const uniqueIds = Array.from(new Set(completedQuestIds));
-  const completed = new Set(completedQuestIds);
-  const earned: string[] = [];
-
-  const count = uniqueIds.length;
-
-  // Quest progression badges
-  if (count >= 1) earned.push('first-steps');
-  if (count >= 5) earned.push('curious-cat');
-  if (count >= 10) earned.push('adventurer');
-  if (count >= 50) earned.push('quest-master');
-
-  // Count completions per category
-  const categoryCounts: Record<string, number> = {};
-  for (const qId of uniqueIds) {
-    const quest = SIDE_QUESTS.find((q) => q.id === qId);
-    if (quest) {
-      categoryCounts[quest.category] = (categoryCounts[quest.category] || 0) + 1;
-    }
-  }
-
-  // Renaissance Soul — quests in all 6 categories
-  const categoriesHit = Object.keys(categoryCounts).length;
-  if (categoriesHit >= 6) earned.push('renaissance-soul');
-
-  // Category mastery badges (3+ in a category)
-  const categoryBadgeMap: Record<string, string> = {
-    sensory: 'sensor',
-    creative: 'maker',
-    culinary: 'chefs-kiss',
-    social: 'people-person',
-    exploration: 'wanderer',
-    mindful: 'zen-master',
-  };
-
-  for (const [cat, badgeId] of Object.entries(categoryBadgeMap)) {
-    if ((categoryCounts[cat] || 0) >= 3) {
-      earned.push(badgeId);
-    }
-  }
-
-  // Secret badges (quest-based)
-  if (completed.has('sq-03')) earned.push('night-owl');
-  if (completed.has('sq-44')) earned.push('unplugged');
-
-  return earned;
 }

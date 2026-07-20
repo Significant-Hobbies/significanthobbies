@@ -1,7 +1,7 @@
 import { getCategoryForHobby, HOBBY_CATEGORIES } from './hobbies';
 import type { Phase } from './types';
 
-export type Archetype = {
+type Archetype = {
   name: string;
   emoji: string;
   description: string;

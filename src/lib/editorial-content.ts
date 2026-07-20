@@ -15,7 +15,7 @@ function packageBlocks(pkg: ContentPackage): ContentBlock[] {
   ]);
 }
 
-export function packageToArticle(pkg: ContentPackage): EditorialArticle {
+function packageToArticle(pkg: ContentPackage): EditorialArticle {
   return {
     slug: pkg.slug,
     title: pkg.title,

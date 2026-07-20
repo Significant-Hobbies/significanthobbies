@@ -8,7 +8,7 @@
 //   4. User starts the quest → it appears on their dashboard
 //   5. User completes the quest → a pin is auto-added to their timeline (the loop closes)
 
-import { SIDE_QUESTS, type SideQuest } from './side-quests';
+import { SIDE_QUESTS } from './side-quests';
 import { findRediscoveryOpportunities, type RediscoveryItem } from './rediscovery';
 import type { Phase } from './types';
 
@@ -193,18 +193,4 @@ export function generateRediscoveryQuests(
       lastSeenPhase: item.lastSeenPhase,
     };
   });
-}
-
-// ─── Match static quests to timeline hobbies ────────────────────────────────
-// Find static side-quests whose relatedHobbies overlap with the user's
-// timeline hobbies. These can be suggested alongside rediscovery quests.
-
-export function suggestStaticQuestsForTimeline(phases: Phase[]): SideQuest[] {
-  const timelineHobbies = new Set(
-    phases.flatMap((p) => p.hobbies.map((h) => h.name.toLowerCase()))
-  );
-
-  return SIDE_QUESTS.filter((q) =>
-    q.relatedHobbies.some((h) => timelineHobbies.has(h.toLowerCase()))
-  );
 }
