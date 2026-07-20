@@ -10,12 +10,13 @@ import {
   getDailyCheckin,
   getHabits,
   getHabitLogsForDate,
-  getJournalEntry,
+  getJournalEntriesForRange,
   getUserProfile,
   saveDailyCheckin,
   saveJournalEntry,
   toggleHabitLog,
 } from '~/lib/actions/daily';
+import { buildJournalDateWindow } from '~/lib/journal';
 import { getActiveMonthEndNudge } from '~/lib/actions/trajectory';
 import { birthDateFromYear, buildLifeGrid } from '~/lib/mortality';
 import { getServerAuthSession } from '~/server/auth';
@@ -32,21 +33,32 @@ export default async function DailyPage() {
 
   const today = new Date().toISOString().slice(0, 10);
   const isMorning = new Date().getHours() < 12;
+  const journalDateWindow = buildJournalDateWindow(today);
 
-  const [userHabits, habitLogs, allHabitLogs, journalEntry, checkin, profile, me, trajectoryNudge] =
-    await Promise.all([
-      getHabits(),
-      getHabitLogsForDate(today),
-      getAllHabitLogs(),
-      getJournalEntry(today),
-      getDailyCheckin(today),
-      getUserProfile(),
-      db.query.users.findFirst({
-        where: eq(users.id, session.user.id),
-        columns: { birthYear: true },
-      }),
-      getActiveMonthEndNudge(),
-    ]);
+  const [
+    userHabits,
+    habitLogs,
+    allHabitLogs,
+    journalEntries,
+    checkin,
+    profile,
+    me,
+    trajectoryNudge,
+  ] = await Promise.all([
+    getHabits(),
+    getHabitLogsForDate(today),
+    getAllHabitLogs(),
+    getJournalEntriesForRange(journalDateWindow[0]!, today),
+    getDailyCheckin(today),
+    getUserProfile(),
+    db.query.users.findFirst({
+      where: eq(users.id, session.user.id),
+      columns: { birthYear: true },
+    }),
+    getActiveMonthEndNudge(),
+  ]);
+
+  const journalEntry = journalEntries.find((entry) => entry.dayDate === today) ?? null;
 
   const firstName = profile?.name?.split(' ')[0] ?? session.user.name?.split(' ')[0] ?? 'there';
 
@@ -64,6 +76,7 @@ export default async function DailyPage() {
       habitLogs={habitLogs}
       allHabitLogs={allHabitLogs}
       journalEntry={journalEntry}
+      journalEntries={journalEntries}
       checkin={checkin}
       trajectoryNudge={trajectoryNudge}
       actions={{

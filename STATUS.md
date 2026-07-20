@@ -6,7 +6,7 @@
 > change. Do not let deploy-version snapshots accumulate here — put those in
 > the archive.
 
-Last updated: 2026-07-18
+Last updated: 2026-07-20
 
 ## Objective
 
@@ -23,6 +23,10 @@ is the bridge between daily practice and life aspirations.
 - **Two dimensions shipped:** Daily ritual (`/daily` — AM/PM prompts, habits,
   compulsory journal) and Living (timelines, bucket lists, side quests,
   public profiles, SEO blog, discovery quiz).
+- **Journal reader built locally:** `/daily` now pairs today's AM/PM writing
+  with a private, read-only 21-day date rail. The rail communicates only
+  whether writing exists — no totals, streaks, scores, or entry-length
+  comparisons. No schema change; production deployment remains operator-owned.
 - **Discovery:** the hobby quiz (`/find-your-hobby`) is the single primary
   discovery UX (2026-07-03). The other three surfaces (`/hobbies`, `/explore`,
   `/journeys`) are hidden from homepage/nav/footer; code intact, reachable

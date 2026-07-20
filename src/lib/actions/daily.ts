@@ -1,6 +1,6 @@
 'use server';
 
-import { and, eq } from 'drizzle-orm';
+import { and, asc, eq, gte, lte } from 'drizzle-orm';
 import { revalidatePath } from 'next/cache';
 
 import { dailyCheckins, habitLogs, habits, journalEntries, users } from '~/db/schema';
@@ -124,6 +124,28 @@ export async function getJournalEntry(dayDate: string) {
     .limit(1);
 
   return rows[0] ?? null;
+}
+
+export async function getJournalEntriesForRange(startDate: string, endDate: string) {
+  const session = await getServerAuthSession();
+  if (!session?.user) return [];
+
+  return db
+    .select({
+      id: journalEntries.id,
+      dayDate: journalEntries.dayDate,
+      amEntry: journalEntries.amEntry,
+      pmEntry: journalEntries.pmEntry,
+    })
+    .from(journalEntries)
+    .where(
+      and(
+        eq(journalEntries.userId, session.user.id),
+        gte(journalEntries.dayDate, startDate),
+        lte(journalEntries.dayDate, endDate)
+      )
+    )
+    .orderBy(asc(journalEntries.dayDate));
 }
 
 export async function saveJournalEntry(

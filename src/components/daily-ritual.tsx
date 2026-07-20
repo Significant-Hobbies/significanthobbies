@@ -3,12 +3,24 @@
 import { useState, useTransition } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { Check, Flame, Plus, Sparkles, Sunrise, Sunset, Trash2, X } from 'lucide-react';
+import {
+  Check,
+  ChevronLeft,
+  ChevronRight,
+  Flame,
+  Plus,
+  Sparkles,
+  Sunrise,
+  Sunset,
+  Trash2,
+  X,
+} from 'lucide-react';
 
 import { GradientMesh, SpotlightCard } from '~/components/aceternity';
 import { CircularProgress } from '~/components/dashboard/circular-progress';
 import { Button } from '~/components/ui/button';
 import { computeStreak, computeWeeklyProgress } from '~/lib/habit-utils';
+import { buildJournalDateWindow, hasJournalContent } from '~/lib/journal';
 import { BUCKET_LABELS, type TrajectoryBucket } from '~/lib/trajectory';
 import { cn } from '~/lib/utils';
 
@@ -30,6 +42,7 @@ interface HabitLog {
 
 interface JournalEntry {
   id: string;
+  dayDate: string;
   amEntry: string | null;
   pmEntry: string | null;
 }
@@ -71,6 +84,7 @@ interface Props {
   habitLogs: HabitLog[];
   allHabitLogs: HabitLog[];
   journalEntry: JournalEntry | null;
+  journalEntries: JournalEntry[];
   checkin: Checkin | null;
   trajectoryNudge?: TrajectoryNudge;
   actions: Actions;
@@ -92,6 +106,27 @@ const FREQUENCY_OPTIONS = [
 
 const EMOJI_CHOICES = ['📚', '🏃', '🧘', '✍️', '🎸', '🎨', '💪', '🧠', '🌅', '💧', '🥗', '😴'];
 
+function calendarDate(dayDate: string): Date {
+  const [year, month, day] = dayDate.split('-').map(Number);
+  return new Date(year!, month! - 1, day!, 12);
+}
+
+function formatJournalDate(dayDate: string, includeYear = true): string {
+  return new Intl.DateTimeFormat('en-US', {
+    month: 'long',
+    day: 'numeric',
+    ...(includeYear ? { year: 'numeric' as const } : {}),
+  }).format(calendarDate(dayDate));
+}
+
+function formatDateMarker(dayDate: string): string {
+  return new Intl.DateTimeFormat('en-US', {
+    weekday: 'short',
+    month: 'short',
+    day: 'numeric',
+  }).format(calendarDate(dayDate));
+}
+
 export function DailyRitual({
   firstName,
   today,
@@ -101,6 +136,7 @@ export function DailyRitual({
   habitLogs: initialLogs,
   allHabitLogs,
   journalEntry: initialJournal,
+  journalEntries,
   checkin: initialCheckin,
   trajectoryNudge,
   actions,
@@ -118,6 +154,7 @@ export function DailyRitual({
   const [nudgeDismissed, setNudgeDismissed] = useState(false);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [selectedDate, setSelectedDate] = useState(today);
   const [, startTransition] = useTransition();
   const router = useRouter();
 
@@ -188,8 +225,22 @@ export function DailyRitual({
   }
 
   const canSave = isMorning ? amEntry.trim().length > 0 : pmEntry.trim().length > 0;
-  const currentEntry = isMorning ? amEntry : pmEntry;
-  const charCount = currentEntry.length;
+  const journalDateWindow = buildJournalDateWindow(today);
+  const selectedDateIndex = journalDateWindow.indexOf(selectedDate);
+  const isTodaySelected = selectedDate === today;
+  const selectedJournal = isTodaySelected
+    ? { amEntry, pmEntry }
+    : (journalEntries.find((entry) => entry.dayDate === selectedDate) ?? null);
+
+  function hasWritingOn(dayDate: string): boolean {
+    if (dayDate === today) return hasJournalContent({ amEntry, pmEntry });
+    return hasJournalContent(journalEntries.find((entry) => entry.dayDate === dayDate));
+  }
+
+  function moveSelectedDate(offset: number) {
+    const nextDate = journalDateWindow[selectedDateIndex + offset];
+    if (nextDate) setSelectedDate(nextDate);
+  }
 
   // AM/PM completion for the rings
   const amProgress = amCompleted ? 1 : 0;
@@ -283,28 +334,200 @@ export function DailyRitual({
         />
       </div>
 
-      {/* ─── Journal — card with header + gradient focus border ─── */}
-      <div className="overflow-hidden rounded-xl border border-border bg-card shadow-soft transition-colors focus-within:border-primary/40">
-        <div className="flex items-center justify-between border-b border-border/60 px-5 py-3">
-          <div className="flex items-center gap-2">
-            {isMorning ? (
-              <Sunrise className="h-4 w-4 text-primary" />
-            ) : (
-              <Sunset className="h-4 w-4 text-primary" />
-            )}
-            <h3 className="font-serif text-sm font-medium text-foreground">{journalTitle}</h3>
+      {/* ─── Journal — focused reader + quiet recent-date rail ─── */}
+      <section
+        aria-labelledby="daily-journal-title"
+        className="overflow-hidden rounded-2xl border border-border bg-card shadow-soft"
+      >
+        <div className="flex items-start justify-between gap-4 border-b border-border/60 px-5 py-5 sm:px-7">
+          <div>
+            <p className="text-[10px] font-medium uppercase tracking-[0.18em] text-muted-foreground/55">
+              Private journal
+            </p>
+            <h2
+              id="daily-journal-title"
+              className="mt-1.5 font-serif text-2xl font-medium tracking-tight text-foreground"
+            >
+              {isTodaySelected ? 'Today' : formatJournalDate(selectedDate, false)}
+            </h2>
           </div>
-          <span className="text-[10px] tabular-nums text-muted-foreground/50">
-            {charCount} chars
-          </span>
+          <p className="pt-1 text-right text-xs leading-relaxed text-muted-foreground/60">
+            {isTodaySelected ? journalTitle : formatJournalDate(selectedDate)}
+          </p>
         </div>
-        <textarea
-          value={isMorning ? amEntry : pmEntry}
-          onChange={(e) => (isMorning ? setAmEntry(e.target.value) : setPmEntry(e.target.value))}
-          placeholder={journalPlaceholder}
-          className="w-full min-h-[140px] resize-none bg-transparent px-5 py-4 text-base leading-relaxed text-foreground placeholder:text-muted-foreground/50 focus-visible:outline-none"
-        />
-      </div>
+
+        <div className="min-h-[280px] px-5 py-6 sm:px-7 sm:py-8">
+          {isTodaySelected ? (
+            <div className="space-y-6">
+              {!isMorning && amEntry.trim() && (
+                <div className="flex gap-3">
+                  <span className="mt-1 flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-primary/35 text-primary">
+                    <Sunrise className="h-3 w-3" />
+                  </span>
+                  <div>
+                    <p className="text-[10px] font-medium uppercase tracking-[0.14em] text-muted-foreground/55">
+                      This morning
+                    </p>
+                    <p className="mt-1.5 whitespace-pre-wrap text-sm leading-relaxed text-foreground/75">
+                      {amEntry}
+                    </p>
+                  </div>
+                </div>
+              )}
+
+              <div>
+                <label
+                  htmlFor="daily-journal-entry"
+                  className="flex items-center gap-2 font-serif text-base font-medium text-foreground"
+                >
+                  {isMorning ? (
+                    <Sunrise className="h-4 w-4 text-primary" />
+                  ) : (
+                    <Sunset className="h-4 w-4 text-primary" />
+                  )}
+                  {prompt}
+                </label>
+                <textarea
+                  id="daily-journal-entry"
+                  value={isMorning ? amEntry : pmEntry}
+                  onChange={(event) =>
+                    isMorning ? setAmEntry(event.target.value) : setPmEntry(event.target.value)
+                  }
+                  placeholder={journalPlaceholder}
+                  className="mt-3 min-h-[150px] w-full resize-none border-0 bg-transparent p-0 text-base leading-7 text-foreground placeholder:text-muted-foreground/35 focus-visible:outline-none"
+                />
+              </div>
+
+              <div className="flex min-h-9 flex-wrap items-center gap-3 border-t border-border/50 pt-4">
+                <Button onClick={handleSave} disabled={saving || !canSave} className="gap-2">
+                  {saving ? 'Saving…' : isMorning ? 'Save morning' : 'Save evening'}
+                </Button>
+                {saved && (
+                  <span className="flex animate-fade-in-up items-center gap-1.5 text-sm font-medium text-primary">
+                    <Check className="h-4 w-4" />
+                    Saved
+                  </span>
+                )}
+                {!canSave && !saved && (
+                  <span className="text-xs text-muted-foreground/55">
+                    One honest sentence is enough.
+                  </span>
+                )}
+              </div>
+            </div>
+          ) : hasJournalContent(selectedJournal) ? (
+            <div className="space-y-7">
+              {selectedJournal?.amEntry?.trim() && (
+                <div className="flex gap-3">
+                  <span className="mt-1 flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-primary/35 text-primary">
+                    <Sunrise className="h-3 w-3" />
+                  </span>
+                  <div>
+                    <p className="text-[10px] font-medium uppercase tracking-[0.14em] text-muted-foreground/55">
+                      Morning focus
+                    </p>
+                    <p className="mt-1.5 whitespace-pre-wrap text-base leading-7 text-foreground/80">
+                      {selectedJournal.amEntry}
+                    </p>
+                  </div>
+                </div>
+              )}
+              {selectedJournal?.pmEntry?.trim() && (
+                <div className="flex gap-3">
+                  <span className="mt-1 flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-primary/35 text-primary">
+                    <Sunset className="h-3 w-3" />
+                  </span>
+                  <div>
+                    <p className="text-[10px] font-medium uppercase tracking-[0.14em] text-muted-foreground/55">
+                      Evening reflection
+                    </p>
+                    <p className="mt-1.5 whitespace-pre-wrap text-base leading-7 text-foreground/80">
+                      {selectedJournal.pmEntry}
+                    </p>
+                  </div>
+                </div>
+              )}
+            </div>
+          ) : (
+            <div className="flex min-h-[220px] flex-col items-center justify-center text-center">
+              <p className="font-serif text-lg text-foreground/75">Nothing recorded here.</p>
+              <p className="mt-1.5 max-w-xs text-sm leading-relaxed text-muted-foreground/55">
+                Some days stay unwritten. They still belong to you.
+              </p>
+            </div>
+          )}
+        </div>
+
+        <div className="border-t border-border/60 bg-background/25 px-4 py-4 sm:px-6">
+          <div className="flex items-center justify-between gap-4">
+            <Button
+              type="button"
+              variant="outline"
+              size="icon-sm"
+              onClick={() => moveSelectedDate(-1)}
+              disabled={selectedDateIndex <= 0}
+              aria-label="Previous journal day"
+            >
+              <ChevronLeft className="h-4 w-4" />
+            </Button>
+            <button
+              type="button"
+              onClick={() => setSelectedDate(today)}
+              disabled={isTodaySelected}
+              aria-label={isTodaySelected ? undefined : 'Return to today'}
+              className="flex flex-col items-center rounded-md px-2 py-1 text-[10px] font-medium uppercase tracking-[0.18em] text-muted-foreground transition-colors hover:text-foreground disabled:cursor-default disabled:text-foreground/70"
+            >
+              <span>{formatJournalDate(selectedDate)}</span>
+              {!isTodaySelected && (
+                <span className="mt-1 text-[9px] tracking-[0.12em] text-primary/65">
+                  Return to today
+                </span>
+              )}
+            </button>
+            <Button
+              type="button"
+              variant="outline"
+              size="icon-sm"
+              onClick={() => moveSelectedDate(1)}
+              disabled={selectedDateIndex >= journalDateWindow.length - 1}
+              aria-label="Next journal day"
+            >
+              <ChevronRight className="h-4 w-4" />
+            </Button>
+          </div>
+
+          <div className="mt-4 grid h-8 grid-cols-[repeat(21,minmax(0,1fr))] items-end gap-1">
+            {journalDateWindow.map((dayDate) => {
+              const isSelected = dayDate === selectedDate;
+              const hasWriting = hasWritingOn(dayDate);
+
+              return (
+                <button
+                  key={dayDate}
+                  type="button"
+                  onClick={() => setSelectedDate(dayDate)}
+                  aria-label={`${formatDateMarker(dayDate)} — ${hasWriting ? 'journal entry' : 'no journal entry'}`}
+                  aria-pressed={isSelected}
+                  className="group flex h-8 items-end justify-center rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/70"
+                >
+                  <span
+                    className={`h-6 w-px transition-colors ${
+                      isSelected
+                        ? 'bg-primary shadow-[0_0_8px_oklch(0.82_0.13_88_/_0.45)]'
+                        : hasWriting
+                          ? 'bg-foreground/45 group-hover:bg-foreground/70'
+                          : 'border-l border-dashed border-foreground/15 group-hover:border-foreground/30'
+                    }`}
+                  />
+                </button>
+              );
+            })}
+          </div>
+          <p className="mt-2 text-center text-[10px] text-muted-foreground/40">
+            Solid marks hold writing. Quiet marks are simply days.
+          </p>
+        </div>
+      </section>
 
       {/* ─── Habits — SpotlightCards with streak + weekly progress ─── */}
       <div className="space-y-3">
@@ -508,59 +731,6 @@ export function DailyRitual({
               Add habit
             </Button>
           </div>
-        )}
-      </div>
-
-      {/* ─── Morning entry (read-only, evening view) ─── */}
-      {!isMorning && amEntry && (
-        <div className="rounded-xl border border-border bg-card/50 p-5 shadow-soft">
-          <div className="flex items-center gap-2 mb-2">
-            <Sunrise className="h-3.5 w-3.5 text-primary" />
-            <p className="text-xs font-medium text-muted-foreground">This morning you wrote</p>
-          </div>
-          <p className="text-sm text-foreground/80 leading-relaxed whitespace-pre-wrap">
-            {amEntry}
-          </p>
-        </div>
-      )}
-
-      {/* ─── Save — with circular checkmark animation ─── */}
-      <div className="flex items-center gap-4">
-        <Button onClick={handleSave} disabled={saving || !canSave} className="gap-2">
-          {saving ? 'Saving…' : isMorning ? 'Save morning' : 'Save evening'}
-        </Button>
-
-        {/* Circular checkmark animation when saved */}
-        {saved && (
-          <div className="flex items-center gap-2 animate-fade-in-up">
-            <div className="relative flex h-7 w-7 items-center justify-center">
-              <svg width="28" height="28" viewBox="0 0 28 28" className="-rotate-90">
-                <circle
-                  cx="14"
-                  cy="14"
-                  r="11"
-                  fill="none"
-                  strokeWidth="2.5"
-                  stroke="oklch(0.82 0.13 88)"
-                  strokeDasharray="69.12"
-                  strokeDashoffset="0"
-                  strokeLinecap="round"
-                  className="animate-[drawLine_0.5s_ease-out]"
-                  style={{ filter: 'drop-shadow(0 0 4px oklch(0.82 0.13 88 / 0.5))' }}
-                />
-              </svg>
-              <Check className="absolute h-3.5 w-3.5 text-primary" />
-            </div>
-            <span className="text-sm font-medium text-primary">Saved</span>
-          </div>
-        )}
-
-        {!canSave && !saved && (
-          <span className="text-xs text-muted-foreground/60">
-            {isMorning
-              ? 'What will you change today? One sentence is enough.'
-              : 'What did you change today? One sentence is enough.'}
-          </span>
         )}
       </div>
     </div>
