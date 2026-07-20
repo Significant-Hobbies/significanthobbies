@@ -27,7 +27,6 @@ import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
 
 import { FadeIn, SpotlightCard } from '~/components/aceternity';
-import { EmailCapture } from '~/components/email-capture';
 import { QuizResultCard } from '~/components/quiz-result-card';
 import { trackDiscovery, trackDiscoveryFunnel, trackEvent } from '~/lib/analytics';
 import { HOBBY_CATEGORIES } from '~/lib/hobbies';
@@ -643,16 +642,6 @@ export function HobbyQuiz() {
                 recommendedHobbies={recommendedHobbies}
                 exportRef={cardRef}
               />
-            </div>
-
-            <div className="mt-8 rounded-xl border border-border bg-card/40 p-6 text-center">
-              <p className="font-medium text-foreground mb-2">
-                Want hobby recommendations in your inbox?
-              </p>
-              <p className="text-sm text-muted-foreground mb-4">
-                Weekly inspiration — no spam, unsubscribe anytime.
-              </p>
-              <EmailCapture source="quiz" />
             </div>
           </div>
         )}

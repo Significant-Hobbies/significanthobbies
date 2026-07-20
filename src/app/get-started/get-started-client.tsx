@@ -12,7 +12,6 @@ import {
   SpotlightCard,
   TextGenerateEffect,
 } from '~/components/aceternity';
-import { EmailCapture } from '~/components/email-capture';
 
 type CheckState = 'idle' | 'checking' | 'available' | 'taken' | 'invalid';
 
@@ -285,17 +284,6 @@ export function GetStartedClient() {
             </StaggerItem>
           ))}
         </StaggerContainer>
-      </section>
-
-      {/* Email capture */}
-      <section className="mx-auto max-w-xl px-4 pb-20">
-        <div className="mt-12 rounded-xl border border-border bg-card/40 p-6 text-center max-w-lg mx-auto">
-          <p className="font-medium text-foreground mb-2">Not ready to sign up yet?</p>
-          <p className="text-sm text-muted-foreground mb-4">
-            Get weekly hobby inspiration in your inbox.
-          </p>
-          <EmailCapture source="get-started" />
-        </div>
       </section>
     </main>
   );

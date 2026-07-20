@@ -9,7 +9,6 @@ import {
   StaggerContainer,
   StaggerItem,
 } from '~/components/aceternity';
-import { EmailCapture } from '~/components/email-capture';
 import type { BlogPost } from '~/lib/blog-posts';
 import { editorialArticles } from '~/lib/editorial-content';
 
@@ -186,17 +185,6 @@ export default function BlogPage() {
               <PostCard post={featured} featured />
             </FadeIn>
           )}
-
-          {/* Email capture */}
-          <FadeIn className="mb-10">
-            <SpotlightCard className="shadow-soft" innerClassName="rounded-xl p-6 text-center">
-              <p className="font-medium text-foreground mb-2">Enjoy the journal?</p>
-              <p className="text-sm text-muted-foreground mb-4">
-                Get new articles and hobby inspiration in your inbox.
-              </p>
-              <EmailCapture source="blog" />
-            </SpotlightCard>
-          </FadeIn>
 
           {/* Divider */}
           <FadeIn className="mb-10 flex items-center gap-4">
