@@ -133,7 +133,7 @@ export function BucketSection({ bucket, eras }: Props) {
         <div className="animate-fade-in-up mt-5">
           <MonthEntryForm
             eraId={activeEra.id}
-            existingEntry={activeEra.entries.find((e) => e.eraId === activeEra.id && e) ?? null}
+            entries={activeEra.entries}
             onDone={() => setShowEntryForm(false)}
           />
         </div>

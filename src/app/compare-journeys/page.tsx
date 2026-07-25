@@ -1,4 +1,4 @@
-import { eq } from 'drizzle-orm';
+import { and, eq } from 'drizzle-orm';
 import type { Metadata } from 'next';
 
 import { FadeIn, GridBackground } from '~/components/aceternity';
@@ -19,50 +19,45 @@ interface Props {
   searchParams: Promise<{ a?: string; b?: string }>;
 }
 
+/**
+ * Resolves a username to the phases they have chosen to publish.
+ *
+ * PUBLIC only. UNLISTED means "reachable by whoever holds the link", not
+ * "queryable by name" — this page takes a free-text username, so including
+ * UNLISTED here would let anyone enumerate unlisted timelines by guessing
+ * usernames.
+ */
+async function loadPublicJourney(
+  username: string,
+  logLabel: string
+): Promise<{ username: string; phases: Phase[] } | null> {
+  const owner = await db.query.users.findFirst({
+    where: eq(users.username, username),
+    columns: { id: true, username: true },
+  });
+  if (!owner) return null;
+
+  const publicTimelines = await db
+    .select({ phases: timelines.phases })
+    .from(timelines)
+    .where(and(eq(timelines.userId, owner.id), eq(timelines.visibility, 'PUBLIC')));
+
+  return {
+    username: owner.username ?? username,
+    phases: publicTimelines.flatMap((t) => parseJSONColumn<Phase[]>(t.phases, [], logLabel)),
+  };
+}
+
 export default async function CompareJourneysPage({ searchParams }: Props) {
   const { a, b } = await searchParams;
 
   const usernameA = a?.trim() ?? null;
   const usernameB = b?.trim() ?? null;
 
-  let userA: { username: string; phases: Phase[] } | null = null;
-  let userB: { username: string; phases: Phase[] } | null = null;
-
-  if (usernameA) {
-    const raw = await db.query.users.findFirst({
-      where: eq(users.username, usernameA),
-      columns: { id: true, username: true },
-    });
-    if (raw) {
-      const properTimelines = await db
-        .select({ phases: timelines.phases, visibility: timelines.visibility })
-        .from(timelines)
-        .where(eq(timelines.userId, raw.id));
-
-      const phases: Phase[] = properTimelines
-        .filter((t) => t.visibility === 'PUBLIC' || t.visibility === 'UNLISTED')
-        .flatMap((t) => parseJSONColumn<Phase[]>(t.phases, [], 'compare-journeys:userA:phases'));
-      userA = { username: raw.username ?? usernameA, phases };
-    }
-  }
-
-  if (usernameB) {
-    const raw = await db.query.users.findFirst({
-      where: eq(users.username, usernameB),
-      columns: { id: true, username: true },
-    });
-    if (raw) {
-      const properTimelines = await db
-        .select({ phases: timelines.phases, visibility: timelines.visibility })
-        .from(timelines)
-        .where(eq(timelines.userId, raw.id));
-
-      const phases: Phase[] = properTimelines
-        .filter((t) => t.visibility === 'PUBLIC' || t.visibility === 'UNLISTED')
-        .flatMap((t) => parseJSONColumn<Phase[]>(t.phases, [], 'compare-journeys:userB:phases'));
-      userB = { username: raw.username ?? usernameB, phases };
-    }
-  }
+  const [userA, userB] = await Promise.all([
+    usernameA ? loadPublicJourney(usernameA, 'compare-journeys:userA:phases') : null,
+    usernameB ? loadPublicJourney(usernameB, 'compare-journeys:userB:phases') : null,
+  ]);
 
   return (
     <div className="relative mx-auto max-w-5xl px-4 py-12">

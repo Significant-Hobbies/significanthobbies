@@ -6,7 +6,7 @@
 > change. Do not let deploy-version snapshots accumulate here — put those in
 > the archive.
 
-Last updated: 2026-07-20
+Last updated: 2026-07-25
 
 ## Objective
 
@@ -35,12 +35,17 @@ is the bridge between daily practice and life aspirations.
   branch; pending cross-repository OpenSpec verification and merge. The
   canonical package document is intentionally empty until topics are selected.
 - **Docs:** consolidated into a canonical `docs/` tree with Blume as the
-  presentation layer (this branch).
+  presentation layer.
+- **Product cleanup:** the unused arcs façade has been retired in favor of the
+  working side-quests surface. Legacy schema remains read-only for data safety.
+  Dashboard insights now use actual quest activity, compare-journeys exposes
+  only `PUBLIC` timelines, and trajectory month editing loads the selected
+  month's saved entry.
 
 ## Active work
 
-- Docs consolidation (this branch): unified scattered root-level and `docs/`
-  markdown into one canonical knowledge system. See `docs/index.md`.
+- No active code change is blocked. Production deployment remains
+  operator-owned.
 
 ## Blockers
 

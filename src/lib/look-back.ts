@@ -55,19 +55,11 @@ export interface LookBackData {
     startDate: Date;
     stamps: string[]; // dayDate strings
   }>;
-  arcs: Array<{
-    title: string;
-    emoji: string | null;
-    type: string;
-    status: string;
-    startedAt: Date;
-    completedAt: Date | null;
-  }>;
 }
 
 export interface NarrativeSection {
   id: string;
-  kind: 'opening' | 'timeline' | 'quests' | 'habits' | 'agency' | 'journal' | 'arcs' | 'closing';
+  kind: 'opening' | 'timeline' | 'quests' | 'habits' | 'agency' | 'journal' | 'closing';
   title: string;
   paragraphs: string[];
   emoji?: string;
@@ -82,7 +74,6 @@ export function generateLookBack(data: LookBackData): NarrativeSection[] {
   const hasQuests = data.completedQuests.length > 0 || data.activeQuests.length > 0;
   const hasHabits = data.habits.length > 0;
   const hasJournal = data.journalEntries.length > 0;
-  const hasArcs = data.arcs.length > 0;
 
   // ─── Opening ──────────────────────────────────────────────────────────────
   sections.push(generateOpening(data, name));
@@ -90,11 +81,6 @@ export function generateLookBack(data: LookBackData): NarrativeSection[] {
   // ─── Timeline / Life story ─────────────────────────────────────────────────
   if (hasPhases) {
     sections.push(generateTimelineStory(data, name));
-  }
-
-  // ─── Arcs ──────────────────────────────────────────────────────────────────
-  if (hasArcs) {
-    sections.push(generateArcStory(data, name));
   }
 
   // ─── Quests ────────────────────────────────────────────────────────────────
@@ -160,7 +146,7 @@ function generateOpening(data: LookBackData, name: string): NarrativeSection {
 
 // ─── Timeline story ─────────────────────────────────────────────────────────
 
-function generateTimelineStory(data: LookBackData, name: string): NarrativeSection {
+function generateTimelineStory(data: LookBackData, _name: string): NarrativeSection {
   const paragraphs: string[] = [];
   const phases = data.phases;
   const insights = computeInsights(phases);
@@ -243,55 +229,9 @@ function generateTimelineStory(data: LookBackData, name: string): NarrativeSecti
   };
 }
 
-// ─── Arcs story ─────────────────────────────────────────────────────────────
-
-function generateArcStory(data: LookBackData, name: string): NarrativeSection {
-  const paragraphs: string[] = [];
-  const completed = data.arcs.filter((a) => a.status === 'completed');
-  const active = data.arcs.filter((a) => a.status === 'active');
-
-  if (completed.length > 0) {
-    if (completed.length === 1) {
-      const arc = completed[0]!;
-      const days = arc.completedAt
-        ? Math.floor((arc.completedAt.getTime() - arc.startedAt.getTime()) / (1000 * 60 * 60 * 24))
-        : 0;
-      paragraphs.push(
-        `You completed one arc: "${arc.title}"${arc.emoji ? ` ${arc.emoji}` : ''}. It took ${days} days. That's a chapter with a beginning, middle, and end — not a todo you checked off.`
-      );
-    } else {
-      paragraphs.push(
-        `You've completed ${completed.length} arcs. Each one is a chapter you finished — ${completed.map((a) => `"${a.title}"`).join(', ')}.`
-      );
-    }
-  }
-
-  if (active.length > 0) {
-    if (active.length === 1) {
-      const arc = active[0]!;
-      const days = Math.floor((Date.now() - arc.startedAt.getTime()) / (1000 * 60 * 60 * 24));
-      paragraphs.push(
-        `Right now you're in "${arc.title}"${arc.emoji ? ` ${arc.emoji}` : ''}. It's been ${days} days. The arc isn't over — you're still writing it.`
-      );
-    } else {
-      paragraphs.push(
-        `You have ${active.length} arcs in progress: ${active.map((a) => `"${a.title}"`).join(', ')}.`
-      );
-    }
-  }
-
-  return {
-    id: 'arcs',
-    kind: 'arcs',
-    title: 'Your arcs',
-    paragraphs,
-    emoji: '🎯',
-  };
-}
-
 // ─── Quests story ───────────────────────────────────────────────────────────
 
-function generateQuestStory(data: LookBackData, name: string): NarrativeSection {
+function generateQuestStory(data: LookBackData, _name: string): NarrativeSection {
   const paragraphs: string[] = [];
   const completed = data.completedQuests;
   const active = data.activeQuests;
@@ -359,7 +299,7 @@ function generateQuestStory(data: LookBackData, name: string): NarrativeSection 
 
 // ─── Habits story ───────────────────────────────────────────────────────────
 
-function generateHabitStory(data: LookBackData, name: string): NarrativeSection {
+function generateHabitStory(data: LookBackData, _name: string): NarrativeSection {
   const paragraphs: string[] = [];
 
   // Total habit check-ins
@@ -420,7 +360,7 @@ function generateHabitStory(data: LookBackData, name: string): NarrativeSection 
 
 // ─── Journal story ──────────────────────────────────────────────────────────
 
-function generateJournalStory(data: LookBackData, name: string): NarrativeSection {
+function generateJournalStory(data: LookBackData, _name: string): NarrativeSection {
   const paragraphs: string[] = [];
   const entries = data.journalEntries;
   const totalEntries = entries.length;

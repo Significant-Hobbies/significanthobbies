@@ -470,7 +470,7 @@ export const userQuests = sqliteTable(
     sourceTimelineId: text('sourceTimelineId'),
     // Which bucket list item this quest was decomposed from — null for non-bucket quests
     sourceBucketItemId: text('sourceBucketItemId'),
-    // Which arc this quest belongs to — null for standalone quests
+    // Retained for legacy rows; the retired arcs UI no longer writes this field.
     arcId: text('arcId'),
     // The quest title at generation time (so it displays even if the static quest changes)
     title: text('title').notNull(),
@@ -492,9 +492,10 @@ export const userQuests = sqliteTable(
   ]
 );
 
-// ─── Arcs ──────────────────────────────────────────────────────────────────
-// Arcs are high-level chapters in the user's life story. They contain side quests.
-// Think anime arcs: "The Rediscovery Arc", "Kilimanjaro Training Arc", etc.
+// ─── Retired arcs schema ───────────────────────────────────────────────────
+// Retained for database compatibility only. The arcs product surface and all
+// runtime reads/writes have been removed; keeping the table here prevents a
+// future generated migration from accidentally dropping historical data.
 export const arcs = sqliteTable(
   'Arc',
   {

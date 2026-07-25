@@ -62,13 +62,15 @@ into `User.earnedBadges` by the `logStamp` server action. See
 [`knowledge/archive/merge-plan-tll.md`](../knowledge/archive/merge-plan-tll.md)
 for the merge rationale.
 
-### Quests and arcs
+### Quests and retired arcs storage
 
 `UserQuest` (questId, type `rediscovery` | `static`, sourceHobby,
 sourceTimelineId, sourceBucketItemId, arcId, status). The unique index
 `UserQuest_userId_questId_active_key` on `(userId, questId, status)` prevents
-duplicate active quests. `Arc` (title, type, sourceBucketItemId,
-sourceTimelineId, status) groups quests into life chapters.
+duplicate active quests. The `Arc` table and `UserQuest.arcId` remain in the
+schema only to preserve legacy data and prevent an accidental destructive
+migration. No active route or server action reads or writes them; side quests
+are the sole quest surface.
 
 ### Trajectory (monthly life-review)
 

@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { redirect } from 'next/navigation';
 
 import { GradientMesh, GridBackground } from '~/components/aceternity';
+import { BehavioralInsights } from '~/components/dashboard/behavioral-insights';
 import { EmptyStateCard } from '~/components/dashboard/empty-state-card';
 import { HabitsSection } from '~/components/dashboard/habits-section';
 import { JournalSection } from '~/components/dashboard/journal-section';
@@ -22,6 +23,8 @@ import {
   toggleHabitLog,
 } from '~/lib/actions/daily';
 import { getMyCommitments } from '~/lib/actions/commitments';
+import { getAbandonedQuests, getActiveQuests, getCompletedQuests } from '~/lib/actions/user-quests';
+import { computeBehavioralInsights } from '~/lib/behavioral-insights';
 import { birthDateFromYear, buildLifeGrid, weekIndexForDay } from '~/lib/mortality';
 import { getTimelineUrl } from '~/lib/timeline-url';
 import type { Phase, TimelineVisibility } from '~/lib/types';
@@ -65,6 +68,9 @@ export default async function DashboardPage() {
     allHabitLogs,
     myJournal,
     myCheckin,
+    completedQuests,
+    activeQuests,
+    abandonedQuests,
   ] = await Promise.all([
     db
       .select()
@@ -96,6 +102,9 @@ export default async function DashboardPage() {
       .from(dailyCheckins)
       .where(and(eq(dailyCheckins.userId, session.user.id), eq(dailyCheckins.dayDate, today)))
       .limit(1),
+    getCompletedQuests(),
+    getActiveQuests(),
+    getAbandonedQuests(),
   ]);
 
   const todayJournal = myJournal[0] ?? null;
@@ -159,6 +168,33 @@ export default async function DashboardPage() {
     dayDate: l.dayDate,
     completed: l.completed,
   }));
+
+  // Behavioral insights — computed from real activity. Quest rows come straight
+  // from userQuests; the previous home for this panel read active quests through
+  // the arcs table, which nothing ever wrote to, so "active" was always empty
+  // and every rate it derived was wrong.
+  const behavioralInsights = computeBehavioralInsights({
+    completedQuests,
+    activeQuests,
+    abandonedQuests,
+    habitLogs: allHabitLogs.map((l) => ({
+      habitId: l.habitId,
+      dayDate: l.dayDate,
+      completed: l.completed,
+    })),
+    habits: myHabits.map((h) => ({
+      id: h.id,
+      name: h.name,
+      sourceQuestId: h.sourceQuestId,
+      status: h.status,
+    })),
+    timelinePhases: timelineList
+      .flatMap((t) => t.phases)
+      .map((p) => ({
+        label: p.label,
+        hobbies: (p.hobbies ?? []).map((h) => ({ name: h.name })),
+      })),
+  });
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-10 sm:py-14 space-y-16">
@@ -262,15 +298,15 @@ export default async function DashboardPage() {
             )}
           </div>
 
-          {/* Link to arcs page */}
+          {/* Link to side quests */}
           <Link
-            href="/arcs"
+            href="/side-quests"
             className="group flex items-center justify-between rounded-xl border border-border/50 bg-card/50 px-5 py-4 transition-colors hover:border-primary/30 hover:bg-primary/5"
           >
             <div>
-              <p className="font-serif text-sm font-medium text-foreground">Arcs & side quests →</p>
+              <p className="font-serif text-sm font-medium text-foreground">Side quests →</p>
               <p className="mt-0.5 text-xs text-muted-foreground">
-                Your active chapters, rediscovery quests, and insights
+                Micro-adventures to spark momentum — pick one and start
               </p>
             </div>
             <Compass className="h-5 w-5 text-muted-foreground transition-colors group-hover:text-primary" />
@@ -311,7 +347,14 @@ export default async function DashboardPage() {
       />
 
       {/* ════════════════════════════════════════════════════════════════════════
-          3. JOURNAL (bottom, first-class)
+          3. INSIGHTS
+          Patterns read back from real activity — quests, habits, hobbies.
+          Renders nothing until there is enough history to say anything.
+          ════════════════════════════════════════════════════════════════════════ */}
+      <BehavioralInsights insights={behavioralInsights} />
+
+      {/* ════════════════════════════════════════════════════════════════════════
+          4. JOURNAL (bottom, first-class)
           The quiet moment at the end. AM/PM entries, writable directly.
           ════════════════════════════════════════════════════════════════════════ */}
       <JournalSection

@@ -16,24 +16,39 @@ import {
 
 interface Props {
   eraId: string;
-  /** Existing entry for the current month, if any (for upsert prefill). */
-  existingEntry: TrajectoryEntryRow | null;
+  /** Every entry in this era. Prefill resolves against the selected month. */
+  entries: TrajectoryEntryRow[];
   onDone: () => void;
 }
 
 /**
  * Monthly reflection form. Free-form reflection + dynamic list of
  * { label, value } numeric inputs ("Add a number" button). Calls saveEntry
- * (upsert on eraId + monthKey). Pre-filled if an entry for the current
- * month already exists.
+ * (upsert on eraId + monthKey).
+ *
+ * Opens on the current month and prefills from that month's entry if one
+ * exists. Switching months reloads the prefill for the month picked, so
+ * backfilling a past month can never blank out what is already written
+ * there — saveEntry upserts on (eraId, monthKey).
  */
-export function MonthEntryForm({ eraId, existingEntry, onDone }: Props) {
+export function MonthEntryForm({ eraId, entries, onDone }: Props) {
   const currentMonth = monthKeyFor(new Date());
-  const [monthKey, setMonthKey] = useState(existingEntry?.monthKey ?? currentMonth);
-  const [reflection, setReflection] = useState(existingEntry?.reflection ?? '');
-  const [numbers, setNumbers] = useState<TrajectoryNumberInput[]>(existingEntry?.numbers ?? []);
+  const entryFor = (key: string) => entries.find((e) => e.monthKey === key) ?? null;
+  const openingEntry = entryFor(currentMonth);
+  const [monthKey, setMonthKey] = useState(currentMonth);
+  const [reflection, setReflection] = useState(openingEntry?.reflection ?? '');
+  const [numbers, setNumbers] = useState<TrajectoryNumberInput[]>(openingEntry?.numbers ?? []);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  function changeMonth(nextKey: string) {
+    if (nextKey === monthKey) return;
+    setMonthKey(nextKey);
+    const match = entryFor(nextKey);
+    setReflection(match?.reflection ?? '');
+    setNumbers(match?.numbers ?? []);
+    setError(null);
+  }
 
   function addNumber() {
     setNumbers((prev) => [...prev, { label: '', value: 0 }]);
@@ -83,7 +98,7 @@ export function MonthEntryForm({ eraId, existingEntry, onDone }: Props) {
           id="entry-month"
           type="month"
           value={monthKey}
-          onChange={(e) => setMonthKey(e.target.value)}
+          onChange={(e) => changeMonth(e.target.value)}
           className="h-7 w-auto border-border/50 bg-transparent text-xs text-muted-foreground"
         />
       </div>

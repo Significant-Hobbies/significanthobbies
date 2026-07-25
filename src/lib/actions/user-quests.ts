@@ -233,15 +233,23 @@ export async function abandonQuest(
 
 // ─── Get active quests ──────────────────────────────────────────────────────
 
-export async function getActiveQuests(): Promise<UserQuestRow[]> {
+/**
+ * Loads the signed-in user's quests in one status, oldest first.
+ *
+ * 'active' and 'abandoned' order by startedAt (completedAt is null for both);
+ * 'completed' orders by completedAt.
+ */
+async function getQuestsByStatus(
+  status: 'active' | 'completed' | 'abandoned'
+): Promise<UserQuestRow[]> {
   const session = await getServerAuthSession();
   if (!session?.user?.id) return [];
 
   const rows = await db
     .select()
     .from(userQuests)
-    .where(and(eq(userQuests.userId, session.user.id), eq(userQuests.status, 'active')))
-    .orderBy(userQuests.startedAt);
+    .where(and(eq(userQuests.userId, session.user.id), eq(userQuests.status, status)))
+    .orderBy(status === 'completed' ? userQuests.completedAt : userQuests.startedAt);
 
   return rows.map((r) => ({
     id: r.id,
@@ -259,30 +267,18 @@ export async function getActiveQuests(): Promise<UserQuestRow[]> {
   }));
 }
 
+export async function getActiveQuests(): Promise<UserQuestRow[]> {
+  return await getQuestsByStatus('active');
+}
+
 // ─── Get completed quests ───────────────────────────────────────────────────
 
 export async function getCompletedQuests(): Promise<UserQuestRow[]> {
-  const session = await getServerAuthSession();
-  if (!session?.user?.id) return [];
+  return await getQuestsByStatus('completed');
+}
 
-  const rows = await db
-    .select()
-    .from(userQuests)
-    .where(and(eq(userQuests.userId, session.user.id), eq(userQuests.status, 'completed')))
-    .orderBy(userQuests.completedAt);
+// ─── Get abandoned quests ───────────────────────────────────────────────────
 
-  return rows.map((r) => ({
-    id: r.id,
-    questId: r.questId,
-    type: r.type,
-    sourceHobby: r.sourceHobby,
-    sourceTimelineId: r.sourceTimelineId,
-    sourceBucketItemId: r.sourceBucketItemId,
-    title: r.title,
-    description: r.description,
-    emoji: r.emoji,
-    status: r.status,
-    startedAt: r.startedAt,
-    completedAt: r.completedAt,
-  }));
+export async function getAbandonedQuests(): Promise<UserQuestRow[]> {
+  return await getQuestsByStatus('abandoned');
 }

@@ -72,18 +72,12 @@ export default async function ProfilePage({ params }: Props) {
 
   const isOwner = session?.user?.id === user.id;
 
-  // Get follower and following counts
   const [followerResult] = await db
     .select({ count: count() })
     .from(follows)
     .where(eq(follows.followingId, user.id));
-  const [followingResult] = await db
-    .select({ count: count() })
-    .from(follows)
-    .where(eq(follows.followerId, user.id));
 
   const followerCount = followerResult?.count ?? 0;
-  const followingCount = followingResult?.count ?? 0;
 
   // Get timelines - public for visitors, all for owner. UNLISTED means
   // "anyone with the link" — it must never be listed on the public profile.

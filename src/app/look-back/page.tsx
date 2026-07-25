@@ -13,7 +13,6 @@ import {
 import { AmbientMusic } from '~/components/ambient-music';
 import { Whale } from '~/components/whale';
 import {
-  arcs,
   bucketListItems,
   commitments,
   habitLogs,
@@ -49,7 +48,6 @@ export default async function LookBackPage() {
     completedQuestRows,
     activeQuestRows,
     abandonedQuestRows,
-    allArcs,
     rawCommitments,
   ] = await Promise.all([
     db.query.users.findFirst({
@@ -75,7 +73,6 @@ export default async function LookBackPage() {
       .select()
       .from(userQuests)
       .where(and(eq(userQuests.userId, session.user.id), eq(userQuests.status, 'abandoned'))),
-    db.select().from(arcs).where(eq(arcs.userId, session.user.id)),
     db.select().from(commitments).where(eq(commitments.userId, session.user.id)),
   ]);
 
@@ -137,14 +134,6 @@ export default async function LookBackPage() {
       status: c.status,
       startDate: c.startDate,
       stamps: [], // Stamps are in a separate table — not fetched for simplicity
-    })),
-    arcs: allArcs.map((a) => ({
-      title: a.title,
-      emoji: a.emoji,
-      type: a.type,
-      status: a.status,
-      startedAt: a.startedAt,
-      completedAt: a.completedAt,
     })),
   };
 
