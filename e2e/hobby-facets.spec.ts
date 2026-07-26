@@ -55,3 +55,32 @@ test.describe('Hobby facets', () => {
     expect(res.status()).toBe(200);
   });
 });
+
+/**
+ * The bridge into famous-journeys.ts — the largest content file in the repo,
+ * which until now had one inbound link from a page that is not in the nav.
+ */
+test.describe('Hobby pages reach the journeys', () => {
+  test('a hobby with a famous precedent links to that life', async ({ page }) => {
+    await page.goto('/hobbies/calligraphy');
+    await expect(page.getByRole('heading', { name: 'Who else picked this up' })).toBeVisible();
+
+    // Scoped to this section: a seeded public timeline at /u/stevejobs also
+    // links his name on this page, so an unscoped locator is ambiguous.
+    const link = page
+      .getByRole('heading', { name: 'Who else picked this up' })
+      .locator('xpath=following-sibling::ul[1]')
+      .getByRole('link', { name: /Steve Jobs/ });
+    await expect(link).toBeVisible();
+    const href = await link.getAttribute('href');
+    expect(href).toBe('/journeys/steve-jobs');
+
+    const res = await page.request.get(href as string);
+    expect(res.status()).toBe(200);
+  });
+
+  test('a hobby with no precedent simply omits the section', async ({ page }) => {
+    await page.goto('/hobbies/lawn%20bowls');
+    await expect(page.getByRole('heading', { name: 'Who else picked this up' })).toHaveCount(0);
+  });
+});

@@ -1604,3 +1604,62 @@ export const FAMOUS_JOURNEYS: FamousJourney[] = [
     },
   },
 ];
+
+// ─── Bridge to the hobby catalogue ───────────────────────────────────────────
+
+export type JourneyMention = {
+  slug: string;
+  name: string;
+  emoji: string;
+  /** The phase of their life this hobby appears in. */
+  phase: string;
+  /** Exactly how it is written in their timeline, which is often richer. */
+  as: string;
+};
+
+function normalise(value: string): string {
+  return value
+    .toLowerCase()
+    .replace(/[^a-z0-9 ]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+/**
+ * Which famous lives contain a given hobby, and when.
+ *
+ * `famous-journeys.ts` is the largest content file in the repo — 35 lives, 127
+ * phases — and until now its only inbound link was from `/hobbies`, which is
+ * itself not in the nav. It was two hops from anywhere and effectively
+ * invisible. This turns every one of the 122 hobby pages into a door into it.
+ *
+ * Matching is whole-word rather than substring, so "Reading" does not match
+ * "Proofreading" and "Chess" does not match "Chessboard collecting". A phase
+ * entry like "Walking meetings" does match "Walking", which is the intent —
+ * the timeline wording is kept in `as` so the page can show what they actually
+ * did rather than flattening it to the catalogue term.
+ */
+export function journeysForHobby(hobby: string, limit = 4): JourneyMention[] {
+  const needle = normalise(hobby);
+  if (!needle) return [];
+  const pattern = new RegExp(`\\b${needle.replace(/ /g, '\\s+')}\\b`);
+  const out: JourneyMention[] = [];
+
+  for (const journey of FAMOUS_JOURNEYS) {
+    for (const phase of journey.phases) {
+      const hit = phase.hobbies.find((h) => pattern.test(normalise(h)));
+      if (!hit) continue;
+      out.push({
+        slug: journey.slug,
+        name: journey.name,
+        emoji: journey.emoji,
+        phase: phase.label,
+        as: hit,
+      });
+      break; // One mention per person; the earliest phase is the interesting one.
+    }
+    if (out.length >= limit) break;
+  }
+
+  return out;
+}

@@ -8,6 +8,7 @@ import { JsonLd } from '~/components/json-ld';
 import { Badge } from '~/components/ui/badge';
 import { timelines, users } from '~/db/schema';
 import { getEditorialArticlesForHobby } from '~/lib/editorial-content';
+import { journeysForHobby } from '~/lib/famous-journeys';
 import { getCategoryForHobby, HOBBY_CATEGORIES } from '~/lib/hobbies';
 import { getRelatedHobbies } from '~/lib/hobby-affinities';
 import { getResourcesForHobby } from '~/lib/hobby-resources';
@@ -96,6 +97,7 @@ export default async function HobbyDetailPage({ params }: Props) {
   const crossCategoryHobbies = getRelatedHobbies(hobbyName);
 
   const relatedPosts = getEditorialArticlesForHobby(hobbyName);
+  const mentions = journeysForHobby(hobbyName);
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-12">
@@ -219,6 +221,38 @@ export default async function HobbyDetailPage({ params }: Props) {
               </a>
             ))}
           </div>
+        </FadeIn>
+      )}
+
+      {/* Who else picked this up.
+          famous-journeys.ts is the largest content file in the repo and its
+          only inbound link was from /hobbies, which is not in the nav — two
+          hops from anywhere and effectively invisible. Each of these 122 pages
+          is now a door into it, and a named person who did the thing is a
+          better argument than any feature copy. */}
+      {mentions.length > 0 && (
+        <FadeIn className="mb-8" delay={0.1}>
+          <h2 className="mb-4 text-sm font-semibold text-muted-foreground">
+            Who else picked this up
+          </h2>
+          <ul className="divide-y divide-border border-border border-t">
+            {mentions.map((m) => (
+              <li key={m.slug} className="py-3">
+                <Link
+                  href={`/journeys/${m.slug}`}
+                  prefetch={false}
+                  className="text-base text-foreground underline-offset-4 hover:underline"
+                >
+                  {m.emoji} {m.name}
+                </Link>
+                <span className="text-base text-muted-foreground">
+                  {' '}
+                  — {m.phase.toLowerCase()}
+                  {m.as.toLowerCase() !== hobbyName.toLowerCase() ? `, as “${m.as}”` : ''}
+                </span>
+              </li>
+            ))}
+          </ul>
         </FadeIn>
       )}
 
