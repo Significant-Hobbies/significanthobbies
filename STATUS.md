@@ -130,11 +130,23 @@ and is genuinely public — that one is consistent.
 
 ## Next steps
 
-1. Apply `drizzle/0003_visibility_and_timezone.sql` to dev and production.
-2. Capture the 7-day PostHog quiz-funnel result, then freeze the winning
+1. **Nested `<main>` landmarks on 13 pages.** `app/layout.tsx` already wraps
+   every page in `<main id="main">`, and 13 route components render a second
+   `<main>` inside it, so assistive tech is offered a choice between two main
+   landmarks. Fixed on `/life-in-weeks` only. The axe check in
+   `content-flywheel.spec.ts` cannot catch it — it asserts on `main#main`,
+   which a nested unnamed `<main>` leaves at a count of one. Sweep the rest and
+   tighten that assertion to `page.locator('main')`.
+2. **Content for older visitors, remaining items.** The `/bucket-list-before-30`
+   copy ("before life narrows"), `/hobbies-for-resume` framing, the
+   `what-are-significant-hobbies` worked example ending at "career, now", and
+   the "Life journey" starter template in `src/lib/templates.ts` whose last
+   phase ends at age 28. None are linked from in-product navigation.
+3. Apply `drizzle/0003_visibility_and_timezone.sql` to dev and production.
+4. Capture the 7-day PostHog quiz-funnel result, then freeze the winning
    discovery path and pause feature development.
-3. Review and merge the content-flywheel branch after OpenSpec verification.
-4. **Make the journal an actual bridge.** `journalEntries` has no foreign key
+5. Review and merge the content-flywheel branch after OpenSpec verification.
+6. **Make the journal an actual bridge.** `journalEntries` has no foreign key
    beyond `userId`, so the product's headline claim is copy rather than code.
    Adding an optional hobby/timeline/commitment reference to a journal entry is
    the single highest-leverage change available: it makes the thesis true and

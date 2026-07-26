@@ -57,7 +57,11 @@ export function LifeInWeeksClient() {
   }
 
   return (
-    <main className="mx-auto w-full max-w-3xl px-5 py-16 sm:px-8 sm:py-24">
+    // A plain div, not <main>: app/layout.tsx already wraps every page in
+    // <main id="main">, so a second one nests two main landmarks and a screen
+    // reader is offered a choice between them. Thirteen other pages still do
+    // this — see STATUS.md — but this one is the front door.
+    <div className="mx-auto w-full max-w-3xl px-5 py-16 sm:px-8 sm:py-24">
       <h1
         className="font-serif text-4xl font-medium tracking-tight text-foreground sm:text-5xl"
         style={{ textWrap: 'balance', lineHeight: 1.12 }}
@@ -120,7 +124,7 @@ export function LifeInWeeksClient() {
           <Result result={result} />
         </div>
       ) : null}
-    </main>
+    </div>
   );
 }
 

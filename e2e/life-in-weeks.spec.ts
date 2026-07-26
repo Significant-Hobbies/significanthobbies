@@ -6,6 +6,17 @@ import { expect, test } from '@playwright/test';
  * product does sat behind Google OAuth. These tests hold that door open.
  */
 test.describe('Life in weeks', () => {
+  test('exposes exactly one main landmark', async ({ page }) => {
+    await page.goto('/life-in-weeks');
+    // app/layout.tsx wraps every page in <main id="main">. This page rendered
+    // its own <main> inside that, nesting two landmarks so a screen reader was
+    // offered a choice between them. Caught on production, not by the existing
+    // axe check — that asserts on `main#main`, which a nested unnamed <main>
+    // leaves at a count of one.
+    await expect(page.locator('main')).toHaveCount(1);
+    await expect(page.locator('main#main h1')).toHaveCount(1);
+  });
+
   test('renders and computes for a signed-out visitor', async ({ page }) => {
     await page.goto('/life-in-weeks');
 

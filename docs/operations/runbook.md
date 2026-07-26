@@ -57,6 +57,31 @@ without a full deploy (e.g. hotfix the Astro overlay), purge manually.
 
 ## Failure modes
 
+### Deploy build fails but every local build passed
+
+**Symptom:** `deploy.yml` fails in `node scripts/cf-build.mjs` while
+`pnpm build` is green on your machine. `wrangler` never runs, so production is
+untouched — check the step list before assuming a partial deploy.
+
+**Cause:** the deploy job sets no `DATABASE_URL`. Anything that only executes
+when a database query *fails* is therefore unreachable locally and reached on
+every deploy. This bit once already: `sitemap.ts` called `captureError` from
+`~/lib/foundry-monitoring` inside the catch around its public-profiles query.
+That module is `'use client'`, so the build died with "Attempted to call
+captureError() from the server" — but only where the DB was unreachable.
+
+**Reproduce locally** — point the URL at a host that does not resolve, which
+makes every query throw the way it does in CI:
+
+```bash
+rm -rf .next
+DATABASE_URL="libsql://nonexistent-host-xyz.turso.io" pnpm build
+```
+
+**Rule:** server routes must not import from `'use client'` modules. An unused
+import is silently fine, which is what makes this class of bug survive review —
+the failure only appears on the path that calls it.
+
 ### Cloudflare 1015 rate-limit on homepage
 
 **Symptom:** `smoke.yml` reports HTTP 429 or 1015 on the homepage probe.
