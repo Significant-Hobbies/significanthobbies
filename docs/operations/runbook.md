@@ -65,8 +65,27 @@ deploy (e.g. rebuilding the Astro overlay by hand).
 
 **Why `/` is not enough to verify a deploy:** anon `GET /` is static Astro HTML
 that skips the Worker entirely ([decisions.md](../architecture/decisions.md)
-A1), so it tells you nothing about the cached HTML paths. The deploy now smoke
-checks `/hobbies` as well, which does go through the Worker cache.
+A1), so it tells you nothing about the cached HTML paths. The deploy also smoke
+checks `/hobbies`, which does go through the Worker cache.
+
+**Checking a cached page by hand.** `worker.mjs` keys `caches.default` on the
+full request URL, so a query string is a guaranteed miss:
+
+```bash
+# Fresh render — proves what the deployed code produces
+curl -s "https://significanthobbies.com/hobbies?cb=$RANDOM" | grep -c 'Browse by what suits you'
+
+# What a real visitor gets, plus whether it came from cache
+curl -sI https://significanthobbies.com/hobbies | grep -i x-edge-cache
+```
+
+A `Cache-Control: no-cache` **request header does not bypass the Worker cache** —
+it is a hint to the CDN, and `cache.match()` ignores it. Using it to verify a
+deploy will show you the stale copy and make a good release look broken.
+
+Purge propagation is asynchronous. A cached path can stay stale for a minute or
+two after `purge_everything` returns success; that is timing, not a failed
+deploy. Confirm with the cache-busted URL before concluding anything.
 
 ## Failure modes
 

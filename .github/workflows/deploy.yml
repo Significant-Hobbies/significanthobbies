@@ -85,17 +85,39 @@ jobs:
             exit 1
           fi
           echo "Overlay OK: ${sections} sections, LCP shell present"
-      - name: Smoke check a cached marketing page
-        # `/` is served by the Astro overlay and skips the Worker entirely, so
-        # asserting on it proves nothing about the edge-cached HTML paths. This
-        # checks one path that goes through worker.mjs's cache, which is where a
-        # stale-after-deploy failure actually shows up.
+      - name: Smoke check a Worker-rendered page
+        # Two different questions, and only the first should fail a deploy.
+        #
+        # 1. Did the deploy ship correct code? Asked with a cache-busting query
+        #    param, because worker.mjs keys caches.default on the full request
+        #    URL — so `?cb=` is a guaranteed miss and a fresh SSR. A request
+        #    header of `Cache-Control: no-cache` is NOT enough: that is a hint to
+        #    the CDN, and the Worker's own cache.match() ignores it. Getting that
+        #    wrong made the first version of this step fail a good deploy.
+        #
+        # 2. Has the purge reached this colo yet? Asked without the param.
+        #    Cloudflare purge propagation is asynchronous, so a stale answer here
+        #    is a timing fact, not a broken release — it warns and moves on.
         run: |
-          html=$(curl -fsS --retry 3 --retry-delay 5 --max-time 20 \
-            -H "Cache-Control: no-cache" https://significanthobbies.com/hobbies)
-          if ! printf '%s' "$html" | grep -q 'Browse by what suits you'; then
-            echo "ERROR: /hobbies is missing the facet browser — likely serving pre-deploy cached HTML."
-            echo "Purge the zone and re-check; see docs/operations/runbook.md."
+          url=https://significanthobbies.com/hobbies
+          marker='Browse by what suits you'
+
+          fresh=$(curl -fsS --retry 3 --retry-delay 5 --max-time 20 "${url}?cb=${GITHUB_RUN_ID}")
+          if ! printf '%s' "$fresh" | grep -q "$marker"; then
+            echo "ERROR: a freshly rendered /hobbies is missing the facet browser."
+            echo "The deploy shipped code that does not render it — this is not a cache problem."
             exit 1
           fi
-          echo "/hobbies OK: facet browser present, cache is post-deploy"
+          echo "Deployed code OK: /hobbies renders the facet browser."
+
+          for attempt in 1 2 3 4 5 6; do
+            if curl -fsS --max-time 20 "$url" | grep -q "$marker"; then
+              echo "Edge cache OK: purge reached this colo after ${attempt} attempt(s)."
+              exit 0
+            fi
+            echo "Cached copy still stale (attempt ${attempt}/6) — waiting for purge to propagate."
+            sleep 15
+          done
+          echo "WARN: the cached /hobbies is still pre-deploy after ~90s."
+          echo "Purge propagation is asynchronous and s-maxage is 86400, so this"
+          echo "normally resolves on its own. See docs/operations/runbook.md."
