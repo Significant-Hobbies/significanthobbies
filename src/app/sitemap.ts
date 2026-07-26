@@ -4,6 +4,7 @@ import type { MetadataRoute } from 'next';
 import { timelines, users } from '~/db/schema';
 import { editorialArticles } from '~/lib/editorial-content';
 import { FAMOUS_BUCKET_LISTS } from '~/lib/famous-bucket-lists';
+import { FAMOUS_JOURNEYS } from '~/lib/famous-journeys';
 import { HOBBY_CATEGORIES } from '~/lib/hobbies';
 import { db } from '~/server/db';
 
@@ -134,6 +135,21 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: 'monthly',
       priority: 0.9,
     },
+    // /journeys and its 36 detail pages were absent entirely — the largest
+    // content file in the repo (famous-journeys.ts: 36 lives, 127 phases) was
+    // invisible to crawlers as well as to users.
+    {
+      url: `${baseUrl}/journeys`,
+      lastModified: now,
+      changeFrequency: 'weekly',
+      priority: 0.8,
+    },
+    ...FAMOUS_JOURNEYS.map((j) => ({
+      url: `${baseUrl}/journeys/${j.slug}`,
+      lastModified: now,
+      changeFrequency: 'monthly' as const,
+      priority: 0.6,
+    })),
     {
       url: `${baseUrl}/explore`,
       lastModified: now,

@@ -154,13 +154,17 @@ describe('getBucketListSuggestions', () => {
   });
 
   it('does not filter out genuinely different items that share a common word', () => {
-    // "See the Northern Lights in Iceland" vs "See the cherry blossoms in Kyoto"
-    // share only the stopword "the" + "see" (length 3, kept) — Jaccard is low,
-    // so the second should still be suggestible.
+    // "See the Northern Lights…" vs "See the cherry blossoms…" share only the
+    // stopword "the" plus "see" (length 3, kept) — Jaccard is low, so the second
+    // should still be suggestible.
+    //
+    // Matched on a substring rather than the full title: the pool is now the
+    // shared corpus in ~/lib/experiences, so exact wording belongs to that file
+    // and pinning it here would make every copy edit a test failure.
     const existing = [{ title: 'See the Northern Lights in Iceland', category: 'travel' }];
     const out = getBucketListSuggestions(existing, 50, 0);
     const titles = out.map((s) => s.title.toLowerCase());
-    expect(titles).toContain('see the cherry blossoms in kyoto');
+    expect(titles.some((t) => t.includes('cherry blossoms'))).toBe(true);
   });
 
   it('biases toward gap categories the user is missing', () => {

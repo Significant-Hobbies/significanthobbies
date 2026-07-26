@@ -1,3 +1,4 @@
+import { ALL_EXPERIENCES } from '~/lib/experiences';
 import {
   BUCKET_ITEM_CATEGORIES,
   type BucketItemCategory,
@@ -190,75 +191,16 @@ type SuggestionItem = {
   emoji: string;
 };
 
-const SUGGESTION_POOL: SuggestionItem[] = [
-  // Travel
-  { title: 'See the Northern Lights in Iceland', category: 'travel', emoji: '🌌' },
-  { title: 'Walk the Camino de Santiago', category: 'travel', emoji: '🚶' },
-  { title: 'Safari in the Serengeti at sunrise', category: 'travel', emoji: '🦁' },
-  { title: 'Visit all seven wonders of the world', category: 'travel', emoji: '🏛️' },
-  { title: 'See the cherry blossoms in Kyoto', category: 'travel', emoji: '🌸' },
-  { title: 'Drive Route 66 end to end', category: 'travel', emoji: '🚗' },
-  { title: 'Spend a week in Antarctica', category: 'travel', emoji: '🧊' },
-  { title: 'Swim in the Dead Sea', category: 'travel', emoji: '🌊' },
-  { title: 'Watch the sunrise from Machu Picchu', category: 'travel', emoji: '🌄' },
-  { title: 'Take the Trans-Siberian Railway across Russia', category: 'travel', emoji: '🚂' },
-  { title: 'Sail the Greek Islands', category: 'travel', emoji: '⛵' },
-  { title: 'See the Great Barrier Reef before it disappears', category: 'travel', emoji: '🐠' },
-
-  // Adventure
-  { title: 'Skydive from 15,000 feet', category: 'adventure', emoji: '🪂' },
-  { title: 'Bungee jump off a bridge', category: 'adventure', emoji: '🏔️' },
-  { title: 'Climb a mountain over 4,000 metres', category: 'adventure', emoji: '⛰️' },
-  { title: 'Surf a wave over 10 feet', category: 'adventure', emoji: '🏄' },
-  { title: 'Swim with humpback whales', category: 'adventure', emoji: '🐋' },
-  { title: 'Run with the bulls in Pamplona', category: 'adventure', emoji: '🐂' },
-  { title: 'White water raft a Class V river', category: 'adventure', emoji: '🛶' },
-  { title: 'Hike the Appalachian Trail end to end', category: 'adventure', emoji: '🥾' },
-  { title: 'Dive the Blue Hole in Belize', category: 'adventure', emoji: '🤿' },
-  { title: 'Sleep under the stars in the Sahara Desert', category: 'adventure', emoji: '🏜️' },
-
-  // Creative
-  { title: 'Write and finish a novel', category: 'creative', emoji: '📖' },
-  { title: 'Learn to play a musical instrument', category: 'creative', emoji: '🎸' },
-  { title: "Paint something you're proud to hang", category: 'creative', emoji: '🎨' },
-  { title: 'Learn to cook 10 cuisines from scratch', category: 'creative', emoji: '👨‍🍳' },
-  { title: 'Record a song and release it', category: 'creative', emoji: '🎵' },
-  { title: 'Perform on a stage in front of a crowd', category: 'creative', emoji: '🎭' },
-  { title: 'Learn a new language to conversational fluency', category: 'creative', emoji: '🗣️' },
-  { title: 'Design and build something with your hands', category: 'creative', emoji: '🔨' },
-  { title: 'Take a photo that stops people in their tracks', category: 'creative', emoji: '📷' },
-
-  // Achievement
-  { title: 'Run a marathon', category: 'achievement', emoji: '🏃' },
-  { title: 'Learn to fly a plane', category: 'achievement', emoji: '✈️' },
-  { title: 'Start and grow a business', category: 'achievement', emoji: '🚀' },
-  { title: 'Earn a black belt in a martial art', category: 'achievement', emoji: '🥋' },
-  { title: 'Become fluent in a second language', category: 'achievement', emoji: '🌐' },
-  { title: 'Complete a triathlon', category: 'achievement', emoji: '🏊' },
-  { title: 'Read 100 books in a year', category: 'achievement', emoji: '📚' },
-  { title: 'Become completely debt-free', category: 'achievement', emoji: '💸' },
-  { title: 'Meditate every day for a year', category: 'achievement', emoji: '🧘' },
-
-  // Social
-  { title: 'Volunteer abroad for a month', category: 'social', emoji: '🤝' },
-  { title: "Reconnect with someone you've lost touch with", category: 'social', emoji: '💌' },
-  { title: 'Host a dinner party for 20+ people', category: 'social', emoji: '🍽️' },
-  { title: 'Make a close friend in another country', category: 'social', emoji: '🌏' },
-  { title: 'Mentor someone just starting out', category: 'social', emoji: '👐' },
-  { title: 'Attend a world-class sporting event live', category: 'social', emoji: '🏟️' },
-  {
-    title: 'Tell the most important people in your life exactly why they matter',
-    category: 'social',
-    emoji: '❤️',
-  },
-
-  // Humanitarian
-  { title: 'Plant 1,000 trees', category: 'humanitarian', emoji: '🌳' },
-  { title: "Fund a child's education for a year", category: 'humanitarian', emoji: '🏫' },
-  { title: 'Build something that outlasts you', category: 'humanitarian', emoji: '🏗️' },
-  { title: 'Raise money for a cause you believe in', category: 'humanitarian', emoji: '💚' },
-  { title: 'Donate anonymously and never tell anyone', category: 'humanitarian', emoji: '🤫' },
-];
+/**
+ * Suggestions are drawn from the shared corpus rather than a private list.
+ *
+ * This used to be 52 hand-written items — a near-duplicate of the 145 already
+ * sitting in `/bucket-list-ideas`, which were unreachable because they lived
+ * inside a page component. Users were being offered a third of the material
+ * the product already owned, and any new idea had to be written twice to show
+ * up in both places.
+ */
+const SUGGESTION_POOL: SuggestionItem[] = ALL_EXPERIENCES;
 
 // ─── Token-based title similarity ────────────────────────────────────────────
 
@@ -357,12 +299,24 @@ export function getBucketListSuggestions(
       .sort((a, b) => a.k - b.k)
       .map(({ v }) => v);
 
-  // Return up to count/2 from gaps + rest from familiar
+  // Half from categories the user has nothing in, half from ones they do.
   const gapCount = Math.min(Math.ceil(count / 2), gaps.length);
   const famCount = Math.min(count - gapCount, familiar.length);
+  const picked = [...shuffle(gaps).slice(0, gapCount), ...shuffle(familiar).slice(0, famCount)];
 
-  return [...shuffle(gaps).slice(0, gapCount), ...shuffle(familiar).slice(0, famCount)].slice(
-    0,
-    count
-  );
+  // Backfill when one side runs short of its half, or the split silently
+  // returns fewer than asked. An empty list is the worst case: every category
+  // is a gap and `familiar` is empty, so a request for 4 returned 2 — the
+  // brand-new user, who has the least to go on, got half as many ideas as
+  // anyone else.
+  if (picked.length < count) {
+    const used = new Set(picked.map((p) => p.title));
+    picked.push(
+      ...shuffle(pool)
+        .filter((p) => !used.has(p.title))
+        .slice(0, count - picked.length)
+    );
+  }
+
+  return picked.slice(0, count);
 }
