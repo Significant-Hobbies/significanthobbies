@@ -39,6 +39,13 @@ is the bridge between daily practice and life aspirations.
   77 exactly zero, on `/dashboard`, `/daily`, `/trajectory`, `/look-back`,
   `/commitments` and their public profile. See
   [`docs/architecture/decisions.md`](docs/architecture/decisions.md) A10.
+- **The corpus is reachable (2026-07-26):** every "thing you could do" the
+  product owns is now importable data rather than a const inside a page
+  component. 322 experiences at `/experiences`, each with its own page; the
+  suggestion engine reads all of them where it previously had a private
+  52-item pool. 122 hobbies gained twelve cross-cutting facets, so "gentle,
+  cheap, screen-free" is two clicks rather than unanswerable. See
+  [`docs/architecture/decisions.md`](docs/architecture/decisions.md) A11.
 - **Discovery:** the hobby quiz (`/find-your-hobby`) is the single primary
   discovery UX (2026-07-03). The other three surfaces (`/hobbies`, `/explore`,
   `/journeys`) are hidden from homepage/nav/footer; code intact, reachable
@@ -137,16 +144,21 @@ and is genuinely public — that one is consistent.
    `content-flywheel.spec.ts` cannot catch it — it asserts on `main#main`,
    which a nested unnamed `<main>` leaves at a count of one. Sweep the rest and
    tighten that assertion to `page.locator('main')`.
-2. **Content for older visitors, remaining items.** The `/bucket-list-before-30`
+2. **The remaining stranded content.** ~450 list items are still locked inside
+   42 blog posts as prose blocks, and `famous-journeys.ts` (35 lives, 127
+   phases) is in the sitemap but still two hops from any nav entry — its only
+   inbound link is from `/hobbies`, which is itself not in the nav. Surfacing
+   journeys in-product is a quiz-funnel decision, not a code one.
+3. **Content for older visitors, remaining items.** The `/bucket-list-before-30`
    copy ("before life narrows"), `/hobbies-for-resume` framing, the
    `what-are-significant-hobbies` worked example ending at "career, now", and
    the "Life journey" starter template in `src/lib/templates.ts` whose last
    phase ends at age 28. None are linked from in-product navigation.
-3. Apply `drizzle/0003_visibility_and_timezone.sql` to dev and production.
-4. Capture the 7-day PostHog quiz-funnel result, then freeze the winning
+4. Apply `drizzle/0003_visibility_and_timezone.sql` to dev and production.
+5. Capture the 7-day PostHog quiz-funnel result, then freeze the winning
    discovery path and pause feature development.
-5. Review and merge the content-flywheel branch after OpenSpec verification.
-6. **Make the journal an actual bridge.** `journalEntries` has no foreign key
+6. Review and merge the content-flywheel branch after OpenSpec verification.
+7. **Make the journal an actual bridge.** `journalEntries` has no foreign key
    beyond `userId`, so the product's headline claim is copy rather than code.
    Adding an optional hobby/timeline/commitment reference to a journal entry is
    the single highest-leverage change available: it makes the thesis true and
@@ -154,7 +166,7 @@ and is genuinely public — that one is consistent.
    [`docs/product/overview.md`](docs/product/overview.md).
 5. Tighten the first-time user journey to a meaningful public timeline.
 6. Wire habits ↔ commitments (optional explicit link, no auto-link by default).
-7. Decide whether the social layer earns investment. `follows` is a vanity
+8. Decide whether the social layer earns investment. `follows` is a vanity
    counter — no follower list, no feed, and no notification of any kind exists
    in the codebase, so a like, comment, or follow is silently discarded. Either
    ship notifications or stop presenting these as social features.

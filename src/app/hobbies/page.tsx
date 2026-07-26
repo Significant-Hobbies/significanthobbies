@@ -11,6 +11,7 @@ import {
 import { categoryImageSrc, categoryImageSrcSet } from '~/lib/category-images';
 import { HOBBY_CATEGORIES } from '~/lib/hobbies';
 import { cn } from '~/lib/utils';
+import { HobbyFacetsClient } from './hobby-facets-client';
 
 export const metadata = {
   title: 'Hobby Directory — SignificantHobbies',
@@ -46,6 +47,10 @@ export default function HobbiesPage() {
           </p>
         </FadeIn>
       </div>
+
+      {/* Facets first: a category answers "what kind of thing is this", which is
+          only useful once you already know what you want. */}
+      <HobbyFacetsClient />
 
       {/* ─── Browse by category — image cards ─────────────────────────────── */}
       <FadeIn className="mb-16" delay={0.1}>

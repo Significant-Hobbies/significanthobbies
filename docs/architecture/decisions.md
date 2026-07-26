@@ -244,3 +244,46 @@ ages 0-120), with regressions pinning the 64- and 71-year-old cases.
   a 71-year-old with 3,734 practice sessions they had not done.
 - The grid's row count is personal, so nothing may assume ~77 rows or a
   4,000-cell array. `LifeGrid` derives its axis label from `cells.length`.
+
+## A11 — A page per experience, and facets over the hobby catalogue
+
+**Decision:** Every one of the 322 experiences has a page at
+`/experiences/<slug>`, browsable and filterable at `/experiences`. Hobbies keep
+their single category and gain twelve cross-cutting facets, filterable on
+`/hobbies`.
+
+**Why:** The corpus audit found roughly 700 distinct possibilities in the repo
+and one source wired to an engine. The rest were consts inside page components
+— unreachable by any code, and reachable by a person only if they happened to
+land on the right SEO page. A product whose thesis is "show people what is
+possible" cannot keep its possibilities in a render tree.
+
+Facets exist because a category answers *what kind of thing is this* and a
+person is asking *would this fit my life*. Those are different questions, and
+the catalogue could only answer the first. `gentle` is the one that matters
+most: it is what lets someone with limited mobility, an injury, or eighty years
+behind them find anything at all.
+
+**Constraints:**
+
+- **Every entry must carry written prose.** Pages were withheld from the 147
+  title-only ideas until each had a description, because a page whose only
+  unique content is its own heading is thin, and thin pages are a *site-wide*
+  signal that would drag down the 122 hobby pages that already work. If a new
+  idea is added without a sentence, it must not get a page.
+- **`firstSteps` is not `generateQuestChain`.** The chain is templated on
+  category alone, so all 75 travel items produced identical body copy with a
+  noun swapped — acceptable inside the app where a user sees one, not across
+  175 indexable pages where it was most of the body. `firstSteps` weaves in the
+  entry's own description, region or horizon, and cross-reference. A test holds
+  bodies above 95% unique across the whole set.
+- **Every hobby takes a position on `gentle` vs `active`.** They are mutually
+  exclusive and one is required — an unlabelled hobby silently vanishes from
+  the filter that matters most. Anything involving kneeling, carrying, or
+  standing for hours is `active`, Gardening included.
+- **Slug collisions resolve to the richer record.** "Run a marathon" is both an
+  idea and a before-50 milestone. Ideas iterate first, so first-writer-wins
+  handed three shared titles to the version with no description and cost each
+  the page it had earned.
+- Destination cross-references point at `FAMOUS_BUCKET_LISTS`, not
+  `famous-journeys`. The two share some names but are separate sets.

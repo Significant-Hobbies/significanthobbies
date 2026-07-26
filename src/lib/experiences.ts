@@ -1494,6 +1494,313 @@ function slugify(value: string): string {
   );
 }
 
+// ─── Idea descriptions ───────────────────────────────────────────────────────
+
+/**
+ * A written line for each of the 147 ideas that had only a title.
+ *
+ * Keyed by slug rather than title, so an idea can be reworded without
+ * orphaning its description. These are what let those entries have a page:
+ * before them, `/experiences/<slug>` would have been a heading and nothing
+ * else, which is a thin page, and thin pages are a site-wide signal.
+ */
+export const IDEA_DESCRIPTIONS: Record<string, string> = {
+  'see-the-northern-lights-in-iceland-or-norway':
+    'Aurora forecasts are a gamble. Clear skies, dark months, and most people waiting several cold nights for one good hour.',
+  'walk-the-camino-de-santiago-800km-across-spain':
+    'Roughly five weeks from the French border, and your feet set the schedule. Beds in albergues cost a few euros.',
+  'safari-in-the-serengeti-at-sunrise':
+    'A cold open-sided jeep and a 5am start, because the cats hunt before the heat arrives and then sleep.',
+  'visit-all-seven-wonders-of-the-world':
+    'Petra, the Colosseum, Chichen Itza, Christ the Redeemer, the Great Wall, Machu Picchu, the Taj. Four continents, years of planning.',
+  'see-the-cherry-blossoms-in-kyoto-japan':
+    'Peak bloom lasts about a week and shifts by a fortnight each year. Book early, then accept the forecast moves.',
+  'drive-route-66-end-to-end-across-america':
+    'Chicago to Santa Monica, about 2,400 miles. Much of it is now frontage road, faded neon, and towns the interstate skipped.',
+  'spend-a-week-in-antarctica':
+    'Two days crossing the Drake Passage before you see land. Expensive, tightly seasonal, and the seasickness is not a rumour.',
+  'swim-in-the-dead-sea':
+    'Ten times saltier than the ocean, so you float without trying. Any cut on your skin will announce itself.',
+  'watch-the-sunrise-from-machu-picchu-peru':
+    'The first bus out of Aguas Calientes leaves before 5am and the queue starts earlier. Cloud often wins anyway.',
+  'take-the-trans-siberian-railway-across-russia':
+    'Seven days, eight time zones, a samovar at the end of each carriage. Bring food, cards, and low expectations of privacy.',
+  'sail-the-greek-islands-for-a-week':
+    'Short hops between anchorages, meltemi winds through August, dinner wherever you tie up. Crewed charters exist if you cannot sail.',
+  'see-the-great-barrier-reef':
+    '1,400 miles of coral, roughly half the cover lost since 1995. Go to the outer reef, not the day-tour pontoons.',
+  'visit-the-taj-mahal-at-dawn':
+    'Gates open at sunrise and the marble runs pink to white within an hour. Closed Fridays for prayer.',
+  'explore-the-amazon-rainforest':
+    'Humidity you wear, and most wildlife heard rather than seen. A local guide is the difference between a green wall and a forest.',
+  'see-the-midnight-sun-in-scandinavia':
+    'Above the Arctic Circle in June the sun never drops. Sleep becomes a decision instead of a response.',
+  'road-trip-across-new-zealand':
+    'Both islands in three weeks is rushing. South Island distances look small on the map and drive twice as long.',
+  'see-the-pyramids-of-giza':
+    "They stand at the edge of Cairo's sprawl, not alone in empty desert. Built before the last mammoths died.",
+  'trek-to-everest-base-camp':
+    'Twelve days up, four down, and 5,364 metres doing most of the work on your lungs. Altitude ignores fitness.',
+  'visit-the-temples-of-angkor-wat-cambodia':
+    'Over 400 square kilometres of ruins. Three days barely covers it, and the crowds thin sharply by mid-afternoon.',
+  'ride-the-orient-express':
+    'The revived Venice Simplon route runs a handful of times a year, costs thousands, and enforces black tie at dinner.',
+  'visit-all-50-us-states':
+    'Alaska and Hawaii are the two that stall people. Most who finish do it in clusters across a decade.',
+  'see-the-tulip-fields-in-the-netherlands':
+    'Six weeks in April and May, then the heads are cut so the bulbs fatten. Rent a bike outside Keukenhof.',
+  'hike-through-patagonia':
+    'Wind that knocks you sideways and four seasons before lunch. The W circuit in Torres del Paine takes five days.',
+  'experience-carnival-in-rio-de-janeiro':
+    'Five days, street blocos from dawn, and Sambadrome parades running until sunrise. Accommodation triples in price a year ahead.',
+  'skydive-from-15-000-feet':
+    'About sixty seconds of freefall before the canopy opens. Tandem needs no training, just a morning and a signature.',
+  'bungee-jump-off-a-bridge':
+    'The stall at the edge is the hard part, not the fall. Operators count down so you stop deliberating.',
+  'climb-a-mountain-over-4-000-metres':
+    'Mont Blanc, Kilimanjaro, and dozens of Colorado peaks qualify. Acclimatise slowly; altitude sickness ignores how strong your legs are.',
+  'surf-a-wave-over-10-feet':
+    'Two-storey faces, long hold-downs, and years of smaller water first. Never paddle out on a big day alone.',
+  'swim-with-humpback-whales':
+    'Tonga and the Dominican Republic license it. They are the length of a bus and decide how close you get.',
+  'run-with-the-bulls-in-pamplona':
+    '825 metres in about three minutes, and people are gored most years. Run sober or watch from a balcony.',
+  'white-water-raft-a-class-v-river':
+    'Continuous rapids where a swim is genuinely dangerous. Guided trips exist, but you still paddle hard on command.',
+  'hike-the-appalachian-trail-end-to-end':
+    '2,190 miles, five to seven months, and roughly one in four who start reach Katahdin.',
+  'dive-the-blue-hole-in-belize':
+    'A sinkhole 124 metres deep with stalactites hanging at forty. Dark, narcotic, and advanced certification is not optional.',
+  'sleep-under-the-stars-in-the-sahara':
+    'No light pollution for hundreds of miles, and near-freezing by 3am. Bring more layers than feels reasonable at noon.',
+  'paraglide-over-the-swiss-alps':
+    'Tandem flights from Interlaken need a short run off the slope and about twenty minutes of your day.',
+  'cage-dive-with-great-white-sharks':
+    'Gansbaai, Guadalupe, or the Farallones. The cage removes the danger and none of the reaction in your chest.',
+  'climb-el-capitan-in-yosemite':
+    '3,000 feet of granite and usually a night sleeping on a portaledge. Years of trad climbing come before it.',
+  'ride-a-motorcycle-across-a-country':
+    'Six hours in the saddle is a long day, and weather arrives without a windscreen. Plan for breakdowns.',
+  'complete-an-ironman-triathlon':
+    '3.8km swim, 180km ride, then a marathon. Six-month plans run about twelve training hours a week.',
+  'hike-the-pacific-crest-trail':
+    '2,650 miles from Mexico to Canada, with snow at both ends of the window. Permits are capped daily.',
+  'go-on-a-polar-expedition':
+    'Hauled sledges, minus forty, and no rescue within hours. Guided crossings cost about what a car costs.',
+  'zipline-through-a-rainforest-canopy':
+    'Thirty metres up on a steel cable, moving fast enough that the canopy blurs. Costa Rica built the template.',
+  'learn-to-free-solo-climb':
+    'No rope means no second mistake. Almost everyone who does it spent a decade roped on the same routes first.',
+  'do-a-polar-bear-plunge':
+    'Cold shock takes your breath in the first ten seconds. Get out before your hands stop obeying you.',
+  'drive-a-racecar-at-full-speed':
+    'Track days put you in a caged car with an instructor beside you. The braking, not the speed, surprises people.',
+  'go-canyoneering':
+    'Abseiling into slot canyons where the only way out is downstream. Check the forecast; flash floods start storms away.',
+  'trek-across-iceland':
+    'The Laugavegur takes four days. The full north-south crossing takes weeks, over unbridged rivers and grey volcanic sand.',
+  'kayak-the-grand-canyon':
+    '277 river miles and roughly three weeks, gated by a private permit lottery most applicants lose for years.',
+  'dog-sled-in-alaska':
+    'Fourteen dogs pulling harder than you expect. Once they settle, the only sound is runners cutting through snow.',
+  'write-and-finish-a-novel':
+    'The finishing is the rare part. Eighty thousand words at five hundred a day is about six months.',
+  'learn-to-play-a-musical-instrument':
+    'The first three months sound bad, and that is the whole test. Twenty minutes daily beats a weekend binge.',
+  'paint-something-you-re-proud-to-hang-on-a-wall':
+    'The first dozen canvases go in a cupboard. Somewhere after that the hand catches up with the eye.',
+  'learn-to-cook-10-world-cuisines-from-scratch':
+    'Start with the pantry, not the recipes. A shelf of fish sauce, gochujang, and dried chillies does most of the work.',
+  'record-a-song-and-release-it':
+    'A laptop, an interface, and a quiet room will do. Distribution to the streaming services costs about twenty pounds a year.',
+  'perform-on-a-stage-in-front-of-a-crowd':
+    'Nerves peak in the wings, not under the lights. Open mics exist so the first time costs nothing.',
+  'learn-a-new-language-to-conversational-fluency':
+    'Roughly 600 hours for a close language, double that for Mandarin or Arabic. Speaking badly early is the shortcut.',
+  'design-and-build-something-with-your-hands':
+    'A shelf, a bike, a bread oven. The measuring is slow and the mistakes stay visible for years.',
+  'take-a-photograph-that-stops-people-in-their-tracks':
+    'Thousands of frames for the one. Light and timing decide it far more than the camera you own.',
+  'write-your-memoir':
+    'Not everything that happened, only what it meant. Most first drafts are far too kind to the writer.',
+  'learn-calligraphy':
+    'Broad nib, ink, and the same letterform a hundred times. The pleasure is the repetition, not the finished card.',
+  'create-a-short-film':
+    'Ten minutes takes a weekend to shoot and a month to cut. Sound is what makes it look expensive.',
+  'take-a-pottery-class-and-make-a-finished-piece':
+    'Centring the clay defeats most beginners for several sessions. Expect a third of your pieces to crack in the kiln.',
+  'learn-watercolour-painting':
+    'Unforgiving. The paper records every hesitation and nothing can be painted over, so the trick is leaving white alone.',
+  'design-and-make-your-own-clothes':
+    'A pattern, a machine, and a great deal of unpicking. Fit on your own body is the reward.',
+  'build-a-piece-of-furniture-from-scratch':
+    'A stool before a table. Wood moves with the seasons, which is why joints matter more than screws.',
+  'start-a-podcast':
+    'Most die at episode seven. One cheap dynamic microphone and a consistent day of the week beat any gear list.',
+  'perform-stand-up-comedy':
+    'Five minutes takes months to write and dozens of open mics to sand down. Silence teaches faster than laughter.',
+  'choreograph-and-perform-a-dance':
+    'Counting eights until the shape holds, then discovering what the body does differently once someone is watching.',
+  'compose-an-original-piece-of-music':
+    "Eight bars that are genuinely yours is harder than an hour of other people's. The notation software is free.",
+  'illustrate-a-children-s-book':
+    'Thirty-two pages, the same character recognisable in every spread, and the pictures carrying what the words leave out.',
+  'throw-a-kiln-fired-ceramic-pot':
+    'Wedge, centre, pull, dry slowly, glaze, fire. Six stages, and any one of them can take the piece from you.',
+  'learn-to-draw-portraits':
+    'The eyes sit halfway down the skull, which nobody believes until they measure. Start with faces you already know.',
+  'write-and-perform-spoken-word-poetry':
+    'Written for the ear, so it only exists out loud. Most pieces change shape in the final rehearsal.',
+  'publish-an-article-in-a-magazine':
+    'Pitch before you write. Three paragraphs, a clear angle, and a reason it has to be you.',
+  'learn-to-fly-a-plane':
+    'Hands on the yoke within ten minutes of the first lesson. Landing is the part that takes forty attempts.',
+  'start-and-grow-a-business':
+    'Revenue before polish. Most of year one is finding out who actually pays, and what they think they bought.',
+  'earn-a-black-belt-in-a-martial-art':
+    'Four to six years of turning up twice a week. The belt marks the end of the beginning.',
+  'become-fluent-in-a-second-language':
+    'Fluent means arguing, joking, and handling a phone call. That sits several years past ordering dinner confidently.',
+  'read-52-books-in-a-year':
+    'About forty pages a day. Abandoning books that are not working is part of the method, not a failure.',
+  'become-completely-debt-free':
+    'The final payment feels smaller than expected. The change is in what the monthly numbers stop deciding for you.',
+  'meditate-every-day-for-365-days':
+    'Ten minutes counts. What matters is what happens after month one, when it has become reliably boring.',
+  'learn-to-code-and-ship-an-app':
+    "Shipping is a separate skill from writing code: deploys, sign-ups, and someone else's browser breaking it quietly.",
+  'climb-the-corporate-ladder-to-a-role-you-dreamed-of':
+    'Visible work over years, plus a few people willing to say your name in rooms you are not in.',
+  'compete-in-a-national-championship':
+    'Qualifying standards are published years ahead. Most of the field trains around a full-time job to meet them.',
+  'earn-a-postgraduate-degree':
+    'One to five years, often alongside work, ending in a thesis few people read and one mind permanently rewired.',
+  'break-a-personal-athletic-record':
+    'Progressive overload and patience. Records usually fall in sessions that felt completely unremarkable at the time.',
+  'master-a-complex-card-trick':
+    'Sleight of hand only looks casual after a thousand repetitions in front of a mirror. The patter takes as long.',
+  'memorise-a-long-poem-or-speech':
+    'The method of loci, or brute repetition. Either takes a few weeks and then stays available for decades.',
+  'build-an-investment-portfolio':
+    'Boring wins: low fees, broad index funds, and not touching anything the month the numbers drop.',
+  'complete-a-tough-mudder':
+    'Ten miles, twenty-odd obstacles, and mud you find days later. Strangers pull each other over the walls.',
+  'do-100-push-ups-in-a-row':
+    'Small sets scattered through the day beat one hard session. Most plans get there in a couple of months.',
+  'become-a-certified-scuba-diver':
+    'Open Water takes four days, and about twenty dives before you stop thinking about your own breathing.',
+  'get-a-pilot-s-licence':
+    'Forty logged hours minimum, a written exam, a medical, and a check ride. Budget well past the advertised figure.',
+  'compete-in-an-obstacle-course-race':
+    'Grip strength decides more of these than running does. Hang from a bar twice a week for a season.',
+  'solve-a-rubik-s-cube-in-under-a-minute':
+    'Learn the beginner method, then drill it. Sub-minute takes a few weeks and no unusual talent.',
+  'complete-a-100-mile-ultramarathon':
+    'Twenty-four to thirty-six hours, much of it walking, with a crew handing you food you no longer want.',
+  'qualify-for-the-boston-marathon':
+    'A certified course and a time that tightens each year. The real cutoff has beaten the published standard since 2011.',
+  'volunteer-abroad-for-at-least-a-month':
+    'Pick an organisation that would exist without you. The skills they lack beat the enthusiasm they already have.',
+  'reconnect-with-someone-you-ve-lost-touch-with':
+    'The awkward first message is shorter than you think. Most people are glad, and assumed you had moved on.',
+  'host-a-dinner-party-for-20-people':
+    'Cook one thing that scales and buy the rest. A host still in the kitchen at nine has planned wrong.',
+  'make-a-close-friend-in-another-country':
+    'It takes more than a good week together. It takes the messages afterwards, across time zones, for years.',
+  'mentor-someone-just-starting-out-in-your-field':
+    'An hour a month and honest answers. What they need is the map, not the encouragement.',
+  'attend-a-world-class-sporting-event-live':
+    "Television flattens the speed. Sit high enough to read the shape of the play rather than the players' faces.",
+  'tell-the-most-important-people-in-your-life-why-they-matter':
+    'Specific beats general. Name the thing they did and roughly when, not their qualities in the abstract.',
+  'throw-a-surprise-party-that-genuinely-surprises-someone':
+    'One leak ends it. Fewer people in on it, and a cover story boring enough to sound like a Tuesday.',
+  'join-a-community-choir-or-theatre-group':
+    'Most of them do not audition. You will be the worst there for a season, alongside people who once were.',
+  'take-a-road-trip-with-your-best-friends':
+    'The long silences in the car are the point. Book less than feels safe and leave afternoons unplanned.',
+  'write-heartfelt-letters-to-10-people-who-changed-your-life':
+    'Handwritten, posted, no reply expected. Several will keep it in a drawer for the rest of their lives.',
+  'spend-a-week-with-your-grandparents-or-elders':
+    'Bring a recorder and ask about the years before you existed. Nobody regrets the tape; plenty regret not making it.',
+  'host-a-family-reunion':
+    'Somebody has to send the first message to forty people. The logistics are dull and the room is not.',
+  'learn-someone-s-language-to-have-a-conversation-with-them':
+    "Enough to sit at their mother's table and follow the joke. Fluency is optional; the effort is legible.",
+  'attend-a-multi-day-music-festival':
+    'Three days of standing, poor sleep, and one set you will still describe in twenty years. Bring earplugs.',
+  'do-a-group-charity-challenge-with-friends':
+    'Training together is most of it. The fundraising page gets awkward around the third ask, and works anyway.',
+  'create-a-family-cookbook-with-old-recipes':
+    'The measurements will be missing. Cook alongside whoever wrote them and record what their hands actually do.',
+  'organise-a-neighbourhood-event':
+    'A street closure form, twenty flyers, and borrowed trestle tables. Most neighbours say yes once somebody else has started.',
+  'get-married-or-celebrate-a-long-term-partnership':
+    'The vows outlast the catering. Smaller rooms tend to hold more of what people actually came for.',
+  'spend-a-month-living-with-a-foreign-family':
+    'Meals are where the language happens. A month is long enough to stop being treated as a guest.',
+  'teach-a-skill-you-re-good-at-to-a-group-of-strangers':
+    'You will find the holes in your own understanding within ten minutes. Prepare less and demonstrate more.',
+  'have-a-meaningful-conversation-with-a-complete-stranger-every-week-for-a-year':
+    'Fifty-two openings, and the first question is the whole skill. Ask what they are working on, then stop talking.',
+  'co-write-something-with-a-friend':
+    'Two hands on one document tests a friendship early. Agree who holds the final cut before the first draft.',
+  'show-up-for-someone-in-a-crisis-without-being-asked':
+    'Do not ask what they need. Bring food, run the laundry, sit there. An offer is a task; presence is not.',
+  'celebrate-someone-else-s-milestone-as-if-it-were-your-own':
+    'Turn up, take the photographs, make the toast. The absence of envy is the whole thing, and it is practised.',
+  'plant-1-000-trees':
+    'Native species, right site, and somebody watering through three summers. Survival rate matters far more than the number planted.',
+  'fund-a-child-s-education-for-a-year':
+    'Fees, uniform, and books run to a few hundred pounds a year in much of the world. Ask the school directly.',
+  'build-something-that-outlasts-you':
+    'A trust, a trail, an institution with its own funding. It only counts once it runs without you.',
+  'raise-money-for-a-cause-you-deeply-believe-in':
+    'The first ten donations come from people who would have given you the money anyway. The next hundred need a reason.',
+  'donate-anonymously-and-tell-no-one':
+    'No receipt, no thank-you note, no post about it. Find out what the impulse is worth when nobody is counting.',
+  'start-a-scholarship-fund':
+    'An endowment needs capital. An annual award needs only a cheque and a school willing to administer it.',
+  'build-a-school-or-library-in-an-underserved-community':
+    'The building is the easy part. Teachers, salaries, and maintenance are what quietly fail in year three.',
+  'volunteer-at-a-hospital-for-a-year':
+    'Mostly directions, tea, and sitting with patients whose families cannot get there. Weekly shifts, and nothing about it photographs well.',
+  'teach-english-in-a-developing-country':
+    'A CELTA takes a month and separates you from volunteers who leave a class worse than they found it.',
+  'adopt-or-foster-a-child':
+    'Approval runs six months to two years of assessment. Teenagers are where the shortage of placements actually sits.',
+  'donate-a-kidney-or-be-a-living-donor':
+    'One night in hospital, six weeks off work, and a stranger comes off dialysis. Long-term donor risk stays near baseline.',
+  'leave-a-legacy-gift-to-a-charity-in-your-will':
+    'One clause and a registered charity number. Costs nothing now and moves more than most people give while living.',
+  'start-a-foundation':
+    'Trustees, registration, and annual accounts. Below a certain size the reporting burden outweighs everything it manages to give away.',
+  'clean-up-a-beach-or-river-in-your-community':
+    'Two hours, gloves, and a shared bin bag. Log what you find; the data travels further than the litter.',
+  'create-a-free-resource-that-helps-thousands-of-people':
+    'One good guide, kept current for years. The maintenance is what separates it from thousands of abandoned ones.',
+  'advocate-for-a-policy-change-you-believe-in':
+    'Committee submissions, one councillor at a time, and years of no. Then it passes and everyone calls it obvious.',
+  'feed-a-hundred-families':
+    'A food bank moves more per pound than a collection tin. Ask what they are short of before buying anything.',
+  'sponsor-a-refugee-family':
+    'Housing, a bank account, school places, and a year of phone calls. Community sponsorship schemes exist in most countries.',
+  'run-for-local-office':
+    'Signatures, a deposit, and hundreds of doors. Local seats turn on a few hundred votes, and often nobody else stands.',
+  'start-a-community-garden':
+    'Permission from a landowner, a water supply, and six people who still turn up in November. Plots fill faster than volunteers.',
+  'write-a-book-that-changes-someone-s-life':
+    'You will never know which reader it was. Write the thing you needed and could not find.',
+  'give-blood-50-times-in-your-life':
+    'Every twelve weeks, an hour each time. Fifty donations is roughly fifteen years of quietly turning up.',
+  'reduce-your-carbon-footprint-to-near-zero':
+    'Flights, home heating, and beef account for most of it. The last tonne costs far more effort than the first five.',
+  'build-homes-with-habitat-for-humanity':
+    'No trade skills required on site. Framing, painting, and the family who will live there working the same shift.',
+  'leave-a-place-cleaner-and-more-hopeful-than-you-found-it':
+    'The measure is what is still standing a year after you left, and whether anyone there mentions your name.',
+};
+
 /**
  * Every entry across all three corpora, deduplicated and slugged.
  *
@@ -1518,7 +1825,15 @@ export const EXPERIENCE_ENTRIES: ExperienceEntry[] = (() => {
   for (const category of EXPERIENCE_CATEGORIES) {
     const group = EXPERIENCES_BY_CATEGORY[category];
     for (const title of group.ideas) {
-      add({ slug: slugify(title), title, emoji: group.emoji, category, kind: 'idea' });
+      const slug = slugify(title);
+      add({
+        slug,
+        title,
+        description: IDEA_DESCRIPTIONS[slug],
+        emoji: group.emoji,
+        category,
+        kind: 'idea',
+      });
     }
   }
   for (const m of MILESTONES) {
@@ -1585,4 +1900,92 @@ export function relatedExperiences(entry: ExperienceEntry, limit = 6): Experienc
     0,
     limit
   );
+}
+
+// ─── First steps ─────────────────────────────────────────────────────────────
+
+export type FirstStep = { title: string; body: string; emoji: string };
+
+/** Region-specific practicality, so travel steps are not one paragraph reused 75 times. */
+const REGION_NOTE: Record<DestinationRegion, string> = {
+  europe: 'Shoulder season — May or September — is usually cheaper and less crowded than summer.',
+  asia: 'Monsoon and dry season matter more than temperature here; check which months you want.',
+  americas:
+    'Distances are larger than they look on a map. Budget travel days, not just arrival dates.',
+  'africa-middle-east':
+    'Wildlife and heat both run on a calendar. The right month changes the trip entirely.',
+  'oceania-antarctica':
+    'Seasons are inverted, and the far south has a narrow window. Book further ahead than feels sensible.',
+};
+
+const HORIZON_NOTE: Record<MilestoneHorizon, string> = {
+  'before-30': 'No deadline is real here. The list is a prompt, not a schedule.',
+  'before-50': 'Most people who do this start before they feel ready for it.',
+};
+
+/**
+ * The "how would I actually start" steps shown on an experience page.
+ *
+ * Deliberately not `generateQuestChain`. That one is templated purely on
+ * category and title, so all 75 travel items produced the same four
+ * paragraphs with a noun swapped — fine inside the app where a user sees one
+ * of them, bad on 175 indexable pages where it is most of the body.
+ *
+ * These weave the entry's own data in: its description, its region or horizon,
+ * and the person who did it. Two destinations in different regions no longer
+ * read alike, and a milestone never reads like a destination.
+ */
+export function firstSteps(entry: ExperienceEntry): FirstStep[] {
+  const steps: FirstStep[] = [];
+
+  // The description is quoted rather than restated. It appears as the lead
+  // paragraph directly above, and an unattributed repeat a few hundred pixels
+  // later reads like a mistake; framing it as the claim being tested makes the
+  // repetition deliberate and gives the step something to argue with.
+  steps.push({
+    emoji: '🔍',
+    title: 'Check whether the promise holds',
+    body: entry.description
+      ? `“${entry.description}” That is the pitch. Spend an hour on first-hand accounts rather than listicles — what it costs, how long it really takes, and what people wish they had known.`
+      : 'Spend an hour on first-hand accounts rather than listicles — what it costs, how long it really takes, and what people wish they had known.',
+  });
+
+  if (entry.kind === 'destination' && entry.region) {
+    steps.push({
+      emoji: '🗓️',
+      title: 'Work out when to go',
+      body: REGION_NOTE[entry.region],
+    });
+  } else if (entry.kind === 'milestone' && entry.horizon) {
+    steps.push({
+      emoji: '🗓️',
+      title: 'Decide what "started" would look like',
+      body: `${HORIZON_NOTE[entry.horizon]} Name the smallest thing that would count as having begun, and do that one.`,
+    });
+  }
+
+  steps.push({
+    emoji: '🪜',
+    title: 'Find the small version first',
+    body:
+      entry.category === 'travel'
+        ? 'Somewhere nearer will tell you whether you actually like this kind of trip, for a fraction of the cost.'
+        : 'There is almost always a one-afternoon version. Do that before committing money or telling anyone.',
+  });
+
+  if (entry.famous) {
+    steps.push({
+      emoji: '👤',
+      title: `Read how ${entry.famous.name} approached it`,
+      body: `${entry.famous.name} ${entry.famous.note}. Other people's accounts are the cheapest research there is.`,
+    });
+  }
+
+  steps.push({
+    emoji: '📌',
+    title: 'Put it somewhere you will see it',
+    body: 'An intention you have not written down is a mood. A list you revisit is a decision you keep making.',
+  });
+
+  return steps;
 }

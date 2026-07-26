@@ -4,12 +4,12 @@ import { notFound } from 'next/navigation';
 
 import { JsonLd } from '~/components/json-ld';
 import {
+  type ExperienceEntry,
   findExperience,
+  firstSteps,
   PAGED_EXPERIENCES,
   relatedExperiences,
-  type ExperienceEntry,
 } from '~/lib/experiences';
-import { generateQuestChain } from '~/lib/quest-chains';
 import { safeDecodeURIComponent } from '~/lib/slug';
 
 /**
@@ -57,14 +57,11 @@ export default async function ExperiencePage({ params }: { params: Promise<{ slu
   const entry = resolve((await params).slug);
   if (!entry) notFound();
 
-  // The chain is the "how would I actually start" section. It is templated per
-  // category, so it supports the page rather than being its substance — the
-  // written description above it is what makes this page worth indexing.
-  const chain = generateQuestChain({
-    bucketItemId: entry.slug,
-    title: entry.title,
-    category: entry.category,
-  });
+  // Not generateQuestChain: that is templated on category alone, so all 75
+  // travel items rendered the same four paragraphs with a noun swapped — most
+  // of the body, identical across the set. These weave in the entry's own
+  // description, region or horizon, and cross-reference.
+  const chain = firstSteps(entry);
   const related = relatedExperiences(entry, 6);
 
   return (
@@ -79,7 +76,7 @@ export default async function ExperiencePage({ params }: { params: Promise<{ slu
             '@type': 'HowToStep',
             position: i + 1,
             name: s.title,
-            text: s.description,
+            text: s.body,
           })),
         }}
       />
@@ -124,13 +121,11 @@ export default async function ExperiencePage({ params }: { params: Promise<{ slu
         <h2 className="font-serif text-2xl text-foreground">How you would actually start</h2>
         <ol className="mt-5 space-y-4">
           {chain.map((step) => (
-            <li key={step.questId} className="border-border border-l-2 pl-4">
+            <li key={step.title} className="border-border border-l-2 pl-4">
               <p className="font-medium text-foreground">
                 {step.emoji} {step.title}
               </p>
-              <p className="mt-1 max-w-[62ch] text-base text-muted-foreground">
-                {step.description}
-              </p>
+              <p className="mt-1 max-w-[62ch] text-base text-muted-foreground">{step.body}</p>
             </li>
           ))}
         </ol>

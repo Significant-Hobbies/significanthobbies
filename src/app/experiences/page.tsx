@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 
-import { EXPERIENCE_CATEGORIES, EXPERIENCE_ENTRIES, PAGED_EXPERIENCES } from '~/lib/experiences';
+import { EXPERIENCE_CATEGORIES, EXPERIENCE_ENTRIES } from '~/lib/experiences';
 import { ExperiencesClient } from './experiences-client';
 
 export const metadata: Metadata = {
@@ -29,8 +29,8 @@ export default function ExperiencesPage() {
       </h1>
       <p className="mt-5 max-w-[62ch] text-lg text-foreground/80" style={{ lineHeight: 1.6 }}>
         {EXPERIENCE_ENTRIES.length} of them, in one place — places to go, milestones worth reaching,
-        and ideas worth stealing. {PAGED_EXPERIENCES.length} have a page of their own with a first
-        step you could take this week.
+        and ideas worth stealing. Each has a page of its own with a first step you could take this
+        week.
       </p>
 
       <ExperiencesClient entries={EXPERIENCE_ENTRIES} categories={EXPERIENCE_CATEGORIES} />

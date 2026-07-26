@@ -7,6 +7,7 @@ import {
   EXPERIENCE_ENTRIES,
   EXPERIENCES_BY_CATEGORY,
   findExperience,
+  firstSteps,
   MILESTONES,
   PAGED_EXPERIENCES,
   relatedExperiences,
@@ -132,21 +133,28 @@ describe('browsable entries', () => {
   });
 
   /**
-   * Ideas are iterated first and carry no description, so a naive
-   * first-writer-wins dedupe handed three shared titles to the bare version and
-   * cost them a page. The richer record has to win.
+   * Every entry now carries written prose — the 147 title-only ideas were
+   * described, so the whole corpus is pageable rather than the 175 that had
+   * descriptions to begin with.
    */
-  it('keeps the record with prose when two corpora share a title', () => {
-    expect(PAGED_EXPERIENCES).toHaveLength(175);
-    expect(PAGED_EXPERIENCES.length).toBe(MILESTONES.length + DESTINATIONS.length);
+  it('gives every entry a page, because every entry now says something', () => {
+    expect(PAGED_EXPERIENCES).toHaveLength(EXPERIENCE_ENTRIES.length);
+    expect(EXPERIENCE_ENTRIES.filter((e) => !e.description)).toHaveLength(0);
   });
 
-  it('gives a page only to entries that have something to say', () => {
+  it('holds every description to a real sentence, not a restated title', () => {
     for (const e of PAGED_EXPERIENCES) {
-      expect(e.description?.length ?? 0, e.title).toBeGreaterThan(10);
+      const words = (e.description ?? '').trim().split(/\s+/);
+      expect(words.length, e.title).toBeGreaterThanOrEqual(8);
+      expect(words.length, e.title).toBeLessThanOrEqual(30);
+      // A description that merely repeats the title tells the reader nothing.
+      expect(e.description?.toLowerCase(), e.title).not.toBe(e.title.toLowerCase());
     }
-    const unpaged = EXPERIENCE_ENTRIES.filter((e) => !e.description);
-    expect(unpaged.length).toBe(EXPERIENCE_ENTRIES.length - PAGED_EXPERIENCES.length);
+  });
+
+  it('has no two entries sharing a description', () => {
+    const all = PAGED_EXPERIENCES.map((e) => e.description);
+    expect(new Set(all).size).toBe(all.length);
   });
 
   it('resolves a known slug and rejects an unknown one', () => {
@@ -181,5 +189,73 @@ describe('onward links are actually clickable', () => {
 
   it('opens the browse list with something worth reading', () => {
     expect(EXPERIENCE_ENTRIES[0].description).toBeTruthy();
+  });
+
+  it('links every row on the browse list, now that all of them have a page', () => {
+    for (const e of EXPERIENCE_ENTRIES) expect(e.description, e.title).toBeTruthy();
+  });
+});
+
+describe('first steps are not one paragraph reused 175 times', () => {
+  /**
+   * `generateQuestChain` is templated on category alone, so every travel item
+   * produced identical body copy with the title swapped in. On 175 indexable
+   * pages that is most of the body, repeated — the thing that makes a set of
+   * pages read as templated rather than written.
+   */
+  it('reads differently for two destinations in different regions', () => {
+    const europe = PAGED_EXPERIENCES.find((e) => e.region === 'europe');
+    const asia = PAGED_EXPERIENCES.find((e) => e.region === 'asia');
+    if (!europe || !asia) throw new Error('expected a destination in each region');
+    const a = firstSteps(europe)
+      .map((s) => s.body)
+      .join(' ');
+    const b = firstSteps(asia)
+      .map((s) => s.body)
+      .join(' ');
+    expect(a).not.toBe(b);
+  });
+
+  it('reads differently for a milestone and a destination', () => {
+    const milestone = PAGED_EXPERIENCES.find((e) => e.kind === 'milestone');
+    const destination = PAGED_EXPERIENCES.find((e) => e.kind === 'destination');
+    if (!milestone || !destination) throw new Error('expected one of each');
+    expect(firstSteps(milestone).map((s) => s.title)).not.toEqual(
+      firstSteps(destination).map((s) => s.title)
+    );
+  });
+
+  it('weaves each entry own description into its opening step', () => {
+    for (const entry of PAGED_EXPERIENCES.slice(0, 40)) {
+      expect(firstSteps(entry)[0].body, entry.title).toContain(entry.description ?? '');
+    }
+  });
+
+  it('mentions the cross-referenced person where there is one', () => {
+    const withFamous = PAGED_EXPERIENCES.filter((e) => e.famous);
+    expect(withFamous.length).toBeGreaterThan(0);
+    for (const e of withFamous) {
+      const joined = firstSteps(e)
+        .map((s) => `${s.title} ${s.body}`)
+        .join(' ');
+      expect(joined).toContain(e.famous?.name ?? '');
+    }
+  });
+
+  /** The bodies across the whole set should be mostly distinct, not near-clones. */
+  it('produces mostly-unique bodies across every paged entry', () => {
+    const bodies = PAGED_EXPERIENCES.map((e) =>
+      firstSteps(e)
+        .map((s) => s.body)
+        .join(' ')
+    );
+    const unique = new Set(bodies).size;
+    expect(unique / bodies.length).toBeGreaterThan(0.95);
+  });
+
+  it('always gives at least three steps', () => {
+    for (const e of PAGED_EXPERIENCES) {
+      expect(firstSteps(e).length, e.title).toBeGreaterThanOrEqual(3);
+    }
   });
 });

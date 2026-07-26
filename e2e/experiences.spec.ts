@@ -63,16 +63,18 @@ test.describe('Experiences', () => {
     expect(res.status()).toBe(200);
   });
 
-  /**
-   * Entries with no written description deliberately have no page — 150 pages
-   * whose only unique content is their own heading would be thin, and thin
-   * pages are a site-wide signal.
-   */
-  test('a title-only idea has no page, and neither does a nonsense slug', async ({ page }) => {
-    for (const slug of ['see-the-northern-lights-in-iceland-or-norway', 'not-a-real-thing']) {
-      const res = await page.request.get(`/experiences/${slug}`, { failOnStatusCode: false });
-      expect(res.status(), slug).toBe(404);
-    }
+  test('an idea that used to be title-only now has a page of its own', async ({ page }) => {
+    // These were unpaged until every idea got a written description.
+    await page.goto('/experiences/see-the-northern-lights-in-iceland-or-norway');
+    await expect(page.getByRole('heading', { level: 1 })).toContainText('Northern Lights');
+    await expect(page.getByRole('heading', { name: 'How you would actually start' })).toBeVisible();
+  });
+
+  test('a nonsense slug still 404s', async ({ page }) => {
+    const res = await page.request.get('/experiences/not-a-real-thing', {
+      failOnStatusCode: false,
+    });
+    expect(res.status()).toBe(404);
   });
 
   test('onward links from a detail page actually go somewhere', async ({ page }) => {
