@@ -17,6 +17,7 @@ export const HOBBY_CATEGORIES: HobbyCategory[] = [
       'Ceramics',
       'Knitting',
       'Crochet',
+      'Quilting',
       'Embroidery',
       'Sewing',
       'Origami',
@@ -50,18 +51,25 @@ export const HOBBY_CATEGORIES: HobbyCategory[] = [
     name: 'Physical',
     emoji: '💪',
     hobbies: [
+      'Walking',
       'Running',
       'Cycling',
       'Swimming',
       'Hiking',
       'Climbing',
       'Yoga',
+      'Tai chi',
+      'Pilates',
       'Gym',
       'Martial arts',
       'Dance',
+      'Golf',
+      'Bowling',
+      'Lawn bowls',
       'Basketball',
       'Football',
       'Tennis',
+      'Table tennis',
       'Skiing',
       'Skateboarding',
       'Surfing',
@@ -77,10 +85,14 @@ export const HOBBY_CATEGORIES: HobbyCategory[] = [
     emoji: '📚',
     hobbies: [
       'Reading',
+      'Crosswords',
       'Chess',
+      'Bridge',
+      'Genealogy',
       'Coding',
       'Language learning',
       'Puzzles',
+      'Sudoku',
       'Philosophy',
       'History',
       'Astronomy',
@@ -167,6 +179,8 @@ export const HOBBY_CATEGORIES: HobbyCategory[] = [
       'Volunteering',
       'Hosting dinners',
       'Book club',
+      'Choir',
+      'Mahjong',
       'Improv comedy',
       'Theater',
       'Debate club',
@@ -176,6 +190,62 @@ export const HOBBY_CATEGORIES: HobbyCategory[] = [
 ];
 
 export const ALL_HOBBIES = HOBBY_CATEGORIES.flatMap((c) => c.hobbies);
+
+/**
+ * Hobbies that ask a lot of the body. Used to keep a set of suggestions from
+ * being uniformly strenuous — not to hide anything from anyone.
+ *
+ * The quiz has no idea how old you are or what your knees are like, and it
+ * never asks. It used to answer with `hobbies.slice(0, 3)`, so everyone whose
+ * top category was Physical got Running, Cycling, Swimming — the first three
+ * array entries, presented as a personalised result. For a 70-year-old the
+ * first instruction after the mortality page was "Do one tiny running session
+ * today."
+ */
+const STRENUOUS = new Set([
+  'Running',
+  'Climbing',
+  'Martial arts',
+  'Basketball',
+  'Football',
+  'Skiing',
+  'Skateboarding',
+  'Surfing',
+  'Rowing',
+  'Scuba diving',
+  'Fencing',
+  'Gym',
+  'Tennis',
+  'Hiking',
+  'Dance',
+]);
+
+export function isStrenuous(hobby: string): boolean {
+  return STRENUOUS.has(hobby);
+}
+
+/**
+ * Up to `limit` hobbies from a category, never all-strenuous.
+ *
+ * At most one demanding option makes the cut, and it is never first — so a set
+ * always opens with something anyone could start this afternoon while still
+ * offering a stretch. Categories with nothing strenuous in them are unaffected
+ * and keep their authored order.
+ */
+export function pickAcrossEffort(hobbies: string[], limit = 3): string[] {
+  const gentle = hobbies.filter((h) => !isStrenuous(h));
+  const strenuous = hobbies.filter((h) => isStrenuous(h));
+  if (strenuous.length === 0) return hobbies.slice(0, limit);
+
+  const picked = gentle.slice(0, Math.max(1, limit - 1));
+  if (picked.length < limit && strenuous.length > 0) picked.push(strenuous[0]);
+  // Backfill from whatever is left if the category was mostly strenuous.
+  for (const h of hobbies) {
+    if (picked.length >= limit) break;
+    if (!picked.includes(h)) picked.push(h);
+  }
+  return picked.slice(0, limit);
+}
 
 export function getCategoryForHobby(hobby: string): HobbyCategory | undefined {
   const lower = hobby.toLowerCase();

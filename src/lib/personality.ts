@@ -40,7 +40,7 @@ const ARCHETYPES: Record<string, Archetype> = {
     name: 'Action Hero',
     emoji: '⚡',
     description:
-      'You live in your body — outdoors, active, and always seeking the next physical challenge.',
+      'You live in your body — outdoors, active, and happiest when the day involves moving.',
   },
   mindBuilder: {
     name: 'Mind Builder',

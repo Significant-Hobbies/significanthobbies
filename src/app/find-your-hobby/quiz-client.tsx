@@ -29,7 +29,7 @@ import { useEffect, useRef, useState } from 'react';
 import { FadeIn, SpotlightCard } from '~/components/aceternity';
 import { QuizResultCard } from '~/components/quiz-result-card';
 import { trackDiscovery, trackDiscoveryFunnel, trackEvent } from '~/lib/analytics';
-import { HOBBY_CATEGORIES } from '~/lib/hobbies';
+import { HOBBY_CATEGORIES, pickAcrossEffort } from '~/lib/hobbies';
 
 type Category =
   | 'Creative'
@@ -169,7 +169,10 @@ const ARCHETYPE_MAP: Record<Category, { title: string; emoji: string; descriptio
   Physical: {
     title: 'The Athlete',
     emoji: '🏆',
-    description: "You thrive when you're pushing your body and breaking limits.",
+    // Not "pushing your body and breaking limits": the Physical category is
+    // reached by anyone who wants to move, and that framing reads as a young
+    // person's gym slogan to most of the people it lands on.
+    description: 'You think best while moving. Your body is where you go to feel like yourself.',
   },
   Outdoor: {
     title: 'The Explorer',
@@ -224,7 +227,10 @@ function getRecommendedHobbies(topCats: Category[]): string[] {
   for (const cat of topCats.slice(0, 2)) {
     const found = HOBBY_CATEGORIES.find((c) => c.name === cat);
     if (found) {
-      results.push(...found.hobbies.slice(0, 3));
+      // Not `slice(0, 3)`: that returned the first three array entries and
+      // called it a personalised result, so every Physical answer produced
+      // Running / Cycling / Swimming. See pickAcrossEffort in ~/lib/hobbies.
+      results.push(...pickAcrossEffort(found.hobbies, 3));
     }
   }
   return results.slice(0, 6);

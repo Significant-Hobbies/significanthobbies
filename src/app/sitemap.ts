@@ -5,7 +5,6 @@ import { timelines, users } from '~/db/schema';
 import { editorialArticles } from '~/lib/editorial-content';
 import { FAMOUS_BUCKET_LISTS } from '~/lib/famous-bucket-lists';
 import { HOBBY_CATEGORIES } from '~/lib/hobbies';
-import { captureError } from '~/lib/foundry-monitoring';
 import { db } from '~/server/db';
 
 export const revalidate = 3600;
@@ -48,7 +47,12 @@ async function publicProfileEntries(baseUrl: string): Promise<MetadataRoute.Site
         : []
     );
   } catch (err) {
-    captureError(err, { scope: 'sitemap', source: 'public_profiles' });
+    // Server-side log, not `captureError` from ~/lib/foundry-monitoring: that
+    // module is 'use client' and wraps posthog-js. Importing it here made the
+    // sitemap route a client boundary, and `next build` failed prerendering
+    // /sitemap.xml with "Attempted to call captureError() from the server".
+    // The whole deploy died at the build step because of it.
+    console.error('[sitemap] public_profiles query failed', err);
     return [];
   }
 }
