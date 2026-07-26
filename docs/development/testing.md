@@ -188,19 +188,30 @@ the result.
 
 Two failure modes cost the most to diagnose, both worth recognising on sight:
 
-**Filling a controlled input before hydration.** `await expect(field).toBeVisible()`
-does not mean React has hydrated. A `fill()` that lands first updates the DOM but
-not component state; hydration then reverts it, the form compares the value
-against its unchanged initial prop, skips the write, and still shows a success
-toast. It presents as "the save silently did nothing" and it is timing-dependent,
-so it flaps rather than fails. Retry the fill until it sticks:
+**Interacting before hydration.** `await expect(x).toBeVisible()` only proves the
+server HTML arrived. Acting before React attaches is silent, not loud, and it
+fails differently depending on the element:
+
+| Element | Symptom |
+| --- | --- |
+| Controlled input | `fill()` reaches the DOM but not state. Hydration reverts it, the form sees an unchanged value, skips the write, and still shows a success toast — "the save silently did nothing". |
+| Button | No handler yet, so the click does nothing and whatever it should reveal never appears. Surfaces one line later as "element not found". |
+
+Both reproduce only where the route pays a cold `next dev` compile — CI under
+two workers, almost never a warm local run. Use `waitForHydrated` from
+`e2e/fixtures/hydration.ts`, which polls for React's own
+`__reactFiber$…` / `__reactProps$…` keys rather than guessing a timeout:
 
 ```ts
-await expect(async () => {
-  await field.fill(value);
-  await expect(field).toHaveValue(value);
-}).toPass({ timeout: 15_000 });
+import { waitForHydrated } from './fixtures/hydration';
+
+await waitForHydrated(field);
+await field.fill(value);
 ```
+
+A retry-until-it-sticks loop was tried first and timed out in CI. For a toggle
+button, retrying is actively wrong — the second click closes what the first
+opened.
 
 **Reusing a fixed entity name.** `dev.db` survives between local runs. A spec
 that creates "Piano" every time hits `You already have an active commitment for

@@ -1,4 +1,5 @@
 import { expect, test } from './fixtures/auth';
+import { waitForHydrated } from './fixtures/hydration';
 
 /**
  * First authenticated e2e coverage in this repo.
@@ -137,19 +138,9 @@ test.describe('authenticated surfaces', () => {
     // write, and still reports "Profile updated!". `toBeVisible()` only proves
     // the server HTML arrived.
     //
-    // Gated on React's own hydration marker rather than a timeout: React
-    // attaches `__reactFiber$…` / `__reactProps$…` keys to each host node as it
-    // hydrates. A retry-until-it-sticks loop worked locally but timed out in
-    // CI, where /settings cold-compiles under `next dev` with two workers and
-    // hydration lands far later than any budget worth hardcoding.
-    await authedPage.waitForFunction(
-      () => {
-        const el = document.getElementById('creed');
-        return !!el && Object.keys(el).some((k) => k.startsWith('__react'));
-      },
-      undefined,
-      { timeout: 60_000 }
-    );
+    // See waitForHydrated: a retry-until-it-sticks loop worked locally but timed
+    // out in CI, where /settings cold-compiles under two workers.
+    await waitForHydrated(field);
 
     await field.fill(creed);
     await expect(field).toHaveValue(creed);
@@ -184,10 +175,11 @@ test.describe('authenticated surfaces', () => {
     // fullyParallel against one dev.db, so two tests adding the same item title
     // would each see the other's row and the delete assertion would never settle.
     await authedPage.goto('/bucket-lists/richard-branson');
-    await authedPage
-      .getByRole('button', { name: /^Add .+ to my bucket list$/ })
-      .first()
-      .click();
+    const add = authedPage.getByRole('button', { name: /^Add .+ to my bucket list$/ }).first();
+    // Same hydration trap as the commitments trigger: an unhydrated click is
+    // silent, so the toast never fires and this reads as a broken add button.
+    await waitForHydrated(add);
+    await add.click();
     await expect(authedPage.getByText('Added to your bucket list').first()).toBeVisible();
 
     await authedPage.goto('/life-plan');
@@ -241,8 +233,14 @@ test.describe('authenticated surfaces', () => {
     // "passed" while stamping nothing. Each step waits for the effect of the one
     // before it — clicking a button is not the same as the action completing.
     // The creation form is collapsed behind a trigger, so the name field does
-    // not exist until it is opened.
-    await authedPage.getByRole('button', { name: 'Start a commitment' }).click();
+    // not exist until it is opened. The trigger's onClick only exists once
+    // React has hydrated — clicking sooner is silent, the form never opens, and
+    // the failure surfaces one line later as "name field not found". Retrying
+    // the click is not an option: it toggles, so a second one would close it.
+    const openCreate = authedPage.getByRole('button', { name: 'Start a commitment' });
+    await waitForHydrated(openCreate);
+    await openCreate.click();
+
     const nameField = authedPage.getByPlaceholder('e.g. Guitar, Running, Spanish');
     await expect(nameField).toBeVisible();
     await nameField.fill(hobby);
