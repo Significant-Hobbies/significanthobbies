@@ -15,7 +15,7 @@
  * - `EXPERIENCES_BY_CATEGORY` — 150 ideas, grouped the way the page shows them
  * - `MILESTONES` — 100 life-stage items carrying a horizon and a description
  * - `DESTINATIONS` — 75 places carrying a reason and, for three of them, a
- *   cross-reference into `famous-journeys.ts`
+ *   cross-reference into `famous-bucket-lists.ts`
  *
  * `ALL_EXPERIENCES` is the deduplicated union for anything that just wants
  * "things a person could do". The pages now render from here rather than
@@ -1456,3 +1456,133 @@ export const ALL_EXPERIENCES: Experience[] = (() => {
 
   return out;
 })();
+
+// ─── Unified view ────────────────────────────────────────────────────────────
+
+/**
+ * Which corpus an entry came from. Kept as a facet rather than collapsed away:
+ * a destination and a before-30 milestone are genuinely different kinds of
+ * thing, and the browse UI lets you filter on exactly that.
+ */
+export type ExperienceKind = 'idea' | 'milestone' | 'destination';
+
+export type ExperienceEntry = {
+  slug: string;
+  title: string;
+  /** Present for milestones and destinations; the bare ideas have none. */
+  description?: string;
+  emoji: string;
+  category: ExperienceCategory;
+  kind: ExperienceKind;
+  region?: DestinationRegion;
+  horizon?: MilestoneHorizon;
+  famous?: { name: string; slug: string; note: string };
+};
+
+/** URL-safe slug. Not exported for reuse — see `slugForExperience`. */
+function slugify(value: string): string {
+  return (
+    value
+      .toLowerCase()
+      .normalize('NFKD')
+      // Strip the combining marks NFKD just split off, so an accented
+      // name slugs to its plain form instead of losing the character.
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '')
+      .slice(0, 80)
+  );
+}
+
+/**
+ * Every entry across all three corpora, deduplicated and slugged.
+ *
+ * Slug collisions are real — "Run a marathon" is both an idea and a before-50
+ * milestone — and two entries cannot share a URL.
+ *
+ * The richer record wins rather than the first one seen. Ideas are iterated
+ * first and carry no description, so first-writer-wins silently discarded the
+ * milestone or destination version of three titles and cost them the page they
+ * would otherwise have earned. A collision between two entries that both have
+ * prose still keeps the first, which is stable across corpus order.
+ */
+export const EXPERIENCE_ENTRIES: ExperienceEntry[] = (() => {
+  const bySlug = new Map<string, ExperienceEntry>();
+  const add = (entry: ExperienceEntry) => {
+    if (!entry.slug) return;
+    const existing = bySlug.get(entry.slug);
+    if (existing && !(entry.description && !existing.description)) return;
+    bySlug.set(entry.slug, entry);
+  };
+
+  for (const category of EXPERIENCE_CATEGORIES) {
+    const group = EXPERIENCES_BY_CATEGORY[category];
+    for (const title of group.ideas) {
+      add({ slug: slugify(title), title, emoji: group.emoji, category, kind: 'idea' });
+    }
+  }
+  for (const m of MILESTONES) {
+    add({
+      slug: slugify(m.title),
+      title: m.title,
+      description: m.description,
+      emoji: m.emoji,
+      category: m.category,
+      kind: 'milestone',
+      horizon: m.horizon,
+    });
+  }
+  for (const d of DESTINATIONS) {
+    add({
+      slug: slugify(d.name),
+      title: d.name,
+      description: d.why,
+      emoji: '✈️',
+      category: 'travel',
+      kind: 'destination',
+      region: d.region,
+      famous: d.famous,
+    });
+  }
+
+  // Entries with prose first. Corpus order puts all 150 bare ideas at the
+  // front, so the browse page opened on a wall of rows with nothing to read
+  // and nowhere to click. Stable within each half, so the order is still
+  // deterministic and slugs never shuffle.
+  const all = [...bySlug.values()];
+  return [...all.filter((e) => e.description), ...all.filter((e) => !e.description)];
+})();
+
+/**
+ * The entries that get their own page.
+ *
+ * Only those carrying written prose. The 150 bare ideas are titles and nothing
+ * else — 150 pages whose only unique content is a heading would be thin, and
+ * thin pages are a site-wide signal that would drag down the 122 hobby pages
+ * that currently work. They stay browsable on the index; they earn a URL when
+ * someone writes them a sentence.
+ */
+export const PAGED_EXPERIENCES: ExperienceEntry[] = EXPERIENCE_ENTRIES.filter(
+  (e) => typeof e.description === 'string' && e.description.length > 0
+);
+
+export function findExperience(slug: string): ExperienceEntry | undefined {
+  return EXPERIENCE_ENTRIES.find((e) => e.slug === slug);
+}
+
+/**
+ * Same category, excluding the entry itself.
+ *
+ * Entries that have a page come first. These render as a "so might these" list,
+ * and a list where every row is unclickable is worse than no list — bare ideas
+ * only fill the tail when a category is short on written ones.
+ */
+export function relatedExperiences(entry: ExperienceEntry, limit = 6): ExperienceEntry[] {
+  const pool = EXPERIENCE_ENTRIES.filter(
+    (e) => e.slug !== entry.slug && e.category === entry.category
+  );
+  return [...pool.filter((e) => e.description), ...pool.filter((e) => !e.description)].slice(
+    0,
+    limit
+  );
+}

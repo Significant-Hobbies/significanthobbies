@@ -5,6 +5,7 @@ import { timelines, users } from '~/db/schema';
 import { editorialArticles } from '~/lib/editorial-content';
 import { FAMOUS_BUCKET_LISTS } from '~/lib/famous-bucket-lists';
 import { FAMOUS_JOURNEYS } from '~/lib/famous-journeys';
+import { PAGED_EXPERIENCES } from '~/lib/experiences';
 import { HOBBY_CATEGORIES } from '~/lib/hobbies';
 import { db } from '~/server/db';
 
@@ -135,6 +136,22 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: 'monthly',
       priority: 0.9,
     },
+    {
+      url: `${baseUrl}/experiences`,
+      lastModified: now,
+      changeFrequency: 'weekly',
+      priority: 0.9,
+    },
+    // Only the entries with written prose. The bare ideas are browsable on the
+    // index but have no page, so listing them here would point crawlers at
+    // 404s — and thin pages are a site-wide signal worth protecting the 122
+    // hobby pages from.
+    ...PAGED_EXPERIENCES.map((e) => ({
+      url: `${baseUrl}/experiences/${e.slug}`,
+      lastModified: now,
+      changeFrequency: 'monthly' as const,
+      priority: 0.6,
+    })),
     // /journeys and its 36 detail pages were absent entirely — the largest
     // content file in the repo (famous-journeys.ts: 36 lives, 127 phases) was
     // invisible to crawlers as well as to users.

@@ -4,8 +4,12 @@ import {
   ALL_EXPERIENCES,
   DESTINATIONS,
   EXPERIENCE_CATEGORIES,
+  EXPERIENCE_ENTRIES,
   EXPERIENCES_BY_CATEGORY,
+  findExperience,
   MILESTONES,
+  PAGED_EXPERIENCES,
+  relatedExperiences,
 } from './experiences';
 import { FAMOUS_BUCKET_LISTS } from './famous-bucket-lists';
 import { getBucketListSuggestions } from './bucket-list-insights';
@@ -115,5 +119,67 @@ describe('the suggestion engine reads the shared corpus', () => {
   it('still spans categories rather than emptying one bucket first', () => {
     const cats = new Set(getBucketListSuggestions([], 12, 0).map((s) => s.category));
     expect(cats.size).toBeGreaterThan(1);
+  });
+});
+
+describe('browsable entries', () => {
+  it('indexes the whole corpus with unique, non-empty slugs', () => {
+    expect(EXPERIENCE_ENTRIES.length).toBe(322);
+    const slugs = EXPERIENCE_ENTRIES.map((e) => e.slug);
+    expect(slugs.filter((s) => !s)).toHaveLength(0);
+    expect(new Set(slugs).size).toBe(slugs.length);
+    for (const s of slugs) expect(s).toMatch(/^[a-z0-9-]+$/);
+  });
+
+  /**
+   * Ideas are iterated first and carry no description, so a naive
+   * first-writer-wins dedupe handed three shared titles to the bare version and
+   * cost them a page. The richer record has to win.
+   */
+  it('keeps the record with prose when two corpora share a title', () => {
+    expect(PAGED_EXPERIENCES).toHaveLength(175);
+    expect(PAGED_EXPERIENCES.length).toBe(MILESTONES.length + DESTINATIONS.length);
+  });
+
+  it('gives a page only to entries that have something to say', () => {
+    for (const e of PAGED_EXPERIENCES) {
+      expect(e.description?.length ?? 0, e.title).toBeGreaterThan(10);
+    }
+    const unpaged = EXPERIENCE_ENTRIES.filter((e) => !e.description);
+    expect(unpaged.length).toBe(EXPERIENCE_ENTRIES.length - PAGED_EXPERIENCES.length);
+  });
+
+  it('resolves a known slug and rejects an unknown one', () => {
+    const first = PAGED_EXPERIENCES[0];
+    expect(findExperience(first.slug)?.title).toBe(first.title);
+    expect(findExperience('not-a-real-experience')).toBeUndefined();
+  });
+
+  it('relates only within a category, never to itself', () => {
+    const entry = PAGED_EXPERIENCES[0];
+    const related = relatedExperiences(entry, 6);
+    expect(related.length).toBeGreaterThan(0);
+    for (const r of related) {
+      expect(r.category).toBe(entry.category);
+      expect(r.slug).not.toBe(entry.slug);
+    }
+  });
+});
+
+describe('onward links are actually clickable', () => {
+  /**
+   * "If this appeals, so might these" over six bare ideas is six dead rows.
+   * Where a category has written entries, they lead.
+   */
+  it('prefers entries that have a page', () => {
+    for (const entry of PAGED_EXPERIENCES.slice(0, 25)) {
+      const related = relatedExperiences(entry, 6);
+      expect(related.length, entry.title).toBeGreaterThan(0);
+      expect(related[0].description, `${entry.title} → ${related[0].title}`).toBeTruthy();
+    }
+  });
+
+  it('opens the browse list with something worth reading', () => {
+    expect(EXPERIENCE_ENTRIES[0].description).toBeTruthy();
   });
 });
