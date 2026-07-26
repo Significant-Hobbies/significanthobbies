@@ -52,8 +52,21 @@ curl -fsS -X POST "https://api.cloudflare.com/client/v4/zones/$zone_id/purge_cac
   --data '{"files":["https://significanthobbies.com/","https://www.significanthobbies.com/"]}'
 ```
 
-The deploy workflow does this automatically, but if you push a landing change
-without a full deploy (e.g. hotfix the Astro overlay), purge manually.
+The deploy workflow purges the **whole zone** (`purge_everything`), not just
+`/`. It used to purge only the homepage, which left every edge-cached path
+serving pre-deploy HTML for up to a day: `worker.mjs` caches its
+`CACHEABLE_EXACT` set plus everything under `/hobbies`, `/blog`,
+`/bucket-lists` and `/tools` with `s-maxage=86400`. A deploy on 2026-07-26
+shipped a new `/hobbies` and production kept serving the previous one — right
+hobby count in the code, wrong one on the page.
+
+Use the single-file form above only for a landing hotfix that skips a full
+deploy (e.g. rebuilding the Astro overlay by hand).
+
+**Why `/` is not enough to verify a deploy:** anon `GET /` is static Astro HTML
+that skips the Worker entirely ([decisions.md](../architecture/decisions.md)
+A1), so it tells you nothing about the cached HTML paths. The deploy now smoke
+checks `/hobbies` as well, which does go through the Worker cache.
 
 ## Failure modes
 

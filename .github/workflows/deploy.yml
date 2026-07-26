@@ -33,8 +33,19 @@ jobs:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           command: deploy --minify
-      - name: Purge edge cache for landing HTML
-        # Best-effort: a missing zone cache_purge permission (401) must not fail a good deploy.
+      - name: Purge edge cache
+        # Purges the whole zone, not just `/`.
+        #
+        # worker.mjs edge-caches every path in its CACHEABLE_EXACT set and under
+        # its CACHEABLE_PREFIXES (/hobbies, /blog, /bucket-lists, /tools) with
+        # s-maxage=86400. Purging only `/` left all of those serving pre-deploy
+        # HTML for up to a day — a real deploy shipped a new /hobbies and
+        # production kept showing the old one, with the wrong hobby count and
+        # none of the new UI. The smoke check below only asserts on `/`, so
+        # nothing caught it.
+        #
+        # Best-effort: a missing zone cache_purge permission (401) must not fail
+        # a good deploy.
         continue-on-error: true
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
@@ -49,8 +60,8 @@ jobs:
           curl -fsS -X POST "https://api.cloudflare.com/client/v4/zones/${zone_id}/purge_cache" \
             -H "Authorization: Bearer ${CLOUDFLARE_API_TOKEN}" \
             -H "Content-Type: application/json" \
-            --data '{"files":["https://significanthobbies.com/","https://www.significanthobbies.com/"]}'
-          echo "Purged / on significanthobbies.com"
+            --data '{"purge_everything":true}'
+          echo "Purged the whole zone for significanthobbies.com"
       - name: Smoke check production
         run: |
           html=$(curl -fsS --retry 3 --retry-delay 5 --max-time 20 \
@@ -74,3 +85,17 @@ jobs:
             exit 1
           fi
           echo "Overlay OK: ${sections} sections, LCP shell present"
+      - name: Smoke check a cached marketing page
+        # `/` is served by the Astro overlay and skips the Worker entirely, so
+        # asserting on it proves nothing about the edge-cached HTML paths. This
+        # checks one path that goes through worker.mjs's cache, which is where a
+        # stale-after-deploy failure actually shows up.
+        run: |
+          html=$(curl -fsS --retry 3 --retry-delay 5 --max-time 20 \
+            -H "Cache-Control: no-cache" https://significanthobbies.com/hobbies)
+          if ! printf '%s' "$html" | grep -q 'Browse by what suits you'; then
+            echo "ERROR: /hobbies is missing the facet browser — likely serving pre-deploy cached HTML."
+            echo "Purge the zone and re-check; see docs/operations/runbook.md."
+            exit 1
+          fi
+          echo "/hobbies OK: facet browser present, cache is post-deploy"
