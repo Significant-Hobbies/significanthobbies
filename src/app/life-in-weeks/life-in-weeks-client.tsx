@@ -114,14 +114,33 @@ export function LifeInWeeksClient() {
         ) : null}
       </form>
 
+      {/* scroll-mt-24 clears the sticky header. At the previous 8 (32px) the
+          nav sat over the top of the Saturdays line — the one sentence the
+          scroll exists to reveal. */}
       {result ? (
-        <div ref={resultRef} className="mt-16 scroll-mt-8">
-          <WeeksGrid
-            weeksLived={result.weeksLived}
-            totalWeeks={result.totalWeeks}
-            animate={animate}
-          />
+        <div ref={resultRef} className="mt-14 scroll-mt-24">
+          {/* Answer first, evidence under it. The grid used to come first and
+              runs ~900px tall, which put the one sentence this page exists to
+              deliver a full screen below the fold. */}
           <Result result={result} />
+
+          {/* Legend, immediately above the thing it explains. */}
+          <p className="mt-14 text-base text-muted-foreground" style={{ lineHeight: 1.6 }}>
+            Every week of that life, one square. The dim ones are the{' '}
+            <span className="font-mono tabular-nums text-foreground">
+              {fmt.format(result.weeksLived)}
+            </span>{' '}
+            you have already lived.
+          </p>
+          <div className="mt-5">
+            <WeeksGrid
+              weeksLived={result.weeksLived}
+              totalWeeks={result.totalWeeks}
+              animate={animate}
+            />
+          </div>
+
+          <Turn />
         </div>
       ) : null}
     </div>
@@ -133,20 +152,12 @@ function Result({ result }: { result: LifeInWeeks }) {
   const others = result.units.filter((u) => u.id !== 'saturdays');
 
   return (
-    <section className="mt-12">
-      <p className="text-lg text-muted-foreground" style={{ lineHeight: 1.6 }}>
-        The dim squares are weeks you have already lived — about{' '}
-        <span className="font-mono tabular-nums text-foreground">
-          {fmt.format(result.weeksLived)}
-        </span>{' '}
-        of them. Every square still lit is one you have not spent yet.
-      </p>
-
+    <section>
       {/* One dominant figure, then texture in prose. A four-up stat grid would
           turn the most human number on the site into a SaaS dashboard. */}
       <p
-        className="mt-8 font-serif text-3xl text-foreground sm:text-4xl"
-        style={{ textWrap: 'balance', lineHeight: 1.25 }}
+        className="font-serif text-4xl text-foreground sm:text-5xl"
+        style={{ textWrap: 'balance', lineHeight: 1.15 }}
       >
         That leaves roughly{' '}
         <span className="tabular-nums text-primary">{fmt.format(saturdays?.count ?? 0)}</span>{' '}
@@ -173,8 +184,6 @@ function Result({ result }: { result: LifeInWeeks }) {
         outlasted every risk that came before it, so your share is larger than that shortcut
         suggests.
       </p>
-
-      <Turn />
     </section>
   );
 }

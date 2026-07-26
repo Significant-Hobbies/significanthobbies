@@ -2,6 +2,20 @@
 
 const COLUMNS = 52;
 
+/**
+ * Colour of a week already spent.
+ *
+ * Must be **opaque**: this layer sits above the lit one, so any transparency
+ * lets gold bleed through and the two states merge into one.
+ *
+ * No token fits. `--muted` (L 0.23) and `--border` (L 0.27) both sit too close
+ * to the L 0.15 page — at that contrast the weeks already lived read as empty
+ * space rather than as decades of a life. L 0.34 gives them mass while staying
+ * far below the L 0.82 gold, so the remainder still leads. The app has no
+ * light theme, so a fixed value is safe here.
+ */
+const SPENT = 'oklch(0.34 0.005 285)';
+
 type Props = {
   weeksLived: number;
   totalWeeks: number;
@@ -38,7 +52,7 @@ export function WeeksGrid({ weeksLived, totalWeeks, animate }: Props) {
 
   return (
     <div aria-hidden="true">
-      <div className="relative mx-auto max-w-[34rem]">
+      <div className="relative max-w-[34rem]">
         {/* Layer 1 — every week of the life, lit as open space. */}
         <Grid>
           {cells.map((i) => (
@@ -59,10 +73,8 @@ export function WeeksGrid({ weeksLived, totalWeeks, animate }: Props) {
             {cells.map((i) => (
               <span
                 key={i}
-                // `bg-muted` is opaque, so it replaces the gold underneath
-                // rather than tinting it. A translucent class would let the
-                // lit layer bleed through and the two states would merge.
-                className={i < lived ? 'aspect-square rounded-[1px] bg-muted' : 'aspect-square'}
+                className={i < lived ? 'aspect-square rounded-[1px]' : 'aspect-square'}
+                style={i < lived ? { background: SPENT } : undefined}
               />
             ))}
           </Grid>
