@@ -1,6 +1,13 @@
 import { describe, expect, it } from 'vitest';
 
-import { ALL_EXPERIENCES, EXPERIENCE_CATEGORIES, EXPERIENCES_BY_CATEGORY } from './experiences';
+import {
+  ALL_EXPERIENCES,
+  DESTINATIONS,
+  EXPERIENCE_CATEGORIES,
+  EXPERIENCES_BY_CATEGORY,
+  MILESTONES,
+} from './experiences';
+import { FAMOUS_BUCKET_LISTS } from './famous-bucket-lists';
 import { getBucketListSuggestions } from './bucket-list-insights';
 
 describe('experiences corpus', () => {
@@ -14,16 +21,55 @@ describe('experiences corpus', () => {
     }
   });
 
-  it('flattens to every idea, tagged with its category', () => {
-    const total = EXPERIENCE_CATEGORIES.reduce(
+  it('unions all three corpora, tagged with a category', () => {
+    const ideas = EXPERIENCE_CATEGORIES.reduce(
       (n, c) => n + EXPERIENCES_BY_CATEGORY[c].ideas.length,
       0
     );
-    expect(ALL_EXPERIENCES).toHaveLength(total);
-    expect(total).toBeGreaterThanOrEqual(145);
+    expect(ideas).toBe(150);
+    expect(MILESTONES).toHaveLength(100);
+    expect(DESTINATIONS).toHaveLength(75);
+
+    // The union minus the handful of genuine overlaps between the lists.
+    expect(ALL_EXPERIENCES.length).toBeGreaterThan(300);
+    expect(ALL_EXPERIENCES.length).toBeLessThanOrEqual(ideas + 100 + 75);
+
     for (const e of ALL_EXPERIENCES) {
       expect(e.title.length).toBeGreaterThan(3);
       expect(EXPERIENCE_CATEGORIES).toContain(e.category);
+    }
+  });
+
+  it('gives every milestone a category, description and horizon', () => {
+    for (const m of MILESTONES) {
+      expect(EXPERIENCE_CATEGORIES, m.title).toContain(m.category);
+      expect(m.description.length, m.title).toBeGreaterThan(10);
+      expect(['before-30', 'before-50']).toContain(m.horizon);
+    }
+  });
+
+  it('gives every destination a reason, and covers all five regions', () => {
+    for (const d of DESTINATIONS) {
+      expect(d.why.length, d.name).toBeGreaterThan(10);
+    }
+    expect(new Set(DESTINATIONS.map((d) => d.region)).size).toBe(5);
+  });
+
+  /**
+   * The only cross-reference from the experience corpus into another corpus.
+   * `/travel-bucket-list` renders it as a link to `/bucket-lists/<slug>`, so a
+   * slug that stops resolving is a 404 on a live page.
+   *
+   * Asserted against FAMOUS_BUCKET_LISTS, not famous-journeys: the two share
+   * some names but are separate sets, and `bill-clinton` exists only in the
+   * former. Getting that backwards was my first guess.
+   */
+  it('resolves every destination cross-reference to a real bucket list', () => {
+    const slugs = new Set(FAMOUS_BUCKET_LISTS.map((l) => l.slug));
+    const refs = DESTINATIONS.filter((d) => d.famous);
+    expect(refs.length).toBeGreaterThan(0);
+    for (const d of refs) {
+      expect(slugs.has(d.famous?.slug ?? ''), `${d.name} → ${d.famous?.slug}`).toBe(true);
     }
   });
 

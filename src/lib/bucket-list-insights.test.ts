@@ -161,8 +161,11 @@ describe('getBucketListSuggestions', () => {
     // Matched on a substring rather than the full title: the pool is now the
     // shared corpus in ~/lib/experiences, so exact wording belongs to that file
     // and pinning it here would make every copy edit a test failure.
+    // Ask for the whole pool, not a sample of it. This is an assertion about
+    // what the similarity filter removes, and with the corpus now past 300
+    // items a 50-item sample would fail on sampling rather than on filtering.
     const existing = [{ title: 'See the Northern Lights in Iceland', category: 'travel' }];
-    const out = getBucketListSuggestions(existing, 50, 0);
+    const out = getBucketListSuggestions(existing, 500, 0);
     const titles = out.map((s) => s.title.toLowerCase());
     expect(titles.some((t) => t.includes('cherry blossoms'))).toBe(true);
   });
