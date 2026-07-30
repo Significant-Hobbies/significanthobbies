@@ -11,11 +11,26 @@ import {
   TextGenerateEffect,
 } from '~/components/aceternity';
 import { FAMOUS_JOURNEYS } from '~/lib/famous-journeys';
+import { DEFAULT_SOCIAL_IMAGE, SITE_URL } from '~/lib/site-metadata';
 
+const description =
+  "Explore how hobbies shaped famous lives—from Steve Jobs' calligraphy to Einstein's violin—across childhood, career, and reinvention.";
 export const metadata: Metadata = {
-  title: 'Famous Hobby Journeys — SignificantHobbies',
-  description:
-    "Explore how famous people's hobbies shaped who they became. From Steve Jobs' calligraphy to Einstein's violin — discover the hobby timelines of remarkable people.",
+  title: { absolute: 'Famous hobby journeys across remarkable lives' },
+  description,
+  alternates: { canonical: `${SITE_URL}/journeys` },
+  openGraph: {
+    title: 'Famous hobby journeys across remarkable lives',
+    description,
+    url: `${SITE_URL}/journeys`,
+    images: [{ url: DEFAULT_SOCIAL_IMAGE }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Famous hobby journeys across remarkable lives',
+    description,
+    images: [DEFAULT_SOCIAL_IMAGE],
+  },
 };
 
 export default function JourneysPage() {

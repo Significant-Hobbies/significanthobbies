@@ -10,6 +10,7 @@ import {
   StaggerItem,
 } from '~/components/aceternity';
 import { FAMOUS_JOURNEYS } from '~/lib/famous-journeys';
+import { BRAND_NAME, DEFAULT_SOCIAL_IMAGE, SITE_URL } from '~/lib/site-metadata';
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -26,10 +27,27 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   const firstPhaseLabel = person.phases[0]?.label ?? 'early life';
   const lastPhaseLabel = person.phases[person.phases.length - 1]?.label ?? 'peak career';
+  const canonical = `${SITE_URL}/journeys/${person.slug}`;
+  const title = `${person.name}'s hobby journey — ${BRAND_NAME}`;
+  const description = `Explore ${person.name}'s hobby journey — from ${firstPhaseLabel} to ${lastPhaseLabel}. See how their hobbies shaped who they became.`;
 
   return {
-    title: `${person.name}'s Hobbies — SignificantHobbies`,
-    description: `Explore ${person.name}'s hobby journey — from ${firstPhaseLabel} to ${lastPhaseLabel}. See how their hobbies shaped who they became.`,
+    title: { absolute: title },
+    description,
+    alternates: { canonical },
+    openGraph: {
+      type: 'article',
+      title,
+      description,
+      url: canonical,
+      images: [{ url: DEFAULT_SOCIAL_IMAGE }],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+      images: [DEFAULT_SOCIAL_IMAGE],
+    },
   };
 }
 

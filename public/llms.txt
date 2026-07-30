@@ -1,27 +1,35 @@
 # Significant Hobbies
 
-> Map your hobby history across life phases. Discover what rekindled, what persisted, and what to explore next — with shareable public journeys.
+> A life planner for private daily rituals and public living: hobbies, bucket
+> lists, experiences, and side quests over time.
 
-Next.js on Cloudflare Workers. Google auth for saving timelines; public explore and blog content for discovery.
+Next.js on Cloudflare Workers. Google auth is optional for saving private
+practice and timelines; the discovery corpus and opt-in profiles are public.
 
-## Product
+## Discover
 
-- [Home](https://significanthobbies.com/): Landing and value proposition
-- [Explore](https://significanthobbies.com/explore): Community timelines and inspiration
+- [Home](https://significanthobbies.com/): Product landing and life-planning frame
+- [Explore](https://significanthobbies.com/explore): Public hobby timelines
 - [Hobbies](https://significanthobbies.com/hobbies): Hobby taxonomy and category browse
-- [Blog](https://significanthobbies.com/blog): Articles on hobbies and life phases
-- [Full article index](https://significanthobbies.com/llms-full.txt): Canonical legacy and package-backed articles
-- [Start a timeline](https://significanthobbies.com/timeline/new): Create your journey (auth)
-- [Privacy](https://significanthobbies.com/privacy): Privacy policy
-- [Terms](https://significanthobbies.com/terms): Terms of use
+- [Experiences](https://significanthobbies.com/experiences): Things you could do and how to begin
+- [Famous journeys](https://significanthobbies.com/journeys): How hobbies changed across notable lives
+- [Bucket lists](https://significanthobbies.com/bucket-lists): Public lists and practical starting points
+- [Blog](https://significanthobbies.com/blog): Long-form articles about hobbies and living deliberately
 
-## SEO guides
+## Start
 
-- [What are significant hobbies?](https://significanthobbies.com/what-are-significant-hobbies): Concept explainer
-- [Hobbies for adults](https://significanthobbies.com/hobbies-for-adults): Starter guide
-- [Hobbies to try](https://significanthobbies.com/hobbies-to-try): Curated suggestions
+- [Find your hobby](https://significanthobbies.com/find-your-hobby): Guided hobby discovery
+- [Life in weeks](https://significanthobbies.com/life-in-weeks): Anonymous mortality and time-planning tool
+- [Life bingo](https://significanthobbies.com/life-bingo): Build a life list without an account
 
-## Optional
+## Agent access
 
-- [GitHub](https://github.com/sarthak-fleet/significanthobbies): Source
-- [Foundry](https://sassmaker.com): Fleet context
+- [Agent catalog](https://significanthobbies.com/api/ai): JSON inventory of bounded public surfaces
+- [Homepage Markdown](https://significanthobbies.com/index.md): Product brief without JavaScript
+- [Full article index](https://significanthobbies.com/llms-full.txt): Canonical editorial corpus
+- Every public sitemap route supports `Accept: text/markdown` and a `.md` alternate.
+- Authenticated daily practice and private user data are not agent-indexed.
+
+## Source
+
+- [GitHub](https://github.com/Significant-Hobbies/significanthobbies)

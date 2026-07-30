@@ -39,7 +39,7 @@ export const AGENT_SURFACE = {
       {
         "id": "explore",
         "url": "https://significanthobbies.com/explore",
-        "md": null,
+        "md": "https://significanthobbies.com/explore.md",
         "kind": "static",
         "description": "Public hobby timelines"
       }

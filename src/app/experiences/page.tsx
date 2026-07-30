@@ -2,19 +2,27 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 
 import { EXPERIENCE_CATEGORIES, EXPERIENCE_ENTRIES } from '~/lib/experiences';
+import { DEFAULT_SOCIAL_IMAGE, SITE_URL } from '~/lib/site-metadata';
 import { ExperiencesClient } from './experiences-client';
 
+const description =
+  'Every experience we know about, in one searchable list: places to go, milestones to reach, and ideas worth stealing. No account needed.';
 export const metadata: Metadata = {
-  title: 'Things You Could Do — SignificantHobbies',
-  description:
-    'Every experience we know about, in one searchable list: places to go, milestones to reach, and ideas worth stealing. No account needed.',
+  title: { absolute: 'Experiences worth making room for' },
+  description,
   alternates: { canonical: '/experiences' },
   openGraph: {
-    title: 'Things You Could Do',
-    description:
-      'Every experience we know about, in one searchable list — places, milestones and ideas.',
-    url: '/experiences',
+    title: 'Experiences worth making room for',
+    description,
+    url: `${SITE_URL}/experiences`,
     type: 'website',
+    images: [{ url: DEFAULT_SOCIAL_IMAGE }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Experiences worth making room for',
+    description,
+    images: [DEFAULT_SOCIAL_IMAGE],
   },
 };
 

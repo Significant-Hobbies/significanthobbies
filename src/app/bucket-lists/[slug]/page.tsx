@@ -16,6 +16,7 @@ import {
   FAMOUS_BUCKET_LISTS,
   getFamousBucketList,
 } from '~/lib/famous-bucket-lists';
+import { DEFAULT_SOCIAL_IMAGE } from '~/lib/site-metadata';
 import { getServerAuthSession } from '~/server/auth';
 
 type Props = { params: Promise<{ slug: string }> };
@@ -29,12 +30,22 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const list = getFamousBucketList(slug);
   if (!list) return {};
   const done = list.items.filter((i) => i.status === 'done').length;
+  const title = `${list.name}'s bucket list: ${list.items.length} verified ideas`;
+  const description = `${list.items.length} verified bucket list items from ${list.name}. ${done} completed. ${list.knownFor}. Add any item to your own bucket list.`;
   return {
-    title: `${list.name}'s Bucket List (${done} completed) — SignificantHobbies`,
-    description: `${list.items.length} verified bucket list items from ${list.name}. ${done} completed. ${list.knownFor}. Add any item to your own bucket list.`,
+    title: { absolute: title },
+    description,
     openGraph: {
-      title: `${list.name}'s Bucket List`,
-      description: `${done} of ${list.items.length} items completed. Browse and add to your own list.`,
+      title,
+      description,
+      url: `/bucket-lists/${slug}`,
+      images: [{ url: DEFAULT_SOCIAL_IMAGE }],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+      images: [DEFAULT_SOCIAL_IMAGE],
     },
     alternates: { canonical: `https://significanthobbies.com/bucket-lists/${slug}` },
   };

@@ -1,8 +1,7 @@
 import type { Metadata } from 'next';
 
 import type { EditorialArticle } from '~/lib/editorial-content';
-
-const SITE_URL = 'https://significanthobbies.com';
+import { DEFAULT_SOCIAL_IMAGE, SITE_URL } from '~/lib/site-metadata';
 
 export function articleCanonicalUrl(article: EditorialArticle): string {
   return `${SITE_URL}/blog/${article.slug}`;
@@ -13,7 +12,7 @@ export function buildArticleMetadata(article: EditorialArticle): Metadata {
   const thumbnail = article.package?.youtube?.thumbnailUrl;
 
   return {
-    title: article.title,
+    title: { absolute: article.title },
     description: article.excerpt,
     alternates: { canonical },
     openGraph: {
@@ -21,15 +20,14 @@ export function buildArticleMetadata(article: EditorialArticle): Metadata {
       url: canonical,
       title: article.title,
       description: article.excerpt,
-      ...(thumbnail
-        ? { images: [{ url: thumbnail }], videos: [{ url: article.package!.youtube!.url }] }
-        : {}),
+      images: [{ url: thumbnail ?? DEFAULT_SOCIAL_IMAGE }],
+      ...(thumbnail ? { videos: [{ url: article.package!.youtube!.url }] } : {}),
     },
     twitter: {
-      card: thumbnail ? 'summary_large_image' : 'summary',
+      card: 'summary_large_image',
       title: article.title,
       description: article.excerpt,
-      ...(thumbnail ? { images: [thumbnail] } : {}),
+      images: [thumbnail ?? DEFAULT_SOCIAL_IMAGE],
     },
   };
 }

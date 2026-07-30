@@ -1,4 +1,5 @@
 import { ArrowRight } from 'lucide-react';
+import type { Metadata } from 'next';
 import Link from 'next/link';
 
 import {
@@ -10,13 +11,29 @@ import {
 } from '~/components/aceternity';
 import { categoryImageSrc, categoryImageSrcSet } from '~/lib/category-images';
 import { HOBBY_CATEGORIES } from '~/lib/hobbies';
+import { DEFAULT_SOCIAL_IMAGE, SITE_URL } from '~/lib/site-metadata';
 import { cn } from '~/lib/utils';
 import { HobbyFacetsClient } from './hobby-facets-client';
 
-export const metadata = {
-  title: 'Hobby Directory — SignificantHobbies',
-  description:
-    'Browse 110+ hobbies across 10 categories. Find your next passion — from creative arts and music to outdoor adventures and making.',
+const description =
+  'Browse 110+ hobbies across 10 categories. Find your next passion — from creative arts and music to outdoor adventures and making.';
+
+export const metadata: Metadata = {
+  title: { absolute: 'Hobby directory: 110+ pursuits to explore' },
+  description,
+  alternates: { canonical: `${SITE_URL}/hobbies` },
+  openGraph: {
+    title: 'Hobby directory: 110+ pursuits to explore',
+    description,
+    url: `${SITE_URL}/hobbies`,
+    images: [{ url: DEFAULT_SOCIAL_IMAGE }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Hobby directory: 110+ pursuits to explore',
+    description,
+    images: [DEFAULT_SOCIAL_IMAGE],
+  },
 };
 
 export default function HobbiesPage() {

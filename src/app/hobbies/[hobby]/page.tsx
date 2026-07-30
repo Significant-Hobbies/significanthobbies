@@ -14,6 +14,7 @@ import { getRelatedHobbies } from '~/lib/hobby-affinities';
 import { getResourcesForHobby } from '~/lib/hobby-resources';
 import { getRoadmapForHobby } from '~/lib/hobby-roadmap';
 import { safeDecodeURIComponent } from '~/lib/slug';
+import { DEFAULT_SOCIAL_IMAGE, SITE_URL } from '~/lib/site-metadata';
 import { getTimelineUrl } from '~/lib/timeline-url';
 import type { Phase } from '~/lib/types';
 import { parseJSONColumn } from '~/lib/utils';
@@ -46,9 +47,24 @@ export async function generateMetadata({ params }: Props) {
   const decoded = safeDecodeURIComponent(hobby);
   if (!decoded) return {};
   const name = slugToHobby(decoded);
+  const canonical = `${SITE_URL}/hobbies/${encodeURIComponent(decoded)}`;
+  const description = `Explore ${name} — see community timelines, find tools and resources, and discover related hobbies on Significant Hobbies.`;
   return {
-    title: `${name} — SignificantHobbies`,
-    description: `Explore ${name} — see community timelines, find tools and resources, and discover related hobbies on SignificantHobbies.`,
+    title: { absolute: `${name}: roadmap, resources, and ideas` },
+    description,
+    alternates: { canonical },
+    openGraph: {
+      title: `${name}: roadmap, resources, and ideas`,
+      description,
+      url: canonical,
+      images: [{ url: DEFAULT_SOCIAL_IMAGE }],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: `${name}: roadmap, resources, and ideas`,
+      description,
+      images: [DEFAULT_SOCIAL_IMAGE],
+    },
   };
 }
 
@@ -65,21 +81,7 @@ export default async function HobbyDetailPage({ params }: Props) {
   const isLoggedIn = !!session?.user;
 
   // Find public timelines that include this hobby
-  const rawTimelines = await db
-    .select({
-      id: timelines.id,
-      title: timelines.title,
-      slug: timelines.slug,
-      phases: timelines.phases,
-      updatedAt: timelines.updatedAt,
-      userName: users.name,
-      userUsername: users.username,
-    })
-    .from(timelines)
-    .leftJoin(users, eq(timelines.userId, users.id))
-    .where(eq(timelines.visibility, 'PUBLIC'))
-    .orderBy(desc(timelines.updatedAt))
-    .limit(50);
+  const rawTimelines = await loadRecentPublicTimelines();
 
   const matchingTimelines = rawTimelines.filter((t) => {
     const phases = parseJSONColumn<Phase[]>(t.phases, [], 'hobby-detail:filter:phases');
@@ -392,4 +394,27 @@ export default async function HobbyDetailPage({ params }: Props) {
       )}
     </div>
   );
+}
+
+async function loadRecentPublicTimelines() {
+  try {
+    return await db
+      .select({
+        id: timelines.id,
+        title: timelines.title,
+        slug: timelines.slug,
+        phases: timelines.phases,
+        updatedAt: timelines.updatedAt,
+        userName: users.name,
+        userUsername: users.username,
+      })
+      .from(timelines)
+      .leftJoin(users, eq(timelines.userId, users.id))
+      .where(eq(timelines.visibility, 'PUBLIC'))
+      .orderBy(desc(timelines.updatedAt))
+      .limit(50);
+  } catch (error) {
+    console.error('[hobby-detail] public timeline query failed', error);
+    return [];
+  }
 }

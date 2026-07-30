@@ -69,7 +69,10 @@ describe('editorial discovery and structured data', () => {
       title: article.title,
       description: article.excerpt,
     });
-    expect(metadata.twitter).toMatchObject({ card: 'summary' });
+    expect(metadata.twitter).toMatchObject({
+      card: 'summary_large_image',
+      images: ['https://significanthobbies.com/opengraph-image'],
+    });
     expect(jsonLd).toMatchObject({
       '@type': 'Article',
       headline: article.title,

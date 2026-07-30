@@ -11,11 +11,26 @@ import {
 } from '~/components/aceternity';
 import type { BlogPost } from '~/lib/blog-posts';
 import { editorialArticles } from '~/lib/editorial-content';
+import { DEFAULT_SOCIAL_IMAGE, SITE_URL } from '~/lib/site-metadata';
 
+const description =
+  'Thoughts on hobbies, identity, and living curiously. Articles on the psychology of leisure, rekindled passions, and finding what matters.';
 export const metadata: Metadata = {
-  title: 'Blog',
-  description:
-    'Thoughts on hobbies, identity, and living curiously. Articles on the psychology of leisure, rekindled passions, and finding what matters.',
+  title: { absolute: 'Hobby psychology, identity, and practical guides' },
+  description,
+  alternates: { canonical: `${SITE_URL}/blog` },
+  openGraph: {
+    title: 'Hobby psychology, identity, and practical guides',
+    description,
+    url: `${SITE_URL}/blog`,
+    images: [{ url: DEFAULT_SOCIAL_IMAGE }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Hobby psychology, identity, and practical guides',
+    description,
+    images: [DEFAULT_SOCIAL_IMAGE],
+  },
 };
 
 const CATEGORY_COLORS: Record<string, { bg: string; text: string; border: string }> = {

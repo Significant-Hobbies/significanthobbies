@@ -14,6 +14,7 @@
 import openNext from './.open-next/worker.js';
 import { withTiming } from './timing.mjs';
 import { handleAgentEdge } from './agent-edge.mjs';
+import { handlePublicRouteMarkdown } from './agent-route-markdown.mjs';
 
 // Durable Objects must be re-exported from the entry that wrangler.toml
 // points at, otherwise the bindings can't resolve them at deploy time.
@@ -85,6 +86,26 @@ export default {
       if (agent) return agent;
     }
     try {
+      const markdown = await handlePublicRouteMarkdown(request, async (sourcePath) => {
+        const sourceUrl = new URL('/api/ai/markdown', request.url);
+        sourceUrl.searchParams.set('path', sourcePath);
+        const sourceResponse = await openNext.fetch(
+          new Request(sourceUrl, {
+            headers: {
+              Accept: 'text/markdown',
+              'x-fleet-markdown-source': '1',
+            },
+          }),
+          env,
+          ctx
+        );
+        if (!sourceResponse.ok) return null;
+        const contentType = sourceResponse.headers.get('content-type') || '';
+        if (!contentType.toLowerCase().includes('text/markdown')) return null;
+        return sourceResponse.text();
+      });
+      if (markdown) return markdown;
+
       if (request.method !== 'GET') {
         return openNext.fetch(request, env, ctx);
       }

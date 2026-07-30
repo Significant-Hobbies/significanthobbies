@@ -11,6 +11,7 @@ import {
   relatedExperiences,
 } from '~/lib/experiences';
 import { safeDecodeURIComponent } from '~/lib/slug';
+import { DEFAULT_SOCIAL_IMAGE } from '~/lib/site-metadata';
 
 /**
  * A page per experience — but only for the ones carrying written prose.
@@ -41,7 +42,7 @@ export async function generateMetadata({
   const entry = resolve((await params).slug);
   if (!entry) return { title: 'Not found — SignificantHobbies' };
   return {
-    title: `${entry.title} — SignificantHobbies`,
+    title: { absolute: entry.title },
     description: entry.description,
     alternates: { canonical: `/experiences/${entry.slug}` },
     openGraph: {
@@ -49,6 +50,13 @@ export async function generateMetadata({
       description: entry.description,
       url: `/experiences/${entry.slug}`,
       type: 'article',
+      images: [{ url: DEFAULT_SOCIAL_IMAGE }],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: entry.title,
+      description: entry.description,
+      images: [DEFAULT_SOCIAL_IMAGE],
     },
   };
 }

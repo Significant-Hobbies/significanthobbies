@@ -12,15 +12,25 @@ import {
 } from '~/components/aceternity';
 import { Whale } from '~/components/whale';
 import { BUCKET_ITEM_CATEGORIES, FAMOUS_BUCKET_LISTS } from '~/lib/famous-bucket-lists';
+import { DEFAULT_SOCIAL_IMAGE, SITE_URL } from '~/lib/site-metadata';
 
+const description =
+  'Create bucket lists that mean something. Browse verified public lists, practical ideas, and anonymous tools for planning what matters.';
 export const metadata: Metadata = {
-  title: 'Bucket Lists — SignificantHobbies',
-  description:
-    'Explore the bucket lists of presidents, athletes, billionaires, and icons. Find the life you want to live.',
+  title: { absolute: 'Bucket lists for what matters' },
+  description,
+  alternates: { canonical: `${SITE_URL}/bucket-lists` },
   openGraph: {
-    title: "What do the world's most remarkable people want to do before they die?",
-    description:
-      'Browse verified bucket lists from Will Smith, Obama, Serena Williams, Elon Musk and more. Find your next great ambition.',
+    title: 'Bucket lists for what matters',
+    description,
+    url: `${SITE_URL}/bucket-lists`,
+    images: [{ url: DEFAULT_SOCIAL_IMAGE }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Bucket lists for what matters',
+    description,
+    images: [DEFAULT_SOCIAL_IMAGE],
   },
 };
 

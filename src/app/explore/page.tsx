@@ -1,21 +1,38 @@
 export const revalidate = 300;
 
 import { count, desc, eq, inArray } from 'drizzle-orm';
+import type { Metadata } from 'next';
 import Link from 'next/link';
 
 import { FadeIn, GridBackground } from '~/components/aceternity';
 import { likes, timelines, users } from '~/db/schema';
 import { getCategoryForHobby } from '~/lib/hobbies';
+import { DEFAULT_SOCIAL_IMAGE, SITE_URL } from '~/lib/site-metadata';
 import type { Phase, TimelineData, TimelineVisibility } from '~/lib/types';
 import { parseJSONColumn } from '~/lib/utils';
 import { db } from '~/server/db';
 
 import { ExploreClient } from './explore-client';
 
-export const metadata = {
-  title: 'Explore Hobby Timelines — SignificantHobbies',
-  description:
-    'Discover how people spend their time across life phases. Browse community hobby timelines, trending interests, and inspiring journeys.',
+const description =
+  'Discover how people spend their time across life phases. Browse community hobby timelines, trending interests, and inspiring journeys.';
+
+export const metadata: Metadata = {
+  title: { absolute: 'Explore public hobby timelines' },
+  description,
+  alternates: { canonical: `${SITE_URL}/explore` },
+  openGraph: {
+    title: 'Explore public hobby timelines',
+    description,
+    url: `${SITE_URL}/explore`,
+    images: [{ url: DEFAULT_SOCIAL_IMAGE }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Explore public hobby timelines',
+    description,
+    images: [DEFAULT_SOCIAL_IMAGE],
+  },
 };
 
 export default async function ExplorePage() {
