@@ -23,6 +23,9 @@ is the bridge between daily practice and life aspirations.
 
 - **2026-07-29:** Added an owned `/changelog` with verified shipped outcomes
   and direct GitHub Roadmap and Source links.
+- **2026-07-13:** Merged the Significant Content flywheel after strict OpenSpec,
+  test, browser, typecheck, and production-build validation. No content was
+  published or scheduled and no deployment was run.
 
 Historical milestones live in
 [`docs/knowledge/archive/project-status-2026-07-13.md`](docs/knowledge/archive/project-status-2026-07-13.md).
@@ -69,9 +72,10 @@ Historical milestones live in
   discovery UX (2026-07-03). The other three surfaces (`/hobbies`, `/explore`,
   `/journeys`) are hidden from homepage/nav/footer; code intact, reachable
   via deep links/SEO/cross-links.
-- **Content flywheel:** versioned JSON content packages + CLI shipped on a
-  branch; pending cross-repository OpenSpec verification and merge. The
-  canonical package document is intentionally empty until topics are selected.
+- **Content flywheel:** versioned JSON content packages, deterministic CLI,
+  receipts, blog integration, performance feedback, and agent/video discovery
+  are merged on `main`. The canonical package document remains intentionally
+  empty until topics are selected.
 - **Docs:** consolidated into a canonical `docs/` tree with Blume as the
   presentation layer.
 - **Product cleanup (2026-07-25):** an audit found several surfaces that looked
