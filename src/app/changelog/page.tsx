@@ -41,7 +41,7 @@ export const metadata: Metadata = {
 
 export default function ChangelogPage() {
   return (
-    <main id="main" className="mx-auto w-full max-w-3xl px-5 py-14 sm:py-20">
+    <div className="mx-auto w-full max-w-3xl px-5 py-14 sm:py-20">
       <header className="max-w-2xl">
         <Link
           href="/"
@@ -97,6 +97,6 @@ export default function ChangelogPage() {
           </li>
         ))}
       </ol>
-    </main>
+    </div>
   );
 }

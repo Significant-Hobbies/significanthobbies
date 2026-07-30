@@ -97,7 +97,7 @@ const faqSchema = {
 
 export default function HowToMakeABucketListPage() {
   return (
-    <main className="bg-card">
+    <div className="bg-card">
       <JsonLd data={faqSchema} />
 
       {/* ── Hero ─────────────────────────────────────────────────── */}
@@ -240,6 +240,6 @@ export default function HowToMakeABucketListPage() {
           </SpotlightCard>
         </div>
       </section>
-    </main>
+    </div>
   );
 }

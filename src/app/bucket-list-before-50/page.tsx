@@ -67,7 +67,7 @@ const faqSchema = {
 
 export default function BucketListBefore50Page() {
   return (
-    <main className="bg-card">
+    <div className="bg-card">
       <JsonLd data={faqSchema} />
 
       {/* ── Hero ─────────────────────────────────────────────────── */}
@@ -213,6 +213,6 @@ export default function BucketListBefore50Page() {
           </div>
         </div>
       </section>
-    </main>
+    </div>
   );
 }

@@ -65,7 +65,7 @@ export default function BucketListIdeasPage() {
   );
 
   return (
-    <main className="bg-card">
+    <div className="bg-card">
       {/* ── Hero ─────────────────────────────────────────────────── */}
       <section className="relative bg-card pt-16 pb-10 px-4">
         <GridBackground />
@@ -223,6 +223,6 @@ export default function BucketListIdeasPage() {
           </div>
         </div>
       </section>
-    </main>
+    </div>
   );
 }

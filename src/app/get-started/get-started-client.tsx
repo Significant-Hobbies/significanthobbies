@@ -100,7 +100,7 @@ export function GetStartedClient() {
   }, []);
 
   return (
-    <main className="min-h-screen bg-card/40">
+    <div className="min-h-screen bg-card/40">
       {/* Hero */}
       <section className="relative overflow-hidden mx-auto max-w-2xl px-4 pt-20 pb-12 text-center">
         <GridBackground />
@@ -281,6 +281,6 @@ export function GetStartedClient() {
           ))}
         </StaggerContainer>
       </section>
-    </main>
+    </div>
   );
 }

@@ -133,7 +133,7 @@ export default function TravelBucketListPage() {
   const totalDestinations = REGIONS.reduce((sum, r) => sum + r.items.length, 0);
 
   return (
-    <main className="bg-card">
+    <div className="bg-card">
       <JsonLd data={faqSchema} />
 
       {/* ── Hero ─────────────────────────────────────────────────── */}
@@ -304,6 +304,6 @@ export default function TravelBucketListPage() {
           </div>
         </div>
       </section>
-    </main>
+    </div>
   );
 }

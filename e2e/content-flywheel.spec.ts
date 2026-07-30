@@ -71,7 +71,7 @@ test.describe('Significant content discovery routes', () => {
           }
         `,
       });
-      await expect(page.locator('main#main')).toHaveCount(1);
+      await expect(page.locator('main')).toHaveCount(1);
       await expect(page.locator('main#main h1')).toHaveCount(1);
       await expect(page.getByRole('navigation')).toBeVisible();
       await expect(page.getByRole('contentinfo')).toBeVisible();

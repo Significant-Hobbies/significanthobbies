@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 
 export default function PrivacyPage() {
   return (
-    <main className="relative mx-auto max-w-3xl px-4 py-12 text-sm leading-7 text-foreground">
+    <div className="relative mx-auto max-w-3xl px-4 py-12 text-sm leading-7 text-foreground">
       <GridBackground variant="dots" size={22} />
       <FadeIn className="relative">
         <Link href="/" className="text-xs text-muted-foreground hover:underline">
@@ -60,6 +60,6 @@ export default function PrivacyPage() {
           </p>
         </SpotlightCard>
       </FadeIn>
-    </main>
+    </div>
   );
 }

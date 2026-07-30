@@ -83,7 +83,7 @@ export default async function FamousBucketListPage({ params }: Props) {
   };
 
   return (
-    <main className="bg-card">
+    <div className="bg-card">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
@@ -304,6 +304,6 @@ export default async function FamousBucketListPage({ params }: Props) {
           )}
         </div>
       </section>
-    </main>
+    </div>
   );
 }

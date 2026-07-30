@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 
 export default function AboutPage() {
   return (
-    <main className="mx-auto max-w-3xl px-4 py-12">
+    <div className="mx-auto max-w-3xl px-4 py-12">
       {/* Header */}
       <div className="relative mb-10 overflow-hidden rounded-3xl border border-border/60">
         <GridBackground variant="dots" size={22} />
@@ -64,6 +64,6 @@ export default function AboutPage() {
           </p>
         </SpotlightCard>
       </FadeIn>
-    </main>
+    </div>
   );
 }

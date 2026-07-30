@@ -59,7 +59,7 @@ const TOTAL_PEOPLE = FAMOUS_BUCKET_LISTS.length;
 
 export default function BucketListsPage() {
   return (
-    <main className="bg-card">
+    <div className="bg-card">
       {/* ── Hero ─────────────────────────────────────────────────────────── */}
       <section className="relative bg-card pt-20 pb-16 px-4">
         <GridBackground />
@@ -286,6 +286,6 @@ export default function BucketListsPage() {
           </div>
         </div>
       </section>
-    </main>
+    </div>
   );
 }

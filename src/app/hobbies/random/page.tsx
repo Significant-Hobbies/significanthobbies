@@ -26,13 +26,13 @@ export default function RandomHobby() {
   }, []);
 
   return (
-    <main className="relative flex min-h-screen items-center justify-center overflow-hidden p-8">
+    <div className="relative flex min-h-screen items-center justify-center overflow-hidden p-8">
       <GradientMesh />
       <FadeIn className="relative" delay={0.1}>
         <SpotlightCard className="rounded-2xl shadow-soft" innerClassName="p-12 text-center">
           <p className="font-mono text-sm text-muted-foreground">{msg}</p>
         </SpotlightCard>
       </FadeIn>
-    </main>
+    </div>
   );
 }

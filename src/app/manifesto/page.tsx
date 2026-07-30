@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 
 export default function ManifestoPage() {
   return (
-    <main className="relative mx-auto max-w-2xl px-4 py-16 sm:py-24">
+    <div className="relative mx-auto max-w-2xl px-4 py-16 sm:py-24">
       <GridBackground variant="dots" size={22} />
       <div className="relative">
         <Link href="/" className="text-sm text-muted-foreground hover:text-foreground">
@@ -134,6 +134,6 @@ export default function ManifestoPage() {
           </div>
         </article>
       </div>
-    </main>
+    </div>
   );
 }

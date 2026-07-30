@@ -47,7 +47,7 @@ export default async function RecentTimelinesPage() {
     .limit(40);
 
   return (
-    <main className="mx-auto max-w-3xl px-4 py-12">
+    <div className="mx-auto max-w-3xl px-4 py-12">
       {/* Header with grid background + fade-in */}
       <div className="relative mb-2">
         <GridBackground />
@@ -119,6 +119,6 @@ export default async function RecentTimelinesPage() {
           })}
         </StaggerContainer>
       )}
-    </main>
+    </div>
   );
 }
