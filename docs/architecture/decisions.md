@@ -287,3 +287,26 @@ behind them find anything at all.
   the page it had earned.
 - Destination cross-references point at `FAMOUS_BUCKET_LISTS`, not
   `famous-journeys`. The two share some names but are separate sets.
+
+## A12 — Journal context is a private link, not proof
+
+**Decision:** One private `JournalEntry` may optionally reference either one
+owned `Timeline` or one owned, non-abandoned `Commitment`. The daily writer and
+recent-entry reader show a quiet route back to that Living plan.
+
+**Why:** Daily and Living were described as one product, but the relationship
+stopped at copy: journal rows knew only their author and date. One explicit
+context makes a reflection about practice navigable without turning the journal
+into a second commitments system or a public content surface.
+
+**Constraints:**
+
+- Context ownership is checked by the server using both the target id and the
+  authenticated user id. A client-supplied id is never trusted by itself.
+- An entry has at most one context. The database check prevents simultaneous
+  timeline and commitment references.
+- Deleting the target clears only the reference via `ON DELETE SET NULL`; the
+  private writing survives.
+- Linking a commitment creates no stamp, proof, streak, badge, habit log,
+  notification, visibility change, or social activity.
+- Signed-out daily previews do not offer context selection or persistence.

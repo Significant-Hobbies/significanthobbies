@@ -1,5 +1,6 @@
 import { sql } from 'drizzle-orm';
 import {
+  check,
   index,
   integer,
   primaryKey,
@@ -418,12 +419,24 @@ export const journalEntries = sqliteTable(
     amEntry: text('amEntry'),
     // PM reflection (evening prompt response — compulsory)
     pmEntry: text('pmEntry'),
+    // Optional bridge from private daily writing to one owned Living context.
+    // The database check below keeps these mutually exclusive.
+    timelineId: text('timelineId').references(() => timelines.id, { onDelete: 'set null' }),
+    commitmentId: text('commitmentId').references(() => commitments.id, {
+      onDelete: 'set null',
+    }),
     createdAt: integer('createdAt', { mode: 'timestamp' }).notNull().default(sql`(unixepoch())`),
     updatedAt: integer('updatedAt', { mode: 'timestamp' }).notNull().default(sql`(unixepoch())`),
   },
   (table) => [
     uniqueIndex('JournalEntry_userId_dayDate_key').on(table.userId, table.dayDate),
     index('JournalEntry_userId_idx').on(table.userId),
+    index('JournalEntry_timelineId_idx').on(table.timelineId),
+    index('JournalEntry_commitmentId_idx').on(table.commitmentId),
+    check(
+      'JournalEntry_single_context_check',
+      sql`${table.timelineId} IS NULL OR ${table.commitmentId} IS NULL`
+    ),
   ]
 );
 

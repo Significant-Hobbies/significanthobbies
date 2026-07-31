@@ -2,11 +2,11 @@
   "$schema": "fleet.design-review.v1",
   "version": 1,
   "project": "significanthobbies",
-  "target": "Owned product changelog",
+  "target": "Daily journal Living context",
   "mode": "preserve",
   "register": "product",
   "context": {
-    "product": "docs/product/overview.md",
+    "product": "PRODUCT.md",
     "design": "src/app/globals.css"
   },
   "direction": {
@@ -14,33 +14,33 @@
     "probes": [],
     "selected": "existing-design",
     "approval": "not-required",
-    "before": "artifacts/design/before.png"
+    "before": "artifacts/design/before-journal-context.png"
   },
   "evidence": {
     "screenshots": [
       {
         "width": 390,
-        "path": "artifacts/design/after-390.png"
+        "path": "artifacts/design/journal-context-after-390.png"
       },
       {
         "width": 768,
-        "path": "artifacts/design/after-768.png"
+        "path": "artifacts/design/journal-context-after-768.png"
       },
       {
         "width": 1440,
-        "path": "artifacts/design/after-1440.png"
+        "path": "artifacts/design/journal-context-after-1440.png"
       }
     ],
     "projectCheck": {
-      "command": "pnpm typecheck && pnpm build && pnpm docs:check && git diff --check",
+      "command": "pnpm test && pnpm typecheck && pnpm lint && pnpm docs:check && pnpm build && openspec validate --all --strict && git diff --check",
       "status": "pass"
     },
     "critique": {
-      "score": 36,
+      "score": 33,
       "maximum": 40
     },
     "audit": {
-      "score": 18,
+      "score": 19,
       "maximum": 20
     },
     "unresolved": {
@@ -49,11 +49,16 @@
     },
     "detector": {
       "posture": "advisory",
-      "findings": []
+      "findings": [
+        "The deterministic detector returned zero findings.",
+        "The critique found unsaved navigation risk; Open plan is now hidden while writing or context is dirty.",
+        "The audit found missing helper association and small link targets; aria-describedby and 44px targets now cover them.",
+        "The pre-existing global Feedback widget still overlaps journal content at narrow widths, outside this selector implementation."
+      ]
     }
   },
   "ownerFeedback": {
     "decision": "delegated",
-    "note": "Owner explicitly delegated the owned changelog rollout on 2026-07-29."
+    "note": "The owner explicitly approved all Fleet issue work and delegated final judgment on 2026-07-31."
   }
 }

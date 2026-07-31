@@ -21,6 +21,11 @@ is the bridge between daily practice and life aspirations.
 
 ## Timeline
 
+- **2026-07-31:** Made the journal an actual private bridge to Living: each
+  daily entry can optionally relate to one owned timeline or non-abandoned
+  commitment, with server ownership checks and safe target deletion. The
+  additive migration is generated but production migration/deployment remains
+  manual.
 - **2026-07-31:** Removed the anonymous landing page's intentional idle-time
   LCP delay and late font swap. Production-equivalent mobile Lighthouse
   improved from 92 / 3.31s LCP to 99 / 1.97s LCP across three-run profiles,
@@ -49,10 +54,11 @@ Historical milestones live in
 - **Two dimensions shipped:** Daily ritual (`/daily` — AM/PM prompts, habits,
   compulsory journal) and Living (timelines, bucket lists, side quests,
   public profiles, SEO blog, discovery quiz).
-- **Journal reader built locally:** `/daily` now pairs today's AM/PM writing
-  with a private, read-only 21-day date rail. The rail communicates only
-  whether writing exists — no totals, streaks, scores, or entry-length
-  comparisons. No schema change; production deployment remains operator-owned.
+- **Journal reader and Living bridge built locally:** `/daily` pairs today's
+  AM/PM writing with a private, read-only 21-day date rail. An entry may
+  optionally relate to one owned timeline or non-abandoned commitment and route
+  back to that plan. The link creates no proof, progress, score, streak, or
+  public activity; production migration/deployment remains operator-owned.
 - **Front door (2026-07-26):** `/life-in-weeks` is a new anonymous surface —
   one birth year in, the whole life grid out, then a turn toward what the
   remaining weeks are for. The mortality frame previously existed only behind

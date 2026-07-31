@@ -8,6 +8,7 @@ import {
   ChevronLeft,
   ChevronRight,
   Flame,
+  Link2,
   Plus,
   Sparkles,
   Sunrise,
@@ -26,6 +27,13 @@ import {
   FREQUENCY_OPTIONS,
   frequencyMeta,
 } from '~/lib/habit-utils';
+import {
+  journalContextFromColumns,
+  journalContextValue,
+  parseJournalContextValue,
+  type JournalContextChoice,
+  type JournalContextRef,
+} from '~/lib/journal-context';
 import { buildJournalDateWindow, hasJournalContent } from '~/lib/journal';
 import { BUCKET_LABELS, type TrajectoryBucket } from '~/lib/trajectory';
 import { cn } from '~/lib/utils';
@@ -51,6 +59,8 @@ interface JournalEntry {
   dayDate: string;
   amEntry: string | null;
   pmEntry: string | null;
+  timelineId?: string | null;
+  commitmentId?: string | null;
 }
 
 interface Actions {
@@ -64,7 +74,8 @@ interface Actions {
   saveJournalEntry: (
     dayDate: string,
     amEntry: string | null,
-    pmEntry: string | null
+    pmEntry: string | null,
+    context?: JournalContextRef | null
   ) => Promise<void>;
 }
 
@@ -84,6 +95,7 @@ interface Props {
   allHabitLogs: HabitLog[];
   journalEntry: JournalEntry | null;
   journalEntries: JournalEntry[];
+  journalContextChoices?: JournalContextChoice[];
   trajectoryNudge?: TrajectoryNudge;
   actions: Actions;
   /**
@@ -132,6 +144,7 @@ export function DailyRitual({
   allHabitLogs,
   journalEntry: initialJournal,
   journalEntries,
+  journalContextChoices = [],
   trajectoryNudge,
   actions,
   preview = false,
@@ -140,6 +153,18 @@ export function DailyRitual({
   const [logs, setLogs] = useState(initialLogs);
   const [amEntry, setAmEntry] = useState(initialJournal?.amEntry ?? '');
   const [pmEntry, setPmEntry] = useState(initialJournal?.pmEntry ?? '');
+  const initialJournalContext = journalContextFromColumns(
+    initialJournal?.timelineId,
+    initialJournal?.commitmentId
+  );
+  const [journalContext, setJournalContext] = useState<JournalContextRef | null>(
+    initialJournalContext
+  );
+  const [lastSavedJournal, setLastSavedJournal] = useState({
+    amEntry: initialJournal?.amEntry ?? '',
+    pmEntry: initialJournal?.pmEntry ?? '',
+    contextValue: journalContextValue(initialJournalContext),
+  });
   const [newHabit, setNewHabit] = useState('');
   const [newHabitFreq, setNewHabitFreq] = useState('daily');
   const [newHabitIcon, setNewHabitIcon] = useState('');
@@ -202,7 +227,12 @@ export function DailyRitual({
     setSaving(true);
     setSaved(false);
     try {
-      await actions.saveJournalEntry(today, amEntry || null, pmEntry || null);
+      await actions.saveJournalEntry(today, amEntry || null, pmEntry || null, journalContext);
+      setLastSavedJournal({
+        amEntry,
+        pmEntry,
+        contextValue: journalContextValue(journalContext),
+      });
       setSaved(true);
       setTimeout(() => setSaved(false), 2000);
     } finally {
@@ -211,12 +241,39 @@ export function DailyRitual({
   }
 
   const canSave = isMorning ? amEntry.trim().length > 0 : pmEntry.trim().length > 0;
+  const journalIsDirty =
+    amEntry !== lastSavedJournal.amEntry ||
+    pmEntry !== lastSavedJournal.pmEntry ||
+    journalContextValue(journalContext) !== lastSavedJournal.contextValue;
+  const journalContextIsDirty =
+    journalContextValue(journalContext) !== lastSavedJournal.contextValue;
   const journalDateWindow = buildJournalDateWindow(today);
   const selectedDateIndex = journalDateWindow.indexOf(selectedDate);
   const isTodaySelected = selectedDate === today;
   const selectedJournal = isTodaySelected
-    ? { amEntry, pmEntry }
+    ? {
+        amEntry,
+        pmEntry,
+        timelineId: journalContext?.kind === 'timeline' ? journalContext.id : null,
+        commitmentId: journalContext?.kind === 'commitment' ? journalContext.id : null,
+      }
     : (journalEntries.find((entry) => entry.dayDate === selectedDate) ?? null);
+  const selectedJournalContext = journalContextFromColumns(
+    selectedJournal?.timelineId,
+    selectedJournal?.commitmentId
+  );
+  const selectedJournalContextChoice = selectedJournalContext
+    ? journalContextChoices.find(
+        (choice) =>
+          choice.kind === selectedJournalContext.kind && choice.id === selectedJournalContext.id
+      )
+    : null;
+  const timelineContextChoices = journalContextChoices.filter(
+    (choice) => choice.kind === 'timeline'
+  );
+  const commitmentContextChoices = journalContextChoices.filter(
+    (choice) => choice.kind === 'commitment'
+  );
 
   function hasWritingOn(dayDate: string): boolean {
     if (dayDate === today) return hasJournalContent({ amEntry, pmEntry });
@@ -386,13 +443,85 @@ export function DailyRitual({
                 <textarea
                   id="daily-journal-entry"
                   value={isMorning ? amEntry : pmEntry}
-                  onChange={(event) =>
-                    isMorning ? setAmEntry(event.target.value) : setPmEntry(event.target.value)
-                  }
+                  onChange={(event) => {
+                    setSaved(false);
+                    if (isMorning) setAmEntry(event.target.value);
+                    else setPmEntry(event.target.value);
+                  }}
                   placeholder={journalPlaceholder}
                   className="mt-3 min-h-[150px] w-full resize-none border-0 bg-transparent p-0 text-base leading-7 text-foreground placeholder:text-subtle focus-visible:outline-none"
                 />
               </div>
+
+              {journalContextChoices.length > 0 && (
+                <div className="rounded-xl border border-border/60 bg-background/35 px-4 py-3.5">
+                  <label
+                    htmlFor="daily-journal-context"
+                    className="flex items-center gap-2 text-xs font-medium text-foreground"
+                  >
+                    <Link2 className="h-3.5 w-3.5 text-primary" />
+                    Part of
+                    <span className="font-normal text-subtle">(optional)</span>
+                  </label>
+                  <select
+                    id="daily-journal-context"
+                    aria-describedby="daily-journal-context-help"
+                    value={journalContextValue(journalContext)}
+                    onChange={(event) => {
+                      setSaved(false);
+                      setJournalContext(parseJournalContextValue(event.target.value));
+                    }}
+                    className="mt-2.5 w-full rounded-lg border border-border bg-card px-3 py-2.5 text-sm text-foreground outline-none transition-colors focus-visible:border-primary/60 focus-visible:ring-2 focus-visible:ring-primary/25"
+                  >
+                    <option value="">No related plan</option>
+                    {timelineContextChoices.length > 0 && (
+                      <optgroup label="Timelines">
+                        {timelineContextChoices.map((choice) => (
+                          <option
+                            key={`${choice.kind}:${choice.id}`}
+                            value={journalContextValue(choice)}
+                          >
+                            {choice.label}
+                          </option>
+                        ))}
+                      </optgroup>
+                    )}
+                    {commitmentContextChoices.length > 0 && (
+                      <optgroup label="Commitments">
+                        {commitmentContextChoices.map((choice) => (
+                          <option
+                            key={`${choice.kind}:${choice.id}`}
+                            value={journalContextValue(choice)}
+                          >
+                            {choice.label}
+                          </option>
+                        ))}
+                      </optgroup>
+                    )}
+                  </select>
+                  <p
+                    id="daily-journal-context-help"
+                    className="mt-2 text-xs leading-relaxed text-subtle"
+                  >
+                    A private thread back to what this day was part of. It does not create proof or
+                    progress.
+                  </p>
+                  {journalContextIsDirty && (
+                    <p className="mt-2 text-xs font-medium text-primary">
+                      Save the entry to keep this plan link.
+                    </p>
+                  )}
+                  {selectedJournalContextChoice && !journalIsDirty && (
+                    <Link
+                      href={selectedJournalContextChoice.href}
+                      prefetch={false}
+                      className="-ml-2 mt-1 inline-flex min-h-11 items-center rounded-md px-2 text-xs font-medium text-primary underline decoration-primary/35 underline-offset-4 hover:decoration-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/70"
+                    >
+                      Open plan →
+                    </Link>
+                  )}
+                </div>
+              )}
 
               <div className="flex min-h-9 flex-wrap items-center gap-3 border-t border-border/50 pt-4">
                 <Button onClick={handleSave} disabled={saving || !canSave} className="gap-2">
@@ -401,7 +530,7 @@ export function DailyRitual({
                 {saved && (
                   <span className="flex animate-fade-in-up items-center gap-1.5 text-sm font-medium text-primary">
                     <Check className="h-4 w-4" />
-                    Saved
+                    {journalContext ? 'Entry and plan saved' : 'Entry saved'}
                   </span>
                 )}
                 {!canSave && !saved && (
@@ -440,6 +569,16 @@ export function DailyRitual({
                     </p>
                   </div>
                 </div>
+              )}
+              {selectedJournalContextChoice && (
+                <Link
+                  href={selectedJournalContextChoice.href}
+                  prefetch={false}
+                  className="-ml-2 inline-flex min-h-11 items-center gap-1.5 rounded-md px-2 text-xs font-medium text-primary underline decoration-primary/35 underline-offset-4 hover:decoration-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/70"
+                >
+                  <Link2 className="h-3.5 w-3.5" />
+                  Related to {selectedJournalContextChoice.label} →
+                </Link>
               )}
             </div>
           ) : (

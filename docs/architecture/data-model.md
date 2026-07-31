@@ -78,10 +78,14 @@ rendered. Retired 2026-07-25.
 
 `Habit` (name, status, targetFrequency, icon, sourceQuestId), `HabitLog`
 (habitId, dayDate, completed — unique on `(habitId, dayDate)`), `JournalEntry`
-(userId, dayDate, amEntry, pmEntry — unique on `(userId, dayDate)`).
-All private by default — no visibility fields. See
+(userId, dayDate, amEntry, pmEntry, and at most one optional timeline or
+commitment reference — unique on `(userId, dayDate)`). The two context foreign
+keys use `ON DELETE SET NULL`, so removing a Living target preserves private
+writing. A database check prevents both references from being set together.
+All journal data remains private by structure — no visibility fields. See
 [`knowledge/archive/merge-plan-tll.md`](../knowledge/archive/merge-plan-tll.md)
-for the merge rationale.
+for the merge rationale and [`decisions.md`](decisions.md) A12 for the bridge
+boundary.
 
 ### Quests and retired arcs storage
 

@@ -66,13 +66,11 @@ The merge produced one coherent thesis:
   Structurally private: no visibility field, no public API, no sharing.
 - **Living (opt-in public):** hobbies, bucket lists, side quests, timelines,
   public profiles. Opt-in public per item.
-- **The journal is intended to be the bridge.** You write about practicing your
-  hobby, and that connects to your timeline and commitments. **This is an
-  intent, not a description of the code.** `journalEntries` has no foreign key
-  beyond `userId` — no hobby, no timeline, no commitment, no habit, no
-  trajectory bucket. Its only readers are `/daily`, `/dashboard`, and the
-  `/look-back` narrative. Building that link is the highest-leverage open item;
-  see [`STATUS.md`](../../STATUS.md) → Next steps.
+- **The journal is the bridge.** A private daily entry can optionally relate to
+  one of its owner's timelines or non-abandoned commitments. The relationship
+  creates a navigable thread back to the Living plan; it does not create proof,
+  progress, scoring, or public activity. See
+  [`decisions.md`](../architecture/decisions.md) A12.
 - **The mortality frame connects both.** A finite life is the reason daily
   practice and life aspirations both matter. The life grid (`src/lib/mortality.ts`)
   and the manifesto (`/manifesto`) make this concrete.
