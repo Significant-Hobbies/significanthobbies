@@ -5,7 +5,7 @@
 > Update this file when durable current or shipped product truth changes. Do
 > not let deploy-version snapshots accumulate here — put those in the archive.
 
-Last updated: 2026-07-29
+Last updated: 2026-07-31
 
 ## Why / What
 
@@ -21,6 +21,10 @@ is the bridge between daily practice and life aspirations.
 
 ## Timeline
 
+- **2026-07-31:** Removed the anonymous landing page's intentional idle-time
+  LCP delay and late font swap. Production-equivalent mobile Lighthouse
+  improved from 92 / 3.31s LCP to 99 / 1.97s LCP across three-run profiles,
+  with zero CLS; production deployment remains manual.
 - **2026-07-29:** Added an owned `/changelog` with verified shipped outcomes
   and direct GitHub Roadmap and Source links.
 - **2026-07-13:** Merged the Significant Content flywheel after strict OpenSpec,
