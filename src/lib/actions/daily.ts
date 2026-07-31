@@ -11,6 +11,11 @@ import {
   type JournalContextChoice,
   type JournalContextRef,
 } from '~/lib/journal-context';
+import {
+  habitCommitmentIdForVerifiedTarget,
+  habitCommitmentLabel,
+  type HabitCommitmentChoice,
+} from '~/lib/habit-commitment';
 import { getServerAuthSession } from '~/server/auth';
 import { db } from '~/server/db';
 
@@ -28,10 +33,50 @@ export async function getHabits() {
   return rows;
 }
 
+export async function getHabitCommitmentChoices(): Promise<HabitCommitmentChoice[]> {
+  const session = await getServerAuthSession();
+  if (!session?.user) return [];
+
+  const rows = await db
+    .select({
+      id: commitments.id,
+      hobbyName: commitments.hobbyName,
+      goalDays: commitments.goalDays,
+    })
+    .from(commitments)
+    .where(and(eq(commitments.userId, session.user.id), ne(commitments.status, 'abandoned')))
+    .orderBy(desc(commitments.updatedAt));
+
+  return rows.map((commitment) => ({
+    id: commitment.id,
+    label: habitCommitmentLabel(commitment.hobbyName, commitment.goalDays),
+    href: '/commitments',
+  }));
+}
+
+async function verifyOwnedHabitCommitment(
+  userId: string,
+  commitmentId: string
+): Promise<string | null> {
+  const [owned] = await db
+    .select({ id: commitments.id })
+    .from(commitments)
+    .where(
+      and(
+        eq(commitments.id, commitmentId),
+        eq(commitments.userId, userId),
+        ne(commitments.status, 'abandoned')
+      )
+    )
+    .limit(1);
+  return owned?.id ?? null;
+}
+
 export async function createHabit(
   name: string,
   targetFrequency?: string,
-  icon?: string
+  icon?: string,
+  commitmentId?: string | null
 ): Promise<{ id: string; name: string } | null> {
   const session = await getServerAuthSession();
   if (!session?.user) return null;
@@ -40,6 +85,10 @@ export async function createHabit(
 
   const freq = isValidFrequency(targetFrequency) ? targetFrequency! : DEFAULT_FREQUENCY;
   const trimmedIcon = icon?.trim() || null;
+  const requestedCommitmentId = commitmentId?.trim() || null;
+  const verifiedCommitmentId = requestedCommitmentId
+    ? await verifyOwnedHabitCommitment(session.user.id, requestedCommitmentId)
+    : null;
 
   const [habit] = await db
     .insert(habits)
@@ -48,11 +97,36 @@ export async function createHabit(
       name: trimmed,
       targetFrequency: freq,
       icon: trimmedIcon,
+      commitmentId: habitCommitmentIdForVerifiedTarget(requestedCommitmentId, verifiedCommitmentId),
     })
     .returning({ id: habits.id, name: habits.name });
   revalidatePath('/daily');
   revalidatePath('/dashboard');
   return habit ?? null;
+}
+
+export async function setHabitCommitment(
+  habitId: string,
+  commitmentId: string | null
+): Promise<boolean> {
+  const session = await getServerAuthSession();
+  if (!session?.user) return false;
+
+  const requestedCommitmentId = commitmentId?.trim() || null;
+  const verifiedCommitmentId = requestedCommitmentId
+    ? await verifyOwnedHabitCommitment(session.user.id, requestedCommitmentId)
+    : null;
+  const [updated] = await db
+    .update(habits)
+    .set({
+      commitmentId: habitCommitmentIdForVerifiedTarget(requestedCommitmentId, verifiedCommitmentId),
+    })
+    .where(and(eq(habits.id, habitId), eq(habits.userId, session.user.id)))
+    .returning({ id: habits.id });
+
+  if (!updated) return false;
+  revalidatePath('/daily');
+  return true;
 }
 
 export async function deleteHabit(id: string) {

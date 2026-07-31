@@ -76,6 +76,11 @@ The merge produced one coherent thesis:
   creates a navigable thread back to the Living plan; it does not create proof,
   progress, scoring, or public activity. See
   [`decisions.md`](../architecture/decisions.md) A12.
+- **Habits can point to a commitment.** An owner may explicitly relate one
+  private habit to one owned, non-abandoned commitment and change or clear that
+  link later. The check-in remains lightweight context: only a deliberate proof
+  stamp advances a commitment. See
+  [`decisions.md`](../architecture/decisions.md) A14.
 - **The mortality frame connects both.** A finite life is the reason daily
   practice and life aspirations both matter. The life grid (`src/lib/mortality.ts`)
   and the manifesto (`/manifesto`) make this concrete.

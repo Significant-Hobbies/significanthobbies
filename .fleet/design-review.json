@@ -2,7 +2,7 @@
   "$schema": "fleet.design-review.v1",
   "version": 1,
   "project": "significanthobbies",
-  "target": "First public timeline journey",
+  "target": "Daily habit commitment linking",
   "mode": "preserve",
   "register": "product",
   "context": {
@@ -14,21 +14,21 @@
     "probes": [],
     "selected": "existing-design",
     "approval": "not-required",
-    "before": "artifacts/design/before-first-public-timeline.png"
+    "before": "artifacts/design/journal-context-after-390.png"
   },
   "evidence": {
     "screenshots": [
       {
         "width": 390,
-        "path": "artifacts/design/first-public-timeline-after-390.png"
+        "path": "artifacts/design/habit-commitment-after-390.png"
       },
       {
         "width": 768,
-        "path": "artifacts/design/first-public-timeline-after-768.png"
+        "path": "artifacts/design/habit-commitment-after-768.png"
       },
       {
         "width": 1440,
-        "path": "artifacts/design/first-public-timeline-after-1440.png"
+        "path": "artifacts/design/habit-commitment-after-1440.png"
       }
     ],
     "projectCheck": {
@@ -50,11 +50,10 @@
     "detector": {
       "posture": "advisory",
       "findings": [
-        "Impeccable hook scans reported no deterministic design-quality findings.",
-        "Independent critique found recoverability, visibility synchronization, and consent-copy risks; the creation draft, server-confirmed success state, and public discovery disclosure now resolve them.",
-        "Independent audit found an unannounced asynchronous publication state; pending labels, aria-busy, a live status region, and focused success heading now cover it.",
-        "Extra evidence covers the seeded builder and server-confirmed published state at 390 pixels.",
-        "The pre-existing global Feedback widget still overlaps lower page and footer content at narrow widths, outside this journey."
+        "The final mechanical detector returned no findings.",
+        "Independent critique found unsaved-journal navigation and undersized touch targets; separate-tab plan links, 44-pixel targets, row-specific feedback, and reordered guidance resolved them.",
+        "Independent audit found failed creation could discard a draft; creation now retains all fields and presents an actionable alert.",
+        "The pre-existing global header and Feedback widget still overlap full-page evidence at narrow widths, outside this focused change."
       ]
     }
   },

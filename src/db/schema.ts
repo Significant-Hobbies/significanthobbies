@@ -371,11 +371,16 @@ export const habits = sqliteTable(
     icon: text('icon'),
     // Links to UserQuest.id if this habit was auto-created from a quest
     sourceQuestId: text('sourceQuestId'),
+    // Optional private planning link. Habit logs never count as commitment proof.
+    commitmentId: text('commitmentId').references(() => commitments.id, {
+      onDelete: 'set null',
+    }),
     createdAt: integer('createdAt', { mode: 'timestamp' }).notNull().default(sql`(unixepoch())`),
   },
   (table) => [
     index('Habit_userId_idx').on(table.userId),
     index('Habit_sourceQuestId_idx').on(table.sourceQuestId),
+    index('Habit_commitmentId_idx').on(table.commitmentId),
   ]
 );
 

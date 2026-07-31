@@ -21,6 +21,11 @@ is the bridge between daily practice and life aspirations.
 
 ## Timeline
 
+- **2026-07-31:** Connected Daily habits to Living commitments with one
+  optional, owner-verified planning link. The relationship is explicit and
+  editable; habit check-ins still create no proof or commitment progress. The
+  generated additive migration is validated locally but remains unapplied in
+  production, and deployment remains manual.
 - **2026-07-31:** Tightened the first-use Living loop: completed setup now
   leads to an editable timeline prefilled from the user's saved hobby answer,
   and the first private save presents a separate, explicit opt-in to add that
@@ -59,6 +64,12 @@ Historical milestones live in
 - **Two dimensions shipped:** Daily ritual (`/daily` — AM/PM prompts, habits,
   compulsory journal) and Living (timelines, bucket lists, side quests,
   public profiles, SEO blog, discovery quiz).
+- **Habit and commitment bridge built locally:** an authenticated owner can
+  optionally link a habit to one owned, non-abandoned commitment while creating
+  or managing it. Daily cards show the private planning context, while
+  check-ins remain separate from stamps, proof, progress, visibility, and public
+  activity. Deleting the commitment clears only the link; production
+  migration/deployment remains operator-owned.
 - **First Living handoff built locally:** setup completion carries the user's
   persisted hobby answer into one editable `Now` phase. The first timeline save
   stays private, then offers an owner-only choice to publish it on the profile

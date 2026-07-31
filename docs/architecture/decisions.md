@@ -342,3 +342,26 @@ The product should make the public path obvious without making it automatic.
   ownership check is authoritative.
 - “Keep it private” changes no data. Publishing one timeline changes no other
   profile item, journal entry, or account setting.
+
+## A14 — Habit-to-commitment links are context, never evidence
+
+**Decision:** One private `Habit` may optionally reference one owned,
+non-abandoned `Commitment`. The relationship is always chosen explicitly while
+creating or managing the habit; names are never matched automatically.
+
+**Why:** Habits and commitments are deliberately different systems, but a user
+practicing the same hobby in both had to keep the relationship in their head.
+One quiet planning link makes the daily action navigable without lowering the
+proof standard of commitments.
+
+**Constraints:**
+
+- The server verifies both habit and commitment ownership. Only commitments
+  whose status is not `abandoned` may be selected.
+- Creating, changing, checking, or unchecking a linked habit creates no stamp,
+  proof, commitment progress, streak, badge, visibility change, notification,
+  or public activity.
+- There is no inferred or name-based default. An omitted choice stays null.
+- Deleting a commitment clears the nullable reference with
+  `ON DELETE SET NULL`; the habit and its check-in history survive.
+- The signed-out daily preview exposes no relationship controls.

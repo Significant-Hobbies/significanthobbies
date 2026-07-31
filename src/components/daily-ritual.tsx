@@ -27,6 +27,7 @@ import {
   FREQUENCY_OPTIONS,
   frequencyMeta,
 } from '~/lib/habit-utils';
+import { parseHabitCommitmentValue, type HabitCommitmentChoice } from '~/lib/habit-commitment';
 import {
   journalContextFromColumns,
   journalContextValue,
@@ -45,6 +46,7 @@ interface Habit {
   targetFrequency: string;
   icon: string | null;
   sourceQuestId: string | null;
+  commitmentId?: string | null;
 }
 
 interface HabitLog {
@@ -67,9 +69,11 @@ interface Actions {
   createHabit: (
     name: string,
     targetFrequency?: string,
-    icon?: string
+    icon?: string,
+    commitmentId?: string | null
   ) => Promise<{ id: string; name: string } | null>;
   deleteHabit: (id: string) => Promise<void>;
+  setHabitCommitment: (habitId: string, commitmentId: string | null) => Promise<boolean>;
   toggleHabitLog: (habitId: string, dayDate: string, completed: boolean) => Promise<void>;
   saveJournalEntry: (
     dayDate: string,
@@ -96,6 +100,7 @@ interface Props {
   journalEntry: JournalEntry | null;
   journalEntries: JournalEntry[];
   journalContextChoices?: JournalContextChoice[];
+  habitCommitmentChoices?: HabitCommitmentChoice[];
   trajectoryNudge?: TrajectoryNudge;
   actions: Actions;
   /**
@@ -145,6 +150,7 @@ export function DailyRitual({
   journalEntry: initialJournal,
   journalEntries,
   journalContextChoices = [],
+  habitCommitmentChoices = [],
   trajectoryNudge,
   actions,
   preview = false,
@@ -168,7 +174,14 @@ export function DailyRitual({
   const [newHabit, setNewHabit] = useState('');
   const [newHabitFreq, setNewHabitFreq] = useState('daily');
   const [newHabitIcon, setNewHabitIcon] = useState('');
+  const [newHabitCommitmentId, setNewHabitCommitmentId] = useState('');
   const [showHabitManager, setShowHabitManager] = useState(false);
+  const [habitLinkStatus, setHabitLinkStatus] = useState<{
+    habitId: string;
+    status: 'saving' | 'saved' | 'error';
+  } | null>(null);
+  const [habitCreateError, setHabitCreateError] = useState<string | null>(null);
+  const [habitCreating, setHabitCreating] = useState(false);
   const [nudgeDismissed, setNudgeDismissed] = useState(false);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
@@ -209,12 +222,53 @@ export function DailyRitual({
   function handleAddHabit() {
     const trimmed = newHabit.trim();
     if (!trimmed) return;
-    setNewHabit('');
-    setNewHabitFreq('daily');
-    setNewHabitIcon('');
+    setHabitCreateError(null);
+    setHabitCreating(true);
     startTransition(async () => {
-      await actions.createHabit(trimmed, newHabitFreq, newHabitIcon || undefined);
-      router.refresh();
+      try {
+        const created = await actions.createHabit(
+          trimmed,
+          newHabitFreq,
+          newHabitIcon || undefined,
+          parseHabitCommitmentValue(newHabitCommitmentId)
+        );
+        if (!created) throw new Error('Habit was not created');
+        setNewHabit('');
+        setNewHabitFreq('daily');
+        setNewHabitIcon('');
+        setNewHabitCommitmentId('');
+        router.refresh();
+      } catch {
+        setHabitCreateError(
+          'Could not add this habit. Check the related commitment and try again.'
+        );
+      } finally {
+        setHabitCreating(false);
+      }
+    });
+  }
+
+  function handleHabitCommitmentChange(habitId: string, value: string) {
+    const commitmentId = parseHabitCommitmentValue(value);
+    const previousCommitmentId = habits.find((habit) => habit.id === habitId)?.commitmentId ?? null;
+    setHabitLinkStatus({ habitId, status: 'saving' });
+    setHabits((current) =>
+      current.map((habit) => (habit.id === habitId ? { ...habit, commitmentId } : habit))
+    );
+    startTransition(async () => {
+      try {
+        const updated = await actions.setHabitCommitment(habitId, commitmentId);
+        if (!updated) throw new Error('Habit was not updated');
+        setHabitLinkStatus({ habitId, status: 'saved' });
+        router.refresh();
+      } catch {
+        setHabits((current) =>
+          current.map((habit) =>
+            habit.id === habitId ? { ...habit, commitmentId: previousCommitmentId } : habit
+          )
+        );
+        setHabitLinkStatus({ habitId, status: 'error' });
+      }
     });
   }
 
@@ -681,6 +735,15 @@ export function DailyRitual({
           )}
         </div>
 
+        {showHabitManager && habitCommitmentChoices.length > 0 && (
+          <div className="rounded-lg border border-border/60 bg-card px-3 py-2.5">
+            <p className="text-xs leading-relaxed text-muted-foreground">
+              Related commitments are private planning context. Habit check-ins never create proof
+              or commitment progress.
+            </p>
+          </div>
+        )}
+
         {habits.length === 0 && !showHabitManager ? (
           <div className="rounded-xl border border-dashed border-border bg-card/50 p-8 text-center">
             <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-xl border border-primary/20 bg-primary/5">
@@ -694,6 +757,9 @@ export function DailyRitual({
         ) : (
           <div className="space-y-2.5">
             {habits.map((habit) => {
+              const linkedCommitment = habit.commitmentId
+                ? habitCommitmentChoices.find((choice) => choice.id === habit.commitmentId)
+                : null;
               const done = isHabitDone(habit.id);
               const streak = computeStreak(allHabitLogs, habit.id, today, habit.targetFrequency);
               const weekly = computeWeeklyProgress(
@@ -712,7 +778,7 @@ export function DailyRitual({
                     'shadow-soft transition-colors',
                     done && 'border-primary/30 bg-primary/5'
                   )}
-                  innerClassName="flex items-center gap-4 p-4"
+                  innerClassName="flex items-start gap-4 p-4"
                   spotlightColor={
                     done ? 'oklch(0.82 0.13 88 / 0.10)' : 'oklch(0.82 0.13 88 / 0.06)'
                   }
@@ -734,13 +800,13 @@ export function DailyRitual({
                   </button>
 
                   {/* Icon + name */}
-                  <div className="flex min-w-0 flex-1 items-center gap-2.5">
+                  <div className="flex min-w-0 flex-1 items-start gap-2.5">
                     {habit.icon && <span className="text-lg leading-none">{habit.icon}</span>}
                     <div className="min-w-0">
                       <div className="flex items-center gap-1.5">
                         <p
                           className={cn(
-                            'text-sm font-medium truncate',
+                            'line-clamp-2 text-sm font-medium leading-snug',
                             done ? 'text-muted-foreground' : 'text-foreground'
                           )}
                         >
@@ -753,36 +819,97 @@ export function DailyRitual({
                         )}
                       </div>
                       <p className="text-[10px] uppercase tracking-wide text-subtle">{freqLabel}</p>
+                      {linkedCommitment && !showHabitManager && (
+                        <Link
+                          href={linkedCommitment.href}
+                          prefetch={false}
+                          target="_blank"
+                          rel="noreferrer"
+                          aria-label={`Open ${linkedCommitment.label} in a new tab`}
+                          className="-ml-2 mt-0.5 inline-flex min-h-11 items-center gap-1 rounded-md px-2 text-[11px] text-muted-foreground underline decoration-border underline-offset-4 hover:text-foreground hover:decoration-foreground/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/70"
+                        >
+                          <Link2 className="h-3 w-3 text-primary" />
+                          For {linkedCommitment.label}
+                          <span className="sr-only"> (opens in a new tab)</span>
+                        </Link>
+                      )}
+                      {showHabitManager && habitCommitmentChoices.length > 0 && (
+                        <div className="mt-2">
+                          <label htmlFor={`habit-commitment-${habit.id}`} className="sr-only">
+                            Related commitment for {habit.name}
+                          </label>
+                          <select
+                            id={`habit-commitment-${habit.id}`}
+                            value={habit.commitmentId ?? ''}
+                            disabled={
+                              habitLinkStatus?.habitId === habit.id &&
+                              habitLinkStatus.status === 'saving'
+                            }
+                            onChange={(event) =>
+                              handleHabitCommitmentChange(habit.id, event.target.value)
+                            }
+                            className="min-h-11 w-full max-w-full rounded-md border border-border bg-background px-2 text-xs text-foreground outline-none disabled:cursor-wait disabled:opacity-60 focus-visible:border-primary/60 focus-visible:ring-2 focus-visible:ring-primary/25"
+                          >
+                            <option value="">No related commitment</option>
+                            {habitCommitmentChoices.map((choice) => (
+                              <option key={choice.id} value={choice.id}>
+                                {choice.label}
+                              </option>
+                            ))}
+                          </select>
+                          {habitLinkStatus?.habitId === habit.id && (
+                            <p
+                              role={habitLinkStatus.status === 'error' ? 'alert' : 'status'}
+                              aria-live={
+                                habitLinkStatus.status === 'error' ? 'assertive' : 'polite'
+                              }
+                              className={cn(
+                                'mt-1.5 text-xs',
+                                habitLinkStatus.status === 'error'
+                                  ? 'text-destructive'
+                                  : 'text-subtle'
+                              )}
+                            >
+                              {habitLinkStatus.status === 'saving' && 'Saving link…'}
+                              {habitLinkStatus.status === 'saved' && 'Related commitment saved.'}
+                              {habitLinkStatus.status === 'error' &&
+                                `Could not update ${habit.name}. Try again.`}
+                            </p>
+                          )}
+                        </div>
+                      )}
                     </div>
                   </div>
 
                   {/* Weekly progress dots */}
-                  <div className="hidden flex-col items-end gap-1.5 sm:flex">
-                    <div
-                      className="flex gap-1"
-                      aria-label={`${weekly.completed} of ${weekly.target} this week`}
-                    >
-                      {Array.from({ length: weekly.target }).map((_, i) => (
-                        <div
-                          key={i}
-                          className={cn(
-                            'h-2 w-2 rounded-full transition-colors',
-                            i < weekly.completed ? 'bg-primary' : 'bg-foreground/15'
-                          )}
-                        />
-                      ))}
-                    </div>
-                    {/* Weekly progress bar */}
-                    <div className="h-1 w-24 overflow-hidden rounded-full bg-foreground/10">
+                  {!showHabitManager && (
+                    <div className="hidden flex-col items-end gap-1.5 sm:flex">
                       <div
-                        className="h-full rounded-full bg-primary transition-all duration-200"
-                        style={{ width: `${weeklyPct}%` }}
-                      />
+                        className="flex gap-1"
+                        aria-label={`${weekly.completed} of ${weekly.target} this week`}
+                      >
+                        {Array.from({ length: weekly.target }).map((_, i) => (
+                          <div
+                            key={i}
+                            className={cn(
+                              'h-2 w-2 rounded-full transition-colors',
+                              i < weekly.completed ? 'bg-primary' : 'bg-foreground/15'
+                            )}
+                          />
+                        ))}
+                      </div>
+                      {/* Weekly progress bar */}
+                      <div className="h-1 w-24 overflow-hidden rounded-full bg-foreground/10">
+                        <div
+                          className="h-full rounded-full bg-primary transition-all duration-200"
+                          style={{ width: `${weeklyPct}%` }}
+                        />
+                      </div>
                     </div>
-                  </div>
+                  )}
 
                   {/* Streak counter — days for scheduled habits, weeks for quota habits */}
-                  {streak.count > 0 && (
+                  {!showHabitManager && streak.count > 0 && (
                     <div
                       className="flex shrink-0 items-center gap-1 rounded-lg bg-primary/10 px-2 py-1"
                       aria-label={`${streak.count} ${streak.unit}${streak.count === 1 ? '' : 's'} in a row`}
@@ -801,7 +928,7 @@ export function DailyRitual({
                   {showHabitManager && (
                     <button
                       onClick={() => handleDeleteHabit(habit.id)}
-                      className="text-subtle hover:text-destructive transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-destructive/50 rounded"
+                      className="flex h-11 w-11 shrink-0 items-center justify-center rounded-md text-subtle transition-colors hover:bg-destructive/10 hover:text-destructive focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-destructive/50"
                       aria-label={`Delete ${habit.name}`}
                     >
                       <Trash2 className="h-4 w-4" />
@@ -869,15 +996,48 @@ export function DailyRitual({
               </div>
             </div>
 
+            {habitCommitmentChoices.length > 0 && (
+              <div>
+                <label
+                  htmlFor="new-habit-commitment"
+                  className="mb-1.5 block text-xs text-muted-foreground"
+                >
+                  Related commitment <span className="text-subtle">(optional)</span>
+                </label>
+                <select
+                  id="new-habit-commitment"
+                  value={newHabitCommitmentId}
+                  onChange={(event) => setNewHabitCommitmentId(event.target.value)}
+                  className="min-h-11 w-full rounded-lg border border-border bg-background px-3 text-sm text-foreground outline-none focus-visible:border-primary/60 focus-visible:ring-2 focus-visible:ring-primary/25"
+                >
+                  <option value="">No related commitment</option>
+                  {habitCommitmentChoices.map((choice) => (
+                    <option key={choice.id} value={choice.id}>
+                      {choice.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
+
+            {habitCreateError && (
+              <p
+                role="alert"
+                className="rounded-lg border border-destructive/30 bg-destructive/5 px-3 py-2 text-xs text-destructive"
+              >
+                {habitCreateError}
+              </p>
+            )}
+
             {/* Add button */}
             <Button
               size="sm"
               onClick={handleAddHabit}
-              disabled={!newHabit.trim()}
+              disabled={!newHabit.trim() || habitCreating}
               className="w-full"
             >
               <Plus className="h-3.5 w-3.5" />
-              Add habit
+              {habitCreating ? 'Adding habit…' : 'Add habit'}
             </Button>
           </div>
         )}

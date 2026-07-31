@@ -76,7 +76,8 @@ rendered. Retired 2026-07-25.
 
 ### Daily ritual (from today-little-log merge)
 
-`Habit` (name, status, targetFrequency, icon, sourceQuestId), `HabitLog`
+`Habit` (name, status, targetFrequency, icon, sourceQuestId, and one optional
+owned non-abandoned commitment reference), `HabitLog`
 (habitId, dayDate, completed — unique on `(habitId, dayDate)`), `JournalEntry`
 (userId, dayDate, amEntry, pmEntry, and at most one optional timeline or
 commitment reference — unique on `(userId, dayDate)`). The two context foreign
@@ -86,6 +87,11 @@ All journal data remains private by structure — no visibility fields. See
 [`knowledge/archive/merge-plan-tll.md`](../knowledge/archive/merge-plan-tll.md)
 for the merge rationale and [`decisions.md`](decisions.md) A12 for the bridge
 boundary.
+
+The habit commitment foreign key uses `ON DELETE SET NULL`, so removing a
+commitment preserves the habit and all `HabitLog` rows. The reference is
+private planning context only: writing a habit log does not write `Stamp` or
+change commitment progress. See [`decisions.md`](decisions.md) A14.
 
 ### Quests and retired arcs storage
 

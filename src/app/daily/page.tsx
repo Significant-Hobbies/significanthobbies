@@ -7,12 +7,14 @@ import {
   createHabit,
   deleteHabit,
   getAllHabitLogs,
+  getHabitCommitmentChoices,
   getHabits,
   getHabitLogsForDate,
   getJournalContextChoices,
   getJournalEntriesForRange,
   getUserProfile,
   saveJournalEntry,
+  setHabitCommitment,
   toggleHabitLog,
 } from '~/lib/actions/daily';
 import { dayKeyIn, isMorningIn } from '~/lib/day';
@@ -56,7 +58,13 @@ export default async function DailyPage() {
         allHabitLogs={previewHabitLogs(today)}
         journalEntry={previewJournalEntryForToday(today)}
         journalEntries={previewJournalEntries(today)}
-        actions={{ createHabit, deleteHabit, toggleHabitLog, saveJournalEntry }}
+        actions={{
+          createHabit,
+          deleteHabit,
+          setHabitCommitment,
+          toggleHabitLog,
+          saveJournalEntry,
+        }}
         preview
       />
     );
@@ -79,6 +87,7 @@ export default async function DailyPage() {
     allHabitLogs,
     journalEntries,
     journalContextChoices,
+    habitCommitmentChoices,
     profile,
     trajectoryNudge,
   ] = await Promise.all([
@@ -87,6 +96,7 @@ export default async function DailyPage() {
     getAllHabitLogs(),
     getJournalEntriesForRange(journalDateWindow[0]!, today),
     getJournalContextChoices(),
+    getHabitCommitmentChoices(),
     getUserProfile(),
     getActiveMonthEndNudge(),
   ]);
@@ -113,10 +123,12 @@ export default async function DailyPage() {
         journalEntry={journalEntry}
         journalEntries={journalEntries}
         journalContextChoices={journalContextChoices}
+        habitCommitmentChoices={habitCommitmentChoices}
         trajectoryNudge={trajectoryNudge}
         actions={{
           createHabit,
           deleteHabit,
+          setHabitCommitment,
           toggleHabitLog,
           saveJournalEntry,
         }}
