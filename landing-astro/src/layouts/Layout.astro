@@ -158,11 +158,11 @@ const OG_IMAGE = `${SITE_URL}/opengraph-image`;
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       rel="preload"
-      href="https://fonts.googleapis.com/css2?family=Archivo:wght@400..800&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Archivo:wght@400..800&display=optional"
       as="style"
       onload="this.onload=null;this.rel='stylesheet'"
     />
-    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400..800&display=swap" /></noscript>
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400..800&display=optional" /></noscript>
   </head>
   <body class="antialiased lcp-pending">
     <div id="lcp-shell" aria-hidden="true">
@@ -186,20 +186,15 @@ const OG_IMAGE = `${SITE_URL}/opengraph-image`;
           location.replace('/dashboard');
         }
       })();
-      // Keep #lcp-shell as LCP until the browser is idle — rAF was too early
-      // and Lighthouse still attributed paint to the Tailwind-blocked hero.
+      // Hand off to the fully styled static hero on the next paint. Waiting
+      // for idle kept the duplicate shell visible for several seconds on
+      // throttled devices and turned that intentional delay into the LCP.
       (function () {
         var drop = function () {
           document.getElementById('lcp-shell')?.remove();
           document.body.classList.remove('lcp-pending');
         };
-        if ('requestIdleCallback' in window) {
-          requestIdleCallback(drop, { timeout: 4000 });
-        } else {
-          window.addEventListener('load', function () {
-            setTimeout(drop, 2000);
-          });
-        }
+        requestAnimationFrame(drop);
       })();
     </script>
     <slot />
