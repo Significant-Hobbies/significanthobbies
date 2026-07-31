@@ -7,6 +7,7 @@ import { z } from 'zod';
 
 import { comments, likes, timelines, users } from '~/db/schema';
 import { trackActivated, trackCoreAction } from '~/lib/analytics';
+import { firstTimelineDestination } from '~/lib/first-timeline';
 import { enforceRateLimit } from '~/lib/rate-limit';
 import type { Phase, TimelinePin, TimelineVisibility } from '~/lib/types';
 import { parseJSONColumn } from '~/lib/utils';
@@ -90,7 +91,19 @@ export async function saveTimeline(data: { title?: string; phases: Phase[] }) {
     trackActivated(session.user.id);
   }
 
-  return timeline;
+  if (!timeline) throw new Error('Timeline was not saved');
+
+  const isFirst = priorCount === 0;
+  return {
+    timeline,
+    isFirst,
+    destination: firstTimelineDestination({
+      id: timeline.id,
+      slug: timeline.slug,
+      username: session.user.username,
+      isFirst,
+    }),
+  };
 }
 
 export async function updateTimeline(id: string, data: { title?: string; phases: Phase[] }) {

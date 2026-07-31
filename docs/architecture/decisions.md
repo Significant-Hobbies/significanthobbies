@@ -310,3 +310,35 @@ into a second commitments system or a public content surface.
 - Linking a commitment creates no stamp, proof, streak, badge, habit log,
   notification, visibility change, or social activity.
 - Signed-out daily previews do not offer context selection or persistence.
+
+## A13 — The first public timeline is a separate consent step
+
+**Decision:** Completed setup leads to the new-timeline builder, which may reuse
+the authenticated user's persisted dropped-hobby answer as one editable `Now`
+phase. The first save remains `PRIVATE`; only a subsequent owner action can add
+it to the public profile.
+
+**Why:** Setup previously ended after one habit and sent the user to a dashboard
+whose highest-value empty state was another link. Even after finding the
+builder, the user repeated context they had already provided, saved into a
+private owner view, and had to infer that a small visibility menu was the path
+to the public profile. The core creation-and-sharing loop existed, but the
+handoffs made it feel like several unrelated products.
+
+Folding publication into Save was rejected. A timeline can contain a personal
+history, and “finish setup” is not consent to make that history discoverable.
+The product should make the public path obvious without making it automatic.
+
+**Constraints:**
+
+- Setup-specific prefill reads existing authenticated `onboardingData`; it does
+  not put the hobby answer in the URL or create a second onboarding store.
+- Setup waits for the existing answer save before offering the timeline
+  handoff, so fast navigation cannot lose the starter hobby.
+- Direct and signed-out `/timeline/new` visits keep the template-first builder.
+- The first-save query marker is presentation state only. The prompt also
+  requires owner identity and current `PRIVATE` visibility.
+- Publication continues through `setTimelineVisibility`, whose server-side
+  ownership check is authoritative.
+- “Keep it private” changes no data. Publishing one timeline changes no other
+  profile item, journal entry, or account setting.

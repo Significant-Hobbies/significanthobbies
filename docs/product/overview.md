@@ -66,6 +66,11 @@ The merge produced one coherent thesis:
   Structurally private: no visibility field, no public API, no sharing.
 - **Living (opt-in public):** hobbies, bucket lists, side quests, timelines,
   public profiles. Opt-in public per item.
+- **First-use Living loop:** completed setup leads into an editable first
+  timeline seeded from the hobby the user already named. Saving remains private
+  by default; a separate owner-only choice is required before the timeline
+  appears on the public profile. See
+  [`decisions.md`](../architecture/decisions.md) A13.
 - **The journal is the bridge.** A private daily entry can optionally relate to
   one of its owner's timelines or non-abandoned commitments. The relationship
   creates a navigable thread back to the Living plan; it does not create proof,

@@ -6,6 +6,7 @@ import { notFound } from 'next/navigation';
 import { GradientMesh, SpotlightCard } from '~/components/aceternity';
 import { CommentsSectionWithOwn } from '~/components/timeline-view/comments-section';
 import { ExportButton } from '~/components/timeline-view/export-button';
+import { FirstTimelinePublishPrompt } from '~/components/timeline-view/first-timeline-publish-prompt';
 import { InsightsPanel } from '~/components/timeline-view/insights-panel';
 import { LikeButton } from '~/components/timeline-view/like-button';
 import { PersonalityCard } from '~/components/timeline-view/personality-card';
@@ -17,6 +18,10 @@ import { VisibilityToggle } from '~/components/timeline-view/visibility-toggle';
 import { Badge } from '~/components/ui/badge';
 import { Button } from '~/components/ui/button';
 import { comments as commentsTable, likes as likesTable, timelines, users } from '~/db/schema';
+import {
+  shouldShowFirstTimelinePrompt,
+  shouldShowFirstTimelinePublishedConfirmation,
+} from '~/lib/first-timeline';
 import type { Phase, TimelineData, TimelinePin, TimelineVisibility } from '~/lib/types';
 import { parseJSONColumn } from '~/lib/utils';
 import { getServerAuthSession } from '~/server/auth';
@@ -24,6 +29,7 @@ import { db } from '~/server/db';
 
 interface Props {
   params: Promise<{ username: string; slug: string }>;
+  searchParams: Promise<{ first?: string; published?: string }>;
 }
 
 export async function generateMetadata({ params }: Props) {
@@ -61,8 +67,8 @@ export async function generateMetadata({ params }: Props) {
   };
 }
 
-export default async function TimelineBySlugPage({ params }: Props) {
-  const { username, slug } = await params;
+export default async function TimelineBySlugPage({ params, searchParams }: Props) {
+  const [{ username, slug }, { first, published }] = await Promise.all([params, searchParams]);
   const session = await getServerAuthSession();
 
   const raw = await db.query.timelines.findFirst({
@@ -85,6 +91,17 @@ export default async function TimelineBySlugPage({ params }: Props) {
   const isVisible = raw.visibility !== 'PRIVATE' || isOwner;
 
   if (!isVisible) notFound();
+
+  const showFirstTimelinePrompt = shouldShowFirstTimelinePrompt({
+    marker: first,
+    isOwner,
+    visibility: raw.visibility as TimelineVisibility,
+  });
+  const showPublishedConfirmation = shouldShowFirstTimelinePublishedConfirmation({
+    marker: published,
+    isOwner,
+    visibility: raw.visibility as TimelineVisibility,
+  });
 
   const phases = parseJSONColumn<Phase[]>(raw.phases, [], 'timeline-slug-view:phases');
 
@@ -240,6 +257,15 @@ export default async function TimelineBySlugPage({ params }: Props) {
           </div>
         </SpotlightCard>
       </div>
+
+      {(showFirstTimelinePrompt || showPublishedConfirmation) && (
+        <FirstTimelinePublishPrompt
+          timelineId={raw.id}
+          username={username}
+          canonicalPath={`/u/${username}/${slug}`}
+          published={showPublishedConfirmation}
+        />
+      )}
 
       {phases.length === 0 ? (
         <div className="relative">

@@ -25,6 +25,7 @@ import { toast } from 'sonner';
 import { Button } from '~/components/ui/button';
 import { Input } from '~/components/ui/input';
 import { saveTimeline, updateTimeline } from '~/lib/actions/timeline';
+import type { FirstTimelineStarter } from '~/lib/first-timeline';
 import { captureError } from '~/lib/foundry-monitoring';
 import { TIMELINE_TEMPLATES, type TimelineTemplate } from '~/lib/templates';
 import type { Phase, TimelineData } from '~/lib/types';
@@ -33,6 +34,7 @@ import { PhaseCard } from './phase-card';
 
 interface Props {
   existing?: TimelineData;
+  starter?: FirstTimelineStarter | null;
 }
 
 function makePhase(order: number): Phase {
@@ -98,15 +100,25 @@ function TemplatePicker({ onPick }: { onPick: (template: TimelineTemplate) => vo
   );
 }
 
-export function TimelineBuilder({ existing }: Props) {
+export function TimelineBuilder({ existing, starter }: Props) {
   const router = useRouter();
-  const [title, setTitle] = useState(existing?.title ?? '');
+  const [title, setTitle] = useState(existing?.title ?? starter?.title ?? '');
   const [phases, setPhases] = useState<Phase[]>(
-    existing?.phases?.length ? existing.phases : [makePhase(0)]
+    existing?.phases?.length
+      ? existing.phases
+      : starter
+        ? [
+            {
+              ...makePhase(0),
+              label: starter.phaseLabel,
+              hobbies: [{ name: starter.hobbyName }],
+            },
+          ]
+        : [makePhase(0)]
   );
   const [isPending, startTransition] = useTransition();
   // Show template picker only for new timelines (no existing prop)
-  const [templatePicked, setTemplatePicked] = useState(!!existing);
+  const [templatePicked, setTemplatePicked] = useState(!!existing || !!starter);
 
   // On touch, require a short press-and-hold before a drag starts so normal
   // vertical scrolling of the phase list is never hijacked. Pointer (mouse)
@@ -123,12 +135,12 @@ export function TimelineBuilder({ existing }: Props) {
     })
   );
 
-  const draftKey = existing ? `timeline-draft-${existing.id}` : null;
+  const draftKey = existing ? `timeline-draft-${existing.id}` : 'timeline-draft-new';
 
-  // Restore an unsaved draft on first mount (existing timelines only).
-  // New timelines stay in component state until first Save.
+  // Restore both creation and edit drafts. First-time creation now begins
+  // immediately after a longer setup flow, so losing it to refresh, auth, or
+  // an accidental navigation is especially costly.
   useEffect(() => {
-    if (!draftKey) return;
     try {
       const raw = localStorage.getItem(draftKey);
       if (!raw) return;
@@ -136,6 +148,7 @@ export function TimelineBuilder({ existing }: Props) {
       if (typeof draft.title === 'string') setTitle(draft.title);
       if (Array.isArray(draft.phases) && draft.phases.length > 0) {
         setPhases(draft.phases);
+        setTemplatePicked(true);
       }
     } catch {}
     // eslint-disable-next-line react-hooks/exhaustive-deps -- restore once on mount
@@ -143,14 +156,14 @@ export function TimelineBuilder({ existing }: Props) {
 
   // Mirror edits to localStorage so reordering / typing isn't lost on reload.
   useEffect(() => {
-    if (!draftKey) return;
+    if (!templatePicked) return;
     const t = setTimeout(() => {
       try {
         localStorage.setItem(draftKey, JSON.stringify({ title, phases }));
       } catch {}
     }, 800);
     return () => clearTimeout(t);
-  }, [draftKey, title, phases]);
+  }, [draftKey, phases, templatePicked, title]);
 
   function handlePickTemplate(template: TimelineTemplate) {
     setPhases(templateToPhases(template));
@@ -191,17 +204,26 @@ export function TimelineBuilder({ existing }: Props) {
 
     startTransition(async () => {
       try {
-        const result = existing
-          ? await updateTimeline(existing.id, { title: title || undefined, phases })
-          : await saveTimeline({ title: title || undefined, phases });
-        if (draftKey) {
+        if (existing) {
+          const result = await updateTimeline(existing.id, {
+            title: title || undefined,
+            phases,
+          });
+          if (draftKey) {
+            try {
+              localStorage.removeItem(draftKey);
+            } catch {}
+          }
+          toast.success('Timeline updated');
+          router.push(`/timeline/${result.id}`);
+        } else {
+          const result = await saveTimeline({ title: title || undefined, phases });
           try {
             localStorage.removeItem(draftKey);
           } catch {}
+          toast.success('Timeline saved!');
+          router.push(result.destination);
         }
-        toast.success(existing ? 'Timeline updated' : 'Timeline saved!');
-        // Redirect to timeline — username lookup happens via server redirect from /timeline/[id]
-        router.push(`/timeline/${result.id}`);
       } catch (err) {
         const msg = err instanceof Error ? err.message : 'Failed to save';
         if (msg === 'Not authenticated') {
@@ -253,6 +275,11 @@ export function TimelineBuilder({ existing }: Props) {
         {allEmpty && (
           <span className="text-xs text-muted-foreground">
             Tip: Add hobbies to each phase to unlock insights
+          </span>
+        )}
+        {!existing && starter && !allEmpty && (
+          <span className="text-xs text-muted-foreground">
+            Save this starting point, or add an earlier chapter.
           </span>
         )}
         {!existing && (

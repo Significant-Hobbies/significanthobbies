@@ -21,6 +21,11 @@ is the bridge between daily practice and life aspirations.
 
 ## Timeline
 
+- **2026-07-31:** Tightened the first-use Living loop: completed setup now
+  leads to an editable timeline prefilled from the user's saved hobby answer,
+  and the first private save presents a separate, explicit opt-in to add that
+  timeline to the public profile. No content is automatically published;
+  production deployment remains manual.
 - **2026-07-31:** Made the journal an actual private bridge to Living: each
   daily entry can optionally relate to one owned timeline or non-abandoned
   commitment, with server ownership checks and safe target deletion. The
@@ -54,6 +59,11 @@ Historical milestones live in
 - **Two dimensions shipped:** Daily ritual (`/daily` — AM/PM prompts, habits,
   compulsory journal) and Living (timelines, bucket lists, side quests,
   public profiles, SEO blog, discovery quiz).
+- **First Living handoff built locally:** setup completion carries the user's
+  persisted hobby answer into one editable `Now` phase. The first timeline save
+  stays private, then offers an owner-only choice to publish it on the profile
+  or keep it private. Direct and signed-out timeline creation retain the
+  template-first builder; production deployment remains operator-owned.
 - **Journal reader and Living bridge built locally:** `/daily` pairs today's
   AM/PM writing with a private, read-only 21-day date rail. An entry may
   optionally relate to one owned timeline or non-abandoned commitment and route

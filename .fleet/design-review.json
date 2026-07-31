@@ -2,7 +2,7 @@
   "$schema": "fleet.design-review.v1",
   "version": 1,
   "project": "significanthobbies",
-  "target": "Daily journal Living context",
+  "target": "First public timeline journey",
   "mode": "preserve",
   "register": "product",
   "context": {
@@ -14,21 +14,21 @@
     "probes": [],
     "selected": "existing-design",
     "approval": "not-required",
-    "before": "artifacts/design/before-journal-context.png"
+    "before": "artifacts/design/before-first-public-timeline.png"
   },
   "evidence": {
     "screenshots": [
       {
         "width": 390,
-        "path": "artifacts/design/journal-context-after-390.png"
+        "path": "artifacts/design/first-public-timeline-after-390.png"
       },
       {
         "width": 768,
-        "path": "artifacts/design/journal-context-after-768.png"
+        "path": "artifacts/design/first-public-timeline-after-768.png"
       },
       {
         "width": 1440,
-        "path": "artifacts/design/journal-context-after-1440.png"
+        "path": "artifacts/design/first-public-timeline-after-1440.png"
       }
     ],
     "projectCheck": {
@@ -36,11 +36,11 @@
       "status": "pass"
     },
     "critique": {
-      "score": 33,
+      "score": 36,
       "maximum": 40
     },
     "audit": {
-      "score": 19,
+      "score": 20,
       "maximum": 20
     },
     "unresolved": {
@@ -50,10 +50,11 @@
     "detector": {
       "posture": "advisory",
       "findings": [
-        "The deterministic detector returned zero findings.",
-        "The critique found unsaved navigation risk; Open plan is now hidden while writing or context is dirty.",
-        "The audit found missing helper association and small link targets; aria-describedby and 44px targets now cover them.",
-        "The pre-existing global Feedback widget still overlaps journal content at narrow widths, outside this selector implementation."
+        "Impeccable hook scans reported no deterministic design-quality findings.",
+        "Independent critique found recoverability, visibility synchronization, and consent-copy risks; the creation draft, server-confirmed success state, and public discovery disclosure now resolve them.",
+        "Independent audit found an unannounced asynchronous publication state; pending labels, aria-busy, a live status region, and focused success heading now cover it.",
+        "Extra evidence covers the seeded builder and server-confirmed published state at 390 pixels.",
+        "The pre-existing global Feedback widget still overlaps lower page and footer content at narrow widths, outside this journey."
       ]
     }
   },

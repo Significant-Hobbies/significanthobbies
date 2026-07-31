@@ -168,11 +168,23 @@ export function OnboardingFlow({ user }: { user: OnboardingUser }) {
     }
   }
 
-  // Step 6: create the habit, then save onboarding answers.
+  // Step 6: create the habit and persist the answers before the handoff to the
+  // first-timeline path. The old background save could lose the starter hobby
+  // if someone continued immediately after the checkbox.
   async function handleFirstKickSetup() {
     const name = droppedHobby.trim() ? droppedHobby.trim() : 'Show up today';
     setLoading(true);
     try {
+      const answers = await saveOnboardingAnswers({
+        droppedHobby: droppedHobby.trim() || undefined,
+        lastFinished: lastFinished ?? undefined,
+        nextYearFeeling: nextYearFeeling ?? undefined,
+      });
+      if (!answers.success) {
+        toast.error(answers.error ?? 'Could not save your setup. Try again.');
+        return;
+      }
+
       const habit = await createHabit(name, 'daily');
       if (!habit) {
         toast.error('Could not create your habit. Try again.');
@@ -180,14 +192,6 @@ export function OnboardingFlow({ user }: { user: OnboardingUser }) {
       }
       setHabitId(habit.id);
       setHabitName(habit.name);
-      // Save diagnostic answers in parallel-ish (after habit so we don't block UI).
-      startTransition(async () => {
-        await saveOnboardingAnswers({
-          droppedHobby: droppedHobby.trim() || undefined,
-          lastFinished: lastFinished ?? undefined,
-          nextYearFeeling: nextYearFeeling ?? undefined,
-        });
-      });
     } catch (err: unknown) {
       toast.error(err instanceof Error ? err.message : 'Something went wrong');
     } finally {
@@ -819,14 +823,20 @@ export function OnboardingFlow({ user }: { user: OnboardingUser }) {
                     You&apos;re set up.
                   </h2>
                   <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-                    You have one habit. One square lit up. That&apos;s the beginning.
+                    You have one habit. Now give it a place in the story of your life.
                   </p>
 
                   <button
-                    onClick={() => router.push('/dashboard')}
+                    onClick={() => router.push('/timeline/new?from=setup')}
                     className="mt-8 w-full rounded-xl bg-primary py-3.5 text-base font-semibold text-primary-foreground transition-all duration-200 hover:opacity-90 active:scale-[0.98]"
                   >
-                    Go to dashboard →
+                    Build my first timeline →
+                  </button>
+                  <button
+                    onClick={() => router.push('/dashboard')}
+                    className="mt-3 min-h-11 w-full rounded-xl px-4 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/70"
+                  >
+                    Go to dashboard instead
                   </button>
                 </div>
               )}
