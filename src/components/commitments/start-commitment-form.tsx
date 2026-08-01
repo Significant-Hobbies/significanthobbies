@@ -11,6 +11,10 @@ type Props = {
   suggestions?: string[];
   // The user's remaining weeks (for the mortality frame at creation time).
   weeksRemaining?: number;
+  onLocalStart?: (
+    hobbyName: string,
+    goalDays: number
+  ) => Promise<{ success: boolean; error?: string }>;
 };
 
 const PRESET_GOALS = [7, 30, 100, 365];
@@ -20,7 +24,7 @@ function weeksForDays(days: number): number {
   return Math.round((days / 7) * 10) / 10;
 }
 
-export function StartCommitmentForm({ suggestions = [], weeksRemaining }: Props) {
+export function StartCommitmentForm({ suggestions = [], weeksRemaining, onLocalStart }: Props) {
   const [open, setOpen] = useState(false);
   const [hobbyName, setHobbyName] = useState('');
   const [goalDays, setGoalDays] = useState(30);
@@ -35,7 +39,9 @@ export function StartCommitmentForm({ suggestions = [], weeksRemaining }: Props)
     }
     setSubmitting(true);
     setError(null);
-    const res = await startCommitment({ hobbyName: hobbyName.trim(), goalDays });
+    const res = onLocalStart
+      ? await onLocalStart(hobbyName.trim(), goalDays)
+      : await startCommitment({ hobbyName: hobbyName.trim(), goalDays });
     setSubmitting(false);
     if (!res.success) {
       setError(res.error ?? 'Could not start commitment.');

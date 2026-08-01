@@ -6,7 +6,7 @@ import { Suspense, useCallback, useEffect, useMemo, useState } from 'react';
 
 import { Check, ClipboardList, Dices, Target, Users, X } from 'lucide-react';
 
-import { FadeIn, GridBackground, SpotlightCard } from '~/components/aceternity';
+import { FadeIn, SpotlightCard } from '~/components/aceternity';
 import { AccountabilityCircles } from '~/components/accountability-circles';
 import { useQuestProgress } from '~/hooks/use-quest-progress';
 import { getBadgeById } from '~/lib/badges';
@@ -121,85 +121,99 @@ function QuestCard({
   }, [quest.id]);
 
   return (
-    <SpotlightCard className="mx-auto w-full max-w-lg shadow-soft" innerClassName="p-8">
-      {/* Emoji */}
-      <div className="mb-5 text-center text-6xl">{quest.emoji}</div>
-
-      {/* Title */}
-      <h2 className="mb-3 text-center text-2xl font-bold text-foreground">{quest.title}</h2>
-
-      {/* Description */}
-      <p className="mb-5 text-center leading-relaxed text-muted-foreground">{quest.description}</p>
-
-      {/* Pills row */}
-      <div className="mb-5 flex flex-wrap items-center justify-center gap-2">
-        <CategoryPill category={quest.category} />
-        <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card/40 px-2.5 py-0.5 text-xs font-medium text-muted-foreground">
-          <DifficultyDots difficulty={quest.difficulty} />
-          {quest.difficulty}
-        </span>
-        <span className="inline-flex items-center rounded-full border border-border bg-card/40 px-2.5 py-0.5 text-xs font-medium text-muted-foreground">
-          {quest.timeEstimate}
-        </span>
-      </div>
-
-      {/* Related hobbies */}
-      {quest.relatedHobbies.length > 0 && (
-        <div className="mb-6 flex flex-wrap items-center justify-center gap-1.5">
-          {quest.relatedHobbies.map((hobby) => (
-            <span
-              key={hobby}
-              className="rounded-full bg-foreground/5 px-2 py-0.5 text-xs text-muted-foreground"
-            >
-              {hobby}
+    <SpotlightCard
+      className="mx-auto w-full max-w-4xl overflow-hidden border-0 shadow-[0_18px_50px_rgba(53,80,40,0.12)]"
+      innerClassName="p-0"
+    >
+      <div className="grid md:grid-cols-[0.72fr_1.28fr]">
+        <div className="flex min-h-56 flex-col justify-between bg-[#a8dc91] p-7 text-[#192817] sm:p-9">
+          <div className="flex items-center justify-between">
+            <span className="font-semibold">A small departure</span>
+            <span className="text-5xl" aria-hidden="true">
+              {quest.emoji}
             </span>
-          ))}
+          </div>
+          <p className="max-w-xs font-serif text-3xl leading-[1.05] tracking-[-0.025em] sm:text-4xl">
+            Make today feel different from yesterday.
+          </p>
         </div>
-      )}
 
-      {/* Action buttons */}
-      <div className="flex flex-wrap items-center justify-center gap-3">
-        {isCompleted ? (
-          <button
-            type="button"
-            onClick={() => onUncomplete(quest.id)}
-            className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card/40 px-5 py-2.5 text-sm font-medium text-muted-foreground transition-all hover:border-border hover:bg-foreground/5"
-          >
-            Completed
-            <Check className="h-4 w-4 text-foreground" />
-            <span className="ml-1 text-xs text-subtle">(undo)</span>
-          </button>
-        ) : (
-          <button
-            type="button"
-            onClick={() => onComplete(quest.id)}
-            className="inline-flex items-center gap-1.5 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow-sm transition-opacity hover:opacity-90"
-          >
-            Mark Complete
-            <Check className="h-4 w-4" />
-          </button>
-        )}
+        <div className="p-7 sm:p-9">
+          <div className="mb-5 flex flex-wrap items-center gap-2">
+            <CategoryPill category={quest.category} />
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-border px-2.5 py-0.5 text-xs font-medium text-muted-foreground">
+              <DifficultyDots difficulty={quest.difficulty} />
+              {quest.difficulty}
+            </span>
+            <span className="inline-flex items-center rounded-full border border-border px-2.5 py-0.5 text-xs font-medium text-muted-foreground">
+              {quest.timeEstimate}
+            </span>
+          </div>
 
-        {onRollAgain && (
-          <button
-            type="button"
-            onClick={onRollAgain}
-            className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-5 py-2.5 text-sm font-medium text-foreground transition-all hover:border-foreground/30 hover:text-foreground"
-          >
-            {rollLabel ?? 'Roll Again'}
-            <Dices className="h-4 w-4 text-muted-foreground" />
-          </button>
-        )}
+          <h2 className="font-serif text-3xl font-semibold leading-tight tracking-[-0.025em] text-foreground sm:text-4xl">
+            {quest.title}
+          </h2>
+          <p className="mt-4 max-w-xl text-base leading-relaxed text-muted-foreground sm:text-lg">
+            {quest.description}
+          </p>
 
-        {showShareButton && (
-          <button
-            type="button"
-            onClick={handleShare}
-            className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-4 py-2.5 text-sm font-medium text-muted-foreground transition-all hover:border-border hover:bg-card/40"
-          >
-            {copied ? 'Copied!' : 'Share'}
-          </button>
-        )}
+          {quest.relatedHobbies.length > 0 && (
+            <div className="mt-5 flex flex-wrap items-center gap-1.5">
+              {quest.relatedHobbies.map((hobby) => (
+                <span
+                  key={hobby}
+                  className="rounded-full bg-[#f1eee5] px-2.5 py-1 text-xs text-muted-foreground"
+                >
+                  {hobby}
+                </span>
+              ))}
+            </div>
+          )}
+
+          <div className="mt-7 flex flex-wrap items-center gap-3">
+            {isCompleted ? (
+              <button
+                type="button"
+                onClick={() => onUncomplete(quest.id)}
+                className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card/40 px-5 py-2.5 text-sm font-medium text-muted-foreground transition-all hover:border-border hover:bg-foreground/5"
+              >
+                Completed
+                <Check className="h-4 w-4 text-foreground" />
+                <span className="ml-1 text-xs text-subtle">(undo)</span>
+              </button>
+            ) : (
+              <button
+                type="button"
+                onClick={() => onComplete(quest.id)}
+                className="inline-flex items-center gap-1.5 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow-sm transition-opacity hover:opacity-90"
+              >
+                Mark Complete
+                <Check className="h-4 w-4" />
+              </button>
+            )}
+
+            {onRollAgain && (
+              <button
+                type="button"
+                onClick={onRollAgain}
+                className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-5 py-2.5 text-sm font-medium text-foreground transition-all hover:border-foreground/30 hover:text-foreground"
+              >
+                {rollLabel ?? 'Roll Again'}
+                <Dices className="h-4 w-4 text-muted-foreground" />
+              </button>
+            )}
+
+            {showShareButton && (
+              <button
+                type="button"
+                onClick={handleShare}
+                className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-4 py-2.5 text-sm font-medium text-muted-foreground transition-all hover:border-border hover:bg-card/40"
+              >
+                {copied ? 'Copied!' : 'Share'}
+              </button>
+            )}
+          </div>
+        </div>
       </div>
     </SpotlightCard>
   );
@@ -421,27 +435,27 @@ function SideQuestsInner() {
   return (
     <div className="min-h-screen bg-background">
       {/* Hero */}
-      <section className="relative overflow-hidden px-4 py-20 sm:py-28">
-        <GridBackground />
-        <FadeIn className="relative mx-auto max-w-5xl text-center">
-          <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-foreground/20 bg-foreground/10 px-4 py-1.5 text-sm font-semibold text-foreground">
-            <span className="h-1.5 w-1.5 rounded-full bg-foreground" />
+      <section className="relative overflow-hidden px-4 py-10 sm:py-14">
+        <FadeIn className="relative mx-auto max-w-6xl rounded-[1.75rem] bg-[#a8dc91] px-6 py-12 text-center text-[#192817] shadow-[0_16px_44px_rgba(53,80,40,0.10)] sm:px-10 sm:py-16">
+          <div className="mb-5 inline-flex items-center gap-2 text-base font-bold">
+            <span className="h-2 w-2 rounded-full bg-[#192817]" />
             Side Quests
           </div>
 
-          <h1 className="mb-4 text-4xl font-bold tracking-tight text-foreground sm:text-5xl md:text-6xl">
-            50 Quests to Make Life Interesting
+          <h1 className="mx-auto mb-5 max-w-4xl font-serif text-5xl font-medium leading-[0.98] tracking-[-0.035em] sm:text-6xl md:text-7xl">
+            Take the scenic route through your week.
           </h1>
 
-          <p className="mx-auto max-w-xl text-lg text-muted-foreground sm:text-xl">
-            Roll a random quest, get a personalized pick, or take on the full board.
+          <p className="mx-auto max-w-xl text-lg leading-relaxed text-[#344b31] sm:text-xl">
+            Fifty small reasons to leave the usual path. Roll one, choose one, or take on the whole
+            board.
           </p>
 
           <div className="mt-8 flex justify-center gap-1.5">
             {[...Array(5)].map((_, i) => (
               <div
                 key={i}
-                className="h-1.5 w-1.5 rounded-full bg-foreground/60"
+                className="h-1.5 w-1.5 rounded-full bg-[#192817]"
                 style={{ opacity: 0.4 + i * 0.12 }}
               />
             ))}
@@ -450,16 +464,16 @@ function SideQuestsInner() {
       </section>
 
       {/* Tab bar */}
-      <section className="border-b border-border px-4">
-        <div className="mx-auto flex max-w-2xl items-center justify-center gap-1">
+      <section className="px-4 pt-2">
+        <div className="mx-auto flex max-w-2xl items-center justify-center gap-1 overflow-x-auto rounded-2xl bg-white p-1 shadow-[0_5px_18px_rgba(66,55,22,0.08)]">
           {TABS.map((tab) => (
             <button
               key={tab.id}
               type="button"
               onClick={() => setActiveTab(tab.id)}
-              className={`relative px-5 py-3.5 text-sm font-medium transition-all ${
+              className={`relative min-h-12 shrink-0 rounded-xl px-5 text-base font-semibold transition-all ${
                 activeTab === tab.id
-                  ? 'text-foreground'
+                  ? 'bg-[#a8dc91] text-[#192817]'
                   : 'text-muted-foreground hover:text-foreground'
               }`}
             >
@@ -467,20 +481,17 @@ function SideQuestsInner() {
                 <tab.icon className="h-4 w-4 text-muted-foreground" />
                 {tab.label}
               </span>
-              {activeTab === tab.id && (
-                <span className="absolute inset-x-2 bottom-0 h-0.5 rounded-full bg-foreground" />
-              )}
             </button>
           ))}
         </div>
       </section>
 
       {/* Content */}
-      <section className="px-4 py-10">
+      <section className="px-4 py-10 sm:py-14">
         <div className="mx-auto max-w-5xl">
           {/* Mode A: Random */}
           {activeTab === 'random' && currentQuest && (
-            <div className="flex justify-center">
+            <div className="flex min-h-[28rem] items-start justify-center">
               <div
                 className={`transition-all duration-150 ${
                   isShuffling ? 'scale-95 opacity-70' : 'scale-100 opacity-100'

@@ -1,9 +1,10 @@
 import { desc, eq } from 'drizzle-orm';
 import { redirect } from 'next/navigation';
 
-import { GridBackground, SpotlightCard } from '~/components/aceternity';
+import { SpotlightCard } from '~/components/aceternity';
 import { CommitmentCard } from '~/components/commitments/commitment-card';
 import { StartCommitmentForm } from '~/components/commitments/start-commitment-form';
+import { LocalCommitments } from '~/components/commitments/local-commitments';
 import { timelines, users } from '~/db/schema';
 import { loginPath } from '~/lib/auth-routing';
 import { birthDateFromYear, buildLifeGrid } from '~/lib/mortality';
@@ -20,7 +21,13 @@ export const metadata = {
 
 export default async function CommitmentsPage() {
   const session = await getServerAuthSession();
-  if (!session?.user) redirect(loginPath('/commitments'));
+  if (!session?.user) {
+    return (
+      <div className="mx-auto max-w-3xl px-4 py-10 sm:py-14">
+        <LocalCommitments />
+      </div>
+    );
+  }
 
   const [commitments, rawTimelines, me] = await Promise.all([
     getMyCommitments(),
@@ -52,12 +59,14 @@ export default async function CommitmentsPage() {
   const completed = commitments.filter((c) => c.status === 'completed');
 
   return (
-    <div className="mx-auto max-w-3xl px-4 py-10 sm:py-14 space-y-12">
-      <header className="relative space-y-2 overflow-hidden rounded-2xl px-6 py-8">
-        <GridBackground />
-        <div className="relative">
-          <h1 className="text-2xl font-semibold text-foreground">Commitments</h1>
-          <p className="text-sm text-muted-foreground max-w-lg">
+    <div className="mx-auto max-w-4xl space-y-12 px-4 py-10 sm:py-14">
+      <header className="relative overflow-hidden rounded-[1.75rem] bg-[#a8dc91] px-6 py-10 text-[#192817] shadow-[0_14px_40px_rgba(53,80,40,0.10)] sm:px-10 sm:py-12">
+        <div className="relative max-w-2xl">
+          <p className="text-base font-bold">Living promises</p>
+          <h1 className="mt-4 font-serif text-5xl font-medium leading-none tracking-[-0.03em] sm:text-6xl">
+            Commitments
+          </h1>
+          <p className="mt-5 max-w-xl text-base leading-relaxed text-[#344b31]">
             Proof. A commitment is a promise you can show your work for — one stamp a day, each with
             evidence attached. Habits are the quiet version of this with nothing to prove.
           </p>

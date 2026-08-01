@@ -16,7 +16,7 @@ import {
   Trash2,
 } from 'lucide-react';
 
-import { GradientMesh, SpotlightCard } from '~/components/aceternity';
+import { SpotlightCard } from '~/components/aceternity';
 import { CircularProgress } from '~/components/dashboard/circular-progress';
 import { PreviewBanner } from '~/components/preview-banner';
 import { Button } from '~/components/ui/button';
@@ -105,6 +105,7 @@ interface Props {
    * reset it to the sample set and read as a bug.
    */
   preview?: boolean;
+  localMode?: boolean;
 }
 
 const EMOJI_CHOICES = ['📚', '🏃', '🧘', '✍️', '🎸', '🎨', '💪', '🧠', '🌅', '💧', '🥗', '😴'];
@@ -144,6 +145,7 @@ export function DailyRitual({
   habitCommitmentChoices = [],
   actions,
   preview = false,
+  localMode = false,
 }: Props) {
   const [habits, setHabits] = useState(initialHabits);
   const [logs, setLogs] = useState(initialLogs);
@@ -222,11 +224,25 @@ export function DailyRitual({
           parseHabitCommitmentValue(newHabitCommitmentId)
         );
         if (!created) throw new Error('Habit was not created');
+        if (localMode) {
+          setHabits((current) => [
+            ...current,
+            {
+              id: created.id,
+              name: created.name,
+              status: 'active',
+              targetFrequency: newHabitFreq,
+              icon: newHabitIcon || null,
+              sourceQuestId: null,
+              commitmentId: parseHabitCommitmentValue(newHabitCommitmentId),
+            },
+          ]);
+        }
         setNewHabit('');
         setNewHabitFreq('daily');
         setNewHabitIcon('');
         setNewHabitCommitmentId('');
-        router.refresh();
+        if (!localMode) router.refresh();
       } catch {
         setHabitCreateError(
           'Could not add this habit. Check the related commitment and try again.'
@@ -249,7 +265,7 @@ export function DailyRitual({
         const updated = await actions.setHabitCommitment(habitId, commitmentId);
         if (!updated) throw new Error('Habit was not updated');
         setHabitLinkStatus({ habitId, status: 'saved' });
-        router.refresh();
+        if (!localMode) router.refresh();
       } catch {
         setHabits((current) =>
           current.map((habit) =>
@@ -337,34 +353,33 @@ export function DailyRitual({
   const pmProgress = pmEntry.trim().length > 0 ? 1 : 0;
 
   return (
-    <div className="mx-auto max-w-2xl px-4 py-10 sm:py-16 space-y-8">
+    <div className="mx-auto max-w-4xl space-y-8 px-4 py-10 sm:py-14">
       {preview && (
         <PreviewBanner route="/daily">
           One stranger&apos;s week of the ritual — the AM and PM writing, the habit check-ins, the
           date rail. Nothing here is yours and nothing is saved.
         </PreviewBanner>
       )}
-      {/* ─── Ritual header — gradient mesh + editorial greeting ─── */}
-      <section className="relative overflow-hidden rounded-2xl border border-border/50 p-6 sm:p-8">
-        <GradientMesh variant={isMorning ? 'gold' : 'sage'} />
-        <div className="relative">
-          <div className="flex items-center gap-2 text-xs font-medium text-subtle">
-            {isMorning ? (
-              <Sunrise className="h-3.5 w-3.5 text-primary" />
-            ) : (
-              <Sunset className="h-3.5 w-3.5 text-primary" />
-            )}
+      {/* ─── Ritual header ─── */}
+      <section
+        className={`relative overflow-hidden rounded-[1.75rem] px-6 py-10 shadow-[0_14px_40px_rgba(66,55,22,0.10)] sm:px-10 sm:py-12 ${
+          isMorning ? 'bg-[#f7e957] text-[#201f18]' : 'bg-[#c5abfa] text-[#241a31]'
+        }`}
+      >
+        <div className="relative max-w-2xl">
+          <div className="flex items-center gap-2 text-base font-semibold">
+            {isMorning ? <Sunrise className="h-5 w-5" /> : <Sunset className="h-5 w-5" />}
             {dateString}
           </div>
-          <h1 className="mt-3 font-serif text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
+          <h1 className="mt-5 font-serif text-5xl font-medium leading-[1.02] tracking-[-0.03em] sm:text-6xl">
             {greeting}
           </h1>
           {weeksRemaining !== null && (
             <div className="mt-4 flex items-center gap-3">
-              <div className="flex items-center gap-2 rounded-lg border border-border/60 bg-card/50 px-3 py-1.5">
-                <div className="h-2 w-2 rounded-full bg-primary" />
-                <span className="text-sm text-muted-foreground">
-                  <span className="font-serif font-medium tabular-nums text-foreground">
+              <div className="flex items-center gap-2 rounded-lg bg-white/65 px-3 py-2">
+                <div className="h-2 w-2 rounded-full bg-[#201f18]" />
+                <span className="text-base text-[#4b493d]">
+                  <span className="font-serif font-medium tabular-nums text-[#201f18]">
                     {weeksRemaining.toLocaleString()}
                   </span>{' '}
                   weeks left
@@ -376,7 +391,7 @@ export function DailyRitual({
       </section>
 
       {/* ─── AM/PM check-in rings ─── */}
-      <div className="flex items-center justify-center gap-12 rounded-xl border border-border bg-card p-6 shadow-soft">
+      <div className="flex items-center justify-center gap-12 rounded-2xl bg-[#b9dcf5] p-7 text-[#192a36] shadow-[0_10px_30px_rgba(55,88,110,0.10)]">
         <CircularProgress
           progress={amProgress}
           label="AM"
@@ -397,21 +412,19 @@ export function DailyRitual({
       {/* ─── Journal — focused reader + quiet recent-date rail ─── */}
       <section
         aria-labelledby="daily-journal-title"
-        className="overflow-hidden rounded-2xl border border-border bg-card shadow-soft"
+        className="overflow-hidden rounded-[1.5rem] bg-white shadow-[0_12px_36px_rgba(66,55,22,0.10)]"
       >
         <div className="flex items-start justify-between gap-4 border-b border-border/60 px-5 py-5 sm:px-7">
           <div>
-            <p className="text-[10px] font-medium uppercase tracking-[0.18em] text-subtle">
-              Private journal
-            </p>
+            <p className="text-sm font-semibold text-subtle">Private journal</p>
             <h2
               id="daily-journal-title"
-              className="mt-1.5 font-serif text-2xl font-medium tracking-tight text-foreground"
+              className="mt-2 font-serif text-3xl font-medium tracking-tight text-foreground"
             >
               {isTodaySelected ? 'Today' : formatJournalDate(selectedDate, false)}
             </h2>
           </div>
-          <p className="pt-1 text-right text-xs leading-relaxed text-subtle">
+          <p className="pt-1 text-right text-sm leading-relaxed text-subtle">
             {isTodaySelected ? journalTitle : formatJournalDate(selectedDate)}
           </p>
         </div>
@@ -673,15 +686,15 @@ export function DailyRitual({
       <div className="space-y-3">
         <div className="flex items-baseline justify-between gap-3">
           <div>
-            <h3 className="font-serif text-sm font-medium text-foreground">Habits</h3>
-            <p className="mt-0.5 text-xs text-subtle">
+            <h3 className="font-serif text-3xl font-medium text-foreground">Habits</h3>
+            <p className="mt-2 text-base text-muted-foreground">
               The small repeated thing. Checked in, never scored.
             </p>
           </div>
           {!preview && (
             <button
               onClick={() => setShowHabitManager(!showHabitManager)}
-              className="text-xs text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground/50 rounded px-1"
+              className="min-h-11 rounded px-2 text-base font-medium text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground/50"
             >
               {showHabitManager ? 'Done' : 'Manage'}
             </button>

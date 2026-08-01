@@ -322,14 +322,24 @@ test.describe('authenticated surfaces', () => {
     }).toPass({ timeout: 10_000 });
   });
 
-  test('trajectory offers one focused contract to a new user', async ({ authedPage }) => {
+  test('trajectory offers one focused contract or the existing active one', async ({
+    authedPage,
+  }) => {
     await authedPage.goto('/trajectory');
-    await expect(
-      authedPage.getByRole('heading', { name: 'One direction. Four useful answers.' })
-    ).toBeVisible();
-    await expect(authedPage.locator('textarea')).toHaveCount(4);
-    await expect(authedPage.getByRole('combobox', { name: /Review rhythm/ })).toBeVisible();
-    await expect(authedPage.getByRole('button', { name: 'Set this trajectory' })).toBeVisible();
+    const create = authedPage.getByRole('button', { name: 'Set this trajectory' });
+    if (await create.count()) {
+      await expect(
+        authedPage.getByRole('heading', { name: 'Map the direction, not the destination.' })
+      ).toBeVisible();
+      await expect(authedPage.getByLabel('Trajectory map')).toBeVisible();
+      await expect(authedPage.locator('textarea')).toHaveCount(1);
+      await expect(authedPage.getByRole('combobox', { name: /Review rhythm/ })).toBeVisible();
+    } else {
+      await expect(authedPage.getByText('Current trajectory')).toBeVisible();
+      await expect(
+        authedPage.getByRole('button', { name: 'Review this trajectory' })
+      ).toBeVisible();
+    }
   });
 
   test('trajectory adjusts a contract atomically on D1', async ({ authedPage }) => {
@@ -337,10 +347,19 @@ test.describe('authenticated surfaces', () => {
     const initialIntent = `Publish one useful artifact each week ${Date.now()}`;
     const create = authedPage.getByRole('button', { name: 'Set this trajectory' });
     if (await create.count()) {
-      await authedPage.getByLabel(/^Constraints/).fill('Limited weekday energy');
-      await authedPage.getByLabel(/^Intent/).fill(initialIntent);
-      await authedPage.getByLabel(/^Decision policy/).fill('Prefer small finished work');
-      await authedPage.getByLabel(/^Feedback loop/).fill('Review friction every Sunday');
+      await authedPage
+        .getByRole('textbox', { name: 'Constraints', exact: true })
+        .fill('Limited weekday energy');
+      await authedPage.getByRole('button', { name: 'Frame intent' }).click();
+      await authedPage.getByRole('textbox', { name: 'Intent', exact: true }).fill(initialIntent);
+      await authedPage.getByRole('button', { name: 'Frame decision policy' }).click();
+      await authedPage
+        .getByRole('textbox', { name: 'Decision policy', exact: true })
+        .fill('Prefer small finished work');
+      await authedPage.getByRole('button', { name: 'Frame feedback loop' }).click();
+      await authedPage
+        .getByRole('textbox', { name: 'Feedback loop', exact: true })
+        .fill('Review friction every Sunday');
       await create.click();
       await expect(authedPage.getByText(initialIntent)).toBeVisible();
     }
@@ -353,10 +372,11 @@ test.describe('authenticated surfaces', () => {
     await review.getByRole('button', { name: 'Adjust' }).click();
 
     const revisedIntent = `Publish one useful artifact every two weeks ${Date.now()}`;
-    await review.getByLabel(/^Intent/).fill(revisedIntent);
+    await review.getByRole('button', { name: 'Edit intent' }).click();
+    await review.getByRole('textbox', { name: 'Intent', exact: true }).fill(revisedIntent);
     await review.getByRole('button', { name: 'Save and adjust' }).click();
 
-    await expect(authedPage.getByText(revisedIntent)).toBeVisible();
+    await expect(authedPage.getByText(revisedIntent).first()).toBeVisible();
     await expect(authedPage.getByRole('heading', { name: 'What changed' })).toBeVisible();
   });
 });

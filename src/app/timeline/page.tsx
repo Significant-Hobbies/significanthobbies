@@ -3,7 +3,7 @@ import { LayoutList, Plus } from 'lucide-react';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 
-import { CardHoverEffect, GridBackground, SpotlightCard } from '~/components/aceternity';
+import { CardHoverEffect, SpotlightCard } from '~/components/aceternity';
 import { TimelineCard } from '~/components/timeline-card';
 import { TimelineDeleteButton } from '~/components/timeline-delete-button';
 import { Button } from '~/components/ui/button';
@@ -12,6 +12,7 @@ import { loginPath } from '~/lib/auth-routing';
 import type { Phase, TimelineData, TimelineVisibility } from '~/lib/types';
 import { parseJSONColumn } from '~/lib/utils';
 import { getServerAuthSession } from '~/server/auth';
+import { LocalWorkspaceHome } from '~/components/local-workspace-home';
 import { db } from '~/server/db';
 
 export const metadata = { title: 'My Timelines — SignificantHobbies' };
@@ -20,7 +21,7 @@ export default async function MyTimelinesPage() {
   const session = await getServerAuthSession();
 
   if (!session?.user?.id) {
-    redirect(loginPath('/timeline'));
+    return <LocalWorkspaceHome title="Your local timeline workspace" />;
   }
 
   const rawTimelines = await db
@@ -45,12 +46,13 @@ export default async function MyTimelinesPage() {
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-10">
-      {/* Page header with grid background */}
-      <div className="relative mb-8 flex items-center justify-between gap-4">
-        <GridBackground />
+      <div className="relative mb-8 flex items-center justify-between gap-4 rounded-[1.75rem] bg-[#b9dcf5] px-6 py-9 text-[#192a36] shadow-[0_14px_40px_rgba(39,74,97,0.10)] sm:px-9">
         <div className="relative">
-          <h1 className="text-2xl font-bold text-foreground">My Timelines</h1>
-          <p className="mt-1 text-sm text-muted-foreground">
+          <p className="text-base font-bold">Your chapters</p>
+          <h1 className="mt-3 font-serif text-5xl font-medium leading-none tracking-[-0.03em]">
+            My Timelines
+          </h1>
+          <p className="mt-4 text-base text-[#405b6c]">
             {timelineList.length > 0
               ? `${timelineList.length} timeline${timelineList.length === 1 ? '' : 's'}`
               : 'Track your hobbies across life phases'}

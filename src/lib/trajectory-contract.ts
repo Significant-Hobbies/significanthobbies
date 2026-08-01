@@ -33,6 +33,34 @@ export interface TrajectoryReviewRecord {
   createdAt: Date;
 }
 
+export interface TrajectoryContractInput {
+  constraintsText: string;
+  intentText: string;
+  decisionPolicyText: string;
+  feedbackLoopText: string;
+  cadence: ContractCadence;
+}
+
+export function normalizeContractInput(value: unknown): TrajectoryContractInput | null {
+  if (!value || typeof value !== 'object') return null;
+  const input = value as Record<string, unknown>;
+  const normalized = {} as Record<string, string>;
+  for (const field of CONTRACT_FIELDS) {
+    if (typeof input[field] !== 'string') return null;
+    const text = input[field].trim();
+    if (text.length < 1 || text.length > 500) return null;
+    normalized[field] = text;
+  }
+  if (!CONTRACT_CADENCES.includes(input.cadence as ContractCadence)) return null;
+  return {
+    constraintsText: normalized.constraintsText!,
+    intentText: normalized.intentText!,
+    decisionPolicyText: normalized.decisionPolicyText!,
+    feedbackLoopText: normalized.feedbackLoopText!,
+    cadence: input.cadence as ContractCadence,
+  };
+}
+
 export const CONTRACT_FIELD_LABELS: Record<ContractField, string> = {
   constraintsText: 'Constraints',
   intentText: 'Intent',

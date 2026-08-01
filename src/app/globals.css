@@ -67,9 +67,9 @@
   /* Growth — sage green (practice / stamps / progress) */
   --color-growth: oklch(0.72 0.13 150);
   --color-growth-soft: oklch(0.72 0.13 150 / 0.16);
-  /* Hero surface — deepest charcoal */
-  --color-hero: oklch(0.11 0.005 285);
-  --color-hero-surface: oklch(0.14 0.006 285);
+  /* Hero surfaces — warm paper for the daylight product world */
+  --color-hero: oklch(0.975 0.018 88);
+  --color-hero-surface: oklch(0.94 0.025 88);
   /* Subtle — the accessible third text tier.
      There used to be no token quieter than --muted-foreground, so 174 call
      sites reached for opacity instead: text-muted-foreground/60 lands at
@@ -77,59 +77,47 @@
      This is solid rather than alpha-blended, measuring 5.18:1 on --background
      and 4.87:1 on --card while staying clearly quieter than --muted-foreground
      (7.4:1). Reach for this instead of fading muted text. */
-  --color-subtle: oklch(0.61 0.008 285);
+  --color-subtle: oklch(0.46 0.018 72);
 }
 
-/* ─── Editorial Dark palette ─────────────────────────────────────────────────
-   Neutral charcoal canvas, clean white ink, single gold accent. Inspired by
-   Stripe/Notion editorial discipline: type-forward, generous whitespace,
-   restrained decoration. Warmth lives in the gold accent + Fraunces display
-   serif, NOT in the surface color. All values OKLCH.
+/* ─── Warm daylight palette ───────────────────────────────────────────────────
+   Paper canvas, dark olive ink, and sun-gold action. The product is meant to
+   be used in ordinary daytime life, so darkness is a local storytelling tool,
+   not the application shell. All values OKLCH.
 */
 :root {
   --radius: 0.75rem;
-  /* Neutral charcoal body — near-zero chroma, slight warmth */
-  --background: oklch(0.15 0.005 285);
-  --foreground: oklch(0.97 0.003 285);
-  /* card — lifted one step from body, same neutral hue */
-  --card: oklch(0.19 0.006 285);
-  --card-foreground: oklch(0.97 0.003 285);
-  /* popover */
-  --popover: oklch(0.19 0.006 285);
-  --popover-foreground: oklch(0.97 0.003 285);
-  /* gold primary — the single warm accent. Dark text on gold for contrast */
-  --primary: oklch(0.82 0.13 88);
-  --primary-foreground: oklch(0.15 0.005 285);
-  /* secondary — muted neutral surface */
-  --secondary: oklch(0.23 0.006 285);
-  --secondary-foreground: oklch(0.97 0.003 285);
-  /* muted — surface for panels; foreground tuned for ≥4.5:1 on charcoal */
-  --muted: oklch(0.23 0.006 285);
-  --muted-foreground: oklch(0.72 0.008 285);
-  /* accent — slightly lifted neutral for hover states */
-  --accent: oklch(0.26 0.008 285);
-  --accent-foreground: oklch(0.97 0.003 285);
-  /* destructive — warm red, tuned for dark bg */
-  --destructive: oklch(0.65 0.20 25);
-  /* border — subtle neutral hairline */
-  --border: oklch(0.27 0.006 285);
-  --input: oklch(0.27 0.006 285);
-  --ring: oklch(0.82 0.13 88);
-  /* charts — gold + sage + neutral family for the dark surface */
-  --chart-1: oklch(0.82 0.13 88);
-  --chart-2: oklch(0.72 0.13 150);
+  --background: oklch(0.985 0.012 88);
+  --foreground: oklch(0.20 0.025 72);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.20 0.025 72);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.20 0.025 72);
+  --primary: oklch(0.50 0.12 72);
+  --primary-foreground: oklch(0.985 0.012 88);
+  --secondary: oklch(0.94 0.025 88);
+  --secondary-foreground: oklch(0.24 0.025 72);
+  --muted: oklch(0.95 0.018 88);
+  --muted-foreground: oklch(0.46 0.018 72);
+  --accent: oklch(0.92 0.045 88);
+  --accent-foreground: oklch(0.20 0.025 72);
+  --destructive: oklch(0.56 0.20 25);
+  --border: oklch(0.86 0.025 82);
+  --input: oklch(0.82 0.025 82);
+  --ring: oklch(0.50 0.12 72);
+  --chart-1: oklch(0.68 0.15 82);
+  --chart-2: oklch(0.57 0.13 150);
   --chart-3: oklch(0.78 0.10 200);
   --chart-4: oklch(0.70 0.15 50);
   --chart-5: oklch(0.80 0.08 320);
-  /* sidebar — marginally deeper than body */
-  --sidebar: oklch(0.13 0.005 285);
-  --sidebar-foreground: oklch(0.97 0.003 285);
-  --sidebar-primary: oklch(0.82 0.13 88);
-  --sidebar-primary-foreground: oklch(0.15 0.005 285);
-  --sidebar-accent: oklch(0.22 0.006 285);
-  --sidebar-accent-foreground: oklch(0.97 0.003 285);
-  --sidebar-border: oklch(0.25 0.006 285);
-  --sidebar-ring: oklch(0.82 0.13 88);
+  --sidebar: oklch(0.97 0.018 88);
+  --sidebar-foreground: oklch(0.20 0.025 72);
+  --sidebar-primary: oklch(0.50 0.12 72);
+  --sidebar-primary-foreground: oklch(0.985 0.012 88);
+  --sidebar-accent: oklch(0.92 0.045 88);
+  --sidebar-accent-foreground: oklch(0.20 0.025 72);
+  --sidebar-border: oklch(0.86 0.025 82);
+  --sidebar-ring: oklch(0.60 0.14 82);
 }
 
 @layer base {
@@ -137,15 +125,15 @@
     @apply border-border outline-ring/50;
   }
   html {
-    color-scheme: dark;
+    color-scheme: light;
   }
   body {
     @apply bg-background text-foreground;
     font-feature-settings: "rlig" 1, "calt" 1;
   }
   ::selection {
-    background: oklch(0.82 0.13 88 / 0.25);
-    color: oklch(0.97 0.003 285);
+    background: oklch(0.82 0.13 88 / 0.45);
+    color: oklch(0.20 0.025 72);
   }
   /* Balance text wrapping on headings by default for better multi-line layout */
   h1, h2, h3 {

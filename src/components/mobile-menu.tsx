@@ -19,30 +19,33 @@ export function MobileMenu({ links, isLoggedIn }: MobileMenuProps) {
       <button
         type="button"
         onClick={() => setOpen(!open)}
-        className="flex h-11 w-11 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-foreground/5"
+        className="flex h-11 w-11 items-center justify-center rounded-xl bg-[#f7e957] text-[#201f18] shadow-[0_3px_0_#c8b92e] transition-transform hover:-translate-y-0.5"
         aria-label={open ? 'Close menu' : 'Open menu'}
       >
-        {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+        {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" strokeWidth={2.5} />}
       </button>
 
       {open && (
-        <div className="absolute left-0 top-14 z-50 w-full border-b border-border bg-card">
-          <div className="flex flex-col px-4 py-3 gap-1">
+        <div className="absolute left-0 top-[4.5rem] z-50 w-full border-b border-[#ddd4b7] bg-[#fffdf3] shadow-[0_16px_32px_rgba(66,55,22,0.14)]">
+          <div className="flex flex-col gap-2 px-4 py-4">
             {links.map((link) => {
               const isActive = pathname === link.href;
+              const colorClass =
+                link.href === '/life-plan'
+                  ? 'bg-[#f7e957] text-[#201f18]'
+                  : link.href === '/daily'
+                    ? 'bg-[#c5abfa] text-[#241a31]'
+                    : 'bg-[#b9dcf5] text-[#192a36]';
               return (
                 <Link
                   key={link.href}
                   href={link.href}
                   prefetch={false}
                   onClick={() => setOpen(false)}
-                  className={`rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${
-                    isActive
-                      ? 'bg-foreground/10 text-foreground'
-                      : 'text-muted-foreground hover:bg-card/40 hover:text-foreground'
-                  }`}
+                  className={`flex min-h-14 items-center justify-between rounded-xl px-4 text-lg font-bold transition-transform hover:translate-x-1 ${colorClass}`}
                 >
-                  {link.label}
+                  <span>{link.label}</span>
+                  <span aria-hidden="true">{isActive ? '●' : '→'}</span>
                 </Link>
               );
             })}
@@ -50,7 +53,7 @@ export function MobileMenu({ links, isLoggedIn }: MobileMenuProps) {
               href="/search"
               prefetch={false}
               onClick={() => setOpen(false)}
-              className={`flex items-center gap-2 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${
+              className={`flex min-h-12 items-center gap-2 rounded-xl px-4 text-base font-medium transition-colors ${
                 pathname === '/search'
                   ? 'bg-foreground/10 text-foreground'
                   : 'text-muted-foreground hover:bg-card/40 hover:text-foreground'
@@ -65,7 +68,7 @@ export function MobileMenu({ links, isLoggedIn }: MobileMenuProps) {
                 href="/timeline/new"
                 prefetch={false}
                 onClick={() => setOpen(false)}
-                className="rounded-lg bg-primary px-3 py-2.5 text-center text-sm font-semibold text-primary-foreground hover:opacity-90 transition-colors"
+                className="flex min-h-12 items-center justify-center rounded-xl bg-[#ff9d7d] px-4 text-center text-base font-bold text-[#261e18] transition-colors hover:bg-[#f58c69]"
               >
                 New Timeline
               </Link>
@@ -74,7 +77,7 @@ export function MobileMenu({ links, isLoggedIn }: MobileMenuProps) {
                 href="/login"
                 prefetch={false}
                 onClick={() => setOpen(false)}
-                className="rounded-lg border border-border px-3 py-2.5 text-center text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+                className="flex min-h-12 items-center justify-center rounded-xl bg-[#201f18] px-4 text-center text-base font-bold text-white transition-colors hover:bg-[#36342a]"
               >
                 Sign in
               </Link>

@@ -3,30 +3,23 @@ import Link from 'next/link';
 /** Shared footer for all SignificantHobbies routes. */
 export function SiteFooter() {
   return (
-    <footer data-site-footer className="border-t border-border px-4 py-10">
+    <footer data-site-footer className="border-t border-border bg-[#fff4c7] px-4 py-12">
       <div className="mx-auto max-w-5xl">
-        <div className="grid grid-cols-2 gap-8 sm:grid-cols-5">
+        <div className="grid grid-cols-2 gap-8 rounded-3xl bg-white/65 p-6 shadow-[0_12px_32px_rgba(58,45,20,0.06)] sm:grid-cols-5 sm:p-8">
           {/* Brand + manifesto */}
           <div className="col-span-2 sm:col-span-1">
-            <p className="text-sm font-semibold text-foreground">SignificantHobbies</p>
+            <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-full bg-[#ffeb3b] font-serif text-lg font-bold text-foreground">
+              SH
+            </div>
+            <p className="font-serif text-lg font-semibold text-foreground">Significant Hobbies</p>
             <p className="mt-2 text-xs text-muted-foreground leading-relaxed max-w-[200px]">
               A companion for living intentionally. Hobbies, bucket lists, and side quests — because
               life is finite.
             </p>
-            {/* `block`, not `inline-block`: side by side at narrow widths the
-                two ran together as "See your life in weeks →Read the manifesto →"
-                with no gap between them. */}
             <Link
               href="/life-in-weeks"
               prefetch={false}
-              className="mt-3 block w-fit text-xs text-foreground underline underline-offset-2 hover:opacity-70"
-            >
-              See your life in weeks →
-            </Link>
-            <Link
-              href="/life-in-weeks"
-              prefetch={false}
-              className="mt-2 block w-fit text-xs text-muted-foreground underline underline-offset-2 hover:text-foreground"
+              className="mt-3 block w-fit text-xs text-muted-foreground underline underline-offset-2 hover:text-foreground"
             >
               See your life in weeks →
             </Link>
@@ -119,7 +112,7 @@ export function SiteFooter() {
           </div>
         </div>
 
-        <div className="mt-8 flex flex-col items-center justify-between gap-2 border-t border-border pt-6 text-xs text-muted-foreground sm:flex-row">
+        <div className="mt-8 flex flex-col items-center justify-between gap-2 border-t border-foreground/10 pt-6 text-xs text-muted-foreground sm:flex-row">
           <span>
             Made by{' '}
             <a href="https://sarthakagrawal.dev" className="hover:text-foreground">

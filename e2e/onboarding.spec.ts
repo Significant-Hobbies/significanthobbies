@@ -1,6 +1,16 @@
 import { expect, test } from '@playwright/test';
 
 test.describe('Onboarding', () => {
+  test('anonymous setup restores its local draft after reload', async ({ page }) => {
+    await page.goto('/setup');
+    await page.getByRole('button', { name: /begin/i }).click();
+    await page.getByPlaceholder('yourname').fill('local-person');
+    await page.waitForTimeout(300);
+    await page.reload();
+    await expect(page.getByPlaceholder('yourname')).toHaveValue('local-person');
+    await expect(page.locator('body')).toContainText('this device');
+  });
+
   test('uses focused chrome instead of the global navigation and footer', async ({
     page,
   }, testInfo) => {

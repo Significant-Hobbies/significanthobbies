@@ -515,12 +515,15 @@ export function HobbyQuiz() {
 
   return (
     <FadeIn>
-      <div className="mx-auto min-h-[calc(100svh-3.5rem)] max-w-2xl px-4 py-12">
+      <div className="mx-auto min-h-[calc(100svh-4.5rem)] max-w-3xl px-4 py-10 sm:py-14">
         {/* Header */}
         {!isResults && (
-          <div className="mb-10 text-center">
-            <h1 className="text-3xl font-bold text-foreground">Find Your Perfect Hobby</h1>
-            <p className="mt-3 text-muted-foreground">
+          <div className="mb-10 rounded-[1.5rem] bg-white px-6 py-9 text-center shadow-[0_12px_36px_rgba(39,74,97,0.10)] sm:px-10">
+            <p className="text-base font-bold text-[#274a61]">Find a hobby</p>
+            <h1 className="mt-3 font-serif text-5xl font-medium leading-[1.02] tracking-[-0.03em] text-[#192a36] sm:text-6xl">
+              Find Your Perfect Hobby
+            </h1>
+            <p className="mx-auto mt-5 max-w-xl text-base leading-relaxed text-[#405b6c]">
               Nine focused questions, about three minutes, and a shortlist built around how you
               actually like to spend your time.
             </p>
@@ -548,11 +551,14 @@ export function HobbyQuiz() {
         {/* Quiz question */}
         {!isResults && currentQuestion && (
           <div key={step} className="animate-in fade-in slide-in-from-right-4 duration-300">
-            <SpotlightCard className="rounded-2xl shadow-soft" innerClassName="p-6">
-              <div className="mb-2 text-center text-sm text-subtle">
+            <SpotlightCard
+              className="rounded-[1.5rem] border-0 bg-white shadow-[0_12px_36px_rgba(39,74,97,0.12)]"
+              innerClassName="p-6 sm:p-9"
+            >
+              <div className="mb-3 text-center text-base font-medium text-subtle">
                 Question {step + 1} of {QUESTIONS.length}
               </div>
-              <h2 className="mb-6 text-center text-xl font-semibold text-foreground">
+              <h2 className="mb-8 text-center font-serif text-3xl font-medium text-foreground">
                 {currentQuestion.question}
               </h2>
 
@@ -563,8 +569,9 @@ export function HobbyQuiz() {
                   return (
                     <button
                       key={i}
+                      data-quiz-option
                       onClick={() => handleSelect(i)}
-                      className={`flex items-center gap-3 rounded-xl border-2 p-4 text-left transition-all duration-150 hover:border-foreground/30 hover:bg-foreground/10 focus:outline-none focus:ring-2 focus:ring-foreground/30 focus:ring-offset-2 ${
+                      className={`flex min-h-16 items-center gap-3 rounded-xl border-2 p-4 text-left transition-all duration-150 hover:border-[#4c7895] hover:bg-[#eaf6ff] focus:outline-none focus:ring-2 focus:ring-[#4c7895] focus:ring-offset-2 ${
                         isSelected
                           ? 'border-foreground/30 bg-foreground/10 shadow-sm'
                           : 'border-border bg-card'
@@ -575,7 +582,7 @@ export function HobbyQuiz() {
                         aria-hidden="true"
                       />
                       <span
-                        className={`text-sm font-medium ${
+                        className={`text-base font-medium ${
                           isSelected ? 'text-foreground' : 'text-foreground'
                         }`}
                       >

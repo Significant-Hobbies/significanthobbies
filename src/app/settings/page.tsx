@@ -1,11 +1,9 @@
 import { eq } from 'drizzle-orm';
 import { ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
-import { redirect } from 'next/navigation';
 
 import { SpotlightCard } from '~/components/aceternity';
 import { users } from '~/db/schema';
-import { loginPath } from '~/lib/auth-routing';
 import { getServerAuthSession } from '~/server/auth';
 import { db } from '~/server/db';
 
@@ -19,28 +17,24 @@ export const metadata = {
 export default async function SettingsPage() {
   const session = await getServerAuthSession();
 
-  if (!session?.user?.id) {
-    redirect(loginPath('/settings'));
-  }
-
-  const user = await db.query.users.findFirst({
-    where: eq(users.id, session.user.id),
-    columns: {
-      id: true,
-      name: true,
-      username: true,
-      bio: true,
-      website: true,
-      creed: true,
-    },
-  });
-
-  if (!user) redirect(loginPath('/settings'));
+  const user = session?.user?.id
+    ? await db.query.users.findFirst({
+        where: eq(users.id, session.user.id),
+        columns: {
+          id: true,
+          name: true,
+          username: true,
+          bio: true,
+          website: true,
+          creed: true,
+        },
+      })
+    : null;
 
   return (
-    <div className="mx-auto max-w-xl px-4 py-12">
+    <div className="mx-auto max-w-3xl px-4 py-10 sm:py-14">
       {/* Back link */}
-      {user.username && (
+      {user?.username && (
         <Link
           href={`/u/${user.username}`}
           className="mb-6 inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors"
@@ -50,16 +44,22 @@ export default async function SettingsPage() {
         </Link>
       )}
 
-      <h1 className="mb-8 text-2xl font-bold text-foreground">Settings</h1>
+      <header className="mb-8 rounded-[1.75rem] bg-[#c5abfa] px-6 py-10 text-[#241a31] shadow-[0_14px_40px_rgba(73,49,112,0.10)] sm:px-10">
+        <p className="text-base font-bold">Your corner of the atlas</p>
+        <h1 className="mt-4 font-serif text-5xl font-medium leading-none tracking-[-0.03em] sm:text-6xl">
+          Settings
+        </h1>
+      </header>
 
-      <SpotlightCard className="shadow-soft" innerClassName="p-6">
-        <h2 className="mb-5 text-base font-semibold text-foreground">Edit profile</h2>
+      <SpotlightCard className="border-0" innerClassName="p-6 sm:p-9">
+        <h2 className="mb-6 font-serif text-3xl font-medium text-foreground">Edit profile</h2>
         <ProfileForm
-          initialName={user.name ?? ''}
-          initialBio={user.bio ?? ''}
-          initialWebsite={user.website ?? ''}
-          initialCreed={user.creed ?? ''}
-          username={user.username ?? ''}
+          initialName={user?.name ?? ''}
+          initialBio={user?.bio ?? ''}
+          initialWebsite={user?.website ?? ''}
+          initialCreed={user?.creed ?? ''}
+          username={user?.username ?? ''}
+          storageMode={session?.user ? 'account' : 'local'}
         />
       </SpotlightCard>
     </div>

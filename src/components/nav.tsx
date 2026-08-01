@@ -16,26 +16,37 @@ import { NavLinks } from './nav-links';
 import { NavSignOut } from './nav-sign-out';
 
 const NAV_LINKS = [
-  { href: '/find-your-hobby', label: 'Find a Hobby' },
-  { href: '/bucket-lists', label: 'Bucket Lists' },
-  { href: '/life-bingo', label: 'Life Bingo' },
-  { href: '/side-quests', label: 'Side Quests' },
+  { href: '/life-plan', label: 'Live More' },
   { href: '/daily', label: 'Daily' },
-  { href: '/trajectory', label: 'Trajectory' },
+  { href: '/look-back', label: 'See History' },
 ];
 
 export async function Nav() {
   const session = await getServerAuthSession();
 
   return (
-    <nav data-site-nav className="sticky top-0 z-50 border-b border-border bg-background">
-      <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-4">
+    <nav
+      data-site-nav
+      className="sticky top-0 z-50 border-b border-[#ddd4b7] bg-[#fffdf3]/95 shadow-[0_3px_18px_rgba(66,55,22,0.06)] backdrop-blur-md"
+    >
+      <div className="mx-auto flex h-[4.5rem] max-w-6xl items-center justify-between px-4">
         <Link
           href="/"
           prefetch={false}
-          className="inline-flex min-h-11 items-center text-base font-semibold tracking-tight text-foreground transition-opacity hover:opacity-80"
+          className="group inline-flex min-h-11 items-center gap-2.5 text-base font-bold text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
-          SignificantHobbies
+          <span
+            aria-hidden="true"
+            className="flex size-10 items-center justify-center rounded-xl bg-[#f7e957] font-serif text-lg font-bold tracking-[-0.04em] text-[#201f18] shadow-[0_3px_0_#c8b92e] transition-transform group-hover:-rotate-3 group-hover:-translate-y-0.5"
+          >
+            SH
+          </span>
+          <span className="hidden text-sm leading-none xl:block">
+            Significant
+            <br />
+            Hobbies
+          </span>
+          <span className="sr-only">SignificantHobbies</span>
         </Link>
 
         {/* Desktop nav */}
@@ -43,18 +54,22 @@ export async function Nav() {
             (Tailwind's md) it rendered and overflowed the viewport by 120px —
             caught by the content-flywheel overflow check on /blog. Labels and
             order are unchanged; only the switch point moves. */}
-        <div className="hidden items-center gap-2 lg:flex">
-          <NavLinks links={NAV_LINKS} />
+        <div className="hidden items-center gap-3 lg:flex">
+          <div className="flex items-center gap-1 rounded-2xl border border-[#e6dec5] bg-white p-1 shadow-[0_2px_8px_rgba(66,55,22,0.05)]">
+            <NavLinks links={NAV_LINKS} />
+          </div>
 
           {session?.user ? (
             <>
               <Link href="/timeline/new" prefetch={false}>
-                <Button size="sm">New Timeline</Button>
+                <Button className="h-11 rounded-xl bg-[#ff9d7d] px-4 text-[#261e18] hover:bg-[#f58c69]">
+                  New Timeline
+                </Button>
               </Link>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <button className="rounded-full focus:outline-none focus:ring-2 focus:ring-foreground/30">
-                    <Avatar className="h-8 w-8">
+                    <Avatar className="h-10 w-10 border-2 border-white shadow-[0_2px_8px_rgba(66,55,22,0.14)]">
                       <AvatarImage src={session.user.image ?? ''} />
                       <AvatarFallback className="bg-foreground/10 text-foreground text-sm">
                         {session.user.name?.[0] ?? 'U'}
@@ -108,7 +123,7 @@ export async function Nav() {
             </>
           ) : (
             <Link href="/login" prefetch={false}>
-              <Button size="sm" variant="outline">
+              <Button className="h-11 rounded-xl bg-[#201f18] px-5 text-white hover:bg-[#36342a]">
                 Sign in
               </Button>
             </Link>
@@ -121,7 +136,7 @@ export async function Nav() {
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <button className="rounded-full focus:outline-none focus:ring-2 focus:ring-foreground/30">
-                  <Avatar className="h-8 w-8">
+                  <Avatar className="h-10 w-10 border-2 border-white shadow-[0_2px_8px_rgba(66,55,22,0.14)]">
                     <AvatarImage src={session.user.image ?? ''} />
                     <AvatarFallback className="bg-foreground/10 text-foreground text-sm">
                       {session.user.name?.[0] ?? 'U'}

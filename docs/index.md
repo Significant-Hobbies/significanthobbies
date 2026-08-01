@@ -28,6 +28,7 @@ Deployed at `significanthobbies.com` on Cloudflare Workers via OpenNext.
 | Understand the discovery funnel and why the quiz is primary | [`product/discovery-funnel.md`](product/discovery-funnel.md) |
 | See the monthly life-review feature | [`product/trajectory.md`](product/trajectory.md) |
 | See the runtime shape (Worker, Astro overlay, storage) | [`architecture/overview.md`](architecture/overview.md) |
+| Understand browser versus account storage authority | [`architecture/local-first-storage.md`](architecture/local-first-storage.md) |
 | Understand the non-obvious architectural choices | [`architecture/decisions.md`](architecture/decisions.md) |
 | See the data model and the invariants enforced by indexes | [`architecture/data-model.md`](architecture/data-model.md) |
 | Run the app locally / ship a change | [`development/workflows.md`](development/workflows.md) |
@@ -53,6 +54,7 @@ Deployed at `significanthobbies.com` on Cloudflare Workers via OpenNext.
 
 ### Architecture
 
+- [`architecture/local-first-storage.md`](architecture/local-first-storage.md) — browser versus account authority and sign-in handoff
 - [`architecture/overview.md`](architecture/overview.md) — request flow, Astro
   overlay, build pipeline, preview env, storage, auth, agent indexing
 - [`architecture/decisions.md`](architecture/decisions.md) — 8 durable

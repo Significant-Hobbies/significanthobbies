@@ -22,6 +22,10 @@ is the bridge between daily practice and life aspirations.
 
 ## Timeline
 
+- **2026-08-01:** Unified the local product shell around three direct destinations: Live More, Daily, and See History. Live More now gathers hobbies, bucket lists, Life Bingo, and side quests in a bright action-led home; See History pairs the mortality grid with Trajectory and reflection. Focused routes remain intact, account and local data keep their existing authorities, and production deployment remains manual.
+
+- **2026-08-01:** Added an application-wide local-first storage authority. Signed-out private work now persists in versioned IndexedDB across Trajectory, onboarding/profile drafts, bucket lists, timelines and side-quest remixes, commitments, habits, Daily journal/check-ins, and Look Back; signed-in work remains owner-scoped in D1. Publishing and cross-device access remain account-only, and production deployment remains manual.
+
 - **2026-08-01:** Migrated production persistence from Turso/libSQL to a
   project-owned Cloudflare D1 database after schema, row-count, aggregate,
   relationship, auth, and write-path parity checks. The Turso source remains

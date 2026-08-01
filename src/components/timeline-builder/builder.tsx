@@ -27,6 +27,12 @@ import { Input } from '~/components/ui/input';
 import { saveTimeline, updateTimeline } from '~/lib/actions/timeline';
 import type { FirstTimelineStarter } from '~/lib/first-timeline';
 import { captureError } from '~/lib/foundry-monitoring';
+import {
+  browserRecordAdapter,
+  readLocalRecord,
+  removeLocalRecord,
+  writeLocalRecord,
+} from '~/lib/local-record-store';
 import { TIMELINE_TEMPLATES, type TimelineTemplate } from '~/lib/templates';
 import type { Phase, TimelineData } from '~/lib/types';
 
@@ -35,6 +41,7 @@ import { PhaseCard } from './phase-card';
 interface Props {
   existing?: TimelineData;
   starter?: FirstTimelineStarter | null;
+  isAuthenticated?: boolean;
 }
 
 function makePhase(order: number): Phase {
@@ -100,7 +107,7 @@ function TemplatePicker({ onPick }: { onPick: (template: TimelineTemplate) => vo
   );
 }
 
-export function TimelineBuilder({ existing, starter }: Props) {
+export function TimelineBuilder({ existing, starter, isAuthenticated = false }: Props) {
   const router = useRouter();
   const [title, setTitle] = useState(existing?.title ?? starter?.title ?? '');
   const [phases, setPhases] = useState<Phase[]>(
@@ -141,16 +148,30 @@ export function TimelineBuilder({ existing, starter }: Props) {
   // immediately after a longer setup flow, so losing it to refresh, auth, or
   // an accidental navigation is especially costly.
   useEffect(() => {
-    try {
-      const raw = localStorage.getItem(draftKey);
-      if (!raw) return;
-      const draft = JSON.parse(raw) as { title?: string; phases?: Phase[] };
+    async function restoreDraft() {
+      let draft = await readLocalRecord(
+        browserRecordAdapter(),
+        draftKey,
+        'timelines',
+        (value): value is { title?: string; phases?: Phase[] } =>
+          !!value && typeof value === 'object'
+      );
+      const legacy = localStorage.getItem(draftKey);
+      if (!draft && legacy) {
+        try {
+          draft = JSON.parse(legacy) as { title?: string; phases?: Phase[] };
+          await writeLocalRecord(browserRecordAdapter(), draftKey, 'timelines', draft);
+          localStorage.removeItem(draftKey);
+        } catch {}
+      }
+      if (!draft) return;
       if (typeof draft.title === 'string') setTitle(draft.title);
       if (Array.isArray(draft.phases) && draft.phases.length > 0) {
         setPhases(draft.phases);
         setTemplatePicked(true);
       }
-    } catch {}
+    }
+    void restoreDraft();
     // eslint-disable-next-line react-hooks/exhaustive-deps -- restore once on mount
   }, []);
 
@@ -158,9 +179,7 @@ export function TimelineBuilder({ existing, starter }: Props) {
   useEffect(() => {
     if (!templatePicked) return;
     const t = setTimeout(() => {
-      try {
-        localStorage.setItem(draftKey, JSON.stringify({ title, phases }));
-      } catch {}
+      void writeLocalRecord(browserRecordAdapter(), draftKey, 'timelines', { title, phases });
     }, 800);
     return () => clearTimeout(t);
   }, [draftKey, phases, templatePicked, title]);
@@ -202,6 +221,11 @@ export function TimelineBuilder({ existing, starter }: Props) {
       return;
     }
 
+    if (!isAuthenticated && !existing) {
+      void writeLocalRecord(browserRecordAdapter(), draftKey, 'timelines', { title, phases });
+      toast.success('Timeline saved on this device. Sign in when you want to publish or sync it.');
+      return;
+    }
     startTransition(async () => {
       try {
         if (existing) {
@@ -211,7 +235,7 @@ export function TimelineBuilder({ existing, starter }: Props) {
           });
           if (draftKey) {
             try {
-              localStorage.removeItem(draftKey);
+              await removeLocalRecord(browserRecordAdapter(), draftKey);
             } catch {}
           }
           toast.success('Timeline updated');
@@ -219,7 +243,7 @@ export function TimelineBuilder({ existing, starter }: Props) {
         } else {
           const result = await saveTimeline({ title: title || undefined, phases });
           try {
-            localStorage.removeItem(draftKey);
+            await removeLocalRecord(browserRecordAdapter(), draftKey);
           } catch {}
           toast.success('Timeline saved!');
           router.push(result.destination);
@@ -343,7 +367,7 @@ export function TimelineBuilder({ existing, starter }: Props) {
           ) : (
             <Save className="mr-2 h-4 w-4" />
           )}
-          {existing ? 'Update timeline' : 'Save timeline'}
+          {existing ? 'Update timeline' : isAuthenticated ? 'Save timeline' : 'Save on this device'}
         </Button>
       </div>
     </div>

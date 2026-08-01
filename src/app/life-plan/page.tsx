@@ -2,15 +2,14 @@ import { desc, eq } from 'drizzle-orm';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 
-import { GridBackground, SpotlightCard } from '~/components/aceternity';
+import { SpotlightCard } from '~/components/aceternity';
 import { BucketItemControls } from '~/components/bucket-list/bucket-item-controls';
 import { BucketInsights } from '~/components/bucket-list/bucket-insights';
 import { QuestChainCard } from '~/components/bucket-list/quest-chain-card';
-import { Whale } from '~/components/whale';
+import { LiveMoreAtlas } from '~/components/life-atlas/live-more-atlas';
 import { bucketListItems, timelines } from '~/db/schema';
 import { getActiveQuests, getCompletedQuests } from '~/lib/actions/user-quests';
 import { loginPath } from '~/lib/auth-routing';
-import { BUCKET_ITEM_CATEGORIES, type BucketItemCategory } from '~/lib/famous-bucket-lists';
 import { computePersonality } from '~/lib/personality';
 import type { Phase, TimelineVisibility } from '~/lib/types';
 import { parseJSONColumn } from '~/lib/utils';
@@ -22,46 +21,14 @@ export const metadata = {
   robots: { index: false, follow: false },
 };
 
-const CATEGORY_COLORS: Record<
-  BucketItemCategory,
-  { bg: string; border: string; text: string; dot: string }
-> = {
-  travel: { bg: 'bg-sky-50', border: 'border-sky-200', text: 'text-sky-700', dot: 'bg-sky-400' },
-  adventure: {
-    bg: 'bg-orange-50',
-    border: 'border-orange-200',
-    text: 'text-orange-700',
-    dot: 'bg-orange-400',
-  },
-  creative: {
-    bg: 'bg-purple-50',
-    border: 'border-purple-200',
-    text: 'text-purple-700',
-    dot: 'bg-purple-400',
-  },
-  achievement: {
-    bg: 'bg-primary/10',
-    border: 'border-primary/30',
-    text: 'text-lumi-600',
-    dot: 'bg-primary',
-  },
-  social: {
-    bg: 'bg-rose-50',
-    border: 'border-rose-200',
-    text: 'text-rose-700',
-    dot: 'bg-rose-400',
-  },
-  humanitarian: {
-    bg: 'bg-teal-50',
-    border: 'border-teal-200',
-    text: 'text-teal-700',
-    dot: 'bg-teal-400',
-  },
-};
-
 export default async function LifePlanPage() {
   const session = await getServerAuthSession();
-  if (!session?.user) redirect(loginPath('/life-plan'));
+  if (!session?.user)
+    return (
+      <main className="mx-auto max-w-6xl px-4 py-8 sm:py-12">
+        <LiveMoreAtlas />
+      </main>
+    );
 
   // Completed quests are fetched alongside active ones because QuestChainCard
   // already handles `status === 'completed'` but was only ever given active
@@ -100,8 +67,6 @@ export default async function LifePlanPage() {
 
   const personality = allPhases.length > 0 ? computePersonality(allPhases) : null;
 
-  // Categorize bucket list items
-  const bucketByCategory: Record<string, typeof rawBucketItems> = {};
   const bucketDone = rawBucketItems.filter((i) => i.status === 'done');
   const bucketInProgress = rawBucketItems.filter((i) => i.status === 'in_progress');
   const bucketPlanned = rawBucketItems.filter((i) => i.status === 'planned');
@@ -110,189 +75,33 @@ export default async function LifePlanPage() {
   // quest chain and its controls instead of vanishing into a bare list.
   const bucketAhead = [...bucketInProgress, ...bucketPlanned];
 
-  for (const item of rawBucketItems) {
-    const cat = item.category ?? 'uncategorized';
-    if (!bucketByCategory[cat]) bucketByCategory[cat] = [];
-    bucketByCategory[cat].push(item);
-  }
-
-  // Life wheel: count items per category (excluding uncategorized)
-  const wheelData = (Object.keys(BUCKET_ITEM_CATEGORIES) as BucketItemCategory[]).map((cat) => ({
-    category: cat,
-    label: BUCKET_ITEM_CATEGORIES[cat].label,
-    emoji: BUCKET_ITEM_CATEGORIES[cat].emoji,
-    count: (bucketByCategory[cat] ?? []).length,
-    done: (bucketByCategory[cat] ?? []).filter((i) => i.status === 'done').length,
-  }));
-  const maxCount = Math.max(...wheelData.map((d) => d.count), 1);
-
   // Recent hobbies (present focus)
   const recentHobbies = [
     ...new Set(allPhases.slice(-3).flatMap((p) => p.hobbies.map((h) => h.name))),
   ].slice(0, 6);
 
-  const totalBucket = rawBucketItems.length;
   const totalDone = bucketDone.length;
-  const totalInProgress = bucketInProgress.length;
-  const totalPlanned = bucketPlanned.length;
 
   return (
-    <div className="mx-auto max-w-5xl px-4 py-12 space-y-12">
-      {/* ── Header ──────────────────────────────────────────────── */}
-      <div className="relative">
-        <GridBackground className="absolute inset-0 -z-10" />
-        <div>
-          <div className="flex items-start justify-between gap-4 flex-wrap">
-            <div className="flex items-center gap-4">
-              <Whale size={52} glow />
-              <div>
-                <h1 className="text-3xl font-bold text-foreground font-serif">Your life plan</h1>
-                <p className="mt-1 text-muted-foreground">
-                  {session.user.name?.split(' ')[0] ?? 'Your'} past, present, and future — one view.
-                </p>
-              </div>
-            </div>
-            {personality && (
-              <SpotlightCard className="rounded-xl border border-border bg-card/50 px-4 py-2.5 shadow-soft">
-                <p className="text-xs text-foreground font-medium">Your archetype</p>
-                <p className="text-sm font-bold text-foreground">
-                  {personality.archetype.emoji} {personality.archetype.name}
-                </p>
-              </SpotlightCard>
-            )}
-          </div>
-        </div>
-      </div>
+    <div className="mx-auto max-w-6xl space-y-14 px-4 py-8 sm:py-12">
+      <LiveMoreAtlas
+        name={session.user.name?.split(' ')[0]}
+        currentHobbies={recentHobbies}
+        nextThings={bucketAhead.map((item) => item.title)}
+      />
 
-      {/* ── Summary stats ───────────────────────────────────────── */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-        <StatCard
-          label="Life phases"
-          value={allPhases.length}
-          sub={`${timelineList.length} timeline${timelineList.length !== 1 ? 's' : ''}`}
-        />
-        <StatCard
-          label="Bucket list"
-          value={totalBucket}
-          sub={`${totalDone} done`}
-          accent="text-primary"
-        />
-        <StatCard
-          label="In progress"
-          value={totalInProgress}
-          sub="right now"
-          accent="text-foreground"
-        />
-        <StatCard
-          label="Planned"
-          value={totalPlanned}
-          sub="ahead of you"
-          accent="text-muted-foreground"
-        />
-      </div>
+      {personality && (
+        <p className="text-sm text-muted-foreground">
+          Your living pattern currently resembles{' '}
+          <strong className="font-medium text-foreground">
+            {personality.archetype.emoji} {personality.archetype.name}
+          </strong>
+          .
+        </p>
+      )}
 
       {/* ── What the list says about you ────────────────────────── */}
       <BucketInsights items={rawBucketItems} />
-
-      {/* ── Life wheel ──────────────────────────────────────────── */}
-      {totalBucket > 0 && (
-        <section>
-          <h2 className="text-lg font-semibold text-foreground mb-4">Life balance</h2>
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {wheelData.map((d) => {
-              const colors = CATEGORY_COLORS[d.category];
-              const pct = d.count > 0 ? (d.done / d.count) * 100 : 0;
-              const barWidth = (d.count / maxCount) * 100;
-              return (
-                <div
-                  key={d.category}
-                  className={`rounded-xl border ${colors.border} ${colors.bg} p-4`}
-                >
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm font-medium text-foreground">
-                      {d.emoji} {d.label}
-                    </span>
-                    <span className={`text-xs font-semibold ${colors.text}`}>
-                      {d.done}/{d.count}
-                    </span>
-                  </div>
-                  {/* Balance bar (relative to max category) */}
-                  <div className="h-1.5 rounded-full bg-card/60 overflow-hidden mb-1.5">
-                    <div
-                      className={`h-full rounded-full ${colors.dot} transition-all duration-200`}
-                      style={{ width: `${barWidth}%` }}
-                    />
-                  </div>
-                  {/* Completion bar */}
-                  <div className="h-1 rounded-full bg-card/40 overflow-hidden">
-                    <div
-                      className="h-full rounded-full bg-foreground/20 transition-all duration-200"
-                      style={{ width: `${pct}%` }}
-                    />
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </section>
-      )}
-
-      {/* ── Present ─────────────────────────────────────────────── */}
-      <section className="space-y-4">
-        <h2 className="text-lg font-semibold text-foreground font-serif">Right now</h2>
-        <div className="grid gap-4 sm:grid-cols-2">
-          {/* Active hobbies */}
-          <SpotlightCard className="rounded-xl border border-border bg-card p-5 shadow-soft">
-            <p className="text-sm font-medium text-muted-foreground mb-3">Active hobbies</p>
-            {recentHobbies.length > 0 ? (
-              <div className="flex flex-wrap gap-2">
-                {recentHobbies.map((hobby) => (
-                  <span
-                    key={hobby}
-                    className="inline-flex items-center rounded-full border border-border bg-card px-3 py-1 text-sm text-foreground"
-                  >
-                    {hobby}
-                  </span>
-                ))}
-              </div>
-            ) : (
-              <p className="text-sm text-subtle">
-                No recent hobbies.{' '}
-                <Link href="/timeline/new" className="text-foreground hover:underline">
-                  Start a timeline →
-                </Link>
-              </p>
-            )}
-          </SpotlightCard>
-
-          {/* In-progress bucket items */}
-          <SpotlightCard className="rounded-xl border border-primary/30 bg-primary/10/60 p-5 shadow-soft">
-            <p className="text-sm font-medium text-muted-foreground mb-3">In progress</p>
-            {bucketInProgress.length > 0 ? (
-              <ul className="space-y-2">
-                {bucketInProgress.slice(0, 5).map((item) => (
-                  <li key={item.id} className="flex items-center gap-2 text-sm text-foreground">
-                    <span className="h-2 w-2 rounded-full bg-primary shrink-0" />
-                    <span className="truncate">{item.title}</span>
-                    {item.targetYear && (
-                      <span className="text-xs text-subtle shrink-0">by {item.targetYear}</span>
-                    )}
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <p className="text-sm text-subtle">
-                Nothing in progress yet.{' '}
-                {/* Was /dashboard, which does not render bucket items at all. The
-                    controls that move an item forward are further down this page. */}
-                <Link href="#ahead" className="text-foreground hover:underline">
-                  Move something forward →
-                </Link>
-              </p>
-            )}
-          </SpotlightCard>
-        </div>
-      </section>
 
       {/* ── Future (bucket list as quest chains) ────────────────── */}
       {bucketAhead.length > 0 && (
@@ -416,25 +225,5 @@ export default async function LifePlanPage() {
         </section>
       )}
     </div>
-  );
-}
-
-function StatCard({
-  label,
-  value,
-  sub,
-  accent = 'text-foreground',
-}: {
-  label: string;
-  value: number;
-  sub: string;
-  accent?: string;
-}) {
-  return (
-    <SpotlightCard className="rounded-xl border border-border bg-card p-4 shadow-soft">
-      <p className="text-xs text-muted-foreground font-medium">{label}</p>
-      <p className={`text-2xl font-bold ${accent} mt-1`}>{value}</p>
-      <p className="text-xs text-subtle mt-0.5">{sub}</p>
-    </SpotlightCard>
   );
 }

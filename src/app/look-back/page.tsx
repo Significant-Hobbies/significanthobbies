@@ -12,6 +12,8 @@ import {
 } from '~/components/aceternity';
 import { AmbientMusic } from '~/components/ambient-music';
 import { Whale } from '~/components/whale';
+import { LocalLookBack } from '~/components/local-look-back';
+import { HistoryAtlas } from '~/components/life-atlas/history-atlas';
 import {
   bucketListItems,
   commitments,
@@ -25,6 +27,7 @@ import {
 import { loginPath } from '~/lib/auth-routing';
 import { dayKeyIn } from '~/lib/day';
 import { generateLookBack, type LookBackData } from '~/lib/look-back';
+import { getTrajectoryContractState } from '~/lib/actions/trajectory-contract';
 import { parseJSONColumn } from '~/lib/utils';
 import type { Phase, TimelinePin } from '~/lib/types';
 import { getServerAuthSession } from '~/server/auth';
@@ -39,7 +42,7 @@ export const dynamic = 'force-dynamic';
 
 export default async function LookBackPage() {
   const session = await getServerAuthSession();
-  if (!session?.user) redirect(loginPath('/look-back'));
+  if (!session?.user) return <LocalLookBack today={dayKeyIn(null)} />;
 
   const [
     me,
@@ -51,6 +54,7 @@ export default async function LookBackPage() {
     activeQuestRows,
     abandonedQuestRows,
     rawCommitments,
+    trajectoryState,
   ] = await Promise.all([
     db.query.users.findFirst({
       where: eq(users.id, session.user.id),
@@ -84,6 +88,7 @@ export default async function LookBackPage() {
       .from(userQuests)
       .where(and(eq(userQuests.userId, session.user.id), eq(userQuests.status, 'abandoned'))),
     db.select().from(commitments).where(eq(commitments.userId, session.user.id)),
+    getTrajectoryContractState(),
   ]);
 
   // Flatten all phases across timelines
@@ -169,9 +174,11 @@ export default async function LookBackPage() {
         <AmbientMusic />
       </div>
 
-      <div className="relative mx-auto max-w-2xl px-4 py-12 sm:py-20">
+      <div className="relative mx-auto max-w-6xl px-4 py-10 sm:py-14">
+        <HistoryAtlas birthYear={me?.birthYear ?? null} trajectory={trajectoryState.active} />
+
         {/* Whale + back link */}
-        <div className="mb-8 flex items-center gap-3">
+        <div className="mb-8 mt-14 flex items-center gap-3">
           <Whale size={40} float glow />
           <Link
             href="/dashboard"
@@ -182,14 +189,22 @@ export default async function LookBackPage() {
         </div>
 
         {hasContent ? (
-          <StaggerContainer className="space-y-12">
-            {sections.map((section) => (
+          <StaggerContainer className="mx-auto max-w-4xl space-y-5">
+            {sections.map((section, index) => (
               <StaggerItem key={section.id}>
-                <SpotlightCard className="relative overflow-hidden rounded-2xl border border-border/50 bg-card p-8 shadow-soft sm:p-10">
+                <SpotlightCard
+                  className={`relative overflow-hidden rounded-2xl border-0 p-8 sm:p-10 ${
+                    index % 3 === 0
+                      ? 'bg-[#ffd0bd]'
+                      : index % 3 === 1
+                        ? 'bg-[#d8c8fa]'
+                        : 'bg-white shadow-[0_10px_30px_rgba(66,55,22,0.08)]'
+                  }`}
+                >
                   {section.kind === 'opening' && <GradientMesh variant="gold" />}
                   <div className="relative">
                     {section.title && (
-                      <h2 className="mb-5 font-serif text-2xl font-semibold text-foreground sm:text-3xl">
+                      <h2 className="mb-5 font-serif text-3xl font-medium text-foreground sm:text-4xl">
                         {section.title}
                       </h2>
                     )}

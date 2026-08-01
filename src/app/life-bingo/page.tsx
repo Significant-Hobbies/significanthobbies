@@ -47,14 +47,14 @@ const steps = [
 export default function LifeBingoPage() {
   return (
     <div data-life-bingo-page className="overflow-hidden bg-background text-foreground">
-      <section className="px-4 py-16 sm:py-24 lg:py-28">
-        <div className="mx-auto grid max-w-6xl items-center gap-14 lg:grid-cols-[0.84fr_1.16fr] lg:gap-20">
-          <div>
-            <p className="mb-5 text-sm font-semibold text-primary">A bucket list you can play.</p>
-            <h1 className="max-w-2xl font-serif text-5xl font-semibold leading-[0.94] tracking-[-0.04em] text-foreground sm:text-6xl lg:text-7xl">
+      <section className="px-4 py-10 sm:py-14">
+        <div className="mx-auto grid max-w-6xl items-center gap-12 overflow-hidden rounded-[1.75rem] bg-[#c5abfa] px-6 py-10 shadow-[0_16px_44px_rgba(73,49,112,0.12)] lg:grid-cols-[0.84fr_1.16fr] lg:gap-16 lg:px-12 lg:py-14">
+          <div className="text-[#241a31]">
+            <p className="mb-5 text-base font-bold">A bucket list you can play</p>
+            <h1 className="max-w-2xl font-serif text-5xl font-medium leading-[0.94] tracking-[-0.035em] sm:text-6xl lg:text-7xl">
               Make life less repetitive.
             </h1>
-            <p className="mt-6 max-w-xl text-base leading-relaxed text-muted-foreground sm:text-xl">
+            <p className="mt-6 max-w-xl text-base leading-relaxed text-[#4b3861] sm:text-xl">
               Turn the things you keep saying “someday” about into a board of real experiences. Then
               go live them.
             </p>
@@ -64,7 +64,7 @@ export default function LifeBingoPage() {
                   Make my Life Bingo <ArrowRight className="h-4 w-4" />
                 </Link>
               </Button>
-              <span className="flex min-h-11 items-center gap-2 px-2 text-sm text-muted-foreground">
+              <span className="flex min-h-11 items-center gap-2 px-2 text-sm text-[#4b3861]">
                 <Check className="h-4 w-4 text-growth" /> No account needed
               </span>
             </div>
@@ -76,7 +76,7 @@ export default function LifeBingoPage() {
         </div>
       </section>
 
-      <section className="border-y border-border bg-card px-4 py-20 sm:py-28">
+      <section className="mt-10 bg-[#fffdf3] px-4 py-20 sm:py-28">
         <div className="mx-auto grid max-w-6xl gap-12 lg:grid-cols-[0.72fr_1.28fr] lg:gap-24">
           <div>
             <p className="text-sm font-semibold text-primary">Not another goal tracker.</p>
@@ -96,10 +96,10 @@ export default function LifeBingoPage() {
         </div>
       </section>
 
-      <section className="px-4 py-20 sm:py-28">
+      <section className="bg-[#b9dcf5] px-4 py-20 sm:py-28">
         <div className="mx-auto grid max-w-5xl items-end gap-10 border-y border-border py-12 md:grid-cols-[1fr_auto] sm:py-16">
           <div>
-            <p className="text-sm font-semibold text-primary">One list. Two ways to use it.</p>
+            <p className="text-sm font-semibold text-[#493000]">One list. Two ways to use it.</p>
             <h2 className="mt-4 max-w-3xl font-serif text-4xl font-semibold leading-[1.02] tracking-[-0.03em] sm:text-5xl">
               Plan it as a list. Live it as Bingo.
             </h2>

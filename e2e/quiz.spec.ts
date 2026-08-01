@@ -28,7 +28,7 @@ test.describe('Hobby Quiz', () => {
 
       // The option buttons are the ones inside the question card; the first is
       // always a valid answer, and picking any option is enough to score.
-      const option = page.locator('button.rounded-xl').first();
+      const option = page.locator('[data-quiz-option]').first();
       await expect(option, 'each question must offer options').toBeVisible();
       await option.click();
 

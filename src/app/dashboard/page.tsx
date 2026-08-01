@@ -3,7 +3,6 @@ import { BookOpen, Clock, Compass, Plus, Sparkles } from 'lucide-react';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 
-import { GradientMesh, GridBackground } from '~/components/aceternity';
 import { BehavioralInsights } from '~/components/dashboard/behavioral-insights';
 import { TimezoneSync } from '~/components/timezone-sync';
 import { EmptyStateCard } from '~/components/dashboard/empty-state-card';
@@ -31,6 +30,7 @@ import { getTimelineUrl } from '~/lib/timeline-url';
 import type { Phase, TimelineVisibility } from '~/lib/types';
 import { parseJSONColumn } from '~/lib/utils';
 import { getServerAuthSession } from '~/server/auth';
+import { LocalWorkspaceHome } from '~/components/local-workspace-home';
 import { db } from '~/server/db';
 
 export const metadata = {
@@ -55,7 +55,7 @@ function getStalenessInfo(updatedAt: Date): {
 
 export default async function DashboardPage() {
   const session = await getServerAuthSession();
-  if (!session?.user) redirect(loginPath('/dashboard'));
+  if (!session?.user) return <LocalWorkspaceHome />;
 
   // Resolve the user's zone first — every dayDate key below is user-local.
   const me = await db.query.users.findFirst({
@@ -193,29 +193,26 @@ export default async function DashboardPage() {
   });
 
   return (
-    <div className="mx-auto max-w-5xl px-4 py-10 sm:py-14 space-y-16">
+    <div className="mx-auto max-w-6xl space-y-16 px-4 py-10 sm:py-14">
       <TimezoneSync storedTimezone={me?.timezone ?? null} />
 
       {/* ════════════════════════════════════════════════════════════════════════
           1. LIFE GRID + TIMELINE (merged, top)
           The zoomed-out view: creed heading, life grid, then timelines below.
           ════════════════════════════════════════════════════════════════════════ */}
-      <section className="relative space-y-6 overflow-hidden rounded-2xl border border-border/50 p-6 sm:p-8">
-        <GradientMesh variant="gold" />
-        <GridBackground size={24} />
-
+      <section className="relative space-y-6 overflow-hidden rounded-[1.75rem] bg-[#f7e957] p-6 text-[#201f18] shadow-[0_16px_44px_rgba(66,55,22,0.10)] sm:p-10">
         <div className="relative space-y-6">
           {/* Section heading — creed or default */}
           {hasCreed ? (
             <div className="text-center">
-              <blockquote className="font-serif text-2xl italic leading-relaxed text-foreground sm:text-3xl">
+              <blockquote className="font-serif text-3xl italic leading-relaxed sm:text-4xl">
                 {me!.creed}
               </blockquote>
               {me?.name && <p className="mt-3 text-sm text-muted-foreground">— {me.name}</p>}
             </div>
           ) : (
             <div className="text-center">
-              <h1 className="font-serif text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
+              <h1 className="font-serif text-5xl font-medium tracking-[-0.03em] sm:text-6xl">
                 Your life
               </h1>
             </div>
@@ -255,7 +252,7 @@ export default async function DashboardPage() {
           {/* Timelines — the list below the grid */}
           <div className="space-y-4">
             <div className="flex items-center justify-between gap-3">
-              <h2 className="font-serif text-lg font-semibold text-foreground">Timelines</h2>
+              <h2 className="font-serif text-3xl font-medium">Timelines</h2>
               <Link href="/timeline/new">
                 <Button size="sm" variant="outline" className="gap-1.5">
                   <Plus className="h-3.5 w-3.5" />

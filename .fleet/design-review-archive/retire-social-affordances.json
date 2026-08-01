@@ -1,0 +1,92 @@
+{
+  "$schema": "fleet.design-review.v1",
+  "version": 1,
+  "project": "significanthobbies-retire-social",
+  "target": "Public profile and timeline social affordance retirement",
+  "mode": "preserve",
+  "register": "product",
+  "context": {
+    "product": "PRODUCT.md",
+    "design": "openspec/changes/archive/2026-07-31-retire-silent-social-affordances/design.md"
+  },
+  "direction": {
+    "references": [],
+    "probes": [],
+    "selected": "existing-design",
+    "approval": "not-required",
+    "before": "artifacts/design/before.png"
+  },
+  "evidence": {
+    "screenshots": [
+      {
+        "width": 390,
+        "path": "artifacts/design/after-profile-390.png"
+      },
+      {
+        "width": 768,
+        "path": "artifacts/design/after-profile-768.png"
+      },
+      {
+        "width": 1440,
+        "path": "artifacts/design/after-profile-1440.png"
+      }
+    ],
+    "targetScreenshots": {
+      "timeline": [
+        {
+          "width": 390,
+          "path": "artifacts/design/after-timeline-390.png"
+        },
+        {
+          "width": 768,
+          "path": "artifacts/design/after-timeline-768.png"
+        },
+        {
+          "width": 1440,
+          "path": "artifacts/design/after-timeline-1440.png"
+        }
+      ],
+      "exploreFooter": [
+        {
+          "width": 390,
+          "path": "artifacts/design/after-explore-footer-390.png"
+        },
+        {
+          "width": 1440,
+          "path": "artifacts/design/after-explore-footer-1440.png"
+        }
+      ]
+    },
+    "projectCheck": {
+      "command": "pnpm typecheck && pnpm lint && pnpm test && pnpm build && pnpm docs:check && git diff --check",
+      "status": "pass"
+    },
+    "critique": {
+      "score": 38,
+      "maximum": 40
+    },
+    "audit": {
+      "score": 20,
+      "maximum": 20
+    },
+    "unresolved": {
+      "p0": 0,
+      "p1": 0
+    },
+    "detector": {
+      "posture": "advisory",
+      "findings": []
+    },
+    "browserReview": {
+      "tool": "Chrome DevTools and Playwright against local public-profile fixtures",
+      "viewports": [390, 768, 1440],
+      "horizontalOverflow": false,
+      "consoleErrors": 0,
+      "note": "Fresh target captures verify both the public profile and timeline at every required width. Profile Share, timeline Export, Copy, X, WhatsApp, mobile menu, and wordmark controls meet the 44-pixel floor; X and WhatsApp have explicit names; contrast is clear; and duplicate same-phase hobbies no longer produce React key errors. The only remaining P2 is the separately owned fixed Feedback widget occasionally covering mobile content; scrolling provides a workaround."
+    }
+  },
+  "ownerFeedback": {
+    "decision": "delegated",
+    "note": "Owner approved all task decisions; preserve-mode execution was delegated."
+  }
+}

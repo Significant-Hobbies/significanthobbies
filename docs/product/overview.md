@@ -65,7 +65,9 @@ The merge produced one coherent thesis:
   check-ins (simple, no scoring), compulsory journal entry at the bottom.
   Structurally private: no visibility field, no public API, no sharing.
 - **Living (opt-in public):** hobbies, bucket lists, side quests, timelines,
-  public profiles. Opt-in public per item.
+  public profiles. Opt-in public per item. `/life-plan` is the action-led Live
+  More home for hobbies, bucket lists, Life Bingo, and side quests; the focused
+  tools remain separate routes.
 - **First-use Living loop:** completed setup leads into an editable first
   timeline seeded from the hobby the user already named. Saving remains private
   by default; a separate owner-only choice is required before the timeline
@@ -83,7 +85,8 @@ The merge produced one coherent thesis:
   [`decisions.md`](../architecture/decisions.md) A14.
 - **The mortality frame connects both.** A finite life is the reason daily
   practice and life aspirations both matter. The life grid (`src/lib/mortality.ts`)
-  and the manifesto (`/manifesto`) make this concrete.
+  and the manifesto (`/manifesto`) make this concrete. `/look-back` is the See
+  History home, pairing the life grid with Trajectory and lived reflection.
 
 ### What we deliberately do not do
 

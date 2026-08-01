@@ -1,6 +1,5 @@
 import type { Metadata } from 'next';
 
-import { GridBackground } from '~/components/aceternity';
 import { JsonLd } from '~/components/json-ld';
 
 import { HobbyQuiz } from './quiz-client';
@@ -29,8 +28,7 @@ export default function FindYourHobbyPage() {
           offers: { '@type': 'Offer', price: '0' },
         }}
       />
-      <div className="relative">
-        <GridBackground variant="dots" size={22} />
+      <div className="relative bg-[#b9dcf5]">
         <HobbyQuiz />
       </div>
     </>

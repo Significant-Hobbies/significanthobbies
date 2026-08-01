@@ -2,6 +2,7 @@ import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 
 const source = readFileSync('src/lib/actions/trajectory-contract.ts', 'utf8');
+const clientSource = readFileSync('src/components/trajectory/trajectory-page-client.tsx', 'utf8');
 
 describe('trajectory contract actions', () => {
   it('owner-scopes contract reads and active transitions', () => {
@@ -11,15 +12,30 @@ describe('trajectory contract actions', () => {
   });
 
   it('records every review before applying its decision', () => {
-    const reviewInsert = source.indexOf('db.insert(trajectoryReviews)');
-    const statusUpdate = source.indexOf('.update(trajectoryContracts)');
+    const reviewAction = source.slice(
+      source.indexOf('export async function reviewTrajectoryContract')
+    );
+    const reviewInsert = reviewAction.indexOf('db.insert(trajectoryReviews)');
+    const statusUpdate = reviewAction.indexOf('.update(trajectoryContracts)');
     expect(reviewInsert).toBeGreaterThan(-1);
     expect(statusUpdate).toBeGreaterThan(reviewInsert);
-    expect(source).toContain('await db.batch([');
-    expect(source).not.toContain('db.transaction(');
-    expect(source).toContain("parsed.data.decision === 'continue'");
-    expect(source).toContain("parsed.data.decision === 'adjust'");
-    expect(source).toContain("parsed.data.decision === 'complete'");
-    expect(source).toContain(": 'released'");
+    expect(reviewAction).toContain('await db.batch([');
+    expect(reviewAction).not.toContain('db.transaction(');
+    expect(reviewAction).toContain("parsed.data.decision === 'continue'");
+    expect(reviewAction).toContain("parsed.data.decision === 'adjust'");
+    expect(reviewAction).toContain("parsed.data.decision === 'complete'");
+    expect(reviewAction).toContain(": 'released'");
+  });
+
+  it('imports local history idempotently without silent active conflicts', () => {
+    expect(source).toContain('inArray(trajectoryContracts.id, ids)');
+    expect(source).toContain('if (alreadyImported.length === ids.length) return { success: true }');
+    expect(source).toContain('conflict: true');
+    expect(source).toContain("mode === 'merge'");
+    expect(source).toContain('eq(trajectoryContracts.userId, session.user.id)');
+    expect(clientSource.indexOf('await importLocalTrajectory')).toBeLessThan(
+      clientSource.indexOf('await archiveLocalTrajectory')
+    );
+    expect(clientSource).toContain('The device copy stays intact until');
   });
 });

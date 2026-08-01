@@ -8,6 +8,7 @@ import { toast } from 'sonner';
 import { BingoBoard } from '~/components/bucket-list/bingo-board';
 import { Button } from '~/components/ui/button';
 import { createRemixDraft, LIFE_BINGO_STORAGE_KEY, type BucketListDraft } from '~/lib/life-bingo';
+import { browserRecordAdapter, writeLocalRecord } from '~/lib/local-record-store';
 
 export function PublicBingo({
   draft,
@@ -19,9 +20,9 @@ export function PublicBingo({
   const router = useRouter();
   const exportRef = useRef<HTMLDivElement>(null);
 
-  function remix() {
+  async function remix() {
     const next = createRemixDraft(draft);
-    window.localStorage.setItem(LIFE_BINGO_STORAGE_KEY, JSON.stringify(next));
+    await writeLocalRecord(browserRecordAdapter(), LIFE_BINGO_STORAGE_KEY, 'bucket-list', next);
     router.push('/bucket-list/new');
   }
 

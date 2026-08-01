@@ -112,7 +112,7 @@ function BlogContent({ blocks }: { blocks: ContentBlock[] }) {
                   <span className="mt-0.5 shrink-0 text-2xl" role="img" aria-hidden="true">
                     {block.emoji}
                   </span>
-                  <p className="text-base italic leading-relaxed text-lumi-300">{block.text}</p>
+                  <p className="text-base italic leading-relaxed text-[#5f4410]">{block.text}</p>
                 </SpotlightCard>
               </FadeIn>
             );

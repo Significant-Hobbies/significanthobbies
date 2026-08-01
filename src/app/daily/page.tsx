@@ -1,6 +1,7 @@
 import { eq } from 'drizzle-orm';
 
 import { DailyRitual } from '~/components/daily-ritual';
+import { LocalDailyRitual } from '~/components/local-daily-ritual';
 import { TimezoneSync } from '~/components/timezone-sync';
 import { users } from '~/db/schema';
 import {
@@ -39,34 +40,9 @@ export const metadata = {
 export default async function DailyPage() {
   const session = await getServerAuthSession();
 
-  // Signed out, show one stranger's sample month instead of a sign-in wall. The
-  // ritual is unreadable empty, and asking for a Google account before a visitor
-  // has seen what the practice looks like was the funnel's steepest step. The
-  // sample is not persisted anywhere and the banner says so; journal writing is
-  // suppressed rather than merely discarded.
   if (!session?.user) {
     const today = dayKeyIn(null);
-    return (
-      <DailyRitual
-        firstName={PREVIEW_FIRST_NAME}
-        today={today}
-        isMorning={isMorningIn(null)}
-        weeksRemaining={null}
-        habits={previewHabits()}
-        habitLogs={previewHabitLogsForToday(today)}
-        allHabitLogs={previewHabitLogs(today)}
-        journalEntry={previewJournalEntryForToday(today)}
-        journalEntries={previewJournalEntries(today)}
-        actions={{
-          createHabit,
-          deleteHabit,
-          setHabitCommitment,
-          toggleHabitLog,
-          saveJournalEntry,
-        }}
-        preview
-      />
-    );
+    return <LocalDailyRitual today={today} isMorning={isMorningIn(null)} />;
   }
 
   // The user's zone has to be resolved before "today" exists — every dayDate

@@ -54,6 +54,12 @@ import {
   type BucketListView as BucketListViewMode,
 } from '~/lib/life-bingo';
 import { cn } from '~/lib/utils';
+import {
+  browserRecordAdapter,
+  readLocalRecord,
+  removeLocalRecord,
+  writeLocalRecord,
+} from '~/lib/local-record-store';
 
 const HORIZONS: Array<{ id: BingoHorizon; label: string; detail: string; marker: string }> = [
   { id: 'month', label: 'This month', detail: '9 small shifts', marker: '30 days' },
@@ -130,56 +136,76 @@ export function BucketListWorkspace({
       setHydrated(true);
       return;
     }
-    try {
-      const stored = window.localStorage.getItem(LIFE_BINGO_STORAGE_KEY);
-      if (stored) {
-        const parsed: unknown = JSON.parse(stored);
-        if (isBucketListDraft(parsed)) {
-          const hasQuest =
-            queuedQuest && parsed.items.some((item) => item.sourceQuestId === queuedQuest.id);
-          const next =
-            queuedQuest && !hasQuest
-              ? {
-                  ...parsed,
-                  items: [
-                    ...parsed.items,
-                    { ...createCustomItem(queuedQuest.title), sourceQuestId: queuedQuest.id },
-                  ],
-                }
-              : parsed;
-          setDraft(next);
-          setActiveView(next.defaultView);
-          if (queuedQuest && !hasQuest)
-            toast.success('Side Quest added to your bucket-list draft.');
+    async function restoreDraft() {
+      try {
+        let parsed: unknown = await readLocalRecord(
+          browserRecordAdapter(),
+          LIFE_BINGO_STORAGE_KEY,
+          'bucket-list',
+          isBucketListDraft
+        );
+        const legacy = window.localStorage.getItem(LIFE_BINGO_STORAGE_KEY);
+        if (!parsed && legacy) {
+          parsed = JSON.parse(legacy);
+          if (isBucketListDraft(parsed)) {
+            await writeLocalRecord(
+              browserRecordAdapter(),
+              LIFE_BINGO_STORAGE_KEY,
+              'bucket-list',
+              parsed
+            );
+            window.localStorage.removeItem(LIFE_BINGO_STORAGE_KEY);
+          }
         }
-      } else if (queuedQuest) {
-        const next = generateLifeBingo({
-          horizon: 'season',
-          intentions: ['adventure', 'play', 'connection'],
-          boldness: 'brave',
-          seed: `side-quest-${queuedQuest.id}`,
-        });
-        next.title = 'My next adventures';
-        next.subtitle = 'A few good reasons to break routine.';
-        next.defaultView = 'LIST';
-        next.items[0] = {
-          ...createCustomItem(queuedQuest.title, 0),
-          sourceQuestId: queuedQuest.id,
-          tone: 'clay',
-        };
-        setDraft(next);
-        setActiveView('LIST');
-        toast.success('Side Quest added to a new bucket-list draft.');
+        if (parsed) {
+          if (isBucketListDraft(parsed)) {
+            const hasQuest =
+              queuedQuest && parsed.items.some((item) => item.sourceQuestId === queuedQuest.id);
+            const next =
+              queuedQuest && !hasQuest
+                ? {
+                    ...parsed,
+                    items: [
+                      ...parsed.items,
+                      { ...createCustomItem(queuedQuest.title), sourceQuestId: queuedQuest.id },
+                    ],
+                  }
+                : parsed;
+            setDraft(next);
+            setActiveView(next.defaultView);
+            if (queuedQuest && !hasQuest)
+              toast.success('Side Quest added to your bucket-list draft.');
+          }
+        } else if (queuedQuest) {
+          const next = generateLifeBingo({
+            horizon: 'season',
+            intentions: ['adventure', 'play', 'connection'],
+            boldness: 'brave',
+            seed: `side-quest-${queuedQuest.id}`,
+          });
+          next.title = 'My next adventures';
+          next.subtitle = 'A few good reasons to break routine.';
+          next.defaultView = 'LIST';
+          next.items[0] = {
+            ...createCustomItem(queuedQuest.title, 0),
+            sourceQuestId: queuedQuest.id,
+            tone: 'clay',
+          };
+          setDraft(next);
+          setActiveView('LIST');
+          toast.success('Side Quest added to a new bucket-list draft.');
+        }
+      } catch {
+        window.localStorage.removeItem(LIFE_BINGO_STORAGE_KEY);
       }
-    } catch {
-      window.localStorage.removeItem(LIFE_BINGO_STORAGE_KEY);
+      setHydrated(true);
     }
-    setHydrated(true);
+    void restoreDraft();
   }, [initialDraft, queuedQuest]);
 
   useEffect(() => {
     if (!hydrated || !draft || listId) return;
-    window.localStorage.setItem(LIFE_BINGO_STORAGE_KEY, JSON.stringify(draft));
+    void writeLocalRecord(browserRecordAdapter(), LIFE_BINGO_STORAGE_KEY, 'bucket-list', draft);
   }, [draft, hydrated, listId]);
 
   useEffect(() => {
@@ -336,13 +362,15 @@ export function BucketListWorkspace({
   function saveToAccount() {
     if (!draft) return;
     if (!isAuthenticated) {
-      router.push('/login?callbackUrl=/bucket-list/new');
+      void writeLocalRecord(browserRecordAdapter(), LIFE_BINGO_STORAGE_KEY, 'bucket-list', draft);
+      setSaveState('saved');
+      toast.success('Saved on this device. Sign in when you want to publish or sync it.');
       return;
     }
     startTransition(async () => {
       try {
         const created = await createBucketList(draft);
-        window.localStorage.removeItem(LIFE_BINGO_STORAGE_KEY);
+        await removeLocalRecord(browserRecordAdapter(), LIFE_BINGO_STORAGE_KEY);
         toast.success('Saved to your bucket list.');
         router.push(`/bucket-list/${created?.id}`);
       } catch {
@@ -417,7 +445,7 @@ export function BucketListWorkspace({
 
   if (!draft) {
     return (
-      <div className="min-h-[calc(100vh-3.5rem)] bg-background px-4 py-10 sm:py-16">
+      <div className="min-h-[calc(100vh-4.5rem)] bg-[#ffd0bd] px-4 py-10 sm:py-14">
         <div className="mx-auto max-w-5xl">
           <Link
             href="/life-bingo"
@@ -426,21 +454,21 @@ export function BucketListWorkspace({
             <ChevronLeft className="h-3.5 w-3.5" /> About Life Bingo
           </Link>
           <div className="grid gap-10 lg:grid-cols-[0.78fr_1.22fr] lg:gap-16">
-            <header className="lg:sticky lg:top-24 lg:self-start">
-              <p className="text-sm font-semibold text-primary">Make your list.</p>
-              <h1 className="mt-3 max-w-xl font-serif text-5xl font-semibold leading-[0.96] tracking-[-0.035em] text-foreground sm:text-6xl">
+            <header className="rounded-[1.5rem] bg-[#ff9d7d] p-7 text-[#261e18] shadow-[0_12px_36px_rgba(102,52,35,0.10)] lg:sticky lg:top-24 lg:self-start sm:p-9">
+              <p className="text-base font-bold">Make your list</p>
+              <h1 className="mt-4 max-w-xl font-serif text-5xl font-medium leading-[0.98] tracking-[-0.035em] sm:text-6xl">
                 What should this chapter feel like?
               </h1>
-              <p className="mt-5 max-w-md text-base leading-relaxed text-muted-foreground">
+              <p className="mt-5 max-w-md text-base leading-relaxed text-[#49382f]">
                 Choose a horizon and a few things you want more of. We’ll turn them into concrete
                 experiences, not vague goals.
               </p>
-              <p className="mt-8 hidden max-w-sm border-t border-border pt-5 font-serif text-xl text-foreground lg:block">
+              <p className="mt-8 hidden max-w-sm border-t border-[#261e18]/20 pt-5 font-serif text-xl lg:block">
                 “A good list should make Tuesday feel full of possibility.”
               </p>
             </header>
 
-            <div className="space-y-9 rounded-2xl border border-border bg-card p-5 sm:p-8">
+            <div className="space-y-9 rounded-[1.5rem] bg-white p-6 shadow-[0_12px_36px_rgba(102,52,35,0.10)] sm:p-9">
               <fieldset>
                 <legend className="mb-4 text-sm font-bold text-foreground">
                   <span className="mr-2 font-serif text-xl text-primary">01</span> How far are we
@@ -616,7 +644,7 @@ export function BucketListWorkspace({
                 ) : (
                   <Lock className="h-3.5 w-3.5" />
                 )}
-                {isAuthenticated ? 'Save list' : 'Sign in to save'}
+                {isAuthenticated ? 'Save list' : 'Save on this device'}
               </Button>
             )}
             {listId && (

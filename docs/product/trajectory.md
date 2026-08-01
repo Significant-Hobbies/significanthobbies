@@ -5,8 +5,8 @@ description: One private focus contract grounded in constraints and intent, guid
 
 # Trajectory — a living decision system
 
-> **Status:** contract model built locally on 2026-08-01. Its additive migration
-> has not been applied to production and deployment remains operator-owned.
+> **Status:** contract model and anonymous local persistence built locally on
+> 2026-08-01. Deployment remains operator-owned.
 
 ## The thesis
 
@@ -48,7 +48,11 @@ was correct; it makes the user's evolving reasoning visible.
 ## Privacy and boundaries
 
 - Trajectory contracts and reviews are owner-only and never public.
-- The signed-out route shows a read-only sample contract.
+- A signed-out person can create and review a private trajectory stored only in
+  this browser. The page identifies the device as the source of truth.
+- After sign-in, local history can be imported explicitly. An existing account
+  trajectory is never overwritten silently, and the local copy is archived
+  only after a successful import.
 - No AI authors the contract or chooses a direction.
 - No contract is automatically connected to a habit, commitment, journal, or
   public artifact in this first slice.
@@ -75,3 +79,20 @@ context; it does not describe the current primary product model.
 - Route and interface: `src/app/trajectory/page.tsx` and
   `src/components/trajectory/trajectory-page-client.tsx`
 - Change artifacts: `openspec/changes/add-trajectory-contract/`
+
+## Storage authority
+
+Trajectory follows the application storage contract:
+
+- **Signed out:** IndexedDB on the current browser is authoritative. The data
+  survives refreshes and browser restarts but is not cross-device and can be
+  removed by clearing site data.
+- **Signed in:** the owner-scoped D1 records are authoritative and available
+  across devices.
+- **At sign-in:** the application detects local history and offers an explicit,
+  idempotent import. If both sources contain an active trajectory, the account
+  version remains authoritative until the person chooses otherwise.
+
+Browser records are versioned and validated. Invalid records are isolated
+rather than rendered as current data. Public publishing is not available from
+local mode.

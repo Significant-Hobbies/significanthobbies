@@ -1,7 +1,7 @@
 import { eq } from 'drizzle-orm';
 import Link from 'next/link';
 
-import { GridBackground, SpotlightCard } from '~/components/aceternity';
+import { SpotlightCard } from '~/components/aceternity';
 import { JsonLd } from '~/components/json-ld';
 import { TimelineBuilder } from '~/components/timeline-builder/builder';
 import { users } from '~/db/schema';
@@ -18,10 +18,10 @@ interface Props {
 
 export default async function NewTimelinePage({ searchParams }: Props) {
   const { from } = await searchParams;
+  const session = await getServerAuthSession();
   let starter = null;
 
   if (from === 'setup') {
-    const session = await getServerAuthSession();
     if (session?.user?.id) {
       const profile = await db.query.users.findFirst({
         where: eq(users.id, session.user.id),
@@ -50,18 +50,18 @@ export default async function NewTimelinePage({ searchParams }: Props) {
           offers: { '@type': 'Offer', price: '0' },
         }}
       />
-      {/* Header with grid background */}
-      <div className="relative mb-8">
-        <GridBackground />
-        <div className="relative">
+      <div className="relative mb-8 rounded-[1.75rem] bg-[#b9dcf5] px-6 py-9 text-[#192a36] shadow-[0_14px_40px_rgba(39,74,97,0.10)] sm:px-9">
+        <div className="relative max-w-2xl">
           <Link
             href="/"
             className="mb-4 inline-flex items-center text-sm text-muted-foreground hover:text-foreground transition-colors"
           >
             ← Back
           </Link>
-          <h1 className="text-2xl font-bold text-foreground">Build your hobby timeline</h1>
-          <p className="mt-1 text-muted-foreground">
+          <h1 className="font-serif text-5xl font-medium leading-[1.02] tracking-[-0.03em]">
+            Build your hobby timeline
+          </h1>
+          <p className="mt-4 text-base leading-relaxed text-[#405b6c]">
             {starter
               ? `We started with ${starter.hobbyName}. Shape it into a story that feels true.`
               : 'Add life phases and the hobbies that defined each one.'}
@@ -71,7 +71,7 @@ export default async function NewTimelinePage({ searchParams }: Props) {
       {/* Builder panel with spotlight glow */}
       <SpotlightCard className="shadow-soft" innerClassName="p-1">
         <div className="relative overflow-hidden rounded-xl">
-          <TimelineBuilder starter={starter} />
+          <TimelineBuilder starter={starter} isAuthenticated={Boolean(session?.user)} />
         </div>
       </SpotlightCard>
     </div>

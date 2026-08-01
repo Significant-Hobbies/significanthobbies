@@ -1,13 +1,28 @@
 import { expect, test } from '@playwright/test';
 
 test.describe('Daily ritual & manifesto', () => {
-  test('/daily previews the ritual instead of walling it off', async ({ page }) => {
-    // This route used to redirect to /login. Auth here saves work rather than
-    // unlocking it, so a signed-out visitor now sees a sample month.
+  test('/daily provides a local ritual instead of walling it off', async ({ page }) => {
     const res = await page.goto('/daily');
     expect(res?.status()).toBeLessThan(400);
     expect(page.url()).not.toContain('/login');
-    await expect(page.getByLabel('Preview notice')).toBeVisible();
+    await expect(page.getByLabel('Preview notice')).toHaveCount(0);
+    await expect(page.locator('#daily-journal-entry')).toBeVisible();
+  });
+
+  test('/daily restores anonymous habits and journal writing after reload', async ({ page }) => {
+    await page.goto('/daily');
+    await page.getByRole('button', { name: 'Manage' }).click();
+    await page.getByPlaceholder('Habit name (e.g. Read 20 pages)').fill('Walk after lunch');
+    await page.getByRole('button', { name: 'Add habit' }).click();
+    await expect(page.getByText('Walk after lunch')).toBeVisible();
+
+    await page.locator('#daily-journal-entry').fill('I made room for a slower afternoon.');
+    await page.getByRole('button', { name: /Save (morning|evening)/ }).click();
+    await page.reload();
+    await expect(page.getByText('Walk after lunch')).toBeVisible();
+    await expect(page.locator('#daily-journal-entry')).toHaveValue(
+      'I made room for a slower afternoon.'
+    );
   });
 
   test('/manifesto loads and shows the mortality frame', async ({ page }) => {
@@ -42,7 +57,9 @@ test.describe('Daily ritual & manifesto', () => {
 
   test('nav includes Daily link', async ({ page }) => {
     await page.goto('/hobbies');
-    // The Daily nav link should be visible on desktop
+    if (!(await page.getByRole('link', { name: 'Daily', exact: true }).first().isVisible())) {
+      await page.getByRole('button', { name: 'Open menu' }).click();
+    }
     await expect(page.getByRole('link', { name: 'Daily' }).first()).toBeVisible();
   });
 
