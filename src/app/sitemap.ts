@@ -7,6 +7,7 @@ import { FAMOUS_BUCKET_LISTS } from '~/lib/famous-bucket-lists';
 import { FAMOUS_JOURNEYS } from '~/lib/famous-journeys';
 import { PAGED_EXPERIENCES } from '~/lib/experiences';
 import { HOBBY_CATEGORIES } from '~/lib/hobbies';
+import { sitemapLastModified } from '~/lib/sitemap-last-modified';
 import { db } from '~/server/db';
 
 // D1 is request-scoped under OpenNext. Generating this route at build time has
@@ -24,7 +25,10 @@ export const dynamic = 'force-dynamic';
  * Returns [] on failure: a database hiccup should degrade the sitemap, never
  * 500 it and lose the static entries with it.
  */
-async function publicProfileEntries(baseUrl: string): Promise<MetadataRoute.Sitemap> {
+async function publicProfileEntries(
+  baseUrl: string,
+  fallbackDate: Date
+): Promise<MetadataRoute.Sitemap> {
   try {
     const rows = await db
       .select({
@@ -43,7 +47,7 @@ async function publicProfileEntries(baseUrl: string): Promise<MetadataRoute.Site
         ? [
             {
               url: `${baseUrl}/u/${encodeURIComponent(row.username)}`,
-              lastModified: row.lastUpdated ? new Date(row.lastUpdated) : new Date(),
+              lastModified: sitemapLastModified(row.lastUpdated, fallbackDate),
               changeFrequency: 'weekly' as const,
               priority: 0.6,
             },
@@ -64,7 +68,7 @@ async function publicProfileEntries(baseUrl: string): Promise<MetadataRoute.Site
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = 'https://significanthobbies.com';
   const now = new Date();
-  const profilePages = await publicProfileEntries(baseUrl);
+  const profilePages = await publicProfileEntries(baseUrl, now);
 
   const categoryPages = [
     'creative',
