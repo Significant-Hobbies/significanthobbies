@@ -327,10 +327,8 @@ test.describe('authenticated surfaces', () => {
     await expect(
       authedPage.getByRole('heading', { name: 'One direction. Four useful answers.' })
     ).toBeVisible();
-    await expect(authedPage.getByText('Constraints', { exact: true })).toBeVisible();
-    await expect(authedPage.getByText('Intent', { exact: true })).toBeVisible();
-    await expect(authedPage.getByText('Decision policy', { exact: true })).toBeVisible();
-    await expect(authedPage.getByText('Feedback loop', { exact: true })).toBeVisible();
+    await expect(authedPage.locator('textarea')).toHaveCount(4);
+    await expect(authedPage.getByRole('combobox', { name: /Review rhythm/ })).toBeVisible();
     await expect(authedPage.getByRole('button', { name: 'Set this trajectory' })).toBeVisible();
   });
 });
