@@ -5,7 +5,7 @@
 > Update this file when durable current or shipped product truth changes. Do
 > not let deploy-version snapshots accumulate here — put those in the archive.
 
-Last updated: 2026-07-31
+Last updated: 2026-08-01
 
 ## Why / What
 
@@ -21,6 +21,12 @@ is the bridge between daily practice and life aspirations.
 
 ## Timeline
 
+- **2026-08-01:** Reframed Trajectory locally as one private living decision
+  contract: constraints, intent, decision policy, and feedback loop. Reviews can
+  continue, adjust, complete, or release the direction; adjustments retain
+  version history and highlight changed framing. The earlier four-bucket data
+  remains intact, the new migration is additive and unapplied, and deployment
+  remains manual.
 - **2026-07-31:** Retired silent follows, timeline likes, and comments from the
   runtime because they had no notifications, discovery, or return loop and
   contradicted the product's no-broad-social-network boundary. Public profiles
@@ -69,6 +75,12 @@ Historical milestones live in
 - **Two dimensions shipped:** Daily ritual (`/daily` — AM/PM prompts, habits,
   compulsory journal) and Living (timelines, bucket lists, side quests,
   public profiles, SEO blog, discovery quiz).
+- **Trajectory contract built locally:** `/trajectory` holds one active private
+  focus contract with constraints, intent, a decision policy, a feedback loop,
+  and weekly or monthly review context. Reviews record observed signals and can
+  continue, adjust, complete, or release the contract without scores or
+  streaks. Adjustments preserve version history. Legacy monthly bucket records
+  are preserved; the additive migration and deployment remain operator-owned.
 - **Public artifacts, not a social network:** profiles and timelines retain
   sharing, compare, export, visibility, and owner-edit actions without follows,
   likes, comments, engagement ranking, or engagement counts. Retired social

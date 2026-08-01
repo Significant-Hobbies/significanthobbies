@@ -7,6 +7,8 @@ interface Props {
   route: string;
   /** What this surface is, in one line. */
   children: React.ReactNode;
+  /** Lead sentence; Daily keeps the sample-month default. */
+  title?: string;
 }
 
 /**
@@ -21,7 +23,11 @@ interface Props {
  *
  * Not a dismissible toast. It stays for the length of the preview.
  */
-export function PreviewBanner({ route, children }: Props) {
+export function PreviewBanner({
+  route,
+  children,
+  title = "You're looking at someone else's month.",
+}: Props) {
   return (
     <aside
       aria-label="Preview notice"
@@ -29,9 +35,7 @@ export function PreviewBanner({ route, children }: Props) {
     >
       <div className="flex flex-col gap-2.5 sm:flex-row sm:items-center sm:justify-between sm:gap-5">
         <div className="min-w-0">
-          <p className="text-sm font-medium text-foreground">
-            You&apos;re looking at someone else&apos;s month.
-          </p>
+          <p className="text-sm font-medium text-foreground">{title}</p>
           <p className="mt-1 text-xs leading-relaxed text-muted-foreground">{children}</p>
         </div>
         <Link

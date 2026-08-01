@@ -640,6 +640,63 @@ export const trajectoryEntries = sqliteTable(
   ]
 );
 
+// A single cross-cutting focus contract. This model is additive: the earlier
+// bucket-era tables above remain untouched so private history is preserved.
+export const trajectoryContracts = sqliteTable(
+  'TrajectoryContract',
+  {
+    id: text('id')
+      .primaryKey()
+      .$defaultFn(() => createId()),
+    userId: text('userId')
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
+    previousContractId: text('previousContractId'),
+    constraintsText: text('constraintsText').notNull(),
+    intentText: text('intentText').notNull(),
+    decisionPolicyText: text('decisionPolicyText').notNull(),
+    feedbackLoopText: text('feedbackLoopText').notNull(),
+    cadence: text('cadence').notNull(),
+    // 'active' | 'adjusted' | 'completed' | 'released'
+    status: text('status').notNull().default('active'),
+    openedAt: integer('openedAt', { mode: 'timestamp' }).notNull().default(sql`(unixepoch())`),
+    closedAt: integer('closedAt', { mode: 'timestamp' }),
+    createdAt: integer('createdAt', { mode: 'timestamp' }).notNull().default(sql`(unixepoch())`),
+    updatedAt: integer('updatedAt', { mode: 'timestamp' }).notNull().default(sql`(unixepoch())`),
+  },
+  (table) => [
+    index('TrajectoryContract_userId_idx').on(table.userId),
+    uniqueIndex('TrajectoryContract_one_active_per_user_idx')
+      .on(table.userId)
+      .where(sql`${table.status} = 'active'`),
+  ]
+);
+
+export const trajectoryReviews = sqliteTable(
+  'TrajectoryReview',
+  {
+    id: text('id')
+      .primaryKey()
+      .$defaultFn(() => createId()),
+    contractId: text('contractId')
+      .notNull()
+      .references(() => trajectoryContracts.id, {
+        onDelete: 'cascade',
+      }),
+    userId: text('userId')
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
+    signalText: text('signalText').notNull(),
+    // 'continue' | 'adjust' | 'complete' | 'release'
+    decision: text('decision').notNull(),
+    createdAt: integer('createdAt', { mode: 'timestamp' }).notNull().default(sql`(unixepoch())`),
+  },
+  (table) => [
+    index('TrajectoryReview_contractId_idx').on(table.contractId),
+    index('TrajectoryReview_userId_idx').on(table.userId),
+  ]
+);
+
 // Simple cuid-like ID generator using nanoid pattern
 function createId(): string {
   const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';

@@ -27,7 +27,6 @@ import {
   previewJournalEntries,
   previewJournalEntryForToday,
 } from '~/lib/preview-data';
-import { getActiveMonthEndNudge } from '~/lib/actions/trajectory';
 import { birthDateFromYear, buildLifeGrid } from '~/lib/mortality';
 import { getServerAuthSession } from '~/server/auth';
 import { db } from '~/server/db';
@@ -89,7 +88,6 @@ export default async function DailyPage() {
     journalContextChoices,
     habitCommitmentChoices,
     profile,
-    trajectoryNudge,
   ] = await Promise.all([
     getHabits(),
     getHabitLogsForDate(today),
@@ -98,7 +96,6 @@ export default async function DailyPage() {
     getJournalContextChoices(),
     getHabitCommitmentChoices(),
     getUserProfile(),
-    getActiveMonthEndNudge(),
   ]);
 
   const journalEntry = journalEntries.find((entry) => entry.dayDate === today) ?? null;
@@ -124,7 +121,6 @@ export default async function DailyPage() {
         journalEntries={journalEntries}
         journalContextChoices={journalContextChoices}
         habitCommitmentChoices={habitCommitmentChoices}
-        trajectoryNudge={trajectoryNudge}
         actions={{
           createHabit,
           deleteHabit,

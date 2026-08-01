@@ -4,9 +4,9 @@ import { GradientMesh } from '~/components/aceternity/gradient-mesh';
 import { PreviewBanner } from '~/components/preview-banner';
 import { TrajectoryPageClient } from '~/components/trajectory/trajectory-page-client';
 import { birthDateFromYear, buildLifeGrid } from '~/lib/mortality';
-import { previewTrajectoryState } from '~/lib/preview-data';
-import { monthKeyFor } from '~/lib/trajectory';
-import { getTrajectoryState, getUserBirthYear } from '~/lib/actions/trajectory';
+import { getTrajectoryContractState } from '~/lib/actions/trajectory-contract';
+import { getUserBirthYear } from '~/lib/actions/trajectory';
+import type { TrajectoryContractState } from '~/lib/actions/trajectory-contract';
 import { getServerAuthSession } from '~/server/auth';
 
 export const metadata = {
@@ -18,13 +18,9 @@ export default async function TrajectoryPage() {
   const session = await getServerAuthSession();
   const isPreview = !session?.user;
 
-  // Signed out, show one stranger's sample year rather than a sign-in wall — the
-  // surface is unreadable empty, and a visitor cannot judge a monthly review
-  // practice they have never seen. Read-only: the write actions here throw
-  // without a session, so no Save button may be offered.
   const [state, birthYear] = isPreview
-    ? [previewTrajectoryState(monthKeyFor(new Date())), null]
-    : await Promise.all([getTrajectoryState(), getUserBirthYear()]);
+    ? [previewContractState(), null]
+    : await Promise.all([getTrajectoryContractState(), getUserBirthYear()]);
 
   // Mortality frame — same zoom-out grounding as /daily and /commitments.
   const birth = birthDateFromYear(birthYear);
@@ -33,21 +29,21 @@ export default async function TrajectoryPage() {
   return (
     <div className="mx-auto max-w-3xl px-4 py-10 sm:py-14 space-y-10">
       {isPreview && (
-        <PreviewBanner route="/trajectory">
-          A sample year across the four areas, so you can see how a monthly review reads before you
-          sign up. Nothing here is yours and nothing is saved.
+        <PreviewBanner route="/trajectory" title="You're looking at a sample trajectory.">
+          A sample focus contract, so you can see how Trajectory works before you sign up. Nothing
+          here is yours and nothing is saved.
         </PreviewBanner>
       )}
       <header className="relative overflow-hidden rounded-2xl border border-border/50 p-6 sm:p-8">
         <GradientMesh variant="gold" />
         <div className="relative">
-          <p className="text-xs font-medium text-subtle">Monthly life-review</p>
+          <p className="text-xs font-medium text-subtle">A living decision system</p>
           <h1 className="mt-2 font-serif text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
             Trajectory
           </h1>
           <p className="mt-3 max-w-xl text-sm leading-relaxed text-muted-foreground">
-            Direction, not destinations. Four areas of life, each with an ideal you wrote yourself,
-            revisited once a month. No score — the gap is the whole point. For the specific things
+            Name the reality you are in, choose a direction, decide how you will make tradeoffs,
+            then learn from what happens. One active trajectory, no score. For the specific things
             you want to have done, use your{' '}
             <Link
               href="/bucket-list"
@@ -68,7 +64,29 @@ export default async function TrajectoryPage() {
         </div>
       </header>
 
-      <TrajectoryPageClient state={state} readOnly={isPreview} />
+      <TrajectoryPageClient
+        key={state.active?.id ?? 'no-active-contract'}
+        state={state}
+        readOnly={isPreview}
+      />
     </div>
   );
+}
+
+function previewContractState(): TrajectoryContractState {
+  const active = {
+    id: 'preview-contract',
+    previousContractId: null,
+    constraintsText:
+      'Full-time work leaves little energy on weekdays, and gear has to fit a small monthly budget.',
+    intentText: 'Make and share small films consistently.',
+    decisionPolicyText: 'Prefer publishing something small over polishing something ambitious.',
+    feedbackLoopText:
+      'Every Sunday, notice what I made, whether I wanted to return, and what caused friction.',
+    cadence: 'weekly' as const,
+    status: 'active' as const,
+    openedAt: new Date(),
+    closedAt: null,
+  };
+  return { active, contracts: [active], reviews: [] };
 }
