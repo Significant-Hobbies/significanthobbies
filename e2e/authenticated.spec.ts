@@ -322,10 +322,15 @@ test.describe('authenticated surfaces', () => {
     }).toPass({ timeout: 10_000 });
   });
 
-  test('trajectory renders all four life buckets', async ({ authedPage }) => {
+  test('trajectory offers one focused contract to a new user', async ({ authedPage }) => {
     await authedPage.goto('/trajectory');
-    for (const bucket of ['Health', 'Finance', 'Knowledge', 'Relationships']) {
-      await expect(authedPage.getByRole('heading', { name: bucket })).toBeVisible();
-    }
+    await expect(
+      authedPage.getByRole('heading', { name: 'One direction. Four useful answers.' })
+    ).toBeVisible();
+    await expect(authedPage.getByText('Constraints', { exact: true })).toBeVisible();
+    await expect(authedPage.getByText('Intent', { exact: true })).toBeVisible();
+    await expect(authedPage.getByText('Decision policy', { exact: true })).toBeVisible();
+    await expect(authedPage.getByText('Feedback loop', { exact: true })).toBeVisible();
+    await expect(authedPage.getByRole('button', { name: 'Set this trajectory' })).toBeVisible();
   });
 });

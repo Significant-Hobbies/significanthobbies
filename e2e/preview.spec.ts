@@ -3,14 +3,15 @@ import { expect, test } from '@playwright/test';
 /**
  * Signed-out previews of /daily and /trajectory.
  *
- * Both surfaces are longitudinal — their value is accumulated history — so they
- * used to redirect to /login rather than show an empty shell. That made the
+ * Both surfaces need truthful sample content to explain their value before a
+ * visitor signs in. They used to redirect to /login, which made the
  * steepest step in the funnel "hand over a Google account before you have seen
  * what the practice is". They now render one stranger's sample month.
  *
  * The tests below pin the two things that make that honest: the notice is
  * present, and no affordance invites a visitor to create data that would be
- * silently discarded.
+ * silently discarded. Daily shows a sample month; Trajectory shows one sample
+ * focus contract.
  */
 
 test.describe('/daily preview', () => {
@@ -69,25 +70,24 @@ test.describe('/trajectory preview', () => {
     await page.goto('/trajectory');
   });
 
-  test('renders all four buckets with their sample ideals', async ({ page }) => {
+  test('renders the four parts of a sample focus contract', async ({ page }) => {
     await expect(page.getByLabel('Preview notice')).toBeVisible();
-    for (const bucket of ['Health', 'Finance', 'Knowledge', 'Relationships']) {
-      await expect(page.getByRole('heading', { name: bucket })).toBeVisible();
+    for (const part of ['Constraints', 'Intent', 'Decision policy', 'Feedback loop']) {
+      await expect(page.getByText(part, { exact: true })).toBeVisible();
     }
-    await expect(page.getByText(/Twelve months of runway/)).toBeVisible();
+    await expect(page.getByText(/Make and share small films consistently/).first()).toBeVisible();
   });
 
-  test('draws the charts, which need three points to appear at all', async ({ page }) => {
-    await expect(page.getByRole('img', { name: 'Trajectory chart' })).toHaveCount(4);
+  test('shows the review rhythm without a score or chart', async ({ page }) => {
+    await expect(page.getByText('Review weekly')).toBeVisible();
+    await expect(page.getByRole('img', { name: 'Trajectory chart' })).toHaveCount(0);
   });
 
   test('offers no write affordance, because those actions throw when anonymous', async ({
     page,
   }) => {
-    await expect(page.getByRole('button', { name: 'Reflect' })).toHaveCount(0);
-    await expect(page.getByRole('button', { name: /Edit .* ideal/ })).toHaveCount(0);
-    await expect(page.getByRole('button', { name: /Close this era/i })).toHaveCount(0);
-    await expect(page.getByRole('button', { name: 'Set an ideal →' })).toHaveCount(0);
+    await expect(page.getByRole('button', { name: 'Review this trajectory' })).toHaveCount(0);
+    await expect(page.getByRole('button', { name: 'Set this trajectory' })).toHaveCount(0);
   });
 
   test('offers a sign-in that returns to /trajectory', async ({ page }) => {
