@@ -4,9 +4,10 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 import { browserRecordAdapter, readLocalRecord } from '~/lib/local-record-store';
+import { syncLocalWorkspaceCookie } from '~/lib/local-workspace-cookie';
 
-export function useLocalOnboardingComplete(): boolean | null {
-  const [complete, setComplete] = useState<boolean | null>(null);
+export function useLocalOnboardingComplete(initialComplete: boolean | null = null): boolean | null {
+  const [complete, setComplete] = useState<boolean | null>(initialComplete);
   useEffect(() => {
     readLocalRecord(
       browserRecordAdapter(),
@@ -14,8 +15,15 @@ export function useLocalOnboardingComplete(): boolean | null {
       'onboarding',
       (value): value is Record<string, unknown> => Boolean(value && typeof value === 'object')
     )
-      .then((profile) => setComplete(Boolean(profile)))
-      .catch(() => setComplete(false));
+      .then((profile) => {
+        const nextComplete = Boolean(profile);
+        syncLocalWorkspaceCookie(nextComplete);
+        setComplete(nextComplete);
+      })
+      .catch(() => {
+        syncLocalWorkspaceCookie(false);
+        setComplete(false);
+      });
   }, []);
   return complete;
 }

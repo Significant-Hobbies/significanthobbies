@@ -2,6 +2,14 @@ import type { Page } from '@playwright/test';
 
 export async function completeLocalOnboarding(page: Page) {
   await page.goto('/onboarding');
+  await page.context().addCookies([
+    {
+      name: 'sh_local_workspace',
+      value: '1',
+      url: new URL(page.url()).origin,
+      sameSite: 'Lax',
+    },
+  ]);
   await page.evaluate(async () => {
     const database = await new Promise<IDBDatabase>((resolve, reject) => {
       const request = indexedDB.open('significant-hobbies-local', 1);

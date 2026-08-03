@@ -5,6 +5,11 @@ initOpenNextCloudflareForDev({ configPath: './wrangler.local.toml' });
 
 const nextConfig: NextConfig = {
   output: 'standalone',
+  // This repository is independently deployable even though a Fleet lockfile
+  // exists above it. Without an explicit trace root, Next nests the standalone
+  // app under `.next/standalone/significanthobbies/`, while OpenNext expects
+  // `.next/standalone/.next/` and cannot find pages-manifest.json.
+  outputFileTracingRoot: process.cwd(),
   reactCompiler: true,
   experimental: {
     optimizePackageImports: ['lucide-react'],

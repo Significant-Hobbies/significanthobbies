@@ -34,6 +34,7 @@ test.describe('Life Atlas shell', () => {
     await expect(
       page.getByRole('heading', { name: /What do you still want to live/ })
     ).toBeVisible();
+    await expect(page.getByText('More than 5,000 possibilities')).toBeVisible();
     for (const name of [
       'Discover a life you have not thought of yet.',
       'Life Bingo',

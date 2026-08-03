@@ -1,6 +1,7 @@
 import { and, desc, eq } from 'drizzle-orm';
 import { ArrowRight, Check, Circle, Clock3, ListChecks, NotebookPen } from 'lucide-react';
 import Link from 'next/link';
+import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 
 import { LocalRootExperience } from '~/components/local-root-experience';
@@ -8,6 +9,7 @@ import { TimezoneSync } from '~/components/timezone-sync';
 import { bucketListItems, habitLogs, habits, journalEntries, users } from '~/db/schema';
 import { dayKeyIn } from '~/lib/day';
 import { lifeInWeeksFromDate, parseBirthDate } from '~/lib/life-in-weeks';
+import { LOCAL_WORKSPACE_COOKIE } from '~/lib/local-workspace-cookie';
 import { getServerAuthSession } from '~/server/auth';
 import { db } from '~/server/db';
 
@@ -20,7 +22,14 @@ export const metadata = {
 
 export default async function HomePage() {
   const session = await getServerAuthSession();
-  if (!session?.user) return <LocalRootExperience />;
+  if (!session?.user) {
+    const cookieStore = await cookies();
+    return (
+      <LocalRootExperience
+        initialComplete={cookieStore.get(LOCAL_WORKSPACE_COOKIE)?.value === '1'}
+      />
+    );
+  }
 
   const me = await db.query.users.findFirst({
     where: eq(users.id, session.user.id),

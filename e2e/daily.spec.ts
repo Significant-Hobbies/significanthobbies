@@ -11,6 +11,9 @@ test.describe('Daily ritual & manifesto', () => {
     expect(page.url()).not.toContain('/login');
     await expect(page.getByLabel('Preview notice')).toHaveCount(0);
     await expect(page.locator('#daily-journal-entry')).toBeVisible();
+    await expect(
+      page.getByRole('heading', { name: /Good (morning|evening), Local\./ })
+    ).toBeVisible();
   });
 
   test('/daily has no serious accessibility violations', async ({ page }) => {

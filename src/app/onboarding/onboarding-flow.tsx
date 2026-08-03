@@ -23,6 +23,7 @@ import { StorageModeProvider, StorageModeStatus } from '~/components/storage-mod
 import { completeOnboarding } from '~/lib/actions/onboarding';
 import { browserRecordAdapter, readLocalRecord, writeLocalRecord } from '~/lib/local-record-store';
 import { createLocalTrajectory } from '~/lib/local-trajectory';
+import { syncLocalWorkspaceCookie } from '~/lib/local-workspace-cookie';
 import type { StorageMode } from '~/lib/storage-mode';
 
 type Possibility = {
@@ -294,6 +295,7 @@ export function OnboardingFlow({
       }
       await writeLocalRecord(adapter, 'daily:state', 'daily', daily);
       await createLocalTrajectory(trajectory, adapter).catch(() => undefined);
+      syncLocalWorkspaceCookie(true);
     }
     router.push('/');
     router.refresh();

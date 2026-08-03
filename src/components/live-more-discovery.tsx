@@ -113,14 +113,14 @@ export function LiveMoreDiscovery({
               <Compass className="size-6" />
             </div>
             <p className="mt-7 text-sm font-bold uppercase tracking-[0.2em] text-[#a8dc91]">
-              More than 300 possibilities
+              More than 5,000 possibilities
             </p>
             <h2 className="mt-3 max-w-xl font-serif text-4xl leading-[1.02] sm:text-5xl">
               Discover a life you have not thought of yet.
             </h2>
             <p className="mt-5 max-w-lg leading-relaxed text-white/68">
-              Three directions, drawn from more than 300 real possibilities. Save what calls you,
-              set aside what does not, or turn one into a small first step.
+              Three directions, drawn from more than 5,000 real paths. Save what calls you, set
+              aside what does not, or turn one into a small first step.
             </p>
           </div>
           <div className="mt-8 flex flex-wrap gap-3">
@@ -135,7 +135,7 @@ export function LiveMoreDiscovery({
               href="/experiences"
               className="inline-flex min-h-11 items-center gap-2 border-b-2 border-[#f7e957] font-bold"
             >
-              Browse all <ArrowRight className="size-4" />
+              Browse curated experiences <ArrowRight className="size-4" />
             </Link>
           </div>
           <div aria-live="polite" className="mt-4 min-h-6 text-sm text-white/80">

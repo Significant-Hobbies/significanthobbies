@@ -42,21 +42,36 @@ interface LocalDailyState {
   logs: LocalHabitLog[];
   journals: LocalJournal[];
 }
+interface LocalProfile {
+  name?: string;
+}
 
 const EMPTY: LocalDailyState = { habits: [], logs: [], journals: [] };
 
 export function LocalDailyRitual({ today, isMorning }: { today: string; isMorning: boolean }) {
   const [state, setState] = useState<LocalDailyState>(EMPTY);
+  const [profile, setProfile] = useState<LocalProfile>({});
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
-    readLocalRecord(
-      browserRecordAdapter(),
-      'daily:state',
-      'daily',
-      (value): value is LocalDailyState => !!value && typeof value === 'object' && 'habits' in value
-    ).then((stored) => {
+    const adapter = browserRecordAdapter();
+    Promise.all([
+      readLocalRecord(
+        adapter,
+        'daily:state',
+        'daily',
+        (value): value is LocalDailyState =>
+          !!value && typeof value === 'object' && 'habits' in value
+      ),
+      readLocalRecord(
+        adapter,
+        'onboarding:profile',
+        'onboarding',
+        (value): value is LocalProfile => !!value && typeof value === 'object'
+      ),
+    ]).then(([stored, storedProfile]) => {
       setState(stored ?? EMPTY);
+      setProfile(storedProfile ?? {});
       setLoaded(true);
     });
   }, []);
@@ -196,7 +211,7 @@ export function LocalDailyRitual({ today, isMorning }: { today: string; isMornin
         <StorageModeStatus />
       </div>
       <DailyRitual
-        firstName="there"
+        firstName={profile.name?.trim().split(/\s+/)[0] || 'there'}
         today={today}
         isMorning={isMorning}
         weeksRemaining={null}

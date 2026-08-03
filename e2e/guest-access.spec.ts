@@ -21,8 +21,9 @@ test.describe('private work is locally available without an account', () => {
 
   test('root becomes the local dashboard after onboarding', async ({ page }) => {
     await completeLocalOnboarding(page);
-    await page.goto('/');
+    const response = await page.goto('/');
     await expect(page).toHaveURL(/\/$/);
+    expect(await response?.text()).not.toContain('What will you do with the time you have?');
     await expect(page.getByRole('heading', { name: /Your dashboard/i })).toBeVisible();
     await expect(page.getByRole('link', { name: 'Check in' })).toHaveAttribute('href', '/daily');
     if (!(await page.getByRole('link', { name: 'Daily', exact: true }).first().isVisible())) {

@@ -31,7 +31,13 @@ is the bridge between daily practice and life aspirations.
   player with three upbeat choices, remembered selection, autoplay attempts,
   and an honest one-tap fallback when the browser blocks sound. The first
   possibility shelf is a balanced 18-item editorial selection rather than the
-  travel-heavy start of the raw catalog. Production deployment remains manual.
+  travel-heavy start of the raw catalog. Live More now draws its internal
+  suggestions from that same 5,000+ path corpus. Local onboarding writes a
+  non-sensitive workspace marker so the production Worker can serve the local
+  dashboard at `/` before hydration while IndexedDB remains authoritative.
+  Local Daily greetings use the saved profile name. The standalone trace root
+  is pinned to this repository so the Cloudflare/OpenNext build remains
+  independently operable. Production deployment remains manual.
 
 - **2026-08-02:** Built the simplified post-onboarding private product locally:
   onboarded account or local `/` is the dashboard, signed-in incomplete accounts

@@ -71,11 +71,17 @@ function isCacheableDocumentPath(pathname) {
 // session in both prod (__Secure-) and dev variants so signed-in users
 // always see live SSR (e.g. redirect to /library).
 const AUTH_COOKIE_FRAGMENTS = ['session_token', 'session-token'];
+// Non-sensitive client hint; IndexedDB remains the local workspace authority.
+const LOCAL_WORKSPACE_COOKIE = 'sh_local_workspace=1';
 
 function hasAuthCookie(request) {
   const cookie = request.headers.get('cookie');
   if (!cookie) return false;
   return AUTH_COOKIE_FRAGMENTS.some((c) => cookie.includes(c));
+}
+
+function hasLocalWorkspaceCookie(request) {
+  return request.headers.get('cookie')?.includes(LOCAL_WORKSPACE_COOKIE) ?? false;
 }
 
 export default {
@@ -117,6 +123,15 @@ export default {
       // going to be redirected by middleware to /library or /dashboard.
       if (hasAuthCookie(request)) {
         return openNext.fetch(request, env, ctx);
+      }
+      if (url.pathname === '/' && hasLocalWorkspaceCookie(request)) {
+        // OpenNext normalizes request cookies and query hints before rendering
+        // `/`. Rewrite to the internal local-workspace entry instead; the
+        // browser remains at `/`, and IndexedDB is still verified after
+        // hydration.
+        url.pathname = '/local-workspace';
+        url.search = '';
+        return openNext.fetch(new Request(url, request), env, ctx);
       }
 
       // Short-circuit: the Astro landing is overlaid into

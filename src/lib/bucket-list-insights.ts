@@ -1,9 +1,9 @@
-import { ALL_EXPERIENCES } from '~/lib/experiences';
 import {
   BUCKET_ITEM_CATEGORIES,
   type BucketItemCategory,
   FAMOUS_BUCKET_LISTS,
 } from '~/lib/famous-bucket-lists';
+import { getOnboardingPossibilities } from '~/lib/onboarding-possibilities';
 
 // ─── Personality Archetypes ───────────────────────────────────────────────────
 
@@ -192,15 +192,16 @@ type SuggestionItem = {
 };
 
 /**
- * Suggestions are drawn from the shared corpus rather than a private list.
+ * Suggestions are drawn from the same 5,000+ path corpus used by onboarding
+ * rather than a private list.
  *
  * This used to be 52 hand-written items — a near-duplicate of the 145 already
  * sitting in `/bucket-list-ideas`, which were unreachable because they lived
- * inside a page component. Users were being offered a third of the material
- * the product already owned, and any new idea had to be written twice to show
- * up in both places.
+ * inside a page component. Live More now shares the combined experience and
+ * hobby-path source so the product makes the same possibility promise before
+ * and after onboarding.
  */
-const SUGGESTION_POOL: SuggestionItem[] = ALL_EXPERIENCES;
+const SUGGESTION_POOL: SuggestionItem[] = getOnboardingPossibilities();
 
 // ─── Token-based title similarity ────────────────────────────────────────────
 

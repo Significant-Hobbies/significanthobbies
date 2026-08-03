@@ -70,7 +70,11 @@ export function LocalWorkspaceHome({ title = 'Your dashboard' }: { title?: strin
                 </div>
                 <h1 className="mt-5 font-serif text-5xl font-medium tracking-[-0.04em] sm:text-6xl">
                   <span className="sr-only">Your dashboard. </span>
-                  {title === 'Your dashboard' ? `Live it, ${firstName}.` : title}
+                  {title === 'Your dashboard'
+                    ? loaded
+                      ? `Live it, ${firstName}.`
+                      : 'Your dashboard'
+                    : title}
                 </h1>
                 <blockquote className="mt-5 max-w-2xl font-serif text-xl leading-snug text-[#3e3924] sm:text-2xl">
                   “{quote}”

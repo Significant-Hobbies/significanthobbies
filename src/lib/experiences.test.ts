@@ -14,6 +14,7 @@ import {
 } from './experiences';
 import { FAMOUS_BUCKET_LISTS } from './famous-bucket-lists';
 import { getBucketListSuggestions } from './bucket-list-insights';
+import { getOnboardingPossibilities } from './onboarding-possibilities';
 
 describe('experiences corpus', () => {
   it('covers all six categories with real content in each', () => {
@@ -110,8 +111,8 @@ describe('the suggestion engine reads the shared corpus', () => {
     expect(getBucketListSuggestions([], 8, 0)).toHaveLength(8);
   });
 
-  it('suggests only things that exist in the corpus', () => {
-    const corpus = new Set(ALL_EXPERIENCES.map((e) => e.title));
+  it('suggests only things that exist in the shared possibility corpus', () => {
+    const corpus = new Set(getOnboardingPossibilities().map((possibility) => possibility.title));
     for (const s of getBucketListSuggestions([], 50, 0)) {
       expect(corpus.has(s.title), `${s.title} should come from the corpus`).toBe(true);
     }

@@ -116,6 +116,10 @@ describe('getBucketListSuggestions', () => {
     expect(out.length).toBeGreaterThan(0);
   });
 
+  it('draws from the full possibility catalog used during onboarding', () => {
+    expect(getBucketListSuggestions([], 1_000, 0)).toHaveLength(1_000);
+  });
+
   it('respects the count argument', () => {
     expect(getBucketListSuggestions([], 3).length).toBeLessThanOrEqual(3);
     expect(getBucketListSuggestions([], 2).length).toBeLessThanOrEqual(2);
