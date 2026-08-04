@@ -140,11 +140,11 @@ export default {
       // booting the full OpenNext stack (next-server, middleware handler,
       // Beasties pipeline, etc.). Cuts TTFB from ~250ms to ~30ms.
       //
-      // The Workers Static Assets binding does NOT auto-compress its
-      // responses (Lighthouse flagged ~80 KB wasted on uncompressed HTML
-      // even with CF Edge cache HIT). Compress with gzip here so the
-      // response — and the downstream CF Edge cache entry — is small.
-      // Only Astro overlay at `/` is static; marketing pages use edge HTML cache.
+      // Only the Astro overlay at `/` is static; marketing pages use the edge
+      // HTML cache. Leave content encoding to Cloudflare's response boundary.
+      // Manually piping this body through CompressionStream caused the timing
+      // wrapper and CDN to encode it again, leaving browsers with gzip bytes
+      // rendered as text after the cached variants crossed.
       if (env.ASSETS && url.pathname === '/') {
         const assetResp = await env.ASSETS.fetch(request);
         // The assets binding answers If-None-Match revalidations with 304.
@@ -156,29 +156,9 @@ export default {
           return new Response(null, { status: 304, headers });
         }
         if (assetResp.ok && assetResp.body) {
-          const acceptEnc = request.headers.get('accept-encoding') ?? '';
-          const wantsGzip = acceptEnc.includes('gzip');
           const headers = new Headers(assetResp.headers);
           headers.set('Cache-Control', CACHE_CONTROL);
           headers.set('x-edge-cache', 'ASSET');
-
-          if (wantsGzip && !headers.has('content-encoding')) {
-            headers.set('content-encoding', 'gzip');
-            headers.delete('content-length');
-            // `Vary: Accept-Encoding` so a future no-encoding client
-            // gets a separately negotiated entry.
-            const vary = headers.get('vary');
-            headers.set('vary', vary ? `${vary}, Accept-Encoding` : 'Accept-Encoding');
-            return new Response(assetResp.body.pipeThrough(new CompressionStream('gzip')), {
-              status: assetResp.status,
-              statusText: assetResp.statusText,
-              headers,
-              // Body is already gzip-encoded; without this the runtime
-              // gzips it a second time (encodeBody defaults to
-              // "automatic") and browsers receive garbled bytes.
-              encodeBody: 'manual',
-            });
-          }
 
           return new Response(assetResp.body, {
             status: assetResp.status,

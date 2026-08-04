@@ -19,6 +19,10 @@ export function withTiming(handler) {
       status: response.status,
       statusText: response.statusText,
       headers,
+      // A wrapped response with an existing encoding already contains encoded
+      // bytes. Preserve them verbatim instead of letting the Workers runtime
+      // encode the stream a second time.
+      ...(headers.has('content-encoding') ? { encodeBody: 'manual' } : {}),
     });
 
     // Log slow requests

@@ -21,9 +21,9 @@
   --color-input: var(--input);
   --color-ring: var(--ring);
   --color-growth: var(--growth);
-  --font-sans: var(--font-archivo);
-  --font-serif: var(--font-archivo);
-  --font-display: var(--font-archivo);
+  --font-sans: var(--font-geist);
+  --font-serif: var(--font-fraunces);
+  --font-display: var(--font-fraunces);
 }
 
 :root {
@@ -54,21 +54,24 @@
   --ring: oklch(0.39 0.1 72);
   /* growth — sage green (practice / stamps / progress) */
   --growth: oklch(0.72 0.13 150);
-  /* One committed family: cinematic display weights, legible text weights. */
-  --font-archivo: 'Archivo', 'Arial Narrow', Arial, sans-serif;
+  /* Match the product: reflective landmarks + a quiet, legible workhorse. */
+  --font-fraunces: 'Fraunces', Georgia, Cambria, 'Times New Roman', serif;
+  --font-geist: 'Geist', Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 }
 
 body {
   margin: 0;
-  font-family: var(--font-archivo);
+  font-family: var(--font-geist);
   background: var(--background);
   color: var(--foreground);
+  font-synthesis: none;
 }
 
-/* Display headings share the landing's single-family typographic system. */
+/* Display headings carry the reflective Life Atlas voice used in the app. */
 h1, h2, h3 {
-  font-family: var(--font-archivo);
-  letter-spacing: -0.015em;
+  font-family: var(--font-fraunces);
+  font-optical-sizing: auto;
+  letter-spacing: -0.02em;
   text-wrap: balance;
 }
 
@@ -126,7 +129,7 @@ h1, h2, h3 {
 .cinematic-hero__wordmark {
   margin: 0;
   color: oklch(0.98 0.005 90);
-  font-family: var(--font-archivo);
+  font-family: var(--font-geist);
   font-size: 0.95rem;
   font-weight: 650;
   letter-spacing: -0.01em;
@@ -141,11 +144,12 @@ h1, h2, h3 {
 .cinematic-hero h1 {
   margin: 0;
   color: oklch(0.99 0.004 90);
-  font-family: var(--font-archivo);
+  font-family: var(--font-fraunces);
+  font-optical-sizing: auto;
   font-size: clamp(3rem, 6.8vw, 6rem);
-  font-weight: 720;
-  letter-spacing: -0.035em;
-  line-height: 0.98;
+  font-weight: 500;
+  letter-spacing: -0.03em;
+  line-height: 0.96;
   text-wrap: balance;
 }
 
@@ -157,7 +161,7 @@ h1, h2, h3 {
   max-width: 47ch;
   margin: clamp(1.5rem, 3vw, 2rem) 0 0;
   color: oklch(0.92 0.018 88);
-  font-family: var(--font-archivo);
+  font-family: var(--font-geist);
   font-size: clamp(1.05rem, 1.5vw, 1.25rem);
   line-height: 1.55;
   text-wrap: pretty;
@@ -173,7 +177,7 @@ h1, h2, h3 {
   border-radius: 999px;
   background: oklch(0.84 0.14 85);
   color: oklch(0.16 0.025 250);
-  font-family: var(--font-archivo);
+  font-family: var(--font-geist);
   font-size: 0.98rem;
   font-weight: 700;
   text-decoration: none;
@@ -209,7 +213,7 @@ h1, h2, h3 {
   align-self: flex-end;
   margin: 0;
   color: oklch(0.92 0.018 88);
-  font-family: var(--font-archivo);
+  font-family: var(--font-geist);
   font-size: 0.875rem;
 }
 
