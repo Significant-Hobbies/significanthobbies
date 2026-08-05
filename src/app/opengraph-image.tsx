@@ -35,7 +35,7 @@ export default function OgImage() {
         >
           SH
         </div>
-        <span style={{ fontSize: 36, fontWeight: 700, color: '#1C1917' }}>SignificantHobbies</span>
+        <span style={{ fontSize: 36, fontWeight: 700, color: '#1C1917' }}>Significant Hobbies</span>
       </div>
 
       {/* Headline */}

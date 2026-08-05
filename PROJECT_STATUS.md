@@ -22,6 +22,11 @@ is the bridge between daily practice and life aspirations.
 
 ## Timeline
 
+- **2026-08-05:** Restored the full 42-article `/llms-full.txt` agent index by
+  keeping the portable Worker fallback from masking the application-owned
+  editorial route. The hobby quiz and Life in Weeks now publish self-canonical
+  URLs and complete social images, and public brand metadata consistently uses
+  Significant Hobbies. Production deployment remains manual.
 - **2026-08-03:** Corrected onboarding's planning assumptions locally. Future
   possibilities now search 5,202 distinct experience and hobby paths, accept a
   pasted numbered bucket list, and keep every selected or freely entered answer

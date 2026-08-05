@@ -146,7 +146,7 @@ describe('editorial discovery and structured data', () => {
     );
     expect(markdown.headers.get('content-type')).toBe('text/markdown; charset=utf-8');
     expect(markdown.headers.get('vary')).toBe('Accept');
-    expect(await markdown.text()).toContain('# SignificantHobbies article index');
+    expect(await markdown.text()).toContain('# Significant Hobbies article index');
 
     const plain = getLlmIndex(new Request('https://significanthobbies.com/llms-full.txt'));
     expect(plain.headers.get('content-type')).toBe('text/plain; charset=utf-8');

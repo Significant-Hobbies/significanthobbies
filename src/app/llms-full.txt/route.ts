@@ -1,4 +1,5 @@
 import { type EditorialArticle, editorialArticles } from '~/lib/editorial-content';
+import { BRAND_NAME } from '~/lib/site-metadata';
 
 export function buildLlmArticleIndex(articles: EditorialArticle[]): string {
   const entries = articles
@@ -7,7 +8,7 @@ export function buildLlmArticleIndex(articles: EditorialArticle[]): string {
         `- [${article.title}](https://significanthobbies.com/blog/${article.slug}): ${article.excerpt}`
     )
     .join('\n');
-  return `# SignificantHobbies article index\n\nCanonical articles for agents and language models. Package-backed articles use the same URLs as human-facing blog pages.\n\n${entries}\n`;
+  return `# ${BRAND_NAME} article index\n\nCanonical articles for agents and language models. Package-backed articles use the same URLs as human-facing blog pages.\n\n${entries}\n`;
 }
 
 export function GET(request: Request) {

@@ -73,7 +73,7 @@ test.describe('Landing page (Astro overlay)', () => {
   });
 
   test('carries a title and description for crawlers', async ({ page }) => {
-    expect(await page.title()).toContain('SignificantHobbies');
+    expect(await page.title()).toContain('Significant Hobbies');
     await expect(page.locator('meta[name="description"]')).toHaveAttribute('content', /.{40,}/);
   });
 

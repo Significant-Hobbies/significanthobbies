@@ -87,7 +87,10 @@ function hasLocalWorkspaceCookie(request) {
 export default {
   fetch: withTiming(async function fetch(request, env, ctx) {
     // Agent / LLM indexing surfaces (fleet GEO standard)
-    {
+    // `/llms-full.txt` is owned by the application because it is generated
+    // from the complete editorial corpus. The portable fallback must not mask
+    // that richer route with its generic product brief.
+    if (new URL(request.url).pathname !== '/llms-full.txt') {
       const agent = handleAgentEdge(request);
       if (agent) return agent;
     }

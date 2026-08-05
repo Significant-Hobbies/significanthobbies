@@ -4,7 +4,7 @@ test.describe('SEO', () => {
   test('homepage has correct meta tags', async ({ page }) => {
     await page.goto('/');
     const title = await page.title();
-    expect(title).toContain('SignificantHobbies');
+    expect(title).toContain('Significant Hobbies');
   });
 
   test('pillar page exists', async ({ page }) => {
