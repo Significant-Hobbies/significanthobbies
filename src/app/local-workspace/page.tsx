@@ -1,9 +1,10 @@
 import { LocalRootExperience } from '~/components/local-root-experience';
+import { BRAND_NAME } from '~/lib/site-metadata';
 
 export const dynamic = 'force-dynamic';
 
 export const metadata = {
-  title: 'Dashboard — SignificantHobbies',
+  title: `Dashboard — ${BRAND_NAME}`,
   robots: { index: false, follow: false },
 };
 

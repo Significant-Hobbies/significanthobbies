@@ -10,13 +10,14 @@ import { bucketListItems, habitLogs, habits, journalEntries, users } from '~/db/
 import { dayKeyIn } from '~/lib/day';
 import { lifeInWeeksFromDate, parseBirthDate } from '~/lib/life-in-weeks';
 import { LOCAL_WORKSPACE_COOKIE } from '~/lib/local-workspace-cookie';
+import { BRAND_NAME } from '~/lib/site-metadata';
 import { getServerAuthSession } from '~/server/auth';
 import { db } from '~/server/db';
 
 export const dynamic = 'force-dynamic';
 
 export const metadata = {
-  title: 'Dashboard — SignificantHobbies',
+  title: `Dashboard — ${BRAND_NAME}`,
   robots: { index: false, follow: false },
 };
 
