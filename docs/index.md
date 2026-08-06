@@ -91,7 +91,8 @@ Deployed at `significanthobbies.com` on Cloudflare Workers via OpenNext.
 - [`knowledge/new-things.md`](knowledge/new-things.md) — study queue for
   non-standard tech in this repo
 - [`knowledge/research/`](knowledge/research/) — durable research data:
-  famous hobby journeys (v1 + v2), blog keyword research, seasonal content
+  famous hobby journeys (v1 + v2), blog keyword research, seasonal content,
+  Indulge iOS PRD (external experiment with shared philosophical core)
 - [`knowledge/archive/`](knowledge/archive/) — preserved snapshots (TLL merge
   plan, project recommendation context, project status 2026-07-13, v1 design,
   side-quests design)
