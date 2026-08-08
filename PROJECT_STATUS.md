@@ -27,6 +27,10 @@ is the bridge between daily practice and life aspirations.
   or signed-in habit; an explicitly entered practice still persists through
   the existing deduplicated paths. The browser contract also reflects the
   current balanced possibility shelf, including health.
+- **2026-08-09:** Restored `/bucket-list-ideas` prerendering after the shared
+  experience corpus added four category colors that the page did not style.
+  Every current group now has an explicit presentation and unknown future
+  colors fall back safely instead of crashing the production build.
 - **2026-08-06:** Reduced crawler-driven Worker CPU by edge-caching explicit
   public Markdown alternates, static experience and journey pages, and the two
   sitemap XML routes. Authenticated, personalized, query-bearing Markdown,

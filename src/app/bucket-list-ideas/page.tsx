@@ -10,6 +10,7 @@ import {
   StaggerItem,
 } from '~/components/aceternity';
 import { Whale } from '~/components/whale';
+import { getBucketListCategoryStyle } from '~/lib/bucket-list-category-styles';
 import { EXPERIENCES_BY_CATEGORY } from '~/lib/experiences';
 import { FAMOUS_BUCKET_LISTS } from '~/lib/famous-bucket-lists';
 
@@ -28,35 +29,6 @@ export const metadata: Metadata = {
 // The corpus moved to ~/lib/experiences so the suggestion engine and any
 // future surface can read it. This page renders it; it no longer owns it.
 const IDEAS_BY_CATEGORY = EXPERIENCES_BY_CATEGORY;
-
-const CATEGORY_STYLES = {
-  sky: { bg: 'bg-sky-50', border: 'border-sky-200', text: 'text-sky-700', dot: 'bg-sky-400' },
-  orange: {
-    bg: 'bg-orange-50',
-    border: 'border-orange-200',
-    text: 'text-orange-700',
-    dot: 'bg-orange-400',
-  },
-  purple: {
-    bg: 'bg-purple-50',
-    border: 'border-purple-200',
-    text: 'text-purple-700',
-    dot: 'bg-purple-400',
-  },
-  coral: {
-    bg: 'bg-primary/10',
-    border: 'border-lumi-200',
-    text: 'text-primary',
-    dot: 'bg-primary',
-  },
-  rose: { bg: 'bg-rose-50', border: 'border-rose-200', text: 'text-rose-700', dot: 'bg-rose-400' },
-  emerald: {
-    bg: 'bg-foreground/10',
-    border: 'border-foreground/20',
-    text: 'text-foreground',
-    dot: 'bg-foreground',
-  },
-};
 
 export default function BucketListIdeasPage() {
   const totalIdeas = Object.values(IDEAS_BY_CATEGORY).reduce(
@@ -116,7 +88,7 @@ export default function BucketListIdeasPage() {
         <div className="mx-auto max-w-5xl px-4 overflow-x-auto">
           <div className="flex gap-1 py-2 min-w-max">
             {Object.entries(IDEAS_BY_CATEGORY).map(([key, cat]) => {
-              const style = CATEGORY_STYLES[cat.color as keyof typeof CATEGORY_STYLES];
+              const style = getBucketListCategoryStyle(cat.color);
               return (
                 <a
                   key={key}
@@ -134,7 +106,7 @@ export default function BucketListIdeasPage() {
       {/* ── Ideas by category ────────────────────────────────────── */}
       <div className="mx-auto max-w-5xl px-4 py-12 space-y-16">
         {Object.entries(IDEAS_BY_CATEGORY).map(([key, cat]) => {
-          const style = CATEGORY_STYLES[cat.color as keyof typeof CATEGORY_STYLES];
+          const style = getBucketListCategoryStyle(cat.color);
           return (
             <section key={key} id={key} className="scroll-mt-28 space-y-6">
               <FadeIn>
