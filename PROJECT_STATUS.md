@@ -16,6 +16,9 @@ is the bridge between daily practice and life aspirations.
 
 ## Dependencies
 
+- Ultracite 7.10.2 supplies exact development-only shared Biome presets;
+  Significant Hobbies keeps explicit local compatibility exceptions and does
+  not ship Ultracite at runtime.
 - Cloudflare Workers/OpenNext, Cloudflare D1, Drizzle, better-auth Google OAuth,
   and PostHog. D1 is authoritative; the retired Turso database was deleted on
   2026-08-02.
@@ -31,6 +34,11 @@ is the bridge between daily practice and life aspirations.
   experience corpus added four category colors that the page did not style.
   Every current group now has an explicit presentation and unknown future
   colors fall back safely instead of crashing the production build.
+- **2026-08-09:** Adopted the verified Fleet Ultracite core, React, Next.js,
+  and Vitest Biome presets while retaining the repository's formatter contract,
+  generated-file exclusions, and explicit compatibility exceptions. No source
+  rewrite, production dependency, product behavior, route, migration, deploy,
+  secret, or production configuration changed.
 - **2026-08-06:** Reduced crawler-driven Worker CPU by edge-caching explicit
   public Markdown alternates, static experience and journey pages, and the two
   sitemap XML routes. Authenticated, personalized, query-bearing Markdown,
