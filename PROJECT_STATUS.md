@@ -5,7 +5,7 @@
 > Update this file when durable current or shipped product truth changes. Do
 > not let deploy-version snapshots accumulate here — put those in the archive.
 
-Last updated: 2026-08-02
+Last updated: 2026-08-09
 
 ## Why / What
 
@@ -22,6 +22,11 @@ is the bridge between daily practice and life aspirations.
 
 ## Timeline
 
+- **2026-08-09:** Restored the onboarding promise that a daily practice is
+  optional. Choosing “Continue without a daily practice” now creates no local
+  or signed-in habit; an explicitly entered practice still persists through
+  the existing deduplicated paths. The browser contract also reflects the
+  current balanced possibility shelf, including health.
 - **2026-08-06:** Reduced crawler-driven Worker CPU by edge-caching explicit
   public Markdown alternates, static experience and journey pages, and the two
   sitemap XML routes. Authenticated, personalized, query-bearing Markdown,

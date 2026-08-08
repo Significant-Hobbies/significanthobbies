@@ -151,6 +151,7 @@ test.describe('Onboarding', () => {
         'contribution',
         'creative',
         'food',
+        'health',
         'relationships',
         'travel',
       ].sort()
@@ -232,5 +233,7 @@ test.describe('Onboarding', () => {
     await page.getByRole('button', { name: /Enter my life/i }).click();
     await expect(page).toHaveURL(/\/$/);
     await expect(page.getByRole('heading', { name: /Live it, Complete/i })).toBeVisible();
+    await page.goto('/daily');
+    await expect(page.getByText('Connect with someone today', { exact: true })).toHaveCount(0);
   });
 });

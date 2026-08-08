@@ -303,22 +303,6 @@ export function OnboardingFlow({
           commitmentId: null,
         });
       }
-      // Default relationship habit — see onboarding.ts for research rationale.
-      if (
-        !daily.habits.some(
-          (habit) => String(habit.name).toLowerCase() === 'connect with someone today'
-        )
-      ) {
-        daily.habits.push({
-          id: `local-habit-${crypto.randomUUID()}`,
-          name: 'Connect with someone today',
-          status: 'active',
-          targetFrequency: 'daily',
-          icon: '💬',
-          sourceQuestId: null,
-          commitmentId: null,
-        });
-      }
       await writeLocalRecord(adapter, 'daily:state', 'daily', daily);
       await createLocalTrajectory(trajectory, adapter).catch(() => undefined);
       syncLocalWorkspaceCookie(true);

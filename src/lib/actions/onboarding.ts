@@ -137,24 +137,6 @@ export async function completeOnboarding(
     }
   }
 
-  // Default relationship habit — the single most evidence-backed default.
-  // Harvard 85-year study, Blue Zones, World Happiness Report: relationships
-  // are the #1 predictor of happiness, health, and longevity. See
-  // docs/knowledge/learnings.md for the research synthesis.
-  const DEFAULT_RELATIONSHIP_HABIT = 'Connect with someone today';
-  if (
-    !allHabits.some(
-      (habit) => habit.name.trim().toLowerCase() === DEFAULT_RELATIONSHIP_HABIT.toLowerCase()
-    )
-  ) {
-    await db.insert(habits).values({
-      userId,
-      name: DEFAULT_RELATIONSHIP_HABIT,
-      status: 'active',
-      icon: '💬',
-    });
-  }
-
   const activeTrajectory = await db.query.trajectoryContracts.findFirst({
     where: and(eq(trajectoryContracts.userId, userId), eq(trajectoryContracts.status, 'active')),
     columns: { id: true },
