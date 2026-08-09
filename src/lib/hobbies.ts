@@ -191,6 +191,12 @@ export const HOBBY_CATEGORIES: HobbyCategory[] = [
 
 export const ALL_HOBBIES = HOBBY_CATEGORIES.flatMap((c) => c.hobbies);
 
+const CATEGORY_BY_HOBBY = new Map(
+  HOBBY_CATEGORIES.flatMap((category) =>
+    category.hobbies.map((hobby) => [hobby.toLowerCase(), category] as const)
+  )
+);
+
 /**
  * Hobbies that ask a lot of the body. Used to keep a set of suggestions from
  * being uniformly strenuous — not to hide anything from anyone.
@@ -248,8 +254,7 @@ export function pickAcrossEffort(hobbies: string[], limit = 3): string[] {
 }
 
 export function getCategoryForHobby(hobby: string): HobbyCategory | undefined {
-  const lower = hobby.toLowerCase();
-  return HOBBY_CATEGORIES.find((c) => c.hobbies.some((h) => h.toLowerCase() === lower));
+  return CATEGORY_BY_HOBBY.get(hobby.toLowerCase());
 }
 
 export function getSuggestedHobbies(existingHobbies: string[], limit = 6): string[] {
