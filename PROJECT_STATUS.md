@@ -25,6 +25,10 @@ is the bridge between daily practice and life aspirations.
 
 ## Timeline
 
+- **2026-08-11:** Deployed bounded public MCP projections for hobbies,
+  experiences, and public timelines. Legacy D1 timestamp representations are
+  normalized at the projection boundary, and production list/detail probes
+  now return successfully without exposing private or unlisted records.
 - **2026-08-11:** Prepared the first native SwiftUI iPhone beta with local-first
   Daily, Living, History, profile, privacy, data transfer, accessibility,
   simulator coverage, App Store metadata, and a personal-team signed archive
@@ -146,6 +150,9 @@ Historical milestones live in
   landing overlay for anon `GET /`. Cloudflare D1 + Drizzle ORM +
   better-auth Google OAuth. PostHog analytics.
 - **Owned product history:** public editorial changelog at `/changelog`.
+- **Public MCP projection:** bounded anonymous reads for hobbies, experiences,
+  and public timelines, with legacy timestamp normalization and no private or
+  unlisted records.
 - **Two dimensions shipped:** Daily ritual (`/daily` — AM/PM prompts, habits,
   compulsory journal) and Living (timelines, bucket lists, side quests,
   public profiles, SEO blog, discovery quiz).
