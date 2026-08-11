@@ -5,7 +5,7 @@
 > Update this file when durable current or shipped product truth changes. Do
 > not let deploy-version snapshots accumulate here — put those in the archive.
 
-Last updated: 2026-08-09
+Last updated: 2026-08-11
 
 ## Why / What
 
@@ -25,6 +25,10 @@ is the bridge between daily practice and life aspirations.
 
 ## Timeline
 
+- **2026-08-11:** Prepared the first native SwiftUI iPhone beta with local-first
+  Daily, Living, History, profile, privacy, data transfer, accessibility,
+  simulator coverage, App Store metadata, and a personal-team signed archive
+  path; native account synchronization remains tracked separately.
 - **2026-08-09:** Restored the onboarding promise that a daily practice is
   optional. Choosing “Continue without a daily practice” now creates no local
   or signed-in habit; an explicitly entered practice still persists through
@@ -126,12 +130,18 @@ Historical milestones live in
 
 ## Products
 
+- Native SwiftUI iPhone beta under `ios/`; App Store Connect/TestFlight
+  transport remains manual.
 - Public product at `https://significanthobbies.com`.
 - Daily practice, Living planning, discovery, public profiles, and content
   surfaces in one Cloudflare Worker.
 
 ## Features (shipped)
 
+- **Native iPhone experience:** local-first Daily ritual, Living plans,
+  history, profile/privacy controls, explicit publication eligibility,
+  versioned data transfer, accessibility, simulator tests, and personal-team
+  archiving.
 - **Runtime:** Cloudflare Worker `significanthobbies` (OpenNext) + Astro
   landing overlay for anon `GET /`. Cloudflare D1 + Drizzle ORM +
   better-auth Google OAuth. PostHog analytics.

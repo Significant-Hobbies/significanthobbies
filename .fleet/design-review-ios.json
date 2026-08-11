@@ -1,0 +1,36 @@
+{
+  "$schema": "fleet.design-review.v1",
+  "version": 1,
+  "project": "Significant Hobbies native iOS",
+  "target": "ios/",
+  "mode": "preserve",
+  "register": "product",
+  "context": {
+    "product": "PRODUCT.md",
+    "design": "DESIGN.md"
+  },
+  "direction": {
+    "references": ["Existing Significant Hobbies identity", "Personal atlases", "Field almanacs and wayfinding maps"],
+    "probes": [],
+    "selected": "Life Atlas",
+    "approval": "not-required",
+    "before": "artifacts/design/before.png"
+  },
+  "evidence": {
+    "screenshots": [
+      {"width": 390, "path": "ios/artifacts/simulator/live-more.png"},
+      {"width": 390, "path": "ios/artifacts/simulator/daily.png"},
+      {"width": 390, "path": "ios/artifacts/simulator/history.png"},
+      {"width": 390, "path": "ios/artifacts/simulator/accessibility-xl.png"}
+    ],
+    "projectCheck": {"command": "cd ios && ./scripts/check.sh", "status": "pass"},
+    "critique": {"score": 37, "maximum": 40},
+    "audit": {"score": 17, "maximum": 20},
+    "unresolved": {"p0": 0, "p1": 0},
+    "detector": {"posture": "advisory", "findings": []}
+  },
+  "ownerFeedback": {
+    "decision": "delegated",
+    "note": "Owner explicitly required super beautiful UI across every application and delegated the native visual direction."
+  }
+}
