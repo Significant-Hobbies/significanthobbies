@@ -38,4 +38,34 @@ describe('public MCP projections', () => {
     expect(publicTimelineRecord({ ...base, visibility: 'UNLISTED' })).toBeNull();
     expect(publicTimelineRecord({ ...base, visibility: 'PUBLIC' })?.id).toBe('timeline-1');
   });
+
+  it('normalizes legacy timestamps without failing the public timeline projection', () => {
+    const base = {
+      id: 'timeline-1',
+      title: 'Visible title',
+      visibility: 'PUBLIC',
+      slug: 'visible-title',
+      phases: '[]',
+      userName: 'Owner',
+      userUsername: 'owner',
+    };
+
+    expect(
+      publicTimelineRecord({
+        ...base,
+        createdAt: 1_767_225_600,
+        updatedAt: '2026-01-02T00:00:00.000Z',
+      })
+    ).toMatchObject({
+      createdAt: '2026-01-01T00:00:00.000Z',
+      updatedAt: '2026-01-02T00:00:00.000Z',
+    });
+    expect(
+      publicTimelineRecord({
+        ...base,
+        createdAt: null,
+        updatedAt: new Date('invalid'),
+      })
+    ).toMatchObject({ createdAt: null, updatedAt: null });
+  });
 });

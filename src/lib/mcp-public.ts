@@ -7,6 +7,7 @@ import {
 } from '@/lib/experiences';
 
 export const MCP_PAGE_MAX = 50;
+const EPOCH_MILLISECONDS_THRESHOLD = 10_000_000_000;
 
 export function boundedPage(searchParams: URLSearchParams) {
   const parsedLimit = Number(searchParams.get('limit') ?? 10);
@@ -91,8 +92,8 @@ export function publicTimelineRecord(row: {
   visibility: string;
   slug: string | null;
   phases: string;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: Date | number | string | null;
+  updatedAt: Date | number | string | null;
   userName: string | null;
   userUsername: string | null;
 }) {
@@ -109,12 +110,32 @@ export function publicTimelineRecord(row: {
     title: row.title,
     slug: row.slug,
     phases,
-    createdAt: row.createdAt.toISOString(),
-    updatedAt: row.updatedAt.toISOString(),
+    createdAt: publicTimestamp(row.createdAt),
+    updatedAt: publicTimestamp(row.updatedAt),
     user: row.userName ? { name: row.userName, username: row.userUsername } : null,
     canonicalUrl:
       row.userUsername && row.slug
         ? `https://significanthobbies.com/u/${encodeURIComponent(row.userUsername)}/${encodeURIComponent(row.slug)}`
         : `https://significanthobbies.com/timeline/${encodeURIComponent(row.id)}`,
   };
+}
+
+function publicTimestamp(value: Date | number | string | null): string | null {
+  let parsed: Date;
+  if (value instanceof Date) {
+    parsed = value;
+  } else if (typeof value === 'number') {
+    parsed = numericTimestamp(value);
+  } else if (typeof value === 'string' && value.trim()) {
+    const numeric = Number(value);
+    parsed = Number.isFinite(numeric) ? numericTimestamp(numeric) : new Date(value);
+  } else {
+    return null;
+  }
+  return Number.isFinite(parsed.getTime()) ? parsed.toISOString() : null;
+}
+
+function numericTimestamp(value: number): Date {
+  const milliseconds = Math.abs(value) < EPOCH_MILLISECONDS_THRESHOLD ? value * 1000 : value;
+  return new Date(milliseconds);
 }
