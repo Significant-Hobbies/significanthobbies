@@ -19,7 +19,7 @@ Preparation only. No App Store Connect record has been created.
 ## Store copy
 
 **Subtitle**
-Choose, live, and remember what matters
+Choose, live, and remember
 
 **Promotional text**
 Carry your Life Atlas: private Daily reflection, hobbies and commitments, and a truthful history of what became real.
