@@ -60,12 +60,7 @@ Confirm the rating produced by App Store Connect's current questionnaire.
 
 ## Review notes draft
 
-The app works in local mode. Daily writing intentionally has no sharing control. To inspect the opt-in boundary, open a hobby and choose its Private status; the confirmation explains that only the selected eligible item changes. Account sync uses Google sign-in and stores a private revisioned Life Atlas; a conflict always requires an explicit copy choice.
-
-Do not submit this build for App Review until Sign in with Apple is implemented
-and configured as an equivalent login option, or the Google login is removed;
-neither exception in App Review Guideline 4.8 applies to this primary account
-flow. Internal TestFlight testing may proceed while this is completed.
+The app works in local mode. Daily writing intentionally has no sharing control. To inspect the opt-in boundary, open a hobby and choose its Private status; the confirmation explains that only the selected eligible item changes. Account sync offers Sign in with Apple beside Google and stores a private revisioned Life Atlas; a conflict always requires an explicit copy choice. Existing Google users add Apple explicitly while authenticated, and matching email text never silently merges identities. Apple tokens are nonce-bound and validated for `com.significanthobbies.app`.
 
 ## Screenshots and release
 

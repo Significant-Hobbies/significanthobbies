@@ -22,6 +22,7 @@ cpu_ms = 30000
 
 [vars]
 NODE_ENV = "production"
+APPLE_APP_BUNDLE_IDENTIFIER = "com.significanthobbies.app"
 
 # ─── Workers AI binding (Lumi coach) ─────────────────────────────────────
 # Free tier, no API key needed. Used by the AI-powered weekly review.
@@ -65,3 +66,4 @@ cpu_ms = 30000
 
 [env.preview.vars]
 NODE_ENV = "production"
+APPLE_APP_BUNDLE_IDENTIFIER = "com.significanthobbies.app"

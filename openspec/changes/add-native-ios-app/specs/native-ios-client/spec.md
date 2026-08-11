@@ -46,6 +46,13 @@ When connected through existing Significant Hobbies service contracts, the clien
 - **WHEN** the user explicitly makes one eligible commitment public
 - **THEN** only that item becomes publication-eligible and unrelated private data remains private
 
+### Requirement: Native account access includes Sign in with Apple
+The iOS client SHALL offer Sign in with Apple beside Google account connection. Apple identity tokens SHALL be verified by the service for the native bundle identifier. The service SHALL disable implicit email-based linking; an existing signed-in account MAY add Apple only through an explicit authenticated linking action.
+
+#### Scenario: Existing Google user adds Apple
+- **WHEN** an authenticated Google user chooses the Apple control and completes Apple's authorization
+- **THEN** Apple is linked to that same account without replacing the private Life Atlas or inferring identity from matching email text
+
 ### Requirement: Profile and data control have parity
 The iOS client SHALL provide profile editing, privacy settings, public-profile preview, soundtrack preference where supported, export, local reset, sign out, and account deletion with confirmation and recovery copy.
 

@@ -60,6 +60,7 @@ targets:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.significanthobbies.app
         PRODUCT_NAME: Significant Hobbies
+        CODE_SIGN_ENTITLEMENTS: Sources/SignificantHobbies/SignificantHobbies.entitlements
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         SUPPORTS_MACCATALYST: NO
   SignificantHobbiesCoreTests:

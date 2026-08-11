@@ -35,6 +35,10 @@ Journal types expose no public field. Only explicitly eligible Living items have
 
 `ASWebAuthenticationSession` uses an exact `significanthobbies://auth` callback and a one-use, five-minute handoff; URLSession uses an isolated revisioned JSON endpoint; bearer session material lives only in Keychain. Local changes queue sync intents and expose pending, synced, conflict, and error states. Deferred conflicts freeze cloud writes until the owner decides. No service secrets or environment files ship in the app, and the additive migration remains unapplied until production review.
 
+### Apple identity is native and account linking is explicit
+
+The iPhone app obtains an Apple identity token with AuthenticationServices and a SHA-256 nonce, then sends it directly to Better Auth for signature, issuer, audience, expiry, and nonce validation against `com.significanthobbies.app`. A new Apple identity may create an account. An existing Google account can add Apple only while already authenticated through an explicit link action. Matching email addresses never silently merge accounts, and a hidden Apple relay address is accepted when the owner deliberately links it.
+
 ### Preserve-mode Life Atlas adaptation
 
 The native app inherits `DESIGN.md`: warm paper, olive ink, atlas gold, lived sage, open spatial fields, paths, waypoints, and almanac chronology. Live More/Daily/See History is the tab order. Native navigation, sheets, Dynamic Type, VoiceOver, and Reduce Motion remain authoritative. Equal card grids, shame loops, and generic productivity dashboards remain excluded.

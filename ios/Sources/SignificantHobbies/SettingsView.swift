@@ -1,14 +1,17 @@
+import AuthenticationServices
 import SignificantHobbiesCore
 import SwiftUI
 import UniformTypeIdentifiers
 
 struct SettingsView: View {
     @Environment(AppModel.self) private var model
+    @Environment(\.colorScheme) private var colorScheme
     @Environment(\.dismiss) private var dismiss
     @State private var isProfileEditorPresented = false
     @State private var isImporterPresented = false
     @State private var showReset = false
     @State private var showDeleteAccount = false
+    @State private var appleNonce = AppleNonce.make()
 
     var body: some View {
         @Bindable var model = model
@@ -46,6 +49,7 @@ struct SettingsView: View {
                                 Label("Connect Google account", systemImage: "person.crop.circle.badge.plus")
                             }
                             .buttonStyle(AtlasPrimaryButtonStyle())
+                            appleAccountButton
                         } else {
                             if let lastSync = model.document.lastSyncedAt {
                                 LabeledContent("Last synced") {
@@ -56,6 +60,12 @@ struct SettingsView: View {
                                 Label("Sync private Life Atlas", systemImage: "arrow.triangle.2.circlepath")
                             }
                             .buttonStyle(AtlasPrimaryButtonStyle())
+                            if model.account?.hasApple == false {
+                                Text("Add Apple to this account so future Apple sign-ins open the same private Life Atlas.")
+                                    .font(.footnote)
+                                    .foregroundStyle(AtlasPalette.quietInk)
+                                appleAccountButton
+                            }
                             Button { Task { await model.signOut() } } label: {
                                 Label("Sign out", systemImage: "rectangle.portrait.and.arrow.right")
                                     .frame(maxWidth: .infinity, minHeight: 48, alignment: .leading)
@@ -182,6 +192,40 @@ struct SettingsView: View {
             }
             .interactiveDismissDisabled()
         }
+    }
+
+    private var appleAccountButton: some View {
+        SignInWithAppleButton(.continue) { request in
+            appleNonce = AppleNonce.make()
+            request.requestedScopes = [.fullName, .email]
+            request.nonce = AppleNonce.digest(appleNonce)
+        } onCompletion: { result in
+            guard
+                case let .success(authorization) = result,
+                let credential = authorization.credential as? ASAuthorizationAppleIDCredential,
+                let tokenData = credential.identityToken,
+                let token = String(data: tokenData, encoding: .utf8)
+            else {
+                if case let .failure(error) = result,
+                   (error as? ASAuthorizationError)?.code != .canceled {
+                    model.accountMessage = error.localizedDescription
+                }
+                return
+            }
+            let payload = AppleIdentityPayload(
+                identityToken: token,
+                nonce: appleNonce,
+                email: credential.email,
+                firstName: credential.fullName?.givenName,
+                lastName: credential.fullName?.familyName
+            )
+            Task { await model.completeAppleSignIn(payload) }
+        }
+        .signInWithAppleButtonStyle(colorScheme == .dark ? .white : .black)
+        .frame(maxWidth: .infinity, minHeight: 48)
+        .clipShape(RoundedRectangle(cornerRadius: 12))
+        .accessibilityIdentifier("apple-account-button")
+        .disabled(model.isAccountBusy)
     }
 
     private var publicPreview: some View {

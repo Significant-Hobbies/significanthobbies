@@ -1,3 +1,5 @@
+import { readFile } from 'node:fs/promises';
+import { resolve } from 'node:path';
 import { describe, expect, it } from 'vitest';
 
 import {
@@ -34,5 +36,22 @@ describe('native account boundary', () => {
     expect(
       parseNativeStateEnvelope({ document: { schemaVersion: 1 }, baseRevision: -1 })
     ).toBeNull();
+  });
+
+  it('validates native Apple identity and never links by email implicitly', async () => {
+    const [auth, client] = await Promise.all([
+      readFile(resolve(process.cwd(), 'src/lib/auth.ts'), 'utf8'),
+      readFile(
+        resolve(process.cwd(), 'ios/Sources/SignificantHobbies/NativeAccountClient.swift'),
+        'utf8'
+      ),
+    ]);
+
+    expect(auth).toMatch(/appBundleIdentifier:\s*appleBundleIdentifier/);
+    expect(auth).toMatch(/disableImplicitLinking:\s*true/);
+    expect(auth).toMatch(/allowDifferentEmails:\s*true/);
+    expect(client).toMatch(/\/api\/auth\/sign-in\/social/);
+    expect(client).toMatch(/\/api\/auth\/link-social/);
+    expect(client).toMatch(/set-auth-token/);
   });
 });

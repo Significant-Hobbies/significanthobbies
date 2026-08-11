@@ -1,12 +1,24 @@
 import AuthenticationServices
+import CryptoKit
 import Foundation
 import Security
 import SignificantHobbiesCore
 import UIKit
 
+struct AppleIdentityPayload: Sendable {
+    let identityToken: String
+    let nonce: String
+    let email: String?
+    let firstName: String?
+    let lastName: String?
+}
+
 struct SignificantHobbiesAccount: Equatable, Sendable {
     let name: String
     let email: String
+    let providers: Set<String>
+
+    var hasApple: Bool { providers.contains("apple") }
 }
 
 enum NativeAccountError: LocalizedError {
@@ -144,6 +156,20 @@ actor SignificantHobbiesNativeAccountClient {
         return try await account()
     }
 
+    func signInWithApple(_ payload: AppleIdentityPayload) async throws -> SignificantHobbiesAccount {
+        let response = try await appleRequest(path: "/api/auth/sign-in/social", payload: payload)
+        guard let token = response.response.value(forHTTPHeaderField: "set-auth-token") else {
+            throw NativeAccountError.missingSession
+        }
+        try await sessionStore.save(token)
+        return try await account()
+    }
+
+    func linkApple(_ payload: AppleIdentityPayload) async throws -> SignificantHobbiesAccount {
+        _ = try await appleRequest(path: "/api/auth/link-social", payload: payload, authenticated: true)
+        return try await account()
+    }
+
     func fetchState() async throws -> AtlasCloudSnapshot? {
         let data = try await request(path: "/api/native/state", method: "GET")
         return try decoder.decode(StateResponse.self, from: data).state
@@ -172,10 +198,39 @@ actor SignificantHobbiesNativeAccountClient {
         try await sessionStore.delete()
     }
 
+    private func appleRequest(
+        path: String,
+        payload: AppleIdentityPayload,
+        authenticated: Bool = false
+    ) async throws -> NetworkResponse {
+        var idToken: [String: Any] = ["token": payload.identityToken, "nonce": payload.nonce]
+        if path.hasSuffix("sign-in/social") {
+            var user: [String: Any] = [:]
+            if let email = payload.email { user["email"] = email }
+            var name: [String: String] = [:]
+            if let firstName = payload.firstName { name["firstName"] = firstName }
+            if let lastName = payload.lastName { name["lastName"] = lastName }
+            if !name.isEmpty { user["name"] = name }
+            if !user.isEmpty { idToken["user"] = user }
+        }
+        return try await networkRequest(
+            path: path,
+            method: "POST",
+            data: try JSONSerialization.data(withJSONObject: ["provider": "apple", "idToken": idToken]),
+            authenticated: authenticated
+        )
+    }
+
     private func account() async throws -> SignificantHobbiesAccount {
         let data = try await request(path: "/api/auth/get-session", method: "GET")
         let session = try decoder.decode(SessionResponse.self, from: data)
-        return SignificantHobbiesAccount(name: session.user.name, email: session.user.email)
+        let accountsData = try await request(path: "/api/auth/list-accounts", method: "GET")
+        let accounts = try decoder.decode([ProviderAccount].self, from: accountsData)
+        return SignificantHobbiesAccount(
+            name: session.user.name,
+            email: session.user.email,
+            providers: Set(accounts.map(\.providerId))
+        )
     }
 
     private func request(
@@ -202,6 +257,20 @@ actor SignificantHobbiesNativeAccountClient {
         data: Data? = nil,
         authenticated: Bool = true
     ) async throws -> Data {
+        try await networkRequest(
+            path: path,
+            method: method,
+            data: data,
+            authenticated: authenticated
+        ).data
+    }
+
+    private func networkRequest(
+        path: String,
+        method: String,
+        data: Data? = nil,
+        authenticated: Bool = true
+    ) async throws -> NetworkResponse {
         var request = URLRequest(url: endpoint(path))
         request.httpMethod = method
         request.httpBody = data
@@ -225,7 +294,7 @@ actor SignificantHobbiesNativeAccountClient {
             if response.statusCode == 401 { throw NativeAccountError.missingSession }
             throw NativeAccountError.http(response.statusCode, message)
         }
-        return responseData
+        return NetworkResponse(data: responseData, response: response)
     }
 
     private func endpoint(_ path: String) -> URL {
@@ -242,6 +311,17 @@ actor SignificantHobbiesNativeAccountClient {
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .iso8601
         return decoder
+    }
+}
+
+enum AppleNonce {
+    static func make() -> String {
+        let alphabet = Array("0123456789ABCDEFGHIJKLMNOPQRSTUVXYZabcdefghijklmnopqrstuvwxyz-._")
+        return String((0..<32).map { _ in alphabet.randomElement()! })
+    }
+
+    static func digest(_ nonce: String) -> String {
+        SHA256.hash(data: Data(nonce.utf8)).map { String(format: "%02x", $0) }.joined()
     }
 }
 
@@ -292,6 +372,8 @@ final class SignificantHobbiesWebAuthenticator: NSObject, ASWebAuthenticationPre
 private struct TokenResponse: Decodable { let token: String }
 private struct SessionResponse: Decodable { let user: SessionUser }
 private struct SessionUser: Decodable { let name: String; let email: String }
+private struct ProviderAccount: Decodable { let providerId: String }
+private struct NetworkResponse { let data: Data; let response: HTTPURLResponse }
 private struct ErrorResponse: Decodable { let message: String }
 private struct StateResponse: Decodable { let state: AtlasCloudSnapshot? }
 private struct StateWrite: Encodable {

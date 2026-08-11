@@ -46,12 +46,20 @@ final class AppModel {
             document = ProcessInfo.processInfo.arguments.contains("--fresh-demo") ? .sample : try await store.load()
             if ProcessInfo.processInfo.arguments.contains("--daily-demo") { selectedDate = .now }
             if ProcessInfo.processInfo.arguments.contains("--account-demo") {
-                account = SignificantHobbiesAccount(name: "Sarthak", email: "sarthak@example.com")
+                account = SignificantHobbiesAccount(
+                    name: "Sarthak",
+                    email: "sarthak@example.com",
+                    providers: ["google"]
+                )
                 document.syncState = .synced
                 document.lastSyncedAt = Date().addingTimeInterval(-240)
                 isSettingsPresented = true
             } else if ProcessInfo.processInfo.arguments.contains("--account-conflict-demo") {
-                account = SignificantHobbiesAccount(name: "Sarthak", email: "sarthak@example.com")
+                account = SignificantHobbiesAccount(
+                    name: "Sarthak",
+                    email: "sarthak@example.com",
+                    providers: ["google"]
+                )
                 document.syncState = .conflict
                 var accountDocument = document
                 accountDocument.hobbies.append(Hobby(name: "Ceramics", category: "Make"))
@@ -172,6 +180,23 @@ final class AppModel {
         } catch let error as NSError
             where error.domain == ASWebAuthenticationSessionErrorDomain && error.code == 1 {
             accountMessage = nil
+        } catch {
+            accountMessage = friendlyMessage(for: error)
+        }
+    }
+
+    func completeAppleSignIn(_ payload: AppleIdentityPayload) async {
+        isAccountBusy = true
+        accountMessage = nil
+        defer { isAccountBusy = false }
+        do {
+            if let account, !account.hasApple {
+                self.account = try await accountClient.linkApple(payload)
+                accountMessage = "Apple sign-in added to this Significant Hobbies account."
+            } else {
+                account = try await accountClient.signInWithApple(payload)
+            }
+            try await reconcileAccountCopy()
         } catch {
             accountMessage = friendlyMessage(for: error)
         }

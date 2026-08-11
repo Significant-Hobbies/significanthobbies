@@ -41,6 +41,7 @@ const baseURL =
   (testAuthEnabled ? 'http://localhost:3000' : 'https://significanthobbies.com');
 const googleClientId = process.env.GOOGLE_CLIENT_ID?.trim();
 const googleClientSecret = process.env.GOOGLE_CLIENT_SECRET?.trim();
+const appleBundleIdentifier = process.env.APPLE_APP_BUNDLE_IDENTIFIER?.trim();
 
 export const auth = betterAuth({
   secret: authSecret,
@@ -49,17 +50,35 @@ export const auth = betterAuth({
     provider: 'sqlite',
     schema: { user, session, account, verification },
   }),
-  socialProviders:
-    googleClientId && googleClientSecret
+  socialProviders: {
+    ...(googleClientId && googleClientSecret
       ? { google: { clientId: googleClientId, clientSecret: googleClientSecret } }
-      : {},
+      : {}),
+    ...(appleBundleIdentifier
+      ? {
+          apple: {
+            clientId: appleBundleIdentifier,
+            clientSecret: '',
+            appBundleIdentifier: appleBundleIdentifier,
+          },
+        }
+      : {}),
+  },
+  account: {
+    accountLinking: {
+      enabled: true,
+      disableImplicitLinking: true,
+      trustedProviders: ['google', 'apple'],
+      allowDifferentEmails: true,
+    },
+  },
   // Off in production. See the comment on `testAuthEnabled` above.
   emailAndPassword: { enabled: testAuthEnabled },
   user: {
     deleteUser: { enabled: true },
   },
   plugins: [bearer()],
-  trustedOrigins: [baseURL, 'significanthobbies://auth'],
+  trustedOrigins: [baseURL, 'https://appleid.apple.com', 'significanthobbies://auth'],
   databaseHooks: {
     user: {
       create: {
