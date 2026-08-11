@@ -17,7 +17,8 @@ Audit target: iPhone simulator build of the native SwiftUI application.
 ## Positive findings
 
 - Live More, Daily, and See History stay distinct without turning life into a score or streak mechanic.
-- Journals remain private by construction; public eligibility and publish confirmation are explicit and tested negatively.
+- Journals remain private by publication construction; private account backup includes them, while no journal visibility or publication DTO exists.
+- Account sessions use Keychain, callback matching is exact, and deferred conflicts freeze cloud writes until the owner decides.
 - Large editorial modules expand rather than clipping under accessibility text sizes.
 - The Life Atlas visual language is expressive while retaining native interaction patterns.
 
@@ -30,4 +31,4 @@ Audit target: iPhone simulator build of the native SwiftUI application.
 
 ## Evidence
 
-Screenshots are stored in `artifacts/simulator/`. Automated privacy and persistence coverage plus the Release simulator build are run by `./scripts/check.sh`; the personal-team archive is created by `./scripts/archive.sh` without upload.
+Screenshots are stored in `artifacts/simulator/`, including account and conflict states captured without opening the Simulator app. Automated privacy, cloud-document, persistence, and UI coverage plus the Release simulator build are run by `./scripts/check.sh`; the personal-team archive is created by `./scripts/archive.sh` without upload.

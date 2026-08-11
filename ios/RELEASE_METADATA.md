@@ -29,7 +29,7 @@ Significant Hobbies helps you notice what matters, return to it, and remember ho
 
 Daily writing is always private. Eligible Living items begin private and only become public-profile candidates when you explicitly choose that item. There is no social feed, XP, or shame loop.
 
-The local Life Atlas remains useful without an account, and you can export or preview-replace it whenever you choose.
+The local Life Atlas remains useful without an account. If account sync is enabled, it keeps a private cross-device copy with explicit conflict choices. You can export or preview-replace the complete Atlas whenever you choose.
 
 **Keywords**
 hobbies,life planner,journal,reflection,bucket list,habits,commitments,goals,private diary
@@ -45,7 +45,8 @@ hobbies,life planner,journal,reflection,bucket list,habits,commitments,goals,pri
 - Third-party advertising: none
 - Daily reflections and journal: always private and never publication-eligible
 - Living items: private by default; item-level opt-in only
-- App Store Connect answer for this local-only build: “No, we do not collect data from this app”
+- Account mode: name, email address, user ID, and private user content are linked to the user and used only for app functionality
+- Device-only mode: content remains on the iPhone unless the user explicitly exports it
 - IDFA: not used
 
 ## Age rating draft
@@ -59,7 +60,7 @@ Confirm the rating produced by App Store Connect's current questionnaire.
 
 ## Review notes draft
 
-The app works in local mode. Daily writing intentionally has no sharing control. To inspect the opt-in boundary, open a hobby and choose its Private status; the confirmation explains that only the selected eligible item changes.
+The app works in local mode. Daily writing intentionally has no sharing control. To inspect the opt-in boundary, open a hobby and choose its Private status; the confirmation explains that only the selected eligible item changes. Account sync uses Google sign-in and stores a private revisioned Life Atlas; a conflict always requires an explicit copy choice.
 
 ## Screenshots and release
 

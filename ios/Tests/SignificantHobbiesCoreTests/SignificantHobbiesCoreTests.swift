@@ -90,4 +90,35 @@ final class SignificantHobbiesCoreTests: XCTestCase {
         XCTAssertEqual(document.commitments.first(where: { $0.id == commitment.id })?.completedAt, date)
         XCTAssertTrue(document.commitments.first(where: { $0.id == commitment.id })?.isComplete == true)
     }
+
+    func testPrivateCloudDocumentIncludesJournalButExcludesDeviceSyncMetadata() throws {
+        var document = AtlasDocument.sample
+        document.syncState = .failed
+        document.lastSyncedAt = Date(timeIntervalSince1970: 42)
+
+        let cloud = AtlasCloudDocument(document: document)
+        let encoder = JSONEncoder()
+        encoder.dateEncodingStrategy = .iso8601
+        let data = try encoder.encode(cloud)
+        let json = try XCTUnwrap(String(data: data, encoding: .utf8))
+
+        XCTAssertTrue(json.contains("The blue hour made the familiar street look new."))
+        XCTAssertFalse(json.contains("syncState"))
+        XCTAssertFalse(json.contains("lastSyncedAt"))
+    }
+
+    func testPrivateCloudRoundTripPreservesAtlasAndResetsSyncMetadata() {
+        var document = AtlasDocument.sample
+        document.syncState = .failed
+        document.lastSyncedAt = Date(timeIntervalSince1970: 42)
+
+        let restored = AtlasCloudDocument(document: document).localDocument(
+            syncState: .synced,
+            lastSyncedAt: Date(timeIntervalSince1970: 84)
+        )
+
+        XCTAssertEqual(AtlasCloudDocument(document: restored), AtlasCloudDocument(document: document))
+        XCTAssertEqual(restored.syncState, .synced)
+        XCTAssertEqual(restored.lastSyncedAt, Date(timeIntervalSince1970: 84))
+    }
 }

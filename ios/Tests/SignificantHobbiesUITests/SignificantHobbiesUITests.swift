@@ -31,4 +31,16 @@ final class SignificantHobbiesUITests: XCTestCase {
         XCTAssertTrue(app.alerts["Significant Hobbies"].waitForExistence(timeout: 3))
         XCTAssertTrue(app.alerts["Significant Hobbies"].staticTexts["Private Daily entry saved on this iPhone."].exists)
     }
+
+    func testAccountScreenExplainsPrivateSyncAndExportRecovery() {
+        let app = XCUIApplication()
+        app.launchArguments = ["--fresh-demo", "--account-demo"]
+        app.launch()
+
+        XCTAssertTrue(app.staticTexts["ACCOUNT & SYNC"].waitForExistence(timeout: 3))
+        XCTAssertTrue(app.staticTexts["SYNCED"].exists)
+        XCTAssertTrue(app.staticTexts["Daily journal: always private"].exists)
+        XCTAssertTrue(app.buttons["Export Life Atlas"].exists)
+        XCTAssertTrue(app.buttons["Delete account and cloud copy"].exists)
+    }
 }

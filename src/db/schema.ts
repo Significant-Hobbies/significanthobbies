@@ -67,6 +67,27 @@ export const verification = sqliteTable('auth_verification', {
   updatedAt: integer('updatedAt', { mode: 'timestamp' }).notNull(),
 });
 
+export const nativeAuthHandoffs = sqliteTable(
+  'native_auth_handoffs',
+  {
+    codeHash: text('code_hash').primaryKey(),
+    sessionToken: text('session_token').notNull(),
+    expiresAt: integer('expires_at').notNull(),
+    createdAt: integer('created_at').notNull(),
+  },
+  (table) => [index('native_auth_handoffs_expiry_idx').on(table.expiresAt)]
+);
+
+export const nativeAtlasStates = sqliteTable('native_atlas_state', {
+  userId: text('user_id')
+    .primaryKey()
+    .references(() => user.id, { onDelete: 'cascade' }),
+  payload: text('payload').notNull(),
+  revision: integer('revision').notNull(),
+  createdAt: integer('created_at').notNull(),
+  updatedAt: integer('updated_at').notNull(),
+});
+
 // ─── Legacy / app profile tables (PascalCase, preserved from Prisma era) ──
 // `users` is the app profile table — keeps username/bio/badges/etc. and is
 // referenced by Timeline/Like/Comment/Follow. Better-auth no longer reads

@@ -1,5 +1,6 @@
 import { betterAuth } from 'better-auth';
 import { drizzleAdapter } from 'better-auth/adapters/drizzle';
+import { bearer } from 'better-auth/plugins';
 import { eq } from 'drizzle-orm';
 
 import { account, session, user, users, verification } from '~/db/schema';
@@ -54,7 +55,11 @@ export const auth = betterAuth({
       : {},
   // Off in production. See the comment on `testAuthEnabled` above.
   emailAndPassword: { enabled: testAuthEnabled },
-  trustedOrigins: [baseURL],
+  user: {
+    deleteUser: { enabled: true },
+  },
+  plugins: [bearer()],
+  trustedOrigins: [baseURL, 'significanthobbies://auth'],
   databaseHooks: {
     user: {
       create: {
@@ -74,6 +79,11 @@ export const auth = betterAuth({
               image: authUser.image ?? null,
             });
           }
+        },
+      },
+      delete: {
+        after: async (authUser) => {
+          await db.delete(users).where(eq(users.id, authUser.id));
         },
       },
     },

@@ -8,6 +8,7 @@ struct SettingsView: View {
     @State private var isProfileEditorPresented = false
     @State private var isImporterPresented = false
     @State private var showReset = false
+    @State private var showDeleteAccount = false
 
     var body: some View {
         @Bindable var model = model
@@ -16,13 +17,60 @@ struct SettingsView: View {
                 VStack(alignment: .leading, spacing: 24) {
                     publicPreview
                     settingsSection("Account & sync") {
-                        Label("Local Life Atlas active", systemImage: "iphone.gen3").font(.headline).frame(minHeight: 44)
-                        Text("Daily and Living changes remain useful offline. Publication requires an explicit item choice and a completed account sync.")
-                            .font(.subheadline).foregroundStyle(AtlasPalette.quietInk)
-                        Link(destination: URL(string: "https://significanthobbies.com")!) {
-                            Label("Open Significant Hobbies account", systemImage: "safari").frame(maxWidth: .infinity, minHeight: 48)
+                        HStack(spacing: 12) {
+                            Image(systemName: model.account == nil ? "iphone.gen3" : "person.crop.circle.fill")
+                                .font(.title2)
+                                .frame(width: 46, height: 46)
+                                .background(model.account == nil ? AtlasPalette.sky : AtlasPalette.sage)
+                                .clipShape(RoundedRectangle(cornerRadius: 12))
+                            VStack(alignment: .leading, spacing: 3) {
+                                Text(model.account?.name ?? "Private on this iPhone").font(.headline)
+                                Text(model.account?.email ?? "Every Life Atlas tool works offline.")
+                                    .font(.subheadline).foregroundStyle(AtlasPalette.quietInk)
+                            }
+                            Spacer()
+                            Text(syncLabel(model.document.syncState).uppercased())
+                                .font(.caption2.weight(.black))
+                                .foregroundStyle(AtlasPalette.quietInk)
                         }
-                        .buttonStyle(.bordered)
+                        Text("Account sync keeps one private copy of Daily and Living. It never publishes a journal or silently changes an item's visibility.")
+                            .font(.subheadline).foregroundStyle(AtlasPalette.quietInk)
+                        if model.isAccountBusy {
+                            HStack(spacing: 10) {
+                                ProgressView()
+                                Text("Contacting Significant Hobbies…")
+                            }
+                            .frame(maxWidth: .infinity, minHeight: 48)
+                        } else if model.account == nil {
+                            Button { Task { await model.connectAccount() } } label: {
+                                Label("Connect Google account", systemImage: "person.crop.circle.badge.plus")
+                            }
+                            .buttonStyle(AtlasPrimaryButtonStyle())
+                        } else {
+                            if let lastSync = model.document.lastSyncedAt {
+                                LabeledContent("Last synced") {
+                                    Text(lastSync, style: .relative).foregroundStyle(AtlasPalette.quietInk)
+                                }
+                            }
+                            Button { Task { await model.syncNow() } } label: {
+                                Label("Sync private Life Atlas", systemImage: "arrow.triangle.2.circlepath")
+                            }
+                            .buttonStyle(AtlasPrimaryButtonStyle())
+                            Button { Task { await model.signOut() } } label: {
+                                Label("Sign out", systemImage: "rectangle.portrait.and.arrow.right")
+                                    .frame(maxWidth: .infinity, minHeight: 48, alignment: .leading)
+                            }
+                            Button(role: .destructive) { showDeleteAccount = true } label: {
+                                Label("Delete account and cloud copy", systemImage: "person.crop.circle.badge.minus")
+                                    .frame(maxWidth: .infinity, minHeight: 48, alignment: .leading)
+                            }
+                        }
+                        if let accountMessage = model.accountMessage {
+                            Text(accountMessage)
+                                .font(.footnote)
+                                .foregroundStyle(AtlasPalette.quietInk)
+                                .accessibilityLabel("Account status: \(accountMessage)")
+                        }
                     }
                     settingsSection("Soundtrack") {
                         Menu {
@@ -92,6 +140,48 @@ struct SettingsView: View {
             Button("Reset Life Atlas", role: .destructive) { Task { await model.resetLocalData() } }
             Button("Cancel", role: .cancel) {}
         }
+        .confirmationDialog(
+            "Delete your account and private cloud Life Atlas?",
+            isPresented: $showDeleteAccount
+        ) {
+            Button("Delete account", role: .destructive) { Task { await model.deleteAccount() } }
+            Button("Cancel", role: .cancel) {}
+        } message: {
+            Text("Export your Life Atlas first if you want a recovery copy. The copy already on this iPhone remains local, but account deletion cannot be undone.")
+        }
+        .sheet(item: $model.cloudConflict) { conflict in
+            NavigationStack {
+                VStack(alignment: .leading, spacing: 22) {
+                    ZStack {
+                        RoundedRectangle(cornerRadius: 18).fill(AtlasPalette.lilac)
+                        Image(systemName: "arrow.triangle.branch")
+                            .font(.system(size: 34, weight: .bold))
+                            .foregroundStyle(AtlasPalette.ink)
+                    }
+                    .frame(width: 68, height: 68)
+                    Text("Choose the Life Atlas to keep")
+                        .font(.system(.title2, design: .serif, weight: .semibold))
+                    Text("This iPhone and your private account changed separately. Nothing is replaced or published until you decide.")
+                        .foregroundStyle(AtlasPalette.quietInk)
+                    atlasSummary("This iPhone", document: model.document)
+                    atlasSummary("Account copy", document: conflict.document.localDocument())
+                    Button("Keep this iPhone’s copy") { Task { await model.keepDeviceCopy() } }
+                        .buttonStyle(AtlasPrimaryButtonStyle())
+                    Button("Use the account copy") { Task { await model.useAccountCopy() } }
+                        .buttonStyle(.bordered)
+                        .controlSize(.large)
+                        .frame(maxWidth: .infinity)
+                    Button("Decide later") { model.decideConflictLater() }
+                        .frame(maxWidth: .infinity, minHeight: 44)
+                    Spacer()
+                }
+                .padding(24)
+                .atlasBackground()
+                .navigationTitle("Sync decision")
+                .navigationBarTitleDisplayMode(.inline)
+            }
+            .interactiveDismissDisabled()
+        }
     }
 
     private var publicPreview: some View {
@@ -127,6 +217,37 @@ struct SettingsView: View {
             VStack(alignment: .leading, spacing: 10) { content() }
                 .padding(15).background(AtlasPalette.paper).clipShape(RoundedRectangle(cornerRadius: 14))
                 .overlay { RoundedRectangle(cornerRadius: 14).stroke(AtlasPalette.contour) }
+        }
+    }
+
+    private func atlasSummary(_ title: String, document: AtlasDocument) -> some View {
+        VStack(alignment: .leading, spacing: 5) {
+            Text(title).font(.headline)
+            Text(
+                "\(countLabel(document.dailyEntries.count, singular: "Daily entry", plural: "Daily entries")) · " +
+                    "\(countLabel(document.hobbies.count, singular: "hobby", plural: "hobbies")) · " +
+                    "\(countLabel(document.commitments.count, singular: "commitment", plural: "commitments"))"
+            )
+                .font(.subheadline)
+                .foregroundStyle(AtlasPalette.quietInk)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(14)
+        .background(AtlasPalette.sky.opacity(0.38))
+        .clipShape(RoundedRectangle(cornerRadius: 13))
+    }
+
+    private func countLabel(_ count: Int, singular: String, plural: String) -> String {
+        "\(count) \(count == 1 ? singular : plural)"
+    }
+
+    private func syncLabel(_ state: SyncState) -> String {
+        switch state {
+        case .localOnly: "On device"
+        case .pending: "Syncing"
+        case .synced: "Synced"
+        case .conflict: "Decision needed"
+        case .failed: "Retry needed"
         }
     }
 }

@@ -21,7 +21,9 @@
       {"width": 390, "path": "ios/artifacts/simulator/live-more.png"},
       {"width": 390, "path": "ios/artifacts/simulator/daily.png"},
       {"width": 390, "path": "ios/artifacts/simulator/history.png"},
-      {"width": 390, "path": "ios/artifacts/simulator/accessibility-xl.png"}
+      {"width": 390, "path": "ios/artifacts/simulator/accessibility-xl.png"},
+      {"width": 390, "path": "ios/artifacts/simulator/account-sync.png"},
+      {"width": 390, "path": "ios/artifacts/simulator/sync-conflict.png"}
     ],
     "projectCheck": {"command": "cd ios && ./scripts/check.sh", "status": "pass"},
     "critique": {"score": 37, "maximum": 40},

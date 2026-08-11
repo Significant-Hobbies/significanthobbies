@@ -25,6 +25,12 @@ is the bridge between daily practice and life aspirations.
 
 ## Timeline
 
+- **2026-08-11:** Prepared the isolated native account and private Life Atlas
+  sync contract: exact browser callback, one-use handoff, Keychain bearer
+  session, revisioned whole-atlas backup, explicit conflict choices, sign out,
+  deletion, export-first recovery copy, and polished account states. Journals
+  remain absent from every publication type. The additive D1 migration and
+  production deployment remain manual release gates.
 - **2026-08-11:** Deployed bounded public MCP projections for hobbies,
   experiences, and public timelines. Legacy D1 timestamp representations are
   normalized at the projection boundary, and production list/detail probes
@@ -144,8 +150,9 @@ Historical milestones live in
 
 - **Native iPhone experience:** local-first Daily ritual, Living plans,
   history, profile/privacy controls, explicit publication eligibility,
-  versioned data transfer, accessibility, simulator tests, and personal-team
-  archiving.
+  versioned data transfer, accessibility, simulator tests, personal-team
+  archiving, and a locally prepared private account-sync adapter whose
+  production migration/activation remains manual.
 - **Runtime:** Cloudflare Worker `significanthobbies` (OpenNext) + Astro
   landing overlay for anon `GET /`. Cloudflare D1 + Drizzle ORM +
   better-auth Google OAuth. PostHog analytics.

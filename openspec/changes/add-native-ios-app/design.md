@@ -14,7 +14,7 @@ See `proposal.md` for motivation and `specs/native-ios-client/spec.md` for the b
 **Non-Goals:**
 
 - A unified Fleet or Office OS hub, a social feed, competitive habit scoring, or public journals.
-- Replacing the public website, reproducing every anonymous marketing route, or changing production database/auth behavior.
+- Replacing the public website, reproducing every anonymous marketing route, or silently changing existing public database behavior.
 - Publishing, monetization, App Store Connect setup, or production service changes.
 
 ## Decisions
@@ -33,7 +33,7 @@ Journal types expose no public field. Only explicitly eligible Living items have
 
 ### Native browser authentication and isolated service DTOs
 
-`ASWebAuthenticationSession` uses existing account routes; URLSession uses existing JSON endpoints; session material lives only in Keychain. Local changes queue durable sync intents and expose pending, synced, conflict, and error states. No service secrets or environment files ship in the app.
+`ASWebAuthenticationSession` uses an exact `significanthobbies://auth` callback and a one-use, five-minute handoff; URLSession uses an isolated revisioned JSON endpoint; bearer session material lives only in Keychain. Local changes queue sync intents and expose pending, synced, conflict, and error states. Deferred conflicts freeze cloud writes until the owner decides. No service secrets or environment files ship in the app, and the additive migration remains unapplied until production review.
 
 ### Preserve-mode Life Atlas adaptation
 
@@ -52,7 +52,7 @@ Bundle identifier is `com.significanthobbies.app`; version starts at `1.0.0` bui
 
 ## Migration Plan
 
-1. Add the native project beside the existing web/public surfaces with no service changes.
+1. Add the native project beside the existing web/public surfaces with an isolated service adapter and no existing-table mutations.
 2. Implement and test local Daily, Living, History, profile, privacy, and export behavior.
 3. Validate account and publication DTOs against non-mutating fixtures.
 4. Capture simulator evidence and create a personal-team archive.

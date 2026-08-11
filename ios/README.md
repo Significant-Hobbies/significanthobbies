@@ -2,6 +2,8 @@
 
 A native SwiftUI Life Atlas for iOS 17 and later. Live More, Daily, and See History remain the product's three destinations. Daily writing is private by domain design; eligible Living items require an explicit publication choice.
 
+The account adapter stores its bearer session in Keychain and syncs a separate, revisioned private Life Atlas. The additive D1 migration and production route activation are manual release gates; the native UI remains fully useful offline before activation.
+
 ## Local checks
 
 ```bash
