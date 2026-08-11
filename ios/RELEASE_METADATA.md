@@ -18,20 +18,20 @@ Preparation only. No App Store Connect record has been created.
 
 ## Store copy
 
-**Subtitle**  
+**Subtitle**
 Choose, live, and remember what matters
 
-**Promotional text**  
+**Promotional text**
 Carry your Life Atlas: private Daily reflection, hobbies and commitments, and a truthful history of what became real.
 
-**Description**  
+**Description**
 Significant Hobbies helps you notice what matters, return to it, and remember how it changed. Live More holds hobbies, commitments, timelines, bucket-list possibilities, side quests, and yearly direction. Daily is a private morning and evening ritual with journal writing, humane habit check-ins, and one new thing. See History connects reflection to lived evidence without turning either into a competition.
 
 Daily writing is always private. Eligible Living items begin private and only become public-profile candidates when you explicitly choose that item. There is no social feed, XP, or shame loop.
 
 The local Life Atlas remains useful without an account, and you can export or preview-replace it whenever you choose.
 
-**Keywords**  
+**Keywords**
 hobbies,life planner,journal,reflection,bucket list,habits,commitments,goals,private diary
 
 ## URLs
