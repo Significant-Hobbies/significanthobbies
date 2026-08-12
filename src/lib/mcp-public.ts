@@ -6,7 +6,7 @@ import {
   relatedExperiences,
 } from '@/lib/experiences';
 
-export const MCP_PAGE_MAX = 50;
+const MCP_PAGE_MAX = 50;
 const EPOCH_MILLISECONDS_THRESHOLD = 10_000_000_000;
 
 export function boundedPage(searchParams: URLSearchParams) {

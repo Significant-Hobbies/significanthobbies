@@ -13,14 +13,7 @@ export const BUCKET_LABELS: Record<TrajectoryBucket, string> = {
   relationships: 'Relationships',
 };
 
-export const BUCKET_EMOJI: Record<TrajectoryBucket, string> = {
-  health: '❤️',
-  finance: '💰',
-  knowledge: '📚',
-  relationships: '🤝',
-};
-
-export type EraStatus = 'active' | 'completed' | 'abandoned';
+type EraStatus = 'active' | 'completed' | 'abandoned';
 
 export interface TrajectoryEraRow {
   id: string;

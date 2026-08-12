@@ -1,4 +1,4 @@
-export interface LocalEnvelope<T> {
+interface LocalEnvelope<T> {
   key: string;
   domain: string;
   schemaVersion: number;
@@ -17,7 +17,7 @@ const DATABASE_NAME = 'significant-hobbies-local';
 const STORE_NAME = 'records';
 const INSTALLATION_KEY = 'significanthobbies.installation-id';
 
-export class LocalRecordError extends Error {}
+class LocalRecordError extends Error {}
 
 export function browserRecordAdapter(): LocalRecordAdapter {
   return {

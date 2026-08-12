@@ -16,7 +16,7 @@ export function StorageModeProvider({
   return <StorageModeContext.Provider value={mode}>{children}</StorageModeContext.Provider>;
 }
 
-export function useStorageMode(): StorageMode {
+function useStorageMode(): StorageMode {
   return useContext(StorageModeContext);
 }
 

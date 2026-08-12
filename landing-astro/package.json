@@ -5,6 +5,7 @@
   "private": true,
   "description": "Static Astro site for GET /. Overlaid into .open-next/assets; Next.js handles all other routes.",
   "scripts": {
+    "check": "astro check",
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview"
@@ -13,8 +14,11 @@
     "astro": "^5.18.2"
   },
   "devDependencies": {
+    "@astrojs/check": "0.9.10",
     "@tailwindcss/vite": "^4.0.0",
     "lightningcss": "^1.32.0",
-    "tailwindcss": "^4.0.0"
+    "tailwindcss": "^4.0.0",
+    "typescript": "5.9.3",
+    "vite": "6.4.3"
   }
 }

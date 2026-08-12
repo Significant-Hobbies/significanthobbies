@@ -19,6 +19,9 @@ is the bridge between daily practice and life aspirations.
 - Ultracite 7.10.2 supplies exact development-only shared Biome presets;
   Significant Hobbies keeps explicit local compatibility exceptions and does
   not ship Ultracite at runtime.
+- Development-only code-health tooling combines Biome, TypeScript, Astro
+  Check, Vitest, Knip, jscpd, Lizard, Xcode, swift-format, and xccov. No quality
+  analyzer ships in either the web or native runtime.
 - Cloudflare Workers/OpenNext, Cloudflare D1, Drizzle, better-auth with Google
   OAuth and native Sign in with Apple, and PostHog. Native account linking is
   explicit and never inferred from matching email addresses. D1 is
@@ -26,6 +29,12 @@ is the bridge between daily practice and life aspirations.
 
 ## Timeline
 
+- **2026-08-12:** Adopted the mixed web/native Fleet code-health gate, removed
+  14 disconnected legacy files and unused public exports, restored type-safe
+  Astro/Vite tooling, and added no-regression evidence for quality, native
+  tests/build/coverage, unused code, complexity, duplication, cycles,
+  dependency risk, suppressions, docs, and repository hygiene. No runtime
+  behavior, production dependency, migration, deployment, or secret changed.
 - **2026-08-12:** Shipped native Sign in with Apple on the personal Apple and
   Cloudflare accounts, with bundle-audience validation, nonce protection,
   Keychain-backed sessions, provider visibility, and an explicit flow for

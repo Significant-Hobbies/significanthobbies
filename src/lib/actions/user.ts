@@ -12,34 +12,6 @@ import { parseBirthDate } from '~/lib/life-in-weeks';
 import { getServerAuthSession } from '~/server/auth';
 import { db } from '~/server/db';
 
-const UsernameSchema = z
-  .string()
-  .min(3)
-  .max(30)
-  .regex(/^[a-z0-9-]+$/, 'Lowercase letters, numbers, and hyphens only');
-
-export async function setUsername(username: string, birthYear?: number) {
-  const session = await getServerAuthSession();
-  if (!session?.user?.id) throw new Error('Not authenticated');
-
-  const parsed = UsernameSchema.parse(username.toLowerCase());
-
-  const existing = await db.query.users.findFirst({
-    where: eq(users.username, parsed),
-  });
-  if (existing && existing.id !== session.user.id) {
-    throw new Error('Username already taken');
-  }
-
-  const [user] = await db
-    .update(users)
-    .set({ username: parsed, ...(birthYear ? { birthYear } : {}) })
-    .where(eq(users.id, session.user.id))
-    .returning();
-  revalidatePath(`/u/${parsed}`);
-  return user;
-}
-
 export async function saveBirthDate(raw: string): Promise<{ success: boolean }> {
   const session = await getServerAuthSession();
   if (!session?.user?.id) return { success: false };
@@ -154,40 +126,6 @@ export async function updateCreed(creed: string): Promise<{ success: boolean; er
   // caller runs `updateProfile` first, which already revalidates /settings —
   // but this action should not depend on that to be correct on its own.
   revalidatePath('/settings');
-
-  return { success: true };
-}
-
-// ─── Onboarding ─────────────────────────────────────────────────────────────
-// The onboarding questions are diagnostic — they detect the user's agency state
-// and seed the first loop. The answers are stored as JSON for the look-back to
-// reference later.
-
-const OnboardingDataSchema = z.object({
-  droppedHobby: z.string().max(200).optional(),
-  lastFinished: z.enum(['recently', 'months_ago', 'cant_remember', 'doesnt_matter']).optional(),
-  nextYearFeeling: z.enum(['excited', 'neutral', 'dread', 'blank']).optional(),
-});
-
-export type OnboardingData = z.infer<typeof OnboardingDataSchema>;
-
-export async function saveOnboardingAnswers(
-  data: OnboardingData
-): Promise<{ success: boolean; error?: string }> {
-  const session = await getServerAuthSession();
-  if (!session?.user?.id) return { success: false, error: 'Not authenticated' };
-
-  const parsed = OnboardingDataSchema.parse(data);
-
-  await db
-    .update(users)
-    .set({
-      onboardingData: JSON.stringify(parsed),
-      onboardingCompletedAt: new Date(),
-    })
-    .where(eq(users.id, session.user.id));
-
-  revalidatePath('/');
 
   return { success: true };
 }

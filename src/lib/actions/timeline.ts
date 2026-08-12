@@ -186,16 +186,3 @@ export async function setTimelineVisibility(id: string, visibility: TimelineVisi
   }
   return updated;
 }
-
-export async function deleteTimeline(id: string) {
-  const session = await getServerAuthSession();
-  if (!session?.user?.id) throw new Error('Not authenticated');
-
-  const timeline = await db.query.timelines.findFirst({
-    where: eq(timelines.id, id),
-  });
-  if (!timeline || timeline.userId !== session.user.id) throw new Error('Not found');
-
-  await db.delete(timelines).where(eq(timelines.id, id));
-  revalidatePath('/timeline');
-}

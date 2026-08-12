@@ -1,6 +1,6 @@
 'use server';
 
-import { and, asc, desc, eq, gte, lte, ne } from 'drizzle-orm';
+import { and, asc, desc, eq, ne } from 'drizzle-orm';
 import { revalidatePath } from 'next/cache';
 
 import { commitments, habitLogs, habits, journalEntries, timelines, users } from '~/db/schema';
@@ -160,16 +160,6 @@ export async function getHabitLogsForDate(dayDate: string) {
   return rows;
 }
 
-// Get all habit logs for the user (for streak computation + weekly progress).
-export async function getAllHabitLogs() {
-  const session = await getServerAuthSession();
-  if (!session?.user) return [];
-
-  const rows = await db.select().from(habitLogs).where(eq(habitLogs.userId, session.user.id));
-
-  return rows;
-}
-
 export async function toggleHabitLog(habitId: string, dayDate: string, completed: boolean) {
   const session = await getServerAuthSession();
   if (!session?.user) return;
@@ -196,33 +186,6 @@ export async function toggleHabitLog(habitId: string, dayDate: string, completed
 }
 
 // ── Journal entries ─────────────────────────────────────────────────────────
-
-export async function getJournalEntriesForRange(startDate: string, endDate: string) {
-  const session = await getServerAuthSession();
-  if (!session?.user) return [];
-
-  return db
-    .select({
-      id: journalEntries.id,
-      dayDate: journalEntries.dayDate,
-      amEntry: journalEntries.amEntry,
-      pmEntry: journalEntries.pmEntry,
-      timelineId: journalEntries.timelineId,
-      commitmentId: journalEntries.commitmentId,
-      noveltyId: journalEntries.noveltyId,
-      noveltyText: journalEntries.noveltyText,
-      noveltyCompleted: journalEntries.noveltyCompleted,
-    })
-    .from(journalEntries)
-    .where(
-      and(
-        eq(journalEntries.userId, session.user.id),
-        gte(journalEntries.dayDate, startDate),
-        lte(journalEntries.dayDate, endDate)
-      )
-    )
-    .orderBy(asc(journalEntries.dayDate));
-}
 
 export async function getAllJournalEntries() {
   const session = await getServerAuthSession();

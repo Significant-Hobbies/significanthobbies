@@ -361,12 +361,6 @@ export async function getCompletedQuests(): Promise<UserQuestRow[]> {
   return await getQuestsByStatus('completed');
 }
 
-// ─── Get abandoned quests ───────────────────────────────────────────────────
-
-export async function getAbandonedQuests(): Promise<UserQuestRow[]> {
-  return await getQuestsByStatus('abandoned');
-}
-
 // ─── Profile visibility ─────────────────────────────────────────────────────
 
 /**

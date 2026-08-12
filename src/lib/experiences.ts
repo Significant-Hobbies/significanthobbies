@@ -366,7 +366,7 @@ export const EXPERIENCES_BY_CATEGORY: Record<ExperienceCategory, ExperienceGroup
 
 export const EXPERIENCE_CATEGORIES = Object.keys(EXPERIENCES_BY_CATEGORY) as ExperienceCategory[];
 
-export type ExperienceLocation = 'anywhere' | 'specific-place';
+type ExperienceLocation = 'anywhere' | 'specific-place';
 
 export type Experience = {
   title: string;

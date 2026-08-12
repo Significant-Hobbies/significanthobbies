@@ -50,10 +50,16 @@ the scan false-positives on a non-secret, exclude the file pattern in the hook
 ## CI gates
 
 `.github/workflows/ci.yml` runs on push/PR to `main`:
-- `pnpm lint` (biome check)
-- `pnpm typecheck` (tsc --noEmit)
-- `pnpm test:coverage` (vitest with v8 coverage thresholds on core `src/lib`
-  modules)
+- `pnpm quality` on Linux: check-only formatting, Biome, TypeScript, Astro
+  diagnostics, 482 Vitest tests with coverage, Knip, mixed TypeScript/Swift
+  complexity and duplication, cycles, dependency advisories, suppressions,
+  docs integrity, and repository hygiene.
+- `pnpm quality:native` on macOS: Swift format/lint ratchet, 9 XCTest unit
+  tests, 4 UI tests, a Release simulator build, and native production coverage.
+
+Existing measured debt is a no-regression baseline linked to GitHub issue #89;
+the scripts never update those values automatically. Run `pnpm quality:all` on
+a Mac for the complete local gate.
 
 `.github/workflows/weekly.yml` runs Mondays 09:00 UTC: lint, typecheck, test,
 build. A broader sanity check than CI.

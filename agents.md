@@ -44,6 +44,9 @@ pnpm test:coverage            # vitest with v8 coverage thresholds on core src/l
 pnpm test:e2e                 # playwright (assumes pnpm dev on :3000)
 pnpm lint                     # biome check .
 pnpm build                    # next build + inline critical CSS
+pnpm quality                  # complete web/Fleet code-health gate
+pnpm quality:native           # Swift format ratchet + native tests/build/coverage
+pnpm quality:all              # web and native gates together
 
 pnpm docs:check               # markdown link + frontmatter validation (no deps)
 pnpm docs:build               # blume build (presentation layer only) → docs-site/dist/

@@ -4,7 +4,7 @@ import { nativeAuthHandoffs } from '~/db/schema';
 import { db } from '~/server/db';
 
 export const NATIVE_AUTH_CALLBACK = 'significanthobbies://auth';
-export const NATIVE_HANDOFF_TTL_MS = 5 * 60 * 1000;
+const NATIVE_HANDOFF_TTL_MS = 5 * 60 * 1000;
 
 export function isAllowedNativeCallback(value: string): boolean {
   return value === NATIVE_AUTH_CALLBACK;

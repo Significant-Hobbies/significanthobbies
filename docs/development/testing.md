@@ -39,6 +39,15 @@ The pure modules (`commitments.ts`, `mortality.ts`, `personality.ts`,
 are the highest-value test targets — they have no DB/auth dependencies and
 are the core product logic.
 
+## Native tests — XCTest
+
+`pnpm quality:native` selects an available iPhone simulator, regenerates the
+checked-in Xcode project, runs 9 core unit tests and 4 UI tests, produces a
+code-signed-off Release simulator build, and enforces the current production
+coverage ratchet through `xccov`. DerivedData stays outside the repository.
+The same command also applies the checked-in `swift-format` no-regression
+baseline; existing diagnostics are tracked in GitHub issue #89.
+
 ## E2E tests — Playwright
 
 In `e2e/`. Run with `pnpm test:e2e` (assumes `pnpm dev` is running on :3000) or

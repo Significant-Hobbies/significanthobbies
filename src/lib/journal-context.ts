@@ -1,4 +1,4 @@
-export type JournalContextKind = 'timeline' | 'commitment';
+type JournalContextKind = 'timeline' | 'commitment';
 
 export type JournalContextRef = {
   kind: JournalContextKind;
