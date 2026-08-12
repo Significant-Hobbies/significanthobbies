@@ -277,7 +277,9 @@ function checkSuppressions() {
 }
 
 function checkHygiene() {
-  run('git', ['diff-tree', '--check', '--root', '-r', 'HEAD']);
+  const parent = run('git', ['rev-parse', '--verify', 'HEAD^'], { allowFailure: true });
+  if (parent.status === 0) run('git', ['diff', '--check', 'HEAD^', 'HEAD']);
+  else run('git', ['diff-tree', '--check', '--root', '-r', 'HEAD']);
   run('git', ['diff', '--check', 'HEAD', '--', '.']);
   const conflicts = run('git', ['grep', '-nE', '^(<<<<<<< |=======|>>>>>>> )', '--', '.'], {
     allowFailure: true,
