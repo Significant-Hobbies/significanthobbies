@@ -8,7 +8,11 @@ import process from 'node:process';
 import { fileURLToPath } from 'node:url';
 
 const projectRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..');
-const minimumProductionCoverage = 2649 / 4188;
+// Xcode versions disagree slightly on which generated/bridging Swift lines are
+// executable (63.2521% locally, 63.2105% on GitHub's Xcode 16.4 image). Keep a
+// percentage ratchet just below both observed denominators so source regressions
+// still fail without coupling the gate to one Xcode coverage model.
+const minimumProductionCoverage = 0.632;
 
 function capture(command, args) {
   const result = spawnSync(command, args, {

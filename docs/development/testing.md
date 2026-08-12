@@ -45,6 +45,9 @@ are the core product logic.
 checked-in Xcode project, runs 9 core unit tests and 4 UI tests, produces a
 code-signed-off Release simulator build, and enforces the current production
 coverage ratchet through `xccov`. DerivedData stays outside the repository.
+The 63.20% floor allows for Xcode's small cross-version executable-line
+denominator drift while preserving a no-regression floor for both established
+observations.
 The same command also applies the checked-in `swift-format` no-regression
 baseline; existing diagnostics are tracked in GitHub issue #89.
 
