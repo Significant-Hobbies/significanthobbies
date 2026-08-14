@@ -7,7 +7,6 @@ Disallow: /api/
 Disallow: /setup
 Disallow: /timeline/new
 
-Sitemap: https://significanthobbies.com/sitemap.xml
 # Agent indexing
 Allow: /llms.txt
 Allow: /index.md
