@@ -8,6 +8,7 @@ export const metadata: Metadata = {
   title: 'Compare Hobbies Side by Side — SignificantHobbies',
   description:
     "Can't decide between two hobbies? Compare them on cost, time commitment, social level, difficulty, and more. Make an informed choice about your next hobby.",
+  alternates: { canonical: 'https://significanthobbies.com/compare' },
 };
 
 export default function ComparePage() {

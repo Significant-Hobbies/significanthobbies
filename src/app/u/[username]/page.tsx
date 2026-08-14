@@ -39,6 +39,7 @@ export async function generateMetadata({ params }: Props) {
   return {
     title,
     description,
+    alternates: { canonical: `/u/${username}` },
     openGraph: {
       type: 'profile' as const,
       title,

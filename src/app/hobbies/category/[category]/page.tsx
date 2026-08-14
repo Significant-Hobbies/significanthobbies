@@ -66,6 +66,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: `${cat.name} Hobbies — SignificantHobbies`,
     description: `Explore ${cat.hobbies.length} ${cat.name.toLowerCase()} hobbies. Browse community timelines, find tools, and discover your next ${cat.name.toLowerCase()} passion.`,
+    alternates: { canonical: `https://significanthobbies.com/hobbies/category/${slug}` },
   };
 }
 

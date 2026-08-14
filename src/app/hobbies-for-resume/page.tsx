@@ -15,6 +15,7 @@ export const metadata: Metadata = {
   title: '30 Impressive Hobbies to Put on Your Resume | SignificantHobbies',
   description:
     'Learn which hobbies to include on your resume and why. 30 hobbies organized by what they signal to employers — leadership, creativity, discipline, and more.',
+  alternates: { canonical: 'https://significanthobbies.com/hobbies-for-resume' },
 };
 
 function hobbySlug(name: string) {

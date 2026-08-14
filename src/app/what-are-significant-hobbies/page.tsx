@@ -19,6 +19,7 @@ export const metadata: Metadata = {
     title: 'What Are Significant Hobbies?',
     description: 'The interests that shape who you are across life phases.',
   },
+  alternates: { canonical: 'https://significanthobbies.com/what-are-significant-hobbies' },
 };
 
 const ARCHETYPES = [

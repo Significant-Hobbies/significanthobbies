@@ -7,6 +7,7 @@ export const metadata: Metadata = {
   title: 'Manifesto — SignificantHobbies',
   description:
     'Life is finite. We build tools to help you spend your remaining weeks on what matters — hobbies, bucket lists, and side quests.',
+  alternates: { canonical: 'https://significanthobbies.com/manifesto' },
 };
 
 export default function ManifestoPage() {

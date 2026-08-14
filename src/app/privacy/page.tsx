@@ -6,6 +6,7 @@ import { FadeIn, GridBackground, SpotlightCard } from '~/components/aceternity';
 export const metadata: Metadata = {
   title: 'Privacy — Significant Hobbies',
   description: "Short and clear: what we store, what we don't, and how to delete.",
+  alternates: { canonical: 'https://significanthobbies.com/privacy' },
 };
 
 export default function PrivacyPage() {

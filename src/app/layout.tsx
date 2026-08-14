@@ -79,9 +79,6 @@ export const metadata: Metadata = {
       },
     ],
   },
-  alternates: {
-    canonical: 'https://significanthobbies.com',
-  },
   metadataBase: new URL('https://significanthobbies.com'),
   twitter: {
     card: 'summary_large_image',

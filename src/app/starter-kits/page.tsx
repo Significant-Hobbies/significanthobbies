@@ -16,6 +16,7 @@ export const metadata: Metadata = {
   title: 'Local Hobby Starter Kits - SignificantHobbies',
   description:
     'Beginner-friendly hobby starter kits you can run with local materials, small budgets, and one clear first experiment.',
+  alternates: { canonical: 'https://significanthobbies.com/starter-kits' },
 };
 
 const CATEGORY_STYLES: Record<string, string> = {

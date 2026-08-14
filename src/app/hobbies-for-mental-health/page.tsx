@@ -15,6 +15,7 @@ export const metadata: Metadata = {
   title: '15 Hobbies That Improve Mental Health — Science-Backed | SignificantHobbies',
   description:
     'Discover 15 science-backed hobbies that genuinely improve mental health — from yoga and running to gardening and writing. Learn why each one works.',
+  alternates: { canonical: 'https://significanthobbies.com/hobbies-for-mental-health' },
 };
 
 function hobbySlug(name: string) {

@@ -15,6 +15,7 @@ export const metadata: Metadata = {
   title: '50 Best Hobbies for Adults — Find What Excites You | SignificantHobbies',
   description:
     'Discover 50 hobbies perfect for adults. From creative pursuits to physical adventures, find your next passion with our curated guide.',
+  alternates: { canonical: 'https://significanthobbies.com/hobbies-for-adults' },
 };
 
 function hobbySlug(name: string) {

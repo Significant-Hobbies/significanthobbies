@@ -17,7 +17,10 @@ import { db } from '~/server/db';
 
 import { SearchPageClient } from './search-client';
 
-export const metadata = { title: 'Search — SignificantHobbies' };
+export const metadata = {
+  title: 'Search — SignificantHobbies',
+  alternates: { canonical: 'https://significanthobbies.com/search' },
+};
 
 interface Props {
   searchParams: Promise<{ q?: string }>;

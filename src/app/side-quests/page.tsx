@@ -6,6 +6,7 @@ export const metadata: Metadata = {
   title: 'Side Quests — SignificantHobbies',
   description:
     '50 curated micro-adventures to make life more interesting. Roll a random quest, get a personalized pick, or take on the full board.',
+  alternates: { canonical: 'https://significanthobbies.com/side-quests' },
 };
 
 export default function SideQuestsPage() {

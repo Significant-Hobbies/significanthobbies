@@ -6,6 +6,7 @@ export const metadata: Metadata = {
   title: 'Hobby Cost Calculator — SignificantHobbies',
   description:
     'Add up the real first-year cost of any hobby — equipment, lessons, subscriptions, supplies — before you commit. Saves to your browser; nothing uploaded.',
+  alternates: { canonical: 'https://significanthobbies.com/tools/cost-calculator' },
 };
 
 export default function CostCalculatorPage() {

@@ -296,24 +296,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.6,
     },
     {
-      url: `${baseUrl}/llms.txt`,
-      lastModified: now,
-      changeFrequency: 'weekly',
-      priority: 0.4,
-    },
-    {
-      url: `${baseUrl}/llms-full.txt`,
-      lastModified: now,
-      changeFrequency: 'weekly',
-      priority: 0.4,
-    },
-    {
-      url: `${baseUrl}/index.md`,
-      lastModified: now,
-      changeFrequency: 'weekly',
-      priority: 0.4,
-    },
-    {
       url: `${baseUrl}/side-quests`,
       lastModified: now,
       changeFrequency: 'monthly',

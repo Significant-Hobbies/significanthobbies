@@ -17,8 +17,10 @@ import { db } from '~/server/db';
 export const dynamic = 'force-dynamic';
 
 export const metadata = {
-  title: `Dashboard — ${BRAND_NAME}`,
-  robots: { index: false, follow: false },
+  title: `${BRAND_NAME} — Your Hobby Journey`,
+  description:
+    'Map your hobby history across life phases. Discover what rekindled, what persisted, and what to explore next.',
+  alternates: { canonical: 'https://significanthobbies.com' },
 };
 
 export default async function HomePage() {

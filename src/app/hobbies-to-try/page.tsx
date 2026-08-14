@@ -15,6 +15,7 @@ export const metadata: Metadata = {
   title: '40 New Hobbies to Try in 2026 — From Beginner-Friendly to Bold | SignificantHobbies',
   description:
     '40 hobbies to try in 2026, organized by how much effort they take to start. From tonight with no equipment to deep year-long commitments.',
+  alternates: { canonical: 'https://significanthobbies.com/hobbies-to-try' },
 };
 
 function hobbySlug(name: string) {
