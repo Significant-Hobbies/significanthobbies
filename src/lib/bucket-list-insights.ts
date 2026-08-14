@@ -277,10 +277,10 @@ function tokenize(title: string): Set<string> {
   );
 }
 
+const SUGGESTION_TOKENS = SUGGESTION_POOL.map((suggestion) => tokenize(suggestion.title));
+
 // Jaccard similarity over meaningful tokens. Returns 0–1.
-function titleSimilarity(a: string, b: string): number {
-  const ta = tokenize(a);
-  const tb = tokenize(b);
+function tokenSimilarity(ta: ReadonlySet<string>, tb: ReadonlySet<string>): number {
   if (ta.size === 0 || tb.size === 0) return 0;
   let inter = 0;
   for (const t of ta) if (tb.has(t)) inter++;
@@ -316,13 +316,15 @@ export function getBucketListSuggestions(
   seed = 0
 ): SuggestionItem[] {
   const existingCats = new Set(existingItems.map((i) => i.category).filter(Boolean));
+  const existingTokens = existingItems.map((item) => tokenize(item.title));
 
   // Filter out items too similar to one the user already has (Jaccard ≥ 0.5
   // over meaningful tokens). Catches "Run a marathon" vs "Run a half marathon"
   // while letting genuinely different suggestions through.
-  const pool = SUGGESTION_POOL.filter(
-    (s) => !existingItems.some((e) => titleSimilarity(s.title, e.title) >= 0.5)
-  );
+  const pool = SUGGESTION_POOL.filter((_suggestion, index) => {
+    const tokens = SUGGESTION_TOKENS[index]!;
+    return !existingTokens.some((existing) => tokenSimilarity(tokens, existing) >= 0.5);
+  });
 
   // Separate into "gap categories" (user has none) vs "familiar" (user has some)
   const gaps = pool.filter((s) => !existingCats.has(s.category));
@@ -334,11 +336,15 @@ export function getBucketListSuggestions(
     .sort()
     .join('|');
   const rng = mulberry32(hashString(existingKey) + seed);
-  const shuffle = <T>(arr: T[]): T[] =>
-    [...arr]
-      .map((v) => ({ v, k: rng() }))
-      .sort((a, b) => a.k - b.k)
-      .map(({ v }) => v);
+  const shuffle = <T>(arr: T[]): T[] => {
+    const keys = new Float64Array(arr.length);
+    const indices = Array.from({ length: arr.length }, (_, index) => {
+      keys[index] = rng();
+      return index;
+    });
+    indices.sort((a, b) => keys[a]! - keys[b]!);
+    return indices.map((index) => arr[index]!);
+  };
 
   // Half from categories the user has nothing in, half from ones they do.
   const gapCount = Math.min(Math.ceil(count / 2), gaps.length);

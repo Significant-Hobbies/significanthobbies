@@ -39,6 +39,14 @@ The pure modules (`commitments.ts`, `mortality.ts`, `personality.ts`,
 are the highest-value test targets — they have no DB/auth dependencies and
 are the core product logic.
 
+## Performance flow contract
+
+[`codevetter.performance.json`](../../codevetter.performance.json) binds the
+exact bucket-list suggestion scale workload to its deterministic output test.
+CodeVetter uses that snapshot-bound relationship for local incumbent-versus-candidate
+acceptance; it does not replace `pnpm test` or make a production-performance
+claim.
+
 ## Native tests — XCTest
 
 `pnpm quality:native` selects an available iPhone simulator, regenerates the
