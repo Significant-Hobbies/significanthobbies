@@ -1,10 +1,10 @@
 /**
- * Owner-facing analytics — the fixed 4-event taxonomy.
+ * Owner-facing analytics — the fixed 5-event taxonomy.
  *
- * Every fleet project emits exactly these four events — `signup`, `activated`,
- * `core_action`, `returned` — so a single PostHog project can build one
- * cross-fleet funnel (signup -> activated -> core_action) and a D1/D7
- * retention insight, with no custom dashboard.
+ * Every fleet project emits exactly these five events — `signup`, `activated`,
+ * `core_action`, `returned`, `page_view` — so a single PostHog project can
+ * build one cross-fleet funnel (signup -> activated -> core_action) and a
+ * D1/D7 retention insight, with no custom dashboard.
  *
  * Every event carries `project_id: "significanthobbies"`.
  *
@@ -13,6 +13,8 @@
  *  - `core_action` — the thing the product exists to do: saving a hobby
  *                    timeline, or exporting a timeline share card.
  *  - `returned`    — a later session for a user who already has prior activity.
+ *  - `page_view`   — a route rendered in the browser, tracked manually (not
+ *                    via PostHog's autocapture) so it carries `project_id`.
  *
  * It is isomorphic: in the browser it routes through `posthog-js`
  * (`track`); inside a server action it POSTs directly to the PostHog capture
@@ -44,6 +46,8 @@ interface AnalyticsEventMap {
   core_action: { project_id: typeof PROJECT; action: CoreAction };
   /** A return session by a user with prior activity. */
   returned: { project_id: typeof PROJECT };
+  /** A route rendered in the browser. */
+  page_view: { project_id: typeof PROJECT };
 }
 
 function emitServer(event: string, props: Record<string, unknown>, distinctId?: string) {
@@ -109,6 +113,11 @@ export function trackCoreAction(action: CoreAction, distinctId?: string): void {
 /** Fire on session start for a user who has prior activity. */
 export function trackReturned(): void {
   emit('returned', {});
+}
+
+/** Fire on each route render in the browser. */
+export function trackPageView(): void {
+  emit('page_view', {});
 }
 
 /**

@@ -2,9 +2,10 @@
 
 import posthog from 'posthog-js';
 import { PostHogProvider } from 'posthog-js/react';
+import { usePathname } from 'next/navigation';
 import { useEffect, useRef } from 'react';
 
-import { trackReturned, trackSignup } from '~/lib/analytics';
+import { trackPageView, trackReturned, trackSignup } from '~/lib/analytics';
 import { authClient } from '~/lib/auth-client';
 import { installBrowserMonitoring } from '~/lib/foundry-monitoring';
 
@@ -28,10 +29,18 @@ export function AnalyticsProvider({ children }: { children: React.ReactNode }) {
   const { data: session } = authClient.useSession();
   const userId = session?.user?.id ?? null;
   const firedRef = useRef(false);
+  const pathname = usePathname();
 
   useEffect(() => {
     return installBrowserMonitoring();
   }, []);
+
+  // Fixed taxonomy: `page_view` on mount and every route change. Tracked
+  // manually (PostHog's `capture_pageview` is off) so the event carries
+  // `project_id`.
+  useEffect(() => {
+    trackPageView();
+  }, [pathname]);
 
   // Fixed taxonomy: `signup` on the first session we ever see for an account;
   // `returned` on later sessions for a user with prior activity.
