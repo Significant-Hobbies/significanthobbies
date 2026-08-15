@@ -40,35 +40,58 @@ function persist(progress: QuestProgress) {
   });
 }
 
+const COUNT_BADGES: ReadonlyArray<{ threshold: number; badge: string }> = [
+  { threshold: 1, badge: 'first-steps' },
+  { threshold: 5, badge: 'curious-cat' },
+  { threshold: 10, badge: 'adventurer' },
+  { threshold: 50, badge: 'quest-master' },
+];
+
+const CATEGORY_MASTERY_BADGES: ReadonlyArray<{ category: string; badge: string }> = [
+  { category: 'sensory', badge: 'sensor' },
+  { category: 'creative', badge: 'maker' },
+  { category: 'culinary', badge: 'chefs-kiss' },
+  { category: 'social', badge: 'people-person' },
+  { category: 'exploration', badge: 'wanderer' },
+  { category: 'mindful', badge: 'zen-master' },
+];
+
+const SPECIFIC_QUEST_BADGES: ReadonlyArray<{ questId: string; badge: string }> = [
+  { questId: 'sq-03', badge: 'night-owl' }, // stargazing
+  { questId: 'sq-44', badge: 'unplugged' }, // social media detox
+];
+
+const CATEGORY_MASTERY_THRESHOLD = 3;
+const RENAISSANCE_CATEGORY_COUNT = 6;
+
 function evaluateQuestBadges(completedQuestIds: string[]): string[] {
   const earned: string[] = [];
-  const count = completedQuestIds.length;
+  const completedSet = new Set(completedQuestIds);
 
-  const completedQuests = SIDE_QUESTS.filter((q) => completedQuestIds.includes(q.id));
   const categoryCounts: Record<string, number> = {};
-  for (const q of completedQuests) {
-    categoryCounts[q.category] = (categoryCounts[q.category] ?? 0) + 1;
+  for (const q of SIDE_QUESTS) {
+    if (completedSet.has(q.id)) {
+      categoryCounts[q.category] = (categoryCounts[q.category] ?? 0) + 1;
+    }
   }
-  const categoriesWithCompletions = Object.keys(categoryCounts);
 
   // Quest progression badges
-  if (count >= 1) earned.push('first-steps');
-  if (count >= 5) earned.push('curious-cat');
-  if (count >= 10) earned.push('adventurer');
-  if (count >= 50) earned.push('quest-master');
-  if (categoriesWithCompletions.length >= 6) earned.push('renaissance-soul');
+  for (const { threshold, badge } of COUNT_BADGES) {
+    if (completedQuestIds.length >= threshold) earned.push(badge);
+  }
+  if (Object.keys(categoryCounts).length >= RENAISSANCE_CATEGORY_COUNT) {
+    earned.push('renaissance-soul');
+  }
 
   // Category mastery badges (3+ in a category)
-  if ((categoryCounts.sensory ?? 0) >= 3) earned.push('sensor');
-  if ((categoryCounts.creative ?? 0) >= 3) earned.push('maker');
-  if ((categoryCounts.culinary ?? 0) >= 3) earned.push('chefs-kiss');
-  if ((categoryCounts.social ?? 0) >= 3) earned.push('people-person');
-  if ((categoryCounts.exploration ?? 0) >= 3) earned.push('wanderer');
-  if ((categoryCounts.mindful ?? 0) >= 3) earned.push('zen-master');
+  for (const { category, badge } of CATEGORY_MASTERY_BADGES) {
+    if ((categoryCounts[category] ?? 0) >= CATEGORY_MASTERY_THRESHOLD) earned.push(badge);
+  }
 
   // Specific quest badges
-  if (completedQuestIds.includes('sq-03')) earned.push('night-owl'); // stargazing
-  if (completedQuestIds.includes('sq-44')) earned.push('unplugged'); // social media detox
+  for (const { questId, badge } of SPECIFIC_QUEST_BADGES) {
+    if (completedSet.has(questId)) earned.push(badge);
+  }
 
   return earned;
 }

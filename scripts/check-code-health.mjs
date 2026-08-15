@@ -13,15 +13,15 @@ const productionPaths = ['src', 'ios/Sources', 'scripts'];
 
 const baselines = {
   complexity: {
-    violations: 85,
+    violations: 82,
     maxCcn: 46,
     maxLength: 741,
     maxParams: 12,
   },
   duplication: {
-    clones: 52,
-    duplicatedLines: 945,
-    percentage: 1.6015863331299574,
+    clones: 50,
+    duplicatedLines: 771,
+    percentage: 1.308154331670569,
   },
   unused: {
     files: 0,

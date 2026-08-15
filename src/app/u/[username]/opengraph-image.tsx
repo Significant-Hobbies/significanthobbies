@@ -2,32 +2,53 @@ import { eq } from 'drizzle-orm';
 import { ImageResponse } from 'next/og';
 
 import { timelines, users } from '~/db/schema';
+import {
+  fallbackTimelineImage,
+  timelineOgImageContentType,
+  timelineOgImageSize,
+} from '~/lib/timeline-og-image';
 import type { Phase } from '~/lib/types';
 import { parseJSONColumn } from '~/lib/utils';
 import { db } from '~/server/db';
 
 export const runtime = 'nodejs';
-export const size = { width: 1200, height: 630 };
-export const contentType = 'image/png';
+export const size = timelineOgImageSize;
+export const contentType = timelineOgImageContentType;
 
-function fallbackImage(message: string) {
-  return new ImageResponse(
-    <div
-      style={{
-        background: '#FEFDF8',
-        width: '100%',
-        height: '100%',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        fontSize: 40,
-        fontFamily: 'system-ui, sans-serif',
-        color: '#78716C',
-      }}
-    >
-      {message}
-    </div>,
-    { width: 1200, height: 630 }
+function UserProfileOgStats({
+  publicTimelines,
+  hobbyCount,
+}: {
+  publicTimelines: Array<{ phases: string; visibility: string }>;
+  hobbyCount: number;
+}) {
+  return (
+    <div style={{ display: 'flex', gap: 20 }}>
+      <div
+        style={{
+          padding: '12px 28px',
+          borderRadius: 12,
+          background: '#ECFDF5',
+          color: '#059669',
+          fontSize: 22,
+          fontWeight: 700,
+        }}
+      >
+        {publicTimelines.length} timeline{publicTimelines.length !== 1 ? 's' : ''}
+      </div>
+      <div
+        style={{
+          padding: '12px 28px',
+          borderRadius: 12,
+          background: '#FEF3C7',
+          color: '#D97706',
+          fontSize: 22,
+          fontWeight: 700,
+        }}
+      >
+        {hobbyCount} hobb{hobbyCount !== 1 ? 'ies' : 'y'}
+      </div>
+    </div>
   );
 }
 
@@ -41,10 +62,10 @@ export default async function OgImage({ params }: { params: Promise<{ username: 
     });
   } catch (err) {
     console.error('opengraph-image[u]: user lookup failed', err);
-    return fallbackImage('Significant Hobbies');
+    return fallbackTimelineImage('Significant Hobbies');
   }
 
-  if (!user) return fallbackImage('User not found');
+  if (!user) return fallbackTimelineImage('User not found');
 
   let userTimelines: Array<{ phases: string; visibility: string }> = [];
   try {
@@ -122,33 +143,7 @@ export default async function OgImage({ params }: { params: Promise<{ username: 
       {/* Username handle */}
       <div style={{ fontSize: 28, color: '#78716C', marginBottom: 40 }}>@{username}</div>
 
-      {/* Stats */}
-      <div style={{ display: 'flex', gap: 20 }}>
-        <div
-          style={{
-            padding: '12px 28px',
-            borderRadius: 12,
-            background: '#ECFDF5',
-            color: '#059669',
-            fontSize: 22,
-            fontWeight: 700,
-          }}
-        >
-          {publicTimelines.length} timeline{publicTimelines.length !== 1 ? 's' : ''}
-        </div>
-        <div
-          style={{
-            padding: '12px 28px',
-            borderRadius: 12,
-            background: '#FEF3C7',
-            color: '#D97706',
-            fontSize: 22,
-            fontWeight: 700,
-          }}
-        >
-          {allHobbies.size} hobb{allHobbies.size !== 1 ? 'ies' : 'y'}
-        </div>
-      </div>
+      <UserProfileOgStats publicTimelines={publicTimelines} hobbyCount={allHobbies.size} />
     </div>,
     { width: 1200, height: 630 }
   );
