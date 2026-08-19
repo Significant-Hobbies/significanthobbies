@@ -17,6 +17,13 @@ export function loginPath(callbackUrl: string): string {
   return `/login?callbackUrl=${encodeURIComponent(callbackUrl)}`;
 }
 
+/** Keep post-auth navigation on this origin and fall back to the home route. */
+export function callbackUrlFor(requestedCallback?: string): string {
+  return requestedCallback?.startsWith('/') && !requestedCallback.startsWith('//')
+    ? requestedCallback
+    : '/';
+}
+
 export type GuestRoute = {
   /** Anonymous surface closest to what the visitor was trying to reach. */
   href: string;

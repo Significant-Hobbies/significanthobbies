@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { guestRouteFor, loginPath } from './auth-routing';
+import { callbackUrlFor, guestRouteFor, loginPath } from './auth-routing';
 
 describe('loginPath', () => {
   it('round-trips through the callbackUrl param the login page reads', () => {
@@ -20,6 +20,19 @@ describe('loginPath', () => {
     const url = new URL(loginPath('/daily?tab=pm&x=1'), 'https://significanthobbies.com');
     expect(url.searchParams.get('callbackUrl')).toBe('/daily?tab=pm&x=1');
     expect(url.searchParams.get('x')).toBeNull();
+  });
+});
+
+describe('callbackUrlFor', () => {
+  it('preserves an in-app post-auth destination', () => {
+    expect(callbackUrlFor('/onboarding')).toBe('/onboarding');
+    expect(callbackUrlFor('/daily?tab=pm')).toBe('/daily?tab=pm');
+  });
+
+  it('rejects absent and cross-origin destinations', () => {
+    expect(callbackUrlFor()).toBe('/');
+    expect(callbackUrlFor('https://example.com')).toBe('/');
+    expect(callbackUrlFor('//example.com')).toBe('/');
   });
 });
 
