@@ -1,4 +1,4 @@
-export const LOCAL_WORKSPACE_COOKIE = 'sh_local_workspace';
+const LOCAL_WORKSPACE_COOKIE = 'sh_local_workspace';
 
 const ONE_YEAR_IN_SECONDS = 60 * 60 * 24 * 365;
 

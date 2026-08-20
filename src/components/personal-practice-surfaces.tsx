@@ -30,7 +30,7 @@ import {
 import { buildJournalDateWindow, hasJournalContent } from '~/lib/journal';
 import { cn } from '~/lib/utils';
 
-export interface Habit {
+interface Habit {
   id: string;
   name: string;
   status: string;
@@ -40,14 +40,14 @@ export interface Habit {
   commitmentId?: string | null;
 }
 
-export interface HabitLog {
+interface HabitLog {
   id: string;
   habitId: string;
   dayDate: string;
   completed: boolean;
 }
 
-export interface JournalEntry {
+interface JournalEntry {
   id: string;
   dayDate: string;
   amEntry: string | null;

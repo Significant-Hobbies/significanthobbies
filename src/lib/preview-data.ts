@@ -16,15 +16,6 @@ import type { TrajectoryEraWithEntries, TrajectoryState } from '~/lib/actions/tr
 
 const PREVIEW_USER_ID = 'preview-user';
 
-/**
- * Name in the preview greeting.
- *
- * The banner says the visitor is looking at someone else's month, so greeting
- * them by a placeholder ("Good evening, there.") contradicts it — the page has
- * to read as the sample person's own ritual.
- */
-export const PREVIEW_FIRST_NAME = 'Mara';
-
 export interface PreviewHabit {
   id: string;
   name: string;
@@ -146,17 +137,6 @@ export function previewJournalEntries(today: string): PreviewJournalEntry[] {
       pmEntry: offset === 0 ? PREVIEW_PM : offset % 3 === 0 ? null : `Evening note for ${dayDate}.`,
     };
   });
-}
-
-/**
- * Today's entry specifically.
- *
- * JournalExperience reads today from the `journalEntry` prop (it seeds the editor
- * state) and only falls back to the `journalEntries` list for past days, so
- * today has to be passed separately or the reader renders blank.
- */
-export function previewJournalEntryForToday(today: string): PreviewJournalEntry | null {
-  return previewJournalEntries(today).find((e) => e.dayDate === today) ?? null;
 }
 
 const PREVIEW_IDEALS: Record<TrajectoryBucket, string> = {
