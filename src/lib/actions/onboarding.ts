@@ -154,7 +154,15 @@ export async function completeOnboarding(
     });
   }
 
-  for (const path of ['/', '/live-more', '/daily', '/history', '/bucket-list', '/timeline']) {
+  for (const path of [
+    '/',
+    '/live-more',
+    '/journal',
+    '/habits',
+    '/history',
+    '/bucket-list',
+    '/timeline',
+  ]) {
     revalidatePath(path);
   }
   return { success: true };

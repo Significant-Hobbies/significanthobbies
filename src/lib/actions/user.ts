@@ -91,8 +91,10 @@ export async function saveTimezone(timeZone: string): Promise<{ success: boolean
 
   await db.update(users).set({ timezone: candidate }).where(eq(users.id, session.user.id));
 
-  revalidatePath('/daily');
-  revalidatePath('/');
+  revalidatePath('/live-more');
+  revalidatePath('/journal');
+  revalidatePath('/habits');
+  revalidatePath('/history');
 
   return { success: true };
 }

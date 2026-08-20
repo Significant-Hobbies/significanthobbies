@@ -85,9 +85,9 @@ In `e2e/`. Run with `pnpm test:e2e` (assumes `pnpm dev` is running on :3000) or
 
 - Server actions (`src/lib/actions/`) hit the DB and are not unit-tested;
   coverage comes from e2e specs that exercise the full flow.
-- The Astro landing overlay is tested via the deploy smoke check in
-  `.github/workflows/deploy.yml` (verifies ≥5 sections and `id="lcp-shell"` in
-  the overlaid HTML).
+- The Astro Hub overlay is covered by the `landing` Playwright project and the
+  deploy smoke check in `.github/workflows/deploy.yml` (verifies the Hub heading
+  and exactly seven product cards in the overlaid HTML).
 - The edge cache layer in `worker.mjs` is tested via the production smoke
   workflow (`.github/workflows/smoke.yml`) every 6 hours.
 

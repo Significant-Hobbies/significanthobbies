@@ -1,8 +1,8 @@
 {
   "$schema": "fleet.design-review.v1",
   "version": 1,
-  "project": "significanthobbies",
-  "target": "Restored cinematic public landing, complete local and account workspace, balanced popular shelf plus searchable 5,000-path onboarding bucket list with bulk paste, independent multi-goal yearly direction, optional daily practice, upbeat YouTube soundtrack choices, onboarding gates, public route family, catalog detail pages, Daily novelty, and humane habit checklist",
+  "project": "significanthobbies-split",
+  "target": "Split Live, Journal, and Habits and add the personal apps Hub",
   "mode": "preserve",
   "register": "product",
   "context": {
@@ -10,173 +10,85 @@
     "design": "DESIGN.md"
   },
   "direction": {
-    "references": ["cartographic atlases", "personal almanacs", "museum chronology"],
-    "probes": [
-      ".fleet/design-evidence/life-atlas/probes/life-atlas.png",
-      ".fleet/design-evidence/life-atlas/probes/personal-almanac.png",
-      ".fleet/design-evidence/life-atlas/probes/living-cabinet.png"
-    ],
-    "selected": "warm-daylight-life-atlas-with-editorial-photography",
-    "approval": "approved",
-    "before": ".fleet/design-evidence/trajectory-graph/before-1440.png"
+    "references": [],
+    "probes": [],
+    "selected": "existing Life Atlas daylight system",
+    "approval": "not-required",
+    "before": ".fleet/design-evidence/primary-pages-v2/daily-390.png"
   },
   "evidence": {
     "screenshots": [
       {
         "width": 390,
-        "path": ".fleet/design-evidence/landing-parity/after-next-390-full-final.png"
+        "path": ".fleet/design-evidence/split-products/daily-390.png"
       },
       {
         "width": 768,
-        "path": ".fleet/design-evidence/landing-parity/after-next-768-full-final.png"
+        "path": ".fleet/design-evidence/split-products/daily-768.png"
       },
       {
         "width": 1440,
-        "path": ".fleet/design-evidence/landing-parity/after-next-1440-full-final.png"
+        "path": ".fleet/design-evidence/split-products/daily-1440.png"
       },
       {
         "width": 390,
-        "path": ".fleet/design-evidence/simplified-four-surfaces/live-more-390-final.png"
+        "path": ".fleet/design-evidence/split-products/journal-390.png"
       },
       {
         "width": 768,
-        "path": ".fleet/design-evidence/simplified-four-surfaces/live-more-768-final.png"
+        "path": ".fleet/design-evidence/split-products/journal-768.png"
       },
       {
         "width": 1440,
-        "path": ".fleet/design-evidence/simplified-four-surfaces/live-more-1440-final.png"
+        "path": ".fleet/design-evidence/split-products/journal-1440.png"
       },
       {
         "width": 390,
-        "path": ".fleet/design-evidence/simplified-four-surfaces/onboarding-390-final.png"
+        "path": ".fleet/design-evidence/split-products/habits-390.png"
       },
       {
         "width": 768,
-        "path": ".fleet/design-evidence/simplified-four-surfaces/onboarding-768-final.png"
+        "path": ".fleet/design-evidence/split-products/habits-768.png"
       },
       {
         "width": 1440,
-        "path": ".fleet/design-evidence/simplified-four-surfaces/onboarding-1440-final.png"
+        "path": ".fleet/design-evidence/split-products/habits-1440.png"
       },
       {
         "width": 390,
-        "path": ".fleet/design-evidence/simplified-four-surfaces/history-390-final.png"
-      },
-      {
-        "width": 390,
-        "path": ".fleet/design-evidence/daily-new-thing/daily-390.png"
+        "path": ".fleet/design-evidence/split-products/live-more-390.png"
       },
       {
         "width": 768,
-        "path": ".fleet/design-evidence/daily-new-thing/daily-768.png"
+        "path": ".fleet/design-evidence/split-products/live-more-768.png"
       },
       {
         "width": 1440,
-        "path": ".fleet/design-evidence/daily-new-thing/daily-1440.png"
+        "path": ".fleet/design-evidence/split-products/live-more-1440.png"
       },
       {
         "width": 390,
-        "path": ".fleet/design-evidence/daily-habits-custom/mobile-daily.png"
-      },
-      {
-        "width": 768,
-        "path": ".fleet/design-evidence/daily-habits-custom/tablet-daily.png"
+        "path": ".fleet/design-evidence/split-products/hub-390.png"
       },
       {
         "width": 1440,
-        "path": ".fleet/design-evidence/daily-habits-custom/desktop-daily.png"
+        "path": ".fleet/design-evidence/split-products/hub-1440.png"
       },
       {
         "width": 390,
-        "path": ".fleet/design-evidence/public-acceptance/local-dashboard-390.png"
-      },
-      {
-        "width": 768,
-        "path": ".fleet/design-evidence/public-acceptance/local-dashboard-768.png"
-      },
-      {
-        "width": 1440,
-        "path": ".fleet/design-evidence/public-acceptance/local-dashboard-1440.png"
-      },
-      {
-        "width": 390,
-        "path": ".fleet/design-evidence/public-acceptance/hobby-390-final.png"
-      },
-      {
-        "width": 1440,
-        "path": ".fleet/design-evidence/public-acceptance/404-1440.png"
-      },
-      {
-        "width": 390,
-        "path": ".fleet/design-evidence/final-private-acceptance/mobile-history-final.png"
-      },
-      {
-        "width": 390,
-        "path": ".fleet/design-evidence/product-audit-release/mobile-local-bucket-list-final.png"
-      },
-      {
-        "width": 1440,
-        "path": ".fleet/design-evidence/product-audit-release/desktop-public-landing.png"
-      },
-      {
-        "width": 390,
-        "path": ".fleet/design-evidence/onboarding-search-goals/future-390.png"
-      },
-      {
-        "width": 768,
-        "path": ".fleet/design-evidence/onboarding-search-goals/future-768.png"
-      },
-      {
-        "width": 1440,
-        "path": ".fleet/design-evidence/onboarding-search-goals/future-1440.png"
-      },
-      {
-        "width": 1440,
-        "path": ".fleet/design-evidence/onboarding-search-goals/step-4-1440.png"
-      },
-      {
-        "width": 1440,
-        "path": ".fleet/design-evidence/onboarding-search-goals/step-5-1440.png"
-      },
-      {
-        "width": 1440,
-        "path": ".fleet/design-evidence/onboarding-search-goals/step-6-1440.png"
-      },
-      {
-        "width": 390,
-        "path": ".fleet/design-evidence/onboarding-search-goals/soundtrack-390.png"
-      },
-      {
-        "width": 390,
-        "path": ".fleet/design-evidence/onboarding-search-goals/future-5000-390.png"
-      },
-      {
-        "width": 768,
-        "path": ".fleet/design-evidence/onboarding-search-goals/future-5000-768.png"
-      },
-      {
-        "width": 1440,
-        "path": ".fleet/design-evidence/onboarding-search-goals/future-5000-1440.png"
-      },
-      {
-        "width": 390,
-        "path": ".fleet/design-evidence/onboarding-search-goals/independent-goals-390.png"
-      },
-      {
-        "width": 1440,
-        "path": ".fleet/design-evidence/onboarding-search-goals/independent-goals-1440.png"
+        "path": ".fleet/design-evidence/split-products/journal-native.png"
       }
     ],
     "projectCheck": {
-      "command": "pnpm lint; pnpm typecheck; pnpm test; pnpm docs:check; strict OpenSpec validation; all 264 Next Playwright cases at desktop and mobile plus the 7-test Astro landing project; targeted 5,202-path onboarding search, bulk-paste persistence, independent multi-goal, optional-practice, soundtrack, and completion checks at mobile and desktop; 162-surface public, local, account, incomplete-account, mobile, and desktop audit; responsive screenshots at 390, 768, and 1440; pnpm build",
+      "command": "pnpm typecheck; pnpm test; pnpm docs:check; pnpm build; Astro check/build; 6 Hub browser tests; 3 focused root-routing browser tests; ios/scripts/check.sh",
       "status": "pass"
     },
     "critique": {
-      "score": 33,
+      "score": 36,
       "maximum": 40
     },
     "audit": {
-      "score": 18,
+      "score": 19,
       "maximum": 20
     },
     "unresolved": {
@@ -186,12 +98,14 @@
     "detector": {
       "posture": "advisory",
       "findings": [
-        "The restored cinematic landing intentionally reuses the existing Astro artwork palette, while calculator chart colors remain semantic data colors. No blocking detector findings."
+        "The detector returned zero deterministic findings across the split routes, navigation, practice surfaces, and Hub.",
+        "Manual review covered the Hub and Journal at phone and desktop widths. The Hub keeps all seven products scannable, leaves unavailable destinations non-interactive, and explicitly states that no combined database exists.",
+        "The first Hub accessibility pass found four status labels just below WCAG AA contrast. Their text token was darkened and the complete axe baseline then passed."
       ]
     }
   },
   "ownerFeedback": {
     "decision": "delegated",
-    "note": "Owner explicitly delegated the simplification and mobile quality judgment with 'go for it'. The preserve-mode pass restores the previously approved cinematic landing and extends the Life Atlas system across onboarding, public wayfinding, and the canonical private surfaces."
+    "note": "The owner approved the seven-product grouping, the shared design language, and the direction to finish it with the least code possible. The Hub and product split preserve that direction without adding synchronization."
   }
 }

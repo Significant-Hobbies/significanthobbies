@@ -71,16 +71,16 @@ jobs:
             echo "ERROR: failed to fetch homepage"
             exit 1
           fi
-          sections=$(printf '%s' "$html" | grep -o '<section' | wc -l | tr -d ' ')
-          if [ "$sections" -lt 5 ]; then
-            echo "ERROR: stale overlay — expected full Astro landing (>=5 sections), got ${sections}"
+          cards=$(printf '%s' "$html" | grep -o 'class="product-card' | wc -l | tr -d ' ')
+          if [ "$cards" -ne 7 ]; then
+            echo "ERROR: stale overlay — expected seven Hub product cards, got ${cards}"
             exit 1
           fi
-          if ! printf '%s' "$html" | grep -q 'id="lcp-shell"'; then
-            echo "ERROR: missing LCP shell in overlaid index.html"
+          if ! printf '%s' "$html" | grep -q 'Your personal apps, in one place.'; then
+            echo "ERROR: stale overlay — missing Hub heading"
             exit 1
           fi
-          echo "Overlay OK: ${sections} sections, LCP shell present"
+          echo "Overlay OK: seven Hub product cards"
       - name: Smoke check a Worker-rendered page
         # Two different questions, and only the first should fail a deploy.
         #

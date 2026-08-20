@@ -46,11 +46,8 @@ export function JournalArchive({ records }: { records: JournalRecord[] }) {
           <h2 id="journal-history-title" className="font-serif text-3xl sm:text-4xl">
             Journal history
           </h2>
-          <span
-            className="font-serif text-3xl tabular-nums"
-            aria-label={`${writtenEntries.length} entries`}
-          >
-            {writtenEntries.length}
+          <span className="font-serif text-2xl tabular-nums">
+            {writtenEntries.length} {writtenEntries.length === 1 ? 'entry' : 'entries'}
           </span>
         </div>
       </div>

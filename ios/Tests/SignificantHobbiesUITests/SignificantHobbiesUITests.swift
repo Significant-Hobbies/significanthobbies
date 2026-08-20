@@ -4,32 +4,27 @@ import XCTest
 final class SignificantHobbiesUITests: XCTestCase {
     override func setUpWithError() throws { continueAfterFailure = false }
 
-    func testThreePartNavigationIsReachable() {
+    func testJournalIsTheOnlyPrimarySurface() {
         let app = XCUIApplication()
         app.launchArguments = ["--fresh-demo"]
         app.launch()
 
-        XCTAssertTrue(app.staticTexts["Go inhabit your life."].waitForExistence(timeout: 3))
-        app.tabBars.buttons["Daily"].tap()
         XCTAssertTrue(app.staticTexts["A private ritual. Nothing written here can be published."].waitForExistence(timeout: 3))
-        app.tabBars.buttons["See History"].tap()
-        XCTAssertTrue(app.staticTexts["See what became real."].waitForExistence(timeout: 3))
+        XCTAssertEqual(app.tabBars.count, 0)
     }
 
     func testDailyJournalSavesPrivately() {
         let app = XCUIApplication()
         app.launchArguments = ["--fresh-demo"]
         app.launch()
-        app.tabBars.buttons["Daily"].tap()
-
         let journal = app.textViews["Private journal"]
         XCTAssertTrue(journal.waitForExistence(timeout: 3))
         journal.tap()
         journal.typeText("A quiet walk after rain.")
-        app.buttons["Save private Daily entry"].tap()
+        app.buttons["Save private Journal entry"].tap()
 
-        XCTAssertTrue(app.alerts["Significant Hobbies"].waitForExistence(timeout: 3))
-        XCTAssertTrue(app.alerts["Significant Hobbies"].staticTexts["Private Daily entry saved on this device."].exists)
+        XCTAssertTrue(app.alerts["Journal"].waitForExistence(timeout: 3))
+        XCTAssertTrue(app.alerts["Journal"].staticTexts["Private Journal entry saved on this device."].exists)
     }
 
     func testAccountScreenExplainsPrivateSyncAndExportRecovery() {
@@ -39,8 +34,8 @@ final class SignificantHobbiesUITests: XCTestCase {
 
         XCTAssertTrue(app.staticTexts["ACCOUNT & SYNC"].waitForExistence(timeout: 3))
         XCTAssertTrue(app.staticTexts["SYNCED"].exists)
-        XCTAssertTrue(app.staticTexts["Daily journal: always private"].exists)
-        XCTAssertTrue(app.buttons["Export Life Atlas"].exists)
+        XCTAssertTrue(app.staticTexts["Journal entries: always private"].exists)
+        XCTAssertTrue(app.buttons["Export Journal archive"].exists)
         XCTAssertTrue(app.buttons["Delete account and cloud copy"].exists)
     }
 

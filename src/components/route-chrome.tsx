@@ -27,6 +27,8 @@ export function RouteChrome({
     [
       '/live-more',
       '/daily',
+      '/journal',
+      '/habits',
       '/history',
       '/trajectory',
       '/bucket-list',

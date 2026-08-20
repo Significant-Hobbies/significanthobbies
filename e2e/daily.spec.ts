@@ -3,54 +3,65 @@ import { expect, test } from '@playwright/test';
 
 import { completeLocalOnboarding } from './fixtures/local-onboarding';
 
-test.describe('Daily ritual & manifesto', () => {
-  test('/daily provides a local ritual instead of walling it off', async ({ page }) => {
+test.describe('Journal, Habits & manifesto', () => {
+  test('/daily sends the old ritual to its two new homes', async ({ page }) => {
     await completeLocalOnboarding(page);
     const res = await page.goto('/daily');
     expect(res?.status()).toBeLessThan(400);
     expect(page.url()).not.toContain('/login');
-    await expect(page.getByLabel('Preview notice')).toHaveCount(0);
-    await expect(page.locator('#daily-journal-entry')).toBeVisible();
-    await expect(
-      page.getByRole('heading', { name: /Good (morning|evening), Local\./ })
-    ).toBeVisible();
-  });
-
-  test('/daily has no serious accessibility violations', async ({ page }) => {
-    await completeLocalOnboarding(page);
-    await page.goto('/daily');
-    const results = await new AxeBuilder({ page }).analyze();
-    const serious = results.violations.filter(({ impact }) =>
-      ['critical', 'serious'].includes(impact ?? '')
+    await expect(page.getByRole('link', { name: /Open Journal/ })).toHaveAttribute(
+      'href',
+      '/journal'
     );
-    expect(serious).toEqual([]);
+    await expect(page.getByRole('link', { name: /Open Habits/ })).toHaveAttribute(
+      'href',
+      '/habits'
+    );
   });
 
-  test('/daily restores anonymous habits and journal writing after reload', async ({ page }) => {
+  test('the split surfaces have no serious accessibility violations', async ({ page }) => {
     await completeLocalOnboarding(page);
-    await page.goto('/daily');
+    for (const route of ['/daily', '/journal', '/habits']) {
+      await page.goto(route);
+      const results = await new AxeBuilder({ page }).analyze();
+      const serious = results.violations.filter(({ impact }) =>
+        ['critical', 'serious'].includes(impact ?? '')
+      );
+      expect(serious, route).toEqual([]);
+    }
+  });
+
+  test('Habits and Journal preserve the existing anonymous records independently', async ({
+    page,
+  }) => {
+    await completeLocalOnboarding(page);
+    await page.goto('/habits');
     await page.getByRole('button', { name: 'Manage' }).click();
     await page.getByPlaceholder('Habit name (e.g. Read 20 pages)').fill('Walk after lunch');
     await page.getByRole('button', { name: 'Add habit' }).click();
     await expect(page.getByText('Walk after lunch')).toBeVisible();
 
-    await page.locator('#daily-journal-entry').fill('I made room for a slower afternoon.');
+    await page.goto('/journal');
+    await page.locator('#journal-entry').fill('I made room for a slower afternoon.');
     await page.getByRole('button', { name: /Save (morning|evening)/ }).click();
     await page.reload();
-    await expect(page.getByText('Walk after lunch')).toBeVisible();
-    await expect(page.locator('#daily-journal-entry')).toHaveValue(
-      'I made room for a slower afternoon.'
-    );
+    await expect(page.locator('#journal-entry')).toHaveValue('I made room for a slower afternoon.');
     await expect(
       page
         .getByRole('region', { name: 'Journal history' })
         .getByText('I made room for a slower afternoon.', { exact: true })
     ).toBeVisible();
+
+    await page.goto('/habits');
+    await expect(page.getByText('Walk after lunch')).toBeVisible();
+    await expect(page.locator('#journal-entry')).toHaveCount(0);
+    await expect(page.getByText('Ready when you are')).toBeVisible();
+    await expect(page.getByText(/\d+ of \d+ complete today/)).toHaveCount(0);
   });
 
-  test('/daily keeps a small new thing beside the journal', async ({ page }) => {
+  test('/live-more owns and restores the small new thing', async ({ page }) => {
     await completeLocalOnboarding(page);
-    await page.goto('/daily');
+    await page.goto('/live-more');
 
     const newThing = page.locator('aside').filter({ hasText: 'Make today different' });
     await expect(newThing).toBeVisible();
@@ -60,10 +71,6 @@ test.describe('Daily ritual & manifesto', () => {
     await expect(newThing.getByRole('heading', { level: 2 })).not.toHaveText(firstIdea ?? '');
     const chosenIdea = await newThing.getByRole('heading', { level: 2 }).textContent();
 
-    await page
-      .locator('#daily-journal-entry')
-      .fill('A small new thing changed the shape of today.');
-    await page.getByRole('button', { name: /Save (morning|evening)/ }).click();
     await newThing.getByRole('button', { name: 'I did this' }).click();
     await expect(newThing.getByRole('button', { name: 'Mark this open again' })).toBeVisible();
 
@@ -73,19 +80,12 @@ test.describe('Daily ritual & manifesto', () => {
         level: 2,
       })
     ).toHaveText(chosenIdea ?? '');
-    await expect(page.locator('#daily-journal-entry')).toHaveValue(
-      'A small new thing changed the shape of today.'
-    );
     await expect(page.getByRole('button', { name: 'Mark this open again' })).toBeVisible();
-
-    await page.getByRole('button', { name: 'Previous journal day' }).click();
-    await expect(page.getByText('No new thing was kept for this day.')).toBeVisible();
-    await expect(page.getByRole('button', { name: 'Suggest another' })).toHaveCount(0);
   });
 
-  test('/daily lets a person keep their own list for today', async ({ page }) => {
+  test('/live-more lets a person keep their own list for today', async ({ page }) => {
     await completeLocalOnboarding(page);
-    await page.goto('/daily');
+    await page.goto('/live-more');
     const card = page.locator('aside').filter({ hasText: 'Make today different' });
 
     await card.getByRole('button', { name: 'Choose my own' }).click();
@@ -144,19 +144,22 @@ test.describe('Daily ritual & manifesto', () => {
     await expect(bucketListLink).toHaveAttribute('href', '/bucket-lists');
   });
 
-  test('nav includes Daily link', async ({ page }) => {
+  test('nav exposes Live, Journal, and Habits as distinct products', async ({ page }) => {
     await completeLocalOnboarding(page);
     await page.goto('/hobbies');
     if ((page.viewportSize()?.width ?? 0) < 1024) {
       await page.getByRole('button', { name: 'Open menu' }).click();
     }
-    await expect(page.getByRole('link', { name: 'Daily' }).first()).toBeVisible();
+    await expect(page.getByRole('link', { name: 'Live', exact: true }).first()).toBeVisible();
+    await expect(page.getByRole('link', { name: 'Journal', exact: true }).first()).toBeVisible();
+    await expect(page.getByRole('link', { name: 'Habits', exact: true }).first()).toBeVisible();
   });
 
   test('public footer keeps private workspace links out', async ({ page }) => {
     await page.goto('/hobbies');
     const footer = page.locator('[data-site-footer]');
-    await expect(footer.getByRole('link', { name: 'Daily', exact: true })).toHaveCount(0);
+    await expect(footer.getByRole('link', { name: 'Journal', exact: true })).toHaveCount(0);
+    await expect(footer.getByRole('link', { name: 'Habits', exact: true })).toHaveCount(0);
     await expect(footer.getByRole('link', { name: 'Find your hobby' })).toBeVisible();
     await expect(footer.getByRole('link', { name: 'Things to try' })).toBeVisible();
   });

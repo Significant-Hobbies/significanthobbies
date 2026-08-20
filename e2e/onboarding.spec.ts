@@ -1,9 +1,7 @@
 import { expect, test } from '@playwright/test';
 
 test.describe('Onboarding', () => {
-  test('signed-in people who have not onboarded enter onboarding from home', async ({
-    page,
-  }, testInfo) => {
+  test('signed-in people can open the Hub before onboarding', async ({ page }, testInfo) => {
     const email = `e2e-onboarding-gate-${testInfo.project.name}-${Date.now()}-${crypto.randomUUID()}@significanthobbies.test`;
     const signUp = await page.request.post('/api/auth/sign-up/email', {
       data: {
@@ -19,8 +17,10 @@ test.describe('Onboarding', () => {
     expect(signUp.ok()).toBe(true);
 
     await page.goto('/');
-    await expect(page).toHaveURL(/\/onboarding$/);
-    await expect(page.getByRole('heading', { name: /make time personal/i })).toBeVisible();
+    await expect(page).toHaveURL(/\/$/);
+    await expect(
+      page.getByRole('heading', { name: 'Your personal apps, in one place.' })
+    ).toBeVisible();
   });
 
   test('anonymous onboarding restores its local draft after reload', async ({ page }) => {
@@ -231,9 +231,9 @@ test.describe('Onboarding', () => {
       .getByLabel('What is true about my life right now')
       .fill('Weekdays are busy, but Sunday mornings are open.');
     await page.getByRole('button', { name: /Enter my life/i }).click();
-    await expect(page).toHaveURL(/\/$/);
+    await expect(page).toHaveURL(/\/live-more$/);
     await expect(page.getByRole('heading', { name: /Live it, Complete/i })).toBeVisible();
-    await page.goto('/daily');
+    await page.goto('/habits');
     await expect(page.getByText('Connect with someone today', { exact: true })).toHaveCount(0);
   });
 });

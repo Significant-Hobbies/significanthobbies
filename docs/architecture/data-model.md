@@ -1,6 +1,6 @@
 ---
 title: Data model
-description: Drizzle schema overview — auth tables, app profile, timelines, bucket lists, commitments + stamps, daily ritual tables, quests, arcs. JSON-in-SQLite pattern and the unique indexes that enforce invariants.
+description: Drizzle schema overview — auth tables, app profile, timelines, bucket lists, commitments + stamps, Journal and Habits tables, quests, arcs. JSON-in-SQLite pattern and the unique indexes that enforce invariants.
 ---
 
 # Data model
@@ -70,14 +70,14 @@ migration can never drop them — deleting a table from the schema file is how
 you accidentally write a destructive production migration.
 
 `DailyCheckin` (userId, dayDate, amCompleted, pmCompleted) tracked whether the
-AM/PM ritual was "completed". The AM/PM rings on `/daily` now derive from whether
+AM/PM ritual was "completed". The AM/PM states in `/journal` now derive from whether
 the matching journal entry has text, which is what they always looked like they
 meant: the old flag was set only when you pressed save *during* that half of the
 day, so writing a morning entry in the evening left the AM ring dark even though
 the entry existed. On `/dashboard` the state was write-only — stored and never
 rendered. Retired 2026-07-25.
 
-### Daily ritual (from today-little-log merge)
+### Journal and Habits (from today-little-log merge)
 
 `Habit` (name, status, targetFrequency, icon, sourceQuestId, and one optional
 owned non-abandoned commitment reference), `HabitLog`
@@ -86,10 +86,14 @@ owned non-abandoned commitment reference), `HabitLog`
 commitment reference — unique on `(userId, dayDate)`). The two context foreign
 keys use `ON DELETE SET NULL`, so removing a Living target preserves private
 writing. A database check prevents both references from being set together.
-All journal data remains private by structure — no visibility fields. See
+Journal and Habits are separate product surfaces but intentionally retain these
+tables and identifiers; the split requires no database migration. Signed-out
+work similarly keeps one origin-scoped `daily:state` IndexedDB envelope while
+the `/journal` and `/habits` adapters read and update only their respective
+fields. All journal data remains private by structure — no visibility fields. See
 [`knowledge/archive/merge-plan-tll.md`](../knowledge/archive/merge-plan-tll.md)
-for the merge rationale and [`decisions.md`](decisions.md) A12 for the bridge
-boundary.
+for the merge rationale, [`decisions.md`](decisions.md) A12 for the bridge
+boundary, and A17 for the product split.
 
 The habit commitment foreign key uses `ON DELETE SET NULL`, so removing a
 commitment preserves the habit and all `HabitLog` rows. The reference is

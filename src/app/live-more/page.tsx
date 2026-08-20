@@ -4,12 +4,16 @@ import Link from 'next/link';
 import { redirect } from 'next/navigation';
 
 import { BucketInsights } from '~/components/bucket-list/bucket-insights';
+import { DailyNewThing } from '~/components/daily-new-thing';
+import { DailyNewThingHistory } from '~/components/daily-new-thing-history';
 import { LiveMoreBucketFocus } from '~/components/live-more-bucket-focus';
 import { LiveMoreDiscovery } from '~/components/live-more-discovery';
 import { LocalLiveMore } from '~/components/local-live-more';
 import { LocalOnboardingGate } from '~/components/local-onboarding-gate';
 import { bucketListItems, users } from '~/db/schema';
+import { getAllJournalEntries, setDailyNovelty } from '~/lib/actions/daily';
 import { getBucketListSuggestions } from '~/lib/bucket-list-insights';
+import { dayKeyIn } from '~/lib/day';
 import { getServerAuthSession } from '~/server/auth';
 import { db } from '~/server/db';
 
@@ -45,14 +49,17 @@ export default async function LiveMorePage() {
 
   const account = await db.query.users.findFirst({
     where: eq(users.id, session.user.id),
-    columns: { onboardingCompletedAt: true },
+    columns: { onboardingCompletedAt: true, timezone: true },
   });
   if (!account?.onboardingCompletedAt) redirect('/onboarding');
 
-  const items = await db.query.bucketListItems.findMany({
-    where: eq(bucketListItems.userId, session.user.id),
-    orderBy: (item, { desc }) => [desc(item.updatedAt)],
-  });
+  const [items, journalEntries] = await Promise.all([
+    db.query.bucketListItems.findMany({
+      where: eq(bucketListItems.userId, session.user.id),
+      orderBy: (item, { desc }) => [desc(item.updatedAt)],
+    }),
+    getAllJournalEntries(),
+  ]);
   const active = items.filter((item) => item.status !== 'done');
   const year = new Date().getFullYear();
   const yearFocus = active.filter(
@@ -64,6 +71,7 @@ export default async function LiveMorePage() {
       fitReasons[suggestion.category] ??
       'This introduces a different kind of experience to your current list.',
   }));
+  const today = dayKeyIn(account.timezone);
 
   return (
     <div className="bg-[#fbf8ef] px-4 py-8 text-[#211e18] sm:py-12">
@@ -74,6 +82,17 @@ export default async function LiveMorePage() {
           initialItems={active.map((item) => ({ id: item.id, title: item.title }))}
           goals={yearFocus.map((item) => item.title)}
         />
+
+        <section className="grid gap-6 lg:grid-cols-[0.85fr_1.15fr] lg:items-start">
+          <DailyNewThing
+            today={today}
+            selectedDate={today}
+            seed={session.user.id}
+            records={journalEntries}
+            persist={setDailyNovelty}
+          />
+          <DailyNewThingHistory records={journalEntries} />
+        </section>
 
         <LiveMoreDiscovery suggestions={suggestions} />
 

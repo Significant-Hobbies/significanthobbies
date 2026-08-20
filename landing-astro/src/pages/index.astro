@@ -1,75 +1,143 @@
 ---
-import BucketListPanel from '@/components/BucketListPanel.astro';
-import CommunitySamples from '@/components/CommunitySamples.astro';
-import FaqSection from '@/components/FaqSection.astro';
-import FeatureRow from '@/components/FeatureRow.astro';
-import FinalCta from '@/components/FinalCta.astro';
-import FleetFooter from '@/components/FleetFooter.astro';
-import HowItWorks from '@/components/HowItWorks.astro';
 import Layout from '@/layouts/Layout.astro';
 
-const TITLE = 'Significant Hobbies — Map your hobby journey across life';
+const TITLE = 'Significant Hobbies — Personal Apps';
 const DESCRIPTION =
-  'Map hobbies across life phases: what rekindled, what persisted, and what to try next. A hobby journey tool for curious adults.';
+  'A simple directory for Live, Journal, Habits, Calorie, Setline, Kith, and Anchor.';
 
+type Product = {
+  name: string;
+  mark: string;
+  description: string;
+  platforms: string;
+  status: string;
+  href?: string;
+  color: string;
+};
+
+const products: Product[] = [
+  {
+    name: 'Live',
+    mark: 'L',
+    description: 'A lifelong catalog for places, hobbies, side quests, and experiences.',
+    platforms: 'Web',
+    status: 'Available now',
+    href: '/live-more',
+    color: '#fff09a',
+  },
+  {
+    name: 'Journal',
+    mark: 'J',
+    description: 'A private page for morning, evening, and everything worth remembering.',
+    platforms: 'iPhone · iPad',
+    status: 'Native app prepared',
+    color: '#eadcf6',
+  },
+  {
+    name: 'Habits',
+    mark: 'H',
+    description: 'Keep what helps, trade what does not, and remember the choices you made.',
+    platforms: 'iPhone · iPad',
+    status: 'Native app prepared',
+    color: '#dceeff',
+  },
+  {
+    name: 'Calorie',
+    mark: 'C',
+    description: 'A private food, water, medicine, and weight journal.',
+    platforms: 'Web · Apple',
+    status: 'Web app available',
+    href: 'https://calorie.significanthobbies.com',
+    color: '#e4efd9',
+  },
+  {
+    name: 'Setline',
+    mark: 'S',
+    description: 'A personal record for the practice and progress that matter to you.',
+    platforms: 'Apple',
+    status: 'Native app in preparation',
+    href: 'https://setline.significanthobbies.com',
+    color: '#f5e2d2',
+  },
+  {
+    name: 'Kith',
+    mark: 'K',
+    description: 'A private place for the people you want to keep close.',
+    platforms: 'iPhone',
+    status: 'Native app in preparation',
+    href: 'https://kith.significanthobbies.com',
+    color: '#f6e1d4',
+  },
+  {
+    name: 'Anchor',
+    mark: 'A',
+    description: 'See where your time went, including the interruptions around it.',
+    platforms: 'Mac · iPhone · Watch',
+    status: 'Native app in preparation',
+    href: 'https://anchor.significanthobbies.com',
+    color: '#dce8f0',
+  },
+];
 ---
 
 <Layout title={TITLE} description={DESCRIPTION}>
-  <main id="main">
-    <section class="cinematic-hero">
-    <video
-      class="cinematic-hero__video"
-      poster="/hero/hobby-horizon-poster.jpg"
-      autoplay
-      muted
-      loop
-      playsinline
-      preload="auto"
-      width="1280"
-      height="720"
-      aria-hidden="true"
-    >
-      <source src="/hero/hobby-horizon.mp4" type="video/mp4" />
-    </video>
-    <div class="cinematic-hero__scrim" aria-hidden="true"></div>
+  <main id="main" class="hub">
+    <header class="hub__header">
+      <a class="hub__wordmark" href="/">Significant Hobbies</a>
+      <p class="hub__kicker">Personal apps</p>
+      <h1>Your personal apps, in one place.</h1>
+      <p class="hub__lede">
+        Seven focused products. Each stays useful on its own. This Hub is the simple front door.
+      </p>
+    </header>
 
-    <div class="cinematic-hero__inner">
-      <p class="cinematic-hero__wordmark">Significant Hobbies</p>
-      <div class="cinematic-hero__copy">
-        <h1>
-          <span>What will you do</span>
-          <span>with the time you have?</span>
-        </h1>
-        <p>
-          Start with your birth date. See the weeks behind you, the weeks still
-          yours, and make room for what matters.
-        </p>
-        <a class="cinematic-hero__cta" href="/life-in-weeks">
-          See my life in weeks
-          <span aria-hidden="true">→</span>
-        </a>
-        <p class="cinematic-hero__note">Takes 10 seconds. No sign-up required.</p>
+    <section aria-labelledby="products-heading" class="collection">
+      <div class="collection__heading">
+        <h2 id="products-heading">The collection</h2>
+        <p>Directory now. Shared summaries later.</p>
       </div>
 
-      <p class="cinematic-hero__prompt" aria-hidden="true">
-        The rest is still unwritten.
-      </p>
-    </div>
+      <div class="product-grid">
+        {products.map((product) => {
+          const Tag = product.href ? 'a' : 'article';
+          return (
+            <Tag
+              class:list={['product-card', { 'product-card--linked': product.href }]}
+              href={product.href}
+              style={`--card-color: ${product.color}`}
+            >
+              <div class="product-card__top">
+                <span class="product-card__mark" aria-hidden="true">{product.mark}</span>
+                {product.href && <span aria-hidden="true">↗</span>}
+              </div>
+              <div>
+                <h3>{product.name}</h3>
+                <p class="product-card__description">{product.description}</p>
+                <div class="product-card__meta">
+                  <strong>{product.platforms}</strong>
+                  <span>{product.status}</span>
+                </div>
+              </div>
+            </Tag>
+          );
+        })}
+      </div>
     </section>
 
-    <FeatureRow />
-    <BucketListPanel />
-    <HowItWorks />
-    <CommunitySamples />
-    <FaqSection />
-    <FinalCta />
-  </main>
-  <FleetFooter />
-</Layout>
+    <aside class="hub-note">
+      <div>
+        <strong>No combined database yet.</strong>
+        <p>Each product still owns its interface and data. Connections come after the split is stable.</p>
+      </div>
+      <span>Read-only Hub</span>
+    </aside>
 
-<script>
-  const heroVideo = document.querySelector<HTMLVideoElement>('.cinematic-hero__video');
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    heroVideo?.pause();
-  }
-</script>
+    <footer class="hub__footer">
+      <span>© 2026 Significant Hobbies</span>
+      <nav aria-label="Footer">
+        <a href="/privacy">Privacy</a>
+        <a href="/about">About</a>
+      </nav>
+    </footer>
+  </main>
+</Layout>

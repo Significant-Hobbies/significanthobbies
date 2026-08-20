@@ -21,23 +21,11 @@ const fraunces = Fraunces({
 
 export const metadata: Metadata = {
   title: {
-    default: 'Significant Hobbies — Your Hobby Journey',
+    default: 'Significant Hobbies — Personal Apps',
     template: '%s | Significant Hobbies',
   },
-  description:
-    'Map your hobby history across life phases. Discover what rekindled, what persisted, and what to explore next.',
-  keywords: [
-    'hobby discovery',
-    'hobby journal',
-    'life phases hobbies',
-    'hobby timeline',
-    'bucket list',
-    'find your hobby',
-    'hobby quiz',
-    'daily rituals',
-    'habit tracking',
-    'life planner',
-  ],
+  description: 'A simple directory for Live, Journal, Habits, Calorie, Setline, Kith, and Anchor.',
+  keywords: ['personal apps', 'local-first apps', 'bucket list', 'journal', 'habits'],
   authors: [{ name: 'Significant Hobbies' }],
   robots: {
     index: true,
@@ -67,23 +55,23 @@ export const metadata: Metadata = {
     type: 'website',
     siteName: 'Significant Hobbies',
     url: 'https://significanthobbies.com',
-    title: 'Significant Hobbies — Your Hobby Journey',
+    title: 'Significant Hobbies — Personal Apps',
     description:
-      'Map your hobby history across life phases. Discover what rekindled, what persisted, and what to explore next.',
+      'A simple directory for Live, Journal, Habits, Calorie, Setline, Kith, and Anchor.',
     images: [
       {
         url: 'https://significanthobbies.com/opengraph-image',
         width: 1200,
         height: 630,
-        alt: 'Significant Hobbies — Your Hobby Journey',
+        alt: 'Significant Hobbies personal apps',
       },
     ],
   },
   metadataBase: new URL('https://significanthobbies.com'),
   twitter: {
     card: 'summary_large_image',
-    title: 'Significant Hobbies — Your Hobby Journey',
-    description: 'Map your hobby history across life phases.',
+    title: 'Significant Hobbies — Personal Apps',
+    description: 'Seven focused personal apps in one simple directory.',
     images: ['https://significanthobbies.com/opengraph-image'],
   },
 };

@@ -1,117 +1,78 @@
-import { eq } from 'drizzle-orm';
-import { redirect } from 'next/navigation';
-
-import { DailyRitual } from '~/components/daily-ritual';
-import { LocalDailyRitual } from '~/components/local-daily-ritual';
-import { LocalOnboardingGate } from '~/components/local-onboarding-gate';
-import { TimezoneSync } from '~/components/timezone-sync';
-import { users } from '~/db/schema';
-import {
-  createHabit,
-  deleteHabit,
-  getAllJournalEntries,
-  getHabitCommitmentChoices,
-  getHabits,
-  getHabitLogsForDate,
-  getJournalContextChoices,
-  getUserProfile,
-  saveJournalEntry,
-  setDailyNovelty,
-  setHabitCommitment,
-  toggleHabitLog,
-} from '~/lib/actions/daily';
-import { dayKeyIn, isMorningIn } from '~/lib/day';
-import {
-  PREVIEW_FIRST_NAME,
-  previewHabitLogs,
-  previewHabitLogsForToday,
-  previewHabits,
-  previewJournalEntries,
-  previewJournalEntryForToday,
-} from '~/lib/preview-data';
-import { birthDateFromYear, buildLifeGrid } from '~/lib/mortality';
-import { parseBirthDate } from '~/lib/life-in-weeks';
-import { getServerAuthSession } from '~/server/auth';
-import { db } from '~/server/db';
+import { ArrowRight, BookOpen, Repeat2 } from 'lucide-react';
+import Link from 'next/link';
 
 export const metadata = {
-  title: 'Daily Ritual — SignificantHobbies',
+  title: 'Daily became Journal and Habits — Significant Hobbies',
   robots: { index: false, follow: false },
 };
 
-export default async function DailyPage() {
-  const session = await getServerAuthSession();
-
-  if (!session?.user) {
-    const today = dayKeyIn(null);
-    return (
-      <LocalOnboardingGate>
-        <LocalDailyRitual today={today} isMorning={isMorningIn(null)} />
-      </LocalOnboardingGate>
-    );
-  }
-
-  // The user's zone has to be resolved before "today" exists — every dayDate
-  // key below is user-local, so this one read cannot be parallelised with them.
-  const me = await db.query.users.findFirst({
-    where: eq(users.id, session.user.id),
-    columns: { birthYear: true, birthDate: true, timezone: true, onboardingCompletedAt: true },
-  });
-  if (!me?.onboardingCompletedAt) redirect('/onboarding');
-
-  const today = dayKeyIn(me?.timezone);
-  const isMorning = isMorningIn(me?.timezone);
-  const [
-    userHabits,
-    habitLogs,
-    journalEntries,
-    journalContextChoices,
-    habitCommitmentChoices,
-    profile,
-  ] = await Promise.all([
-    getHabits(),
-    getHabitLogsForDate(today),
-    getAllJournalEntries(),
-    getJournalContextChoices(),
-    getHabitCommitmentChoices(),
-    getUserProfile(),
-  ]);
-
-  const journalEntry = journalEntries.find((entry) => entry.dayDate === today) ?? null;
-
-  const firstName = profile?.name?.split(' ')[0] ?? session.user.name?.split(' ')[0] ?? 'there';
-
-  // Mortality frame — weeks remaining grounds the ritual in the finite life.
-  const birth =
-    me?.birthDate && parseBirthDate(me.birthDate)
-      ? new Date(`${me.birthDate}T12:00:00`)
-      : birthDateFromYear(me?.birthYear);
-  const weeksRemaining = birth ? buildLifeGrid(birth, new Set()).weeksRemaining : null;
-
+export default function DailyTransitionPage() {
   return (
-    <>
-      <TimezoneSync storedTimezone={me?.timezone ?? null} />
-      <DailyRitual
-        firstName={firstName}
-        today={today}
-        isMorning={isMorning}
-        weeksRemaining={weeksRemaining}
-        habits={userHabits}
-        habitLogs={habitLogs}
-        journalEntry={journalEntry}
-        journalEntries={journalEntries}
-        journalContextChoices={journalContextChoices}
-        habitCommitmentChoices={habitCommitmentChoices}
-        actions={{
-          createHabit,
-          deleteHabit,
-          setHabitCommitment,
-          toggleHabitLog,
-          saveJournalEntry,
-          setDailyNovelty,
-        }}
-        noveltySeed={session.user.id}
-      />
-    </>
+    <main className="min-h-[calc(100vh-4.5rem)] bg-[#fbf8ef] px-4 py-10 text-[#211e18] sm:py-16">
+      <div className="mx-auto max-w-5xl">
+        <header className="max-w-3xl">
+          <p className="text-sm font-bold text-[#7658ad]">Daily has grown into two places</p>
+          <h1 className="mt-3 font-serif text-5xl leading-[0.98] tracking-[-0.04em] sm:text-7xl">
+            Writing and repetition deserve different rooms.
+          </h1>
+          <p className="mt-6 max-w-2xl text-lg leading-8 text-[#625b50]">
+            Your existing entries and check-ins are still here. Choose the part of your day you want
+            to continue.
+          </p>
+        </header>
+
+        <div className="mt-10 grid gap-5 md:grid-cols-2">
+          <Destination
+            href="/journal"
+            color="bg-[#c5abfa] text-[#241a31]"
+            icon={<BookOpen className="size-7" />}
+            title="Journal"
+            copy="Write this morning or evening, then return to the words you left behind."
+            action="Open Journal"
+          />
+          <Destination
+            href="/habits"
+            color="bg-[#dceabf] text-[#24351f]"
+            icon={<Repeat2 className="size-7" />}
+            title="Habits"
+            copy="Check in on the small practices you want to keep returning to."
+            action="Open Habits"
+          />
+        </div>
+      </div>
+    </main>
+  );
+}
+
+function Destination({
+  href,
+  color,
+  icon,
+  title,
+  copy,
+  action,
+}: {
+  href: string;
+  color: string;
+  icon: React.ReactNode;
+  title: string;
+  copy: string;
+  action: string;
+}) {
+  return (
+    <Link
+      href={href}
+      className={`group flex min-h-72 flex-col justify-between rounded-[1.75rem] p-6 shadow-[0_12px_36px_rgba(66,55,22,0.08)] sm:p-8 ${color}`}
+    >
+      {icon}
+      <div>
+        <h2 className="font-serif text-4xl">{title}</h2>
+        <p className="mt-3 max-w-sm leading-7 opacity-75">{copy}</p>
+        <span className="mt-7 inline-flex min-h-11 items-center gap-2 border-b-2 border-current font-bold">
+          {action}
+          <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" />
+        </span>
+      </div>
+    </Link>
   );
 }

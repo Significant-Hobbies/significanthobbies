@@ -21,9 +21,8 @@ The workflow:
    `https://www.significanthobbies.com/` via the Cloudflare API. Uses
    `continue-on-error: true` — a missing `cache_purge` permission (401) must
    not fail a good deploy.
-4. Smoke check: fetches the homepage and verifies:
-   - ≥5 `<section>` elements (full Astro landing, not a stale/partial overlay)
-   - `id="lcp-shell"` is present (LCP shell in overlaid index.html)
+4. Smoke check: fetches the homepage and verifies the Hub heading and exactly
+   seven product cards in the overlaid HTML.
 
 If the smoke check fails, the deploy is considered stale — the Astro overlay
 did not rebuild or the cache was not purged. Re-run the workflow; if it

@@ -2,13 +2,8 @@
 
 import { useEffect, useMemo, useState } from 'react';
 
-import { DailyRitual } from '~/components/daily-ritual';
+import { HabitsExperience, JournalExperience } from '~/components/personal-practice-surfaces';
 import { StorageModeProvider, StorageModeStatus } from '~/components/storage-mode-provider';
-import {
-  areDailyIntentionsValid,
-  dailyNoveltyById,
-  normalizeDailyIntentions,
-} from '~/lib/daily-novelty';
 import { browserRecordAdapter, readLocalRecord, writeLocalRecord } from '~/lib/local-record-store';
 
 interface LocalHabit {
@@ -37,7 +32,7 @@ interface LocalJournal {
   noveltyText?: string | null;
   noveltyCompleted?: boolean;
 }
-interface LocalDailyState {
+export interface LocalDailyState {
   habits: LocalHabit[];
   logs: LocalHabitLog[];
   journals: LocalJournal[];
@@ -48,7 +43,29 @@ interface LocalProfile {
 
 const EMPTY: LocalDailyState = { habits: [], logs: [], journals: [] };
 
-export function LocalDailyRitual({ today, isMorning }: { today: string; isMorning: boolean }) {
+export function LocalJournalExperience({
+  today,
+  isMorning,
+}: {
+  today: string;
+  isMorning: boolean;
+}) {
+  return <LocalPersonalPracticeSurface today={today} isMorning={isMorning} surface="journal" />;
+}
+
+export function LocalHabitsExperience({ today }: { today: string }) {
+  return <LocalPersonalPracticeSurface today={today} isMorning={true} surface="habits" />;
+}
+
+function LocalPersonalPracticeSurface({
+  today,
+  isMorning,
+  surface,
+}: {
+  today: string;
+  isMorning: boolean;
+  surface: 'journal' | 'habits';
+}) {
   const [state, setState] = useState<LocalDailyState>(EMPTY);
   const [profile, setProfile] = useState<LocalProfile>({});
   const [loaded, setLoaded] = useState(false);
@@ -157,41 +174,6 @@ export function LocalDailyRitual({ today, isMorning }: { today: string; isMornin
           };
         });
       },
-      async setDailyNovelty(
-        dayDate: string,
-        noveltyId: string | null,
-        noveltyText: string | null,
-        completed: boolean
-      ) {
-        const customText = normalizeDailyIntentions(noveltyText);
-        const validNoveltyId = noveltyId ? dailyNoveltyById(noveltyId)?.id : null;
-        if (
-          Boolean(validNoveltyId) === Boolean(customText) ||
-          (Boolean(customText) && !areDailyIntentionsValid(customText))
-        )
-          return false;
-        await commit((current) => {
-          const existing = current.journals.find((entry) => entry.dayDate === dayDate);
-          const entry: LocalJournal = {
-            id: existing?.id ?? `local-journal-${crypto.randomUUID()}`,
-            dayDate,
-            amEntry: existing?.amEntry ?? null,
-            pmEntry: existing?.pmEntry ?? null,
-            timelineId: null,
-            commitmentId: null,
-            noveltyId: validNoveltyId,
-            noveltyText: customText || null,
-            noveltyCompleted: completed,
-          };
-          return {
-            ...current,
-            journals: existing
-              ? current.journals.map((item) => (item.id === existing.id ? entry : item))
-              : [...current.journals, entry],
-          };
-        });
-        return true;
-      },
       // commit deliberately follows the latest state through the component remount revision.
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }),
@@ -201,7 +183,7 @@ export function LocalDailyRitual({ today, isMorning }: { today: string; isMornin
   if (!loaded)
     return (
       <p className="p-8 text-center text-sm text-muted-foreground">
-        Loading Daily from this device…
+        Loading {surface === 'journal' ? 'Journal' : 'Habits'} from this device…
       </p>
     );
   const todayJournal = state.journals.find((entry) => entry.dayDate === today) ?? null;
@@ -210,19 +192,30 @@ export function LocalDailyRitual({ today, isMorning }: { today: string; isMornin
       <div className="mx-auto max-w-3xl px-4 pt-6">
         <StorageModeStatus />
       </div>
-      <DailyRitual
-        firstName={profile.name?.trim().split(/\s+/)[0] || 'there'}
-        today={today}
-        isMorning={isMorning}
-        weeksRemaining={null}
-        habits={state.habits}
-        habitLogs={state.logs.filter((log) => log.dayDate === today)}
-        journalEntry={todayJournal}
-        journalEntries={state.journals}
-        actions={actions}
-        noveltySeed="this-device"
-        localMode
-      />
+      {surface === 'journal' ? (
+        <JournalExperience
+          firstName={profile.name?.trim().split(/\s+/)[0] || 'there'}
+          today={today}
+          isMorning={isMorning}
+          weeksRemaining={null}
+          journalEntry={todayJournal}
+          journalEntries={state.journals}
+          saveJournalEntry={actions.saveJournalEntry}
+          localMode
+        />
+      ) : (
+        <HabitsExperience
+          firstName={profile.name?.trim().split(/\s+/)[0] || 'there'}
+          today={today}
+          habits={state.habits}
+          habitLogs={state.logs.filter((log) => log.dayDate === today)}
+          createHabit={actions.createHabit}
+          deleteHabit={actions.deleteHabit}
+          setHabitCommitment={actions.setHabitCommitment}
+          toggleHabitLog={actions.toggleHabitLog}
+          localMode
+        />
+      )}
     </StorageModeProvider>
   );
 }

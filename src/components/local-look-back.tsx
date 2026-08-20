@@ -21,9 +21,8 @@ export function LocalLookBack({ today }: { today: string }) {
   useEffect(() => {
     async function load() {
       const adapter = browserRecordAdapter();
-      const [daily, commitments, timeline, onboarding, profile, birthDateRecord, trajectoryState] =
+      const [commitments, timeline, onboarding, profile, birthDateRecord, trajectoryState] =
         await Promise.all([
-          readLocalRecord(adapter, 'daily:state', 'daily', isObject),
           readLocalRecord(adapter, 'commitments:state', 'commitments', Array.isArray),
           readLocalRecord(adapter, 'timeline-draft-new', 'timelines', isObject),
           readLocalRecord(adapter, 'onboarding:draft', 'onboarding', isObject),
@@ -46,19 +45,9 @@ export function LocalLookBack({ today }: { today: string }) {
         completedQuests: [],
         activeQuests: [],
         abandonedQuests: [],
-        habits: Array.isArray(daily?.habits)
-          ? daily.habits.map((habit: Record<string, unknown>) => ({
-              id: String(habit.id),
-              name: String(habit.name),
-              icon: typeof habit.icon === 'string' ? habit.icon : null,
-              targetFrequency: String(habit.targetFrequency ?? 'daily'),
-              createdAt: new Date(),
-            }))
-          : [],
-        habitLogs: Array.isArray(daily?.logs) ? (daily.logs as LookBackData['habitLogs']) : [],
-        journalEntries: Array.isArray(daily?.journals)
-          ? (daily.journals as LookBackData['journalEntries'])
-          : [],
+        habits: [],
+        habitLogs: [],
+        journalEntries: [],
         commitments: Array.isArray(commitments)
           ? commitments.map((item: Record<string, unknown>) => ({
               hobbyName: String(item.hobbyName),

@@ -1,16 +1,14 @@
 ---
 title: Product overview
-description: SignificantHobbies — a life planner with two dimensions (Daily + Living). Product thesis, users, brand, design principles, and the mortality frame.
+description: SignificantHobbies — a family of focused Live, Journal, and Habits products. Product thesis, users, brand, design principles, and the mortality frame.
 ---
 
 # Product overview
 
-> A life planner with two dimensions. **Daily** (private): one ritual page with
-> AM/PM prompts, habit check-ins, a journal entry, and one optional small new
-> thing to try. **Living**
-> (opt-in public): hobby discovery, timeline builder, bucket lists, side
-> quests, SEO blog, and public user profiles. The mortality frame (life grid,
-> manifesto) connects both dimensions.
+> A family of focused personal products. **Live** owns hobby discovery, bucket
+> lists, timelines, commitments, side quests, and one optional small new thing.
+> **Journal** owns private AM/PM writing. **Habits** owns non-scoring practice
+> check-ins. The mortality frame (life grid, manifesto) connects the family.
 
 ## Register
 
@@ -56,20 +54,22 @@ Emotional goal: users should feel seen, inspired, and gently nudged — not trac
 - Lumi is described via aria-label; decorative instances are aria-hidden.
 - Color is never the only signal — category tags use both emoji and text labels.
 
-## Two dimensions
+## Product family
 
 The product merged with `today-little-log` on 2026-07-02 (see
 [`knowledge/archive/merge-plan-tll.md`](../knowledge/archive/merge-plan-tll.md)).
-The merge produced one coherent thesis:
+The merge produced the original Daily and Living thesis. The 2026-08 split
+preserves its data while giving each recurring job a clearer home:
 
-- **Daily (private):** one `/daily` ritual page — AM/PM prompts, habit
-  check-ins (simple, no scoring), journal, and one approachable new thing that
-  can be swapped, completed, or left open without becoming another obligation.
-  Structurally private: no visibility field, no public API, no sharing.
-- **Living (private by default, selectively public):** hobbies, bucket lists,
+- **Journal (private):** `/journal` owns AM/PM prompts and journal history.
+  Structurally private: no visibility field, public API, or sharing.
+- **Habits (private):** `/habits` owns simple check-ins and lightweight
+  management without scoring.
+- **Live (private by default, selectively public):** hobbies, bucket lists,
   side quests, timelines, and public profiles. `/live-more` is the orchestration
   home: the owned list and yearly goals come first, then corpus-backed discovery,
-  Life Bingo, and Side Quests. Focused tools remain separate routes.
+  the optional small new thing, Life Bingo, and Side Quests. Focused tools remain
+  separate routes.
 - **First-use Living loop:** onboarding turns remembered hobbies into a private
   timeline and searches 5,000+ structured paths while accepting a pasted personal
   bucket list. Yearly goals are captured independently, may optionally borrow
@@ -87,29 +87,30 @@ The merge produced one coherent thesis:
   link later. The check-in remains lightweight context: only a deliberate proof
   stamp advances a commitment. See
   [`decisions.md`](../architecture/decisions.md) A14.
-- **The mortality frame connects both.** A finite life is the reason daily
-  practice and life aspirations both matter. The life grid (`src/lib/mortality.ts`)
+- **The mortality frame connects the family.** A finite life is the reason
+  reflection, practice, and life aspirations all matter. The life grid (`src/lib/mortality.ts`)
   and the manifesto (`/manifesto`) make this concrete. `/history` pairs the life
   grid with an image-capable timeline, Trajectory, and lived reflection.
 
-### Post-onboarding workspace
+### Post-onboarding products
 
-- **Dashboard (`/` after onboarding):** remaining-time context, one strong quote,
-  today's journal, habit check-ins, and one next bucket-list action.
-- **Live More (`/live-more`):** bucket list and yearly goals, followed by a
-  substantial “discover new things” engine and small-step paths into Bingo and
-  Side Quests.
-- **Daily (`/daily`):** journal writing and history, one suggested or
-  person-authored new thing, and a calm habit checklist without scores.
+- **Significant Hobbies (`/`):** a read-only directory for the seven focused
+  products. It does not combine their data yet.
+- **Live (`/live-more`):** bucket list and yearly
+  goals, the optional small new thing, a substantial discovery engine, and
+  small-step paths into Bingo and Side Quests.
+- **Journal (`/journal`):** private writing and journal history.
+- **Habits (`/habits`):** a calm practice checklist and management surface
+  without scores.
 - **History (`/history`):** the personal timeline, Life in Weeks, life-so-far
-  reflection, and Trajectory.
+  reflection, and Trajectory. It no longer retrieves Journal or Habits records.
+- **Daily (`/daily`):** a compatibility doorway that explains the split and
+  routes existing bookmarks to Journal or Habits.
 
-Before onboarding, signed-out visitors retain `/` and public navigation:
-editorial stories, the primary hobby quiz, experience possibilities, the
-manifesto, and explicitly public profiles. Signed-in incomplete accounts and
-private-section attempts continue at `/onboarding`. Once onboarding is complete,
-`/` is the local or account dashboard. The SH wordmark returns a person to that
-dashboard; there is no separate “Today” navigation item.
+All visitors see the product Hub at `/`. Public editorial, discovery, and
+explicitly public profiles remain reachable. Private-section attempts continue
+at `/onboarding` until onboarding is complete. Navigation names Live, Journal,
+Habits, and History directly inside the existing same-origin application.
 
 ### What we deliberately do not do
 

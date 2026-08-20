@@ -10,13 +10,12 @@ description: Durable architectural decisions for significanthobbies and the why 
 > and [`knowledge/archive/side-quests-design-2026-03-06.md`](../knowledge/archive/side-quests-design-2026-03-06.md).
 > This page keeps the choices that still constrain the current codebase.
 
-## A1 — Astro owns anonymous `GET /`; Next.js owns authenticated `GET /`
+## A1 — Astro and Next.js render the same Hub at `GET /`
 
-**Decision:** The anonymous landing page is a static Astro site (`landing-astro/`)
+**Decision:** The anonymous Hub is a static Astro site (`landing-astro/`)
 overlaid into `.open-next/assets/`. The Worker runs first for `/`: anonymous
 requests are served directly from the ASSETS binding while auth-bearing requests
-reach the private Next.js root. This lets both audiences use the canonical URL
-without a dead dashboard route or a client-side redirect flash.
+reach the equivalent Next.js Hub. Both paths show the same seven-product directory.
 
 **Why:** The homepage is the LCP path and the highest-traffic page. Serving the
 anonymous response from the ASSETS binding avoids starting OpenNext. Astro is
@@ -26,8 +25,8 @@ fleet perf push (2026-06-20) required sub-second TTFB on `/`.
 **Constraint:** Demo timelines moved to `GET /api/demo-timelines` because the
 Astro HTML is static — it cannot render per-request data. Any new
 homepage-embedded dynamic content must either be fetched client-side or moved
-to a Next route. The Astro overlay must be rebuilt and redeployed when landing
-copy changes; it is not ISR.
+to a Next route. V1 deliberately has none. The Astro overlay must be rebuilt
+and redeployed when Hub copy changes; it is not ISR.
 
 ## A2 — JSON-in-SQLite for structured user data
 
@@ -49,9 +48,9 @@ assume JSON-in-SQLite scales to that case without measuring. See
 
 ## A3 — The hobby quiz is the single primary discovery UX
 
-**Decision:** `/find-your-hobby` is the only discovery surface linked from the
-homepage, nav, and footer. `/hobbies`, `/explore`, `/journeys` are hidden (code
-intact, routes reachable via deep links/SEO/cross-links).
+**Decision:** `/find-your-hobby` remains Live's primary discovery surface.
+`/hobbies`, `/explore`, and `/journeys` stay reachable through deep links, SEO,
+and Live cross-links rather than becoming separate products in the Hub.
 
 **Why:** Four discovery surfaces split attention and dilute measurement. The
 quiz is the most focused, interactive, single-purpose flow with the clearest
@@ -418,3 +417,37 @@ daily record, and understand the life accumulating behind them.
   in local mode.
 - Navigation names only Live More, Daily, and History. With no external legacy users,
   obsolete compatibility routes are removed instead of preserved indefinitely.
+
+## A17 — Live, Journal, and Habits are separate product surfaces
+
+**Decision:** A16's combined Daily surface and post-onboarding dashboard are
+superseded. Live (`/live-more`) owns bucket lists, discovery, side quests,
+commitments, timelines, History, and the optional small new thing. Journal
+(`/journal`) owns AM/PM writing and the private archive. Habits (`/habits`) owns
+non-scoring check-ins. `/daily` is a small compatibility doorway to Journal and
+Habits. `/` is the read-only Significant Hobbies Hub for all visitors; it links
+to the seven focused products without reading or combining their data.
+
+**Why:** The combined product asked one destination to serve three different
+intentions: decide what to live, reflect on the day, and repeat a practice. The
+Journal and Habits jobs are useful on their own; separating them makes each
+surface easier to return to and lets Significant Hobbies evolve into a family
+of personal products without losing the current Live product.
+
+**Constraints:**
+
+- This first split changes product boundaries and routes, not storage. Existing
+  D1 tables and signed-out IndexedDB records remain authoritative and intact.
+- The Hub is a static directory in this phase. It has no summary API, shared
+  database, assistant, write action, or embedded product interface.
+- Journal and Habits fetch and mutate only their own domain records. History no
+  longer retrieves either domain for its narrative.
+- The optional small new thing remains stored in the existing journal-entry
+  envelope for compatibility, but its interface and mutation live in Live.
+- All three products remain on the same origin until a separate synchronization
+  contract exists. Moving signed-out IndexedDB data across subdomains without
+  that contract would strand local records.
+- The next architecture decision must define product synchronization and
+  identity before `journal.significanthobbies.com`,
+  `habits.significanthobbies.com`, or `live.significanthobbies.com` becomes an
+  independent deployment boundary.

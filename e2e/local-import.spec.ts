@@ -4,7 +4,7 @@ import { completeLocalOnboarding } from './fixtures/local-onboarding';
 
 test('anonymous private work imports into a newly signed-in account', async ({ page }) => {
   await completeLocalOnboarding(page);
-  await page.goto('/daily');
+  await page.goto('/habits');
   await page.getByRole('button', { name: 'Manage' }).click();
   await page.getByPlaceholder('Habit name (e.g. Read 20 pages)').fill('Imported local walk');
   await page.getByRole('button', { name: 'Add habit' }).click();
@@ -38,7 +38,7 @@ test('anonymous private work imports into a newly signed-in account', async ({ p
     `onboarding completion failed (${complete.status()}): ${await complete.text()}`
   ).toBe(true);
 
-  await page.goto('/daily');
+  await page.goto('/habits');
   await expect(page.getByRole('button', { name: 'Import private data' })).toBeVisible();
   await page.getByRole('button', { name: 'Import private data' }).click();
   await expect(page.getByRole('button', { name: 'Import private data' })).toHaveCount(0);

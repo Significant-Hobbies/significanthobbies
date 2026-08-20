@@ -11,16 +11,7 @@ import { LocalLookBack } from '~/components/local-look-back';
 import { LocalOnboardingGate } from '~/components/local-onboarding-gate';
 import { HistoryAtlas } from '~/components/life-atlas/history-atlas';
 import { PhaseSwimlane } from '~/components/timeline-view/phase-swimlane';
-import {
-  bucketListItems,
-  commitments,
-  habitLogs,
-  habits,
-  journalEntries,
-  timelines,
-  userQuests,
-  users,
-} from '~/db/schema';
+import { bucketListItems, commitments, timelines, userQuests, users } from '~/db/schema';
 import { loginPath } from '~/lib/auth-routing';
 import { dayKeyIn } from '~/lib/day';
 import { generateLookBack, type LookBackData } from '~/lib/look-back';
@@ -49,9 +40,6 @@ export default async function LookBackPage() {
   const [
     me,
     rawTimelines,
-    rawHabits,
-    allHabitLogs,
-    allJournal,
     completedQuestRows,
     activeQuestRows,
     abandonedQuestRows,
@@ -72,12 +60,6 @@ export default async function LookBackPage() {
       },
     }),
     db.select().from(timelines).where(eq(timelines.userId, session.user.id)),
-    db
-      .select()
-      .from(habits)
-      .where(and(eq(habits.userId, session.user.id), eq(habits.status, 'active'))),
-    db.select().from(habitLogs).where(eq(habitLogs.userId, session.user.id)),
-    db.select().from(journalEntries).where(eq(journalEntries.userId, session.user.id)),
     db
       .select()
       .from(userQuests)
@@ -140,23 +122,9 @@ export default async function LookBackPage() {
       sourceHobby: q.sourceHobby,
       startedAt: q.startedAt,
     })),
-    habits: rawHabits.map((h) => ({
-      id: h.id,
-      name: h.name,
-      icon: h.icon,
-      targetFrequency: h.targetFrequency,
-      createdAt: h.createdAt,
-    })),
-    habitLogs: allHabitLogs.map((l) => ({
-      habitId: l.habitId,
-      dayDate: l.dayDate,
-      completed: l.completed,
-    })),
-    journalEntries: allJournal.map((j) => ({
-      dayDate: j.dayDate,
-      amEntry: j.amEntry,
-      pmEntry: j.pmEntry,
-    })),
+    habits: [],
+    habitLogs: [],
+    journalEntries: [],
     commitments: rawCommitments.map((c) => ({
       hobbyName: c.hobbyName,
       goalDays: c.goalDays,
@@ -284,8 +252,8 @@ export default async function LookBackPage() {
                 Your story is waiting to be written
               </h2>
               <p className="mx-auto mt-3 max-w-md text-sm text-muted-foreground">
-                Build a timeline, start a quest, check a habit, write a journal entry. The more you
-                do, the more your look-back has to say.
+                Build a timeline, start a quest, or complete a commitment. The more you live, the
+                more your look-back has to say.
               </p>
               <Link
                 href="/"

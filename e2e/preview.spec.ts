@@ -7,12 +7,18 @@ test.describe('signed-out private surfaces are local-first', () => {
     await completeLocalOnboarding(page);
   });
 
-  test('/daily exposes editable local habits and journal', async ({ page }) => {
-    await page.goto('/daily');
+  test('/journal exposes editable local writing', async ({ page }) => {
+    await page.goto('/journal');
+    await expect(page.getByLabel('Preview notice')).toHaveCount(0);
+    await expect(page.locator('#journal-entry')).toBeVisible();
+    await expect(page.locator('body')).toContainText('this device');
+  });
+
+  test('/habits exposes editable local practices', async ({ page }) => {
+    await page.goto('/habits');
     await expect(page.getByLabel('Preview notice')).toHaveCount(0);
     await expect(page.getByRole('button', { name: 'Manage' })).toBeVisible();
-    await expect(page.locator('#daily-journal-entry')).toBeVisible();
-    await expect(page.locator('body')).toContainText('this device');
+    await expect(page.locator('#journal-entry')).toHaveCount(0);
   });
 
   test('/trajectory exposes an editable local contract', async ({ page }) => {
@@ -23,7 +29,7 @@ test.describe('signed-out private surfaces are local-first', () => {
   });
 
   test('private local surfaces stay out of the search index', async ({ page }) => {
-    for (const route of ['/daily', '/trajectory']) {
+    for (const route of ['/journal', '/habits', '/trajectory']) {
       await page.goto(route);
       await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', /noindex/);
     }

@@ -151,7 +151,7 @@ export function previewJournalEntries(today: string): PreviewJournalEntry[] {
 /**
  * Today's entry specifically.
  *
- * DailyRitual reads today from the `journalEntry` prop (it seeds the editor
+ * JournalExperience reads today from the `journalEntry` prop (it seeds the editor
  * state) and only falls back to the `journalEntries` list for past days, so
  * today has to be passed separately or the reader renders blank.
  */

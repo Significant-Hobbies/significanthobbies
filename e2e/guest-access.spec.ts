@@ -11,32 +11,29 @@ const LOCAL_ROUTES = [
 ] as const;
 
 test.describe('private work is locally available without an account', () => {
-  test('root remains the public landing before local onboarding', async ({ page }) => {
+  test('root is the public product Hub before local onboarding', async ({ page }) => {
     await page.goto('/');
     await expect(page).toHaveURL(/\/$/);
     await expect(
-      page.getByRole('heading', { name: 'What will you do with the time you have?' })
+      page.getByRole('heading', { name: 'Your personal apps, in one place.' })
     ).toBeVisible();
   });
 
-  test('root becomes the local dashboard after onboarding', async ({ page }) => {
+  test('the Hub remains the front door after local onboarding', async ({ page }) => {
     await completeLocalOnboarding(page);
-    const response = await page.goto('/');
+    await page.goto('/');
     await expect(page).toHaveURL(/\/$/);
-    expect(await response?.text()).not.toContain('What will you do with the time you have?');
-    await expect(page.getByRole('heading', { name: /Your dashboard/i })).toBeVisible();
-    await expect(page.getByRole('link', { name: 'Check in' })).toHaveAttribute('href', '/daily');
-    if (!(await page.getByRole('link', { name: 'Daily', exact: true }).first().isVisible())) {
-      await page.getByRole('button', { name: 'Open menu' }).click();
-    }
-    await expect(page.getByRole('link', { name: 'Daily', exact: true }).first()).toBeVisible();
+    await expect(page.getByRole('link', { name: /Live/ }).first()).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Journal', exact: true })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Habits', exact: true })).toBeVisible();
   });
 
   test('public navigation does not expose the private workspace before onboarding', async ({
     page,
   }) => {
     await page.goto('/hobbies');
-    await expect(page.getByRole('link', { name: 'Daily', exact: true })).toHaveCount(0);
+    await expect(page.getByRole('link', { name: 'Journal', exact: true })).toHaveCount(0);
+    await expect(page.getByRole('link', { name: 'Habits', exact: true })).toHaveCount(0);
     if (!(await page.getByRole('link', { name: 'Possibilities' }).isVisible())) {
       await page.getByRole('button', { name: 'Open menu' }).click();
     }
@@ -44,8 +41,9 @@ test.describe('private work is locally available without an account', () => {
   });
 
   for (const route of [
-    '/daily',
     '/live-more',
+    '/journal',
+    '/habits',
     '/history',
     '/trajectory',
     '/bucket-list',

@@ -89,7 +89,7 @@ export function HistoryAtlas({
           </span>
         </Link>
         <Link
-          href="/daily#journal-history"
+          href="/journal#journal-history"
           className="border-t border-[#e4dccb] p-6 transition-colors hover:bg-[#dceabf] sm:border-l sm:border-t-0 sm:p-8"
         >
           <p className="text-sm font-bold">Journal history</p>

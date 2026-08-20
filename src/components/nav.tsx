@@ -19,8 +19,9 @@ import { NavLinks } from './nav-links';
 import { NavSignOut } from './nav-sign-out';
 
 const NAV_LINKS = [
-  { href: '/live-more', label: 'Live More' },
-  { href: '/daily', label: 'Daily' },
+  { href: '/live-more', label: 'Live' },
+  { href: '/journal', label: 'Journal' },
+  { href: '/habits', label: 'Habits' },
   { href: '/history', label: 'History' },
 ];
 const PUBLIC_LINKS = [
@@ -78,7 +79,10 @@ export async function Nav() {
           {session?.user ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <button className="flex size-11 items-center justify-center rounded-full focus:outline-none focus:ring-2 focus:ring-foreground/30">
+                <button
+                  aria-label="Open account menu"
+                  className="flex size-11 items-center justify-center rounded-full focus:outline-none focus:ring-2 focus:ring-foreground/30"
+                >
                   <Avatar className="h-10 w-10 border-2 border-white shadow-[0_2px_8px_rgba(66,55,22,0.14)]">
                     <AvatarImage src={session.user.image ?? ''} />
                     <AvatarFallback className="bg-foreground/10 text-foreground text-sm">
@@ -127,7 +131,10 @@ export async function Nav() {
           {session?.user && (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <button className="flex size-11 items-center justify-center rounded-full focus:outline-none focus:ring-2 focus:ring-foreground/30">
+                <button
+                  aria-label="Open account menu"
+                  className="flex size-11 items-center justify-center rounded-full focus:outline-none focus:ring-2 focus:ring-foreground/30"
+                >
                   <Avatar className="h-10 w-10 border-2 border-white shadow-[0_2px_8px_rgba(66,55,22,0.14)]">
                     <AvatarImage src={session.user.image ?? ''} />
                     <AvatarFallback className="bg-foreground/10 text-foreground text-sm">

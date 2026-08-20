@@ -105,8 +105,7 @@ export async function createHabit(
       commitmentId: habitCommitmentIdForVerifiedTarget(requestedCommitmentId, verifiedCommitmentId),
     })
     .returning({ id: habits.id, name: habits.name });
-  revalidatePath('/daily');
-  revalidatePath('/');
+  revalidatePath('/habits');
   return habit ?? null;
 }
 
@@ -130,7 +129,7 @@ export async function setHabitCommitment(
     .returning({ id: habits.id });
 
   if (!updated) return false;
-  revalidatePath('/daily');
+  revalidatePath('/habits');
   return true;
 }
 
@@ -142,8 +141,7 @@ export async function deleteHabit(id: string) {
     .update(habits)
     .set({ status: 'archived' })
     .where(and(eq(habits.id, id), eq(habits.userId, session.user.id)));
-  revalidatePath('/daily');
-  revalidatePath('/');
+  revalidatePath('/habits');
 }
 
 // ── Habit logs (check-ins) ──────────────────────────────────────────────────
@@ -181,8 +179,7 @@ export async function toggleHabitLog(habitId: string, dayDate: string, completed
       completed,
     });
   }
-  revalidatePath('/daily');
-  revalidatePath('/');
+  revalidatePath('/habits');
 }
 
 // ── Journal entries ─────────────────────────────────────────────────────────
@@ -250,8 +247,7 @@ export async function setDailyNovelty(
     });
   }
 
-  revalidatePath('/daily');
-  revalidatePath('/');
+  revalidatePath('/live-more');
   return true;
 }
 
@@ -370,8 +366,7 @@ export async function saveJournalEntry(
       ...contextColumns,
     });
   }
-  revalidatePath('/daily');
-  revalidatePath('/');
+  revalidatePath('/journal');
 }
 
 // ── Profile ─────────────────────────────────────────────────────────────────

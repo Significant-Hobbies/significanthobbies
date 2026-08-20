@@ -15,6 +15,8 @@ import { waitForHydrated } from './fixtures/hydration';
 const LOGGED_IN_ROUTES = [
   '/',
   '/daily',
+  '/journal',
+  '/habits',
   '/trajectory',
   '/commitments',
   '/bucket-list',
@@ -44,16 +46,14 @@ test.describe('authenticated surfaces', () => {
     });
   }
 
-  test('/daily shows the ritual, not the marketing shell', async ({ authedPage }) => {
+  test('/daily points to Journal and Habits instead of mixing them', async ({ authedPage }) => {
     await authedPage.goto('/daily');
-    await expect(authedPage.getByText(/Good (morning|evening)/)).toBeVisible();
-    await expect(authedPage.getByRole('heading', { name: 'Habits' })).toBeVisible();
+    await expect(authedPage.getByRole('link', { name: /Open Journal/ })).toBeVisible();
+    await expect(authedPage.getByRole('link', { name: /Open Habits/ })).toBeVisible();
   });
 
-  test('/daily persists the chosen new thing without losing journal writing', async ({
-    authedPage,
-  }) => {
-    await authedPage.goto('/daily');
+  test('Live and Journal persist independently after the split', async ({ authedPage }) => {
+    await authedPage.goto('/live-more');
     const card = authedPage.locator('aside').filter({ hasText: 'Make today different' });
     await expect(card).toBeVisible();
 
@@ -68,15 +68,20 @@ test.describe('authenticated surfaces', () => {
     await card.getByRole('button', { name: 'Keep my list' }).click();
 
     const journal = 'I noticed something new today.';
-    await authedPage.locator('#daily-journal-entry').fill(journal);
+    await authedPage.goto('/journal');
+    await authedPage.locator('#journal-entry').fill(journal);
     await authedPage.getByRole('button', { name: /Save (morning|evening)/ }).click();
-    await card.getByRole('button', { name: 'I did this' }).click();
-    await expect(card.getByRole('button', { name: 'Mark this open again' })).toBeVisible();
+    await authedPage.goto('/live-more');
+    const restoredCard = authedPage.locator('aside').filter({ hasText: 'Make today different' });
+    await expect(restoredCard.getByRole('heading', { level: 2 })).toContainText(chosenIdea);
+    await restoredCard.getByRole('button', { name: 'I did this' }).click();
+    await expect(restoredCard.getByRole('button', { name: 'Mark this open again' })).toBeVisible();
 
-    await authedPage.reload();
+    await authedPage.goto('/journal');
+    await expect(authedPage.locator('#journal-entry')).toHaveValue(journal);
+    await authedPage.goto('/live-more');
     const restored = authedPage.locator('aside').filter({ hasText: 'Make today different' });
     await expect(restored.getByRole('heading', { level: 2 })).toContainText(chosenIdea);
-    await expect(authedPage.locator('#daily-journal-entry')).toHaveValue(journal);
     await expect(restored.getByRole('button', { name: 'Mark this open again' })).toBeVisible();
   });
 
@@ -87,7 +92,7 @@ test.describe('authenticated surfaces', () => {
   });
 
   test('compact AM/PM context derives from journal text', async ({ authedPage }) => {
-    await authedPage.goto('/daily');
+    await authedPage.goto('/journal');
     // Both ring labels are always present; the assertion is that the page renders
     // them from journal state without a DailyCheckin row existing.
     await expect(authedPage.getByText(/^AM (written|open)$/)).toBeVisible();
@@ -95,11 +100,11 @@ test.describe('authenticated surfaces', () => {
   });
 
   test('the signed-out preview never leaks into a real session', async ({ authedPage }) => {
-    // /daily and /trajectory render sample content for anonymous visitors. If
+    // Journal, Habits, and /trajectory render private data for anonymous visitors. If
     // that branch ever fired for a signed-in user they would be looking at a
     // stranger's month believing it was their own — the worst failure this
     // feature can have, so it gets its own assertion on both surfaces.
-    for (const route of ['/daily', '/trajectory']) {
+    for (const route of ['/journal', '/habits', '/trajectory']) {
       await authedPage.goto(route);
       await expect(authedPage.getByLabel('Preview notice')).toHaveCount(0);
       await expect(authedPage.getByText('Read 20 pages')).toHaveCount(0);
@@ -143,7 +148,7 @@ test.describe('authenticated surfaces', () => {
     await expect(authedPage.getByText(/1\/\d+ steps done/).first()).toBeVisible();
   });
 
-  test('the creed can be written, and reaches the surfaces that render it', async ({
+  test('the creed can be written and remains durable after the dashboard is removed', async ({
     authedPage,
   }) => {
     // `updateCreed` had zero callers, so users.creed was NULL for everyone and
@@ -191,7 +196,7 @@ test.describe('authenticated surfaces', () => {
     await expect(authedPage.getByLabel('Your creed')).toHaveValue(creed);
 
     await authedPage.goto('/');
-    await expect(authedPage.getByRole('heading', { name: /Live it,/ })).toBeVisible();
+    await expect(authedPage).toHaveURL(/\/live-more$/);
   });
 
   test('a bucket item can be advanced, published, and deleted', async ({ authedPage }) => {

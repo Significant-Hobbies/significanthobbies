@@ -30,7 +30,7 @@ export type GuestRoute = {
  * Only the single-session surfaces have real guest equivalents: /life-bingo
  * builds a board, /timeline/new builds a timeline, the quiz returns a result —
  * each delivers its whole value before you ever sign in. The longitudinal
- * surfaces (/daily, /trajectory, /history) have no guest twin, because their
+ * surfaces (/journal, /habits, /trajectory, /history) have no guest twin, because their
  * value *is* accumulated history; the quiz is the honest destination for
  * someone not ready to commit an account.
  */

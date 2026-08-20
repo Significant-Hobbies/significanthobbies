@@ -8,55 +8,63 @@ web
 
 ## Users
 
-Adults who want to live more intentionally use Significant Hobbies to discover
-interests, record daily practice privately, and shape longer-lived plans.
+Adults who want to live more intentionally use the Significant Hobbies family
+to discover interests, write privately, build repeatable practices, and shape
+longer-lived plans.
 Signed-out visitors can explore the mortality frame, discovery content, and
 explicitly public Living surfaces before choosing whether to create an account.
 
 ## Product Purpose
 
-Significant Hobbies is a life planner with two connected dimensions:
+Significant Hobbies is becoming a family of focused personal products:
 
-- **Daily** is a private AM/PM ritual with simple habit check-ins and journal
-  writing.
-- **Living** is the user's set of hobbies, commitments, timelines, bucket
-  lists, side quests, and opt-in public profiles.
+- **Significant Hobbies** is the read-only directory and future dashboard.
+- **Live** owns bucket lists, hobbies, commitments, timelines, side quests,
+  discovery, and the optional small new thing for today.
+- **Journal** owns private AM/PM writing and its archive.
+- **Habits** owns simple, non-scoring practice check-ins.
+- **History** remains part of Live and helps the user understand the life
+  accumulating behind their plans.
 
-The mortality frame connects both by making finite time concrete. Success means
-helping a person notice what matters, return to it, and keep a truthful record
-without turning reflection into competition.
+The mortality frame connects the family by making finite time concrete. Success
+means helping a person notice what matters, return to it, and keep a truthful
+record without turning reflection into competition.
 
 ## Positioning
 
-The product combines hobby discovery, private daily reflection, and a
-user-owned account of how interests evolve over a life. It is not a generic
-habit scorer or social feed: Daily writing stays private, Living publication is
-opt-in per item, and progress systems are limited to surfaces where proof is
-the explicit job.
+The family connects hobby discovery, private reflection, repeatable practice,
+and a user-owned account of how interests evolve over a life. It is not a
+generic productivity suite or social feed: Journal writing stays private, Live
+publication is opt-in per item, and progress systems are limited to surfaces
+where proof is the explicit job.
 
 ## Operating Context
 
 - The public product runs at `significanthobbies.com`.
-- `/daily` is the private ritual and includes a read-only signed-out sample.
+- `/` is the same seven-product directory for signed-out and signed-in visitors.
+- `/live-more`, `/journal`, and `/habits` are the current same-origin product
+  routes; `/daily` is a compatibility doorway to Journal and Habits.
 - The hobby quiz is the single primary discovery path while its funnel is being
   evaluated.
 - Authenticated users manage timelines, commitments, habits, journal entries,
   bucket lists, quests, trajectory, and profile settings.
-- Cloudflare Workers/OpenNext serves the application; Turso/libSQL stores
-  application data through Drizzle.
+- Cloudflare Workers/OpenNext serves the application; Cloudflare D1 stores
+  authenticated application data through Drizzle. Signed-out private work
+  remains in IndexedDB on the current origin.
 - Production database migrations and deployments are manual and
   operator-owned.
 
 ## Capabilities and Constraints
 
 - Journal writing has no public visibility field or sharing API.
-- Daily habits are boolean check-ins with no score, streak, XP, or shame loop.
+- Habits are boolean check-ins with no score, streak, XP, or shame loop.
 - Commitments are separate hobby-specific goals with optional public
   visibility, proof stamps, and commitment-only streak badges.
 - Hidden discovery routes remain functional but must not be re-surfaced before
   the quiz-funnel decision.
 - Anonymous marketing and tool HTML follows the existing Astro/Worker cache
   boundary.
+- The Hub has no shared database, summaries, assistant, or write actions in V1.
 - Existing private data must survive target deletion and reversible product
   changes.
 
@@ -76,7 +84,8 @@ and none should be invented.
 
 ## Product Principles
 
-1. Connect Daily reflection to Living plans without making reflection proof.
+1. Let Live, Journal, and Habits own distinct jobs while preserving explicit
+   links between related records.
 2. Keep private work private and publication explicitly opt-in.
 3. Let the mortality frame create urgency without scoring or shame.
 4. Prefer one focused discovery path over multiplying surfaces.

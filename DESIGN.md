@@ -38,9 +38,9 @@ components:
 
 **Creative North Star: “The Life Atlas”**
 
-The interface is a map of a finite, inhabited life. Live More uses paths, horizons, clusters, and wayfinding to turn possibility into a next move. See History uses the same atlas language as chronology: week fields, dated markers, bends in direction, and remembered evidence. Daily is the close-up scale of the same world.
+The interface is a map of a finite, inhabited life. Live uses paths, horizons, clusters, and wayfinding to turn possibility into a next move. History uses the same atlas language as chronology: week fields, dated markers, bends in direction, and remembered evidence. Journal and Habits are focused close-up scales of the same world.
 
-The system is warm light mode by default: sunlit, colorful, energetic, and action-led. Live More should make leaving the screen feel tempting. Daily is a calm ritual expressed through morning yellow or evening lavender, open-sky blue, and a substantial white writing surface. See History is a personal almanac: yellow mortality, blue direction, and coral, lavender, or paper story passages. Gold indicates chosen direction; sage indicates lived evidence and learning. Content should feel placed in a landscape, not packed into a grid of interchangeable cards.
+The system is warm light mode by default: sunlit, colorful, energetic, and action-led. Live should make leaving the screen feel tempting. Journal is a calm ritual expressed through morning yellow or evening lavender and a substantial white writing surface. Habits uses lived sage and deliberately spare check-in rows. History is a personal almanac: yellow mortality, blue direction, and coral, lavender, or paper story passages. Gold indicates chosen direction; sage indicates lived evidence and learning. Content should feel placed in a landscape, not packed into a grid of interchangeable cards.
 
 ## Colors
 
@@ -56,9 +56,9 @@ Display serif gives reflective statements and life chapters gravity. The sans-se
 
 Primary pages use one dominant spatial field followed by quieter supporting passages. Related content connects through paths, timelines, alignment, and proximity before containers. Equal card grids are avoided unless the objects are genuinely equivalent. Desktop compositions can be asymmetric; mobile preserves the same semantic order as a vertical route.
 
-Live More leads with a verb and an immediate invitation. It must make the user want to choose an activity, not admire a planning system. Mortality belongs in See History and acts as context, never as the dominant emotional register of the action surface.
+Live leads with a verb and an immediate invitation. It must make the user want to choose an activity, not admire a planning system. Mortality belongs in History and acts as context, never as the dominant emotional register of the action surface.
 
-The global shell exposes two primary modes—Live More and Daily—and one secondary historical destination. Focused tools remain reachable from their merged home rather than competing in the top bar.
+The global shell exposes four direct destinations: Live, Journal, Habits, and History. Their shared visual language communicates family membership without merging their jobs.
 
 ## Elevation & Depth
 
@@ -72,7 +72,7 @@ Controls use 12px corners and major bounded surfaces use 16px corners. Paths, co
 
 ### Navigation
 
-The wordmark is `SH` with an accessible full name. Live More and Daily are the primary headings; See History is quieter but remains a direct link. Mobile uses the same three destinations in the same order.
+The wordmark is `SH` with an accessible full name. Live, Journal, Habits, and History are direct links in that order on desktop and mobile. Yellow, lavender, sage, and blue active states keep the destinations distinct without creating four unrelated brands.
 
 ### Cards / Containers
 
@@ -89,7 +89,8 @@ Primary actions use atlas gold on night. Secondary actions use quiet tonal surfa
 - **Do** make mortality concrete without using fear, score, or shame.
 - **Do** connect possibilities, present action, and remembered evidence spatially.
 - **Do** use real personal content as the visual material of private surfaces.
-- **Do** make Live More feel sunny, playful, physical, and in motion.
+- **Do** make Live feel sunny, playful, physical, and in motion.
+- **Do** keep Journal reflective and Habits immediate instead of rebuilding a combined Daily dashboard.
 
 ### Don't:
 

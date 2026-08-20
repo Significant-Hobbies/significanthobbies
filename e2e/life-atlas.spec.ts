@@ -8,19 +8,23 @@ test.describe('Life Atlas shell', () => {
     await completeLocalOnboarding(page);
   });
 
-  test('uses two product modes and one history destination without dropdowns', async ({ page }) => {
+  test('uses distinct Live, Journal, Habits, and History destinations', async ({ page }) => {
     await page.goto('/live-more');
     const nav = page.getByRole('navigation').first();
     if ((page.viewportSize()?.width ?? 0) < 1024) {
       await page.getByRole('button', { name: 'Open menu' }).click();
     }
-    await expect(nav.getByRole('link', { name: 'Live More' })).toHaveAttribute(
+    await expect(nav.getByRole('link', { name: 'Live', exact: true })).toHaveAttribute(
       'href',
       '/live-more'
     );
-    await expect(nav.getByRole('link', { name: 'Daily', exact: true }).first()).toHaveAttribute(
+    await expect(nav.getByRole('link', { name: 'Journal', exact: true }).first()).toHaveAttribute(
       'href',
-      '/daily'
+      '/journal'
+    );
+    await expect(nav.getByRole('link', { name: 'Habits', exact: true }).first()).toHaveAttribute(
+      'href',
+      '/habits'
     );
     await expect(nav.getByRole('link', { name: 'History', exact: true }).first()).toHaveAttribute(
       'href',
@@ -87,7 +91,7 @@ test.describe('Life Atlas shell', () => {
     await expect(page.getByText(/Personal timeline/i).first()).toBeVisible();
     await expect(page.getByRole('link', { name: /Read the record/ })).toHaveAttribute(
       'href',
-      '/daily#journal-history'
+      '/journal#journal-history'
     );
   });
 
@@ -121,7 +125,7 @@ test.describe('Life Atlas shell', () => {
   });
 
   test('the primary light-mode destinations meet the accessibility baseline', async ({ page }) => {
-    for (const path of ['/daily', '/history', '/trajectory']) {
+    for (const path of ['/daily', '/journal', '/habits', '/history', '/trajectory']) {
       await page.goto(path);
       const results = await new AxeBuilder({ page }).analyze();
       const serious = results.violations.filter(

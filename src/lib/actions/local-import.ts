@@ -238,6 +238,15 @@ export async function importLocalAccountData(
         })
         .where(eq(journalEntries.id, existingDay.id));
   }
-  for (const path of ['/', '/daily', '/commitments', '/history', '/settings']) revalidatePath(path);
+  for (const path of [
+    '/',
+    '/live-more',
+    '/journal',
+    '/habits',
+    '/commitments',
+    '/history',
+    '/settings',
+  ])
+    revalidatePath(path);
   return { success: true };
 }
