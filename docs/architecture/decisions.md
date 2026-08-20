@@ -454,3 +454,26 @@ of personal products without losing the current Live product.
 - The Live hostname is a marketing alias on the existing Worker, not an
   independent data boundary. Deeper Live paths redirect to the apex application
   until a later synchronization and identity decision makes a true move safe.
+
+## A18 — The existing native target becomes Journal; Live remains web-only
+
+**Decision:** The `ios/` application presents Journal as its only primary
+surface. It retains the existing `com.significanthobbies.app` bundle identity,
+local file, cloud envelope, and internal model names so existing records remain
+readable. Live has no native target in this repository. Habits evolves from the
+separate Indulge native application.
+
+**Why:** Live is a catalog and lifelong tracker whose current web application
+already owns the deeper workflows. Journal benefits from a focused native
+writing surface, while creating a second Live client would add code without
+proving a better daily experience.
+
+**Constraints:**
+
+- Journal renders and mutates only reflection and journal-writing fields.
+- Pre-split Live and Habits records remain in the compatible archive until the
+  cross-product synchronization contract exists; Journal does not expose or
+  edit them.
+- Resetting Journal clears writing only. It never deletes preserved bucket-list,
+  hobby, commitment, novelty, or habit-check-in data.
+- No bundle, schema, account, database, or cloud migration is part of this cut.

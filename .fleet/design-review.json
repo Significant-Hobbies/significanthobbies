@@ -2,7 +2,7 @@
   "$schema": "fleet.design-review.v1",
   "version": 1,
   "project": "significanthobbies-split",
-  "target": "Split Live, Journal, and Habits and add the personal apps Hub",
+  "target": "Split Live, Journal, and Habits, add the Hub, and extract the focused Journal native client",
   "mode": "preserve",
   "register": "product",
   "context": {
@@ -20,87 +20,27 @@
     "screenshots": [
       {
         "width": 390,
-        "path": ".fleet/design-evidence/split-products/daily-390.png"
+        "path": "ios/artifacts/design/journal/review/journal-390.png"
       },
       {
         "width": 768,
-        "path": ".fleet/design-evidence/split-products/daily-768.png"
+        "path": "ios/artifacts/design/journal/review/journal-768.png"
       },
       {
         "width": 1440,
-        "path": ".fleet/design-evidence/split-products/daily-1440.png"
-      },
-      {
-        "width": 390,
-        "path": ".fleet/design-evidence/split-products/journal-390.png"
-      },
-      {
-        "width": 768,
-        "path": ".fleet/design-evidence/split-products/journal-768.png"
-      },
-      {
-        "width": 1440,
-        "path": ".fleet/design-evidence/split-products/journal-1440.png"
-      },
-      {
-        "width": 390,
-        "path": ".fleet/design-evidence/split-products/habits-390.png"
-      },
-      {
-        "width": 768,
-        "path": ".fleet/design-evidence/split-products/habits-768.png"
-      },
-      {
-        "width": 1440,
-        "path": ".fleet/design-evidence/split-products/habits-1440.png"
-      },
-      {
-        "width": 390,
-        "path": ".fleet/design-evidence/split-products/live-more-390.png"
-      },
-      {
-        "width": 768,
-        "path": ".fleet/design-evidence/split-products/live-more-768.png"
-      },
-      {
-        "width": 1440,
-        "path": ".fleet/design-evidence/split-products/live-more-1440.png"
-      },
-      {
-        "width": 390,
-        "path": ".fleet/design-evidence/split-products/hub-390.png"
-      },
-      {
-        "width": 768,
-        "path": ".fleet/design-evidence/split-products/hub-768.png"
-      },
-      {
-        "width": 1440,
-        "path": ".fleet/design-evidence/split-products/hub-1440.png"
-      },
-      {
-        "width": 390,
-        "path": ".fleet/design-evidence/split-products/live-390.png"
-      },
-      {
-        "width": 768,
-        "path": ".fleet/design-evidence/split-products/live-768.png"
-      },
-      {
-        "width": 1440,
-        "path": ".fleet/design-evidence/split-products/live-1440.png"
+        "path": "ios/artifacts/design/journal/review/journal-1440.png"
       }
     ],
     "projectCheck": {
-      "command": "pnpm quality; Astro check/build; 8 Hub and Live browser tests",
+      "command": "pnpm quality:native; ios/scripts/check.sh; design workflow check; git diff --check",
       "status": "pass"
     },
     "critique": {
-      "score": 36,
+      "score": 33,
       "maximum": 40
     },
     "audit": {
-      "score": 19,
+      "score": 16,
       "maximum": 20
     },
     "unresolved": {
@@ -112,12 +52,16 @@
       "findings": [
         "The detector returned zero deterministic findings across the split routes, navigation, practice surfaces, and Hub.",
         "Manual review covered the Hub and preserved cinematic Live landing at phone, tablet, and desktop widths. The Hub keeps all seven products scannable and explicitly states that no combined database exists.",
-        "The first Hub accessibility pass found four status labels just below WCAG AA contrast. Their text token was darkened and the complete axe baseline then passed."
+        "The first Hub accessibility pass found four status labels just below WCAG AA contrast. Their text token was darkened and the complete axe baseline then passed.",
+        "The native app target now compiles only Journal, account, settings, and shared core surfaces; Live, History, and Habits UI files were removed from the target.",
+        "Journal starts from an empty production document and gates editing until the local archive loads, preventing demo data from overwriting real writing.",
+        "Dirty drafts save before date changes, persistence failures never announce success, and a browsable archive provides direct access to older entries.",
+        "The final native audit passed at 16/20 with zero unresolved P0/P1 after adaptive colors, dark-mode action contrast, accessible date controls, readable iPad widths, explicit synced-reset copy, and archive recovery were added."
       ]
     }
   },
   "ownerFeedback": {
     "decision": "keep",
-    "note": "The owner reviewed the built Hub at desktop and mobile widths and said they were happy with it. Live preserves the existing cinematic landing as requested."
+    "note": "The owner reviewed and kept the Hub and Live split, then explicitly delegated finishing the Journal and Habits native applications with Live remaining web-only."
   }
 }

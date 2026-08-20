@@ -29,6 +29,12 @@ Habits are focused products built from the existing private practice data.
 
 ## Timeline
 
+- **2026-08-21:** Reduced the existing native target to Journal only. The app
+  retains `com.significanthobbies.app` and the versioned atlas document so
+  existing writing survives, while Live, History, habit check-ins, profile
+  publishing, and bucket-list controls no longer compile into its interface.
+  The compatible archive preserves hidden pre-split records, and resetting
+  Journal clears only writing. No migration, deployment, or Apple release ran.
 - **2026-08-20:** Split the web surface into a seven-product Hub plus focused
   Live, Journal, and Habits routes without changing storage. The existing
   cinematic landing now belongs to `live.significanthobbies.com`; deeper Live
@@ -161,21 +167,20 @@ Historical milestones live in
 
 ## Products
 
-- Universal native SwiftUI iPhone and iPad beta under `ios/`; App Store Connect/TestFlight
-  transport remains manual.
+- Journal native SwiftUI iPhone beta under `ios/`; App Store Connect/TestFlight
+  transport remains manual and the existing bundle identity is preserved.
 - Personal-app Hub at `https://significanthobbies.com`.
 - Live landing at `https://live.significanthobbies.com`; application routes,
   discovery, public profiles, and content remain on the same Cloudflare Worker.
 - Journal and Habits web routes remain same-origin compatibility surfaces while
-  their standalone native applications are prepared separately.
+  their native applications live behind independent product identities.
 
 ## Features (shipped)
 
-- **Native iPhone and iPad experience:** local-first Daily ritual, Living plans,
-  history, profile/privacy controls, explicit publication eligibility,
-  versioned data transfer, accessibility, simulator tests, personal-team
-  archiving, and a locally prepared private account-sync adapter whose
-  production migration/activation remains manual.
+- **Journal for iPhone:** one local-first morning/evening writing surface,
+  date navigation, prior-entry context, private account sync, compatible
+  export/import, accessibility, simulator tests, and preserved pre-split data.
+  Live and Habits have no UI or write actions in this target.
 - **Runtime:** Cloudflare Worker `significanthobbies` (OpenNext) + Astro Hub
   and Live overlays. Cloudflare D1 + Drizzle ORM +
   better-auth Google OAuth. PostHog analytics.

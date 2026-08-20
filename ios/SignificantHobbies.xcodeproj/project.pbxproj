@@ -9,8 +9,6 @@
 /* Begin PBXBuildFile section */
 		06FB06B95DF0689FE05AB075 /* SignificantHobbiesCore.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 8016DC426444E2D76EF32BB4 /* SignificantHobbiesCore.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		0B24EAB9D913E1CB7E11390C /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE73F47A9024224B92970695 /* SettingsView.swift */; };
-		18FF467547F5748773B98C55 /* HistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FEDA54F5C6AC293866D42B0 /* HistoryView.swift */; };
-		1F03B7DD671F03C5F566E782 /* LiveMoreView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6694B35F1C95F9F7D70F5A76 /* LiveMoreView.swift */; };
 		232BE0083A654EDA0678E35F /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD5D1654F75D6BD52DEA4738 /* RootView.swift */; };
 		2744CFC51415CDCE0A39B0BC /* SignificantHobbiesCore.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 8016DC426444E2D76EF32BB4 /* SignificantHobbiesCore.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		4ED00C45ADB96002493EF597 /* Domain.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF7B72C12049FE81DEEE108E /* Domain.swift */; };
@@ -20,13 +18,12 @@
 		942A77EEE223A4E0945EC4BE /* SignificantHobbiesCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8016DC426444E2D76EF32BB4 /* SignificantHobbiesCore.framework */; };
 		9CB054BDE18BF67E2F120AD6 /* SignificantHobbiesCoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9AFFF3B28DF309BB620A727 /* SignificantHobbiesCoreTests.swift */; };
 		AD89875F157AA02A1D13EBBF /* AppModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05EA8F0EE78476D9881C7347 /* AppModel.swift */; };
-		BDDE7C74828DC83EEDC08344 /* LivingViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = D40935CC6FAA1330250E573E /* LivingViews.swift */; };
-		C09C8A7853DA46A33FBD1B15 /* DailyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 124A5B25ECB89C00310C66CD /* DailyView.swift */; };
 		C499F299941E14A486903109 /* SignificantHobbiesUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B5197DAFED5BEB3D8E1FF6B /* SignificantHobbiesUITests.swift */; };
 		D145E61360B9F2043C4B98F7 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 62223B76D2F335D38753F13F /* PrivacyInfo.xcprivacy */; };
 		E2940F7FB5B87D63D182CB5F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E9C9ECF6FD75300C43AE4574 /* Assets.xcassets */; };
 		E3CAE2317CCCC6B79A306D9B /* SignificantHobbiesCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8016DC426444E2D76EF32BB4 /* SignificantHobbiesCore.framework */; };
 		E8D072E503C4BFBE7C6D668C /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24C7DF31D7BBD34A504FB0B5 /* Persistence.swift */; };
+		E99B4FB1629093EA9C77A575 /* JournalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0188FEAC7CFA0623B6FF0EA /* JournalView.swift */; };
 		FCE1765D393AE0E6495557B5 /* NativeAccountClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C2B9B72A49B3D8612FD520D /* NativeAccountClient.swift */; };
 /* End PBXBuildFile section */
 
@@ -82,7 +79,6 @@
 /* Begin PBXFileReference section */
 		05EA8F0EE78476D9881C7347 /* AppModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppModel.swift; sourceTree = "<group>"; };
 		0C2B9B72A49B3D8612FD520D /* NativeAccountClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NativeAccountClient.swift; sourceTree = "<group>"; };
-		124A5B25ECB89C00310C66CD /* DailyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyView.swift; sourceTree = "<group>"; };
 		24C7DF31D7BBD34A504FB0B5 /* Persistence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Persistence.swift; sourceTree = "<group>"; };
 		3D99A5939D824B344E6704A9 /* Design.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Design.swift; sourceTree = "<group>"; };
 		45756EFDB3A45F83CBF63F78 /* SignificantHobbies.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SignificantHobbies.entitlements; sourceTree = "<group>"; };
@@ -90,15 +86,13 @@
 		4B5197DAFED5BEB3D8E1FF6B /* SignificantHobbiesUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignificantHobbiesUITests.swift; sourceTree = "<group>"; };
 		55CADA0312E38B323127C310 /* SignificantHobbiesApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignificantHobbiesApp.swift; sourceTree = "<group>"; };
 		62223B76D2F335D38753F13F /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
-		6694B35F1C95F9F7D70F5A76 /* LiveMoreView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveMoreView.swift; sourceTree = "<group>"; };
-		6FEDA54F5C6AC293866D42B0 /* HistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryView.swift; sourceTree = "<group>"; };
 		70587D4024EBCBD4A2335D71 /* CloudSync.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudSync.swift; sourceTree = "<group>"; };
 		7AA77312B5602FD12AB082F1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		8016DC426444E2D76EF32BB4 /* SignificantHobbiesCore.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SignificantHobbiesCore.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		AD5D1654F75D6BD52DEA4738 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
 		AE73F47A9024224B92970695 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		D0188FEAC7CFA0623B6FF0EA /* JournalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JournalView.swift; sourceTree = "<group>"; };
 		D18715A25D2EC787F766FD6C /* SignificantHobbiesUITests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = SignificantHobbiesUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		D40935CC6FAA1330250E573E /* LivingViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LivingViews.swift; sourceTree = "<group>"; };
 		DF7B72C12049FE81DEEE108E /* Domain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Domain.swift; sourceTree = "<group>"; };
 		E9C9ECF6FD75300C43AE4574 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		F9AFFF3B28DF309BB620A727 /* SignificantHobbiesCoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignificantHobbiesCoreTests.swift; sourceTree = "<group>"; };
@@ -151,12 +145,9 @@
 			isa = PBXGroup;
 			children = (
 				05EA8F0EE78476D9881C7347 /* AppModel.swift */,
-				124A5B25ECB89C00310C66CD /* DailyView.swift */,
 				3D99A5939D824B344E6704A9 /* Design.swift */,
-				6FEDA54F5C6AC293866D42B0 /* HistoryView.swift */,
 				7AA77312B5602FD12AB082F1 /* Info.plist */,
-				6694B35F1C95F9F7D70F5A76 /* LiveMoreView.swift */,
-				D40935CC6FAA1330250E573E /* LivingViews.swift */,
+				D0188FEAC7CFA0623B6FF0EA /* JournalView.swift */,
 				0C2B9B72A49B3D8612FD520D /* NativeAccountClient.swift */,
 				AD5D1654F75D6BD52DEA4738 /* RootView.swift */,
 				AE73F47A9024224B92970695 /* SettingsView.swift */,
@@ -379,11 +370,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				AD89875F157AA02A1D13EBBF /* AppModel.swift in Sources */,
-				C09C8A7853DA46A33FBD1B15 /* DailyView.swift in Sources */,
 				713D9934D1E2EF54F4778EF9 /* Design.swift in Sources */,
-				18FF467547F5748773B98C55 /* HistoryView.swift in Sources */,
-				1F03B7DD671F03C5F566E782 /* LiveMoreView.swift in Sources */,
-				BDDE7C74828DC83EEDC08344 /* LivingViews.swift in Sources */,
+				E99B4FB1629093EA9C77A575 /* JournalView.swift in Sources */,
 				FCE1765D393AE0E6495557B5 /* NativeAccountClient.swift in Sources */,
 				232BE0083A654EDA0678E35F /* RootView.swift in Sources */,
 				0B24EAB9D913E1CB7E11390C /* SettingsView.swift in Sources */,

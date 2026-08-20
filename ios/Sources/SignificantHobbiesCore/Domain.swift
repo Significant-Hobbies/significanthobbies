@@ -342,6 +342,16 @@ public extension AtlasDocument {
         }
     }
 
+    mutating func clearJournalWriting() {
+        dailyEntries = dailyEntries.map { entry in
+            var preserved = entry
+            preserved.morningReflection = ""
+            preserved.eveningReflection = ""
+            preserved.journal = ""
+            return preserved
+        }
+    }
+
     mutating func toggleHabit(_ habitID: UUID, on date: Date, calendar: Calendar = .current) {
         var entry = dailyEntry(on: date, calendar: calendar) ?? DailyEntry(date: calendar.startOfDay(for: date))
         if entry.completedHabitIDs.contains(habitID) { entry.completedHabitIDs.remove(habitID) }

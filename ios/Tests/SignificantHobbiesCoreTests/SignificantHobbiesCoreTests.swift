@@ -58,6 +58,28 @@ final class SignificantHobbiesCoreTests: XCTestCase {
         XCTAssertEqual(document.dailyEntry(on: date)?.eveningReflection, "A good conversation.")
     }
 
+    func testClearingJournalWritingPreservesSplitProductData() throws {
+        var document = AtlasDocument.sample
+        let entry = try XCTUnwrap(document.dailyEntries.first)
+        let habits = document.habits
+        let hobbies = document.hobbies
+        let commitments = document.commitments
+        let bucketList = document.bucketList
+
+        document.clearJournalWriting()
+
+        let preserved = try XCTUnwrap(document.dailyEntries.first(where: { $0.id == entry.id }))
+        XCTAssertEqual(preserved.morningReflection, "")
+        XCTAssertEqual(preserved.eveningReflection, "")
+        XCTAssertEqual(preserved.journal, "")
+        XCTAssertEqual(preserved.newThing, entry.newThing)
+        XCTAssertEqual(preserved.completedHabitIDs, entry.completedHabitIDs)
+        XCTAssertEqual(document.habits, habits)
+        XCTAssertEqual(document.hobbies, hobbies)
+        XCTAssertEqual(document.commitments, commitments)
+        XCTAssertEqual(document.bucketList, bucketList)
+    }
+
     func testPersistenceRestoresPrivateAtlas() async throws {
         let url = FileManager.default.temporaryDirectory.appending(path: UUID().uuidString).appending(path: "atlas.json")
         let store = AtlasStore(fileURL: url)
@@ -78,6 +100,17 @@ final class SignificantHobbiesCoreTests: XCTestCase {
         let restored = try await store.load()
 
         XCTAssertEqual(restored, document)
+    }
+
+    func testNewStoreStartsEmptyInsteadOfUsingDemoWriting() async throws {
+        let url = FileManager.default.temporaryDirectory.appending(path: UUID().uuidString).appending(path: "atlas.json")
+        let store = AtlasStore(fileURL: url)
+
+        let document = try await store.load()
+
+        XCTAssertTrue(document.dailyEntries.isEmpty)
+        XCTAssertTrue(document.habits.isEmpty)
+        XCTAssertTrue(document.hobbies.isEmpty)
     }
 
     func testCompletingCommitmentCreatesDatedEvidenceState() throws {

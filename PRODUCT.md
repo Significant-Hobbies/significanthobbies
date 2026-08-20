@@ -4,7 +4,7 @@
 
 ## Platform
 
-web
+web and iOS
 
 ## Users
 

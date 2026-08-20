@@ -6,13 +6,12 @@ import SignificantHobbiesCore
 @MainActor
 @Observable
 final class AppModel {
-    private(set) var document: AtlasDocument = .sample
+    private(set) var document = AtlasDocument()
     var selectedDate = Date.now
-    var selectedTab = 0
     var isLoading = true
+    private(set) var isDataAvailable = false
     var isSettingsPresented = false
     var message: String?
-    var pendingVisibility: VisibilityRequest?
     var importPreview: AtlasDocument?
     var isImportConfirmationPresented = false
     var account: SignificantHobbiesAccount?
@@ -36,14 +35,13 @@ final class AppModel {
         self.store = store
         self.accountClient = accountClient
         self.webAuthenticator = webAuthenticator
-        if ProcessInfo.processInfo.arguments.contains("--daily-demo") { selectedTab = 1 }
-        if ProcessInfo.processInfo.arguments.contains("--history-demo") { selectedTab = 2 }
     }
 
     func load() async {
         defer { isLoading = false }
         do {
             document = ProcessInfo.processInfo.arguments.contains("--fresh-demo") ? .sample : try await store.load()
+            isDataAvailable = true
             if ProcessInfo.processInfo.arguments.contains("--daily-demo") { selectedDate = .now }
             if ProcessInfo.processInfo.arguments.contains("--account-demo") {
                 account = SignificantHobbiesAccount(
@@ -72,73 +70,20 @@ final class AppModel {
                 await restoreAccount()
             }
         } catch {
-            document = .sample
+            document = AtlasDocument()
+            isDataAvailable = false
             message = error.localizedDescription
         }
     }
 
-    func saveDaily(_ entry: DailyEntry) async {
-        await mutate { $0.saveDaily(entry) }
-        message = "Private Daily entry saved on this device."
-    }
-
-    func toggleHabit(_ habit: Habit) async {
-        await mutate { $0.toggleHabit(habit.id, on: selectedDate) }
-    }
-
-    func addHobby(_ hobby: Hobby) async {
-        await mutate { $0.addHobby(hobby) }
-        message = "Hobby added to your private atlas."
-    }
-
-    func addCommitment(_ commitment: Commitment) async {
-        await mutate { $0.addCommitment(commitment) }
-        message = "Commitment added privately."
-    }
-
-    func addBucketItem(_ item: BucketItem) async {
-        await mutate { $0.addBucketItem(item) }
-    }
-
-    func addSideQuest(_ quest: SideQuest) async {
-        await mutate { $0.addSideQuest(quest) }
-    }
-
-    func addDirection(_ direction: YearDirection) async {
-        await mutate { $0.addDirection(direction) }
-    }
-
-    func completeCommitment(_ commitment: Commitment) async {
-        await mutate { try $0.completeCommitment(commitment.id) }
-    }
-
-    func requestVisibility(for commitment: Commitment) {
-        pendingVisibility = VisibilityRequest(
-            kind: .commitment,
-            id: commitment.id,
-            title: commitment.title,
-            current: commitment.visibility
-        )
-    }
-
-    func requestVisibility(for hobby: Hobby) {
-        pendingVisibility = VisibilityRequest(kind: .hobby, id: hobby.id, title: hobby.name, current: hobby.visibility)
-    }
-
-    func confirmVisibility() async {
-        guard let request = pendingVisibility else { return }
-        let next: SignificantHobbiesCore.Visibility = request.current == .privateOnly ? .publicProfile : .privateOnly
-        await mutate { document in
-            switch request.kind {
-            case .commitment: try document.setCommitmentVisibility(request.id, visibility: next)
-            case .hobby: try document.setHobbyVisibility(request.id, visibility: next)
-            }
+    @discardableResult
+    func saveDaily(_ entry: DailyEntry, announceSuccess: Bool = true) async -> Bool {
+        guard await mutate({ $0.saveDaily(entry) }) else { return false }
+        if announceSuccess {
+            message = "Private Journal entry saved on this device."
         }
-        pendingVisibility = nil
-        message = next == .publicProfile ? "Eligible for your public profile after account sync." : "Returned to private."
+        return true
     }
-
-    func updateProfile(_ profile: Profile) async { await mutate { $0.profile = profile } }
 
     func prepareImport(_ data: Data) async {
         do {
@@ -152,18 +97,23 @@ final class AppModel {
         do {
             try await store.replace(with: importPreview)
             document = importPreview
+            isDataAvailable = true
             self.importPreview = nil
             isImportConfirmationPresented = false
-            message = "Life Atlas replaced."
+            message = "Compatible archive replaced."
             requestSyncAfterLocalChange()
         } catch { message = error.localizedDescription }
     }
 
-    func resetLocalData() async {
+    func clearJournalWriting() async {
         do {
-            try await store.reset()
-            document = .sample
-            message = "Local Life Atlas reset."
+            var next = document
+            next.clearJournalWriting()
+            try await store.replace(with: next)
+            document = next
+            message = account == nil
+                ? "Journal writing cleared from this device."
+                : "Journal writing cleared from this device and synced archive."
             requestSyncAfterLocalChange()
         } catch { message = error.localizedDescription }
     }
@@ -192,7 +142,7 @@ final class AppModel {
         do {
             if let account, !account.hasApple {
                 self.account = try await accountClient.linkApple(payload)
-                accountMessage = "Apple sign-in added to this Significant Hobbies account."
+                accountMessage = "Apple sign-in added to this Journal account."
             } else {
                 account = try await accountClient.signInWithApple(payload)
             }
@@ -250,7 +200,7 @@ final class AppModel {
         deferredConflict = nil
         document.syncState = .localOnly
         try? await store.save(document)
-        accountMessage = "Signed out. Your Life Atlas remains on this device."
+        accountMessage = "Signed out. Your Journal archive remains on this device."
     }
 
     func deleteAccount() async {
@@ -264,7 +214,7 @@ final class AppModel {
             deferredConflict = nil
             document.syncState = .localOnly
             try await store.save(document)
-            accountMessage = "Account and private cloud copy deleted. Your exported or local Atlas remains yours."
+            accountMessage = "Account and private cloud copy deleted. Your exported or local archive remains yours."
         } catch {
             accountMessage = friendlyMessage(for: error)
         }
@@ -336,7 +286,7 @@ final class AppModel {
         document.syncState = .synced
         document.lastSyncedAt = .now
         try? await store.save(document)
-        accountMessage = "Your private Life Atlas is up to date."
+        accountMessage = "Your private archive is up to date."
     }
 
     private func requestSyncAfterLocalChange() {
@@ -350,26 +300,23 @@ final class AppModel {
 
     private func friendlyMessage(for error: Error) -> String {
         if let native = error as? NativeAccountError {
-            return native.errorDescription ?? "Significant Hobbies account service is unavailable."
+            return native.errorDescription ?? "Journal account service is unavailable."
         }
-        return "Significant Hobbies could not complete that account action. Try again."
+        return "Journal could not complete that account action. Try again."
     }
 
-    private func mutate(_ operation: (inout AtlasDocument) throws -> Void) async {
+    @discardableResult
+    private func mutate(_ operation: (inout AtlasDocument) throws -> Void) async -> Bool {
         do {
             var next = document
             try operation(&next)
             try await store.save(next)
             document = next
             requestSyncAfterLocalChange()
-        } catch { message = error.localizedDescription }
+            return true
+        } catch {
+            message = error.localizedDescription
+            return false
+        }
     }
-}
-
-struct VisibilityRequest: Identifiable, Equatable {
-    enum Kind { case commitment, hobby }
-    var kind: Kind
-    var id: UUID
-    var title: String
-    var current: SignificantHobbiesCore.Visibility
 }

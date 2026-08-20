@@ -14,7 +14,7 @@ public actor AtlasStore {
     }
 
     public func load() throws -> AtlasDocument {
-        guard FileManager.default.fileExists(atPath: fileURL.path) else { return .sample }
+        guard FileManager.default.fileExists(atPath: fileURL.path) else { return AtlasDocument() }
         let data = try Data(contentsOf: fileURL)
         let document = try Self.decoder.decode(AtlasDocument.self, from: data)
         guard document.schemaVersion == 1 else { throw AtlasError.unsupportedSchema(document.schemaVersion) }

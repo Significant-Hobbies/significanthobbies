@@ -1,10 +1,13 @@
 import SignificantHobbiesCore
 import SwiftUI
 
-struct DailyView: View {
+struct JournalView: View {
     @Environment(AppModel.self) private var model
     @State private var draft = DailyEntry(date: .now)
+    @State private var loadedDraft = DailyEntry(date: .now)
+    @State private var priorEntry: DailyEntry?
     @State private var ritual = 0
+    @State private var isArchivePresented = false
 
     var body: some View {
         ScrollView {
@@ -21,31 +24,38 @@ struct DailyView: View {
                 }
                 .pickerStyle(.segmented)
                 reflectionField
-                habits
-                newThing
                 journal
                 Button {
-                    Task { await model.saveDaily(draft) }
+                    Task {
+                        if await model.saveDaily(draft) {
+                            loadedDraft = draft
+                        }
+                    }
                 } label: {
-                    Label("Save private Daily entry", systemImage: "lock.fill")
+                    Label("Save private Journal entry", systemImage: "lock.fill")
                 }
                 .buttonStyle(AtlasPrimaryButtonStyle())
                 priorContext
             }
             .padding(.horizontal, 18)
             .padding(.bottom, 34)
+            .frame(maxWidth: 720, alignment: .leading)
+            .frame(maxWidth: .infinity)
         }
         .background((ritual == 0 ? AtlasPalette.gold.opacity(0.15) : AtlasPalette.lilac.opacity(0.28)).ignoresSafeArea())
         .navigationBarHidden(true)
         .onAppear { loadDraft() }
         .onChange(of: model.selectedDate) { _, _ in loadDraft() }
+        .sheet(isPresented: $isArchivePresented) { archive }
     }
 
     private var dateRail: some View {
         HStack {
-            Button { model.selectedDate = Calendar.current.date(byAdding: .day, value: -1, to: model.selectedDate) ?? model.selectedDate } label: {
+            Button { changeDate(by: -1) } label: {
                 Image(systemName: "chevron.left").frame(width: 44, height: 44)
             }
+            .accessibilityLabel("Previous day")
+            .accessibilityHint("Opens the previous Journal date")
             Spacer()
             VStack(spacing: 2) {
                 Text(Calendar.current.isDateInToday(model.selectedDate) ? "Today" : model.selectedDate.formatted(.dateTime.weekday(.wide)))
@@ -53,9 +63,12 @@ struct DailyView: View {
                 Text(model.selectedDate.formatted(.dateTime.day().month(.wide))).font(.caption).foregroundStyle(AtlasPalette.quietInk)
             }
             Spacer()
-            Button { model.selectedDate = Calendar.current.date(byAdding: .day, value: 1, to: model.selectedDate) ?? model.selectedDate } label: {
+            Button { changeDate(by: 1) } label: {
                 Image(systemName: "chevron.right").frame(width: 44, height: 44)
             }
+            .disabled(!canMoveForward)
+            .accessibilityLabel("Next day")
+            .accessibilityHint("Opens the next Journal date")
         }
         .padding(.horizontal, 6)
         .background(AtlasPalette.paper.opacity(0.78))
@@ -74,43 +87,6 @@ struct DailyView: View {
                 .clipShape(RoundedRectangle(cornerRadius: 14))
                 .overlay { RoundedRectangle(cornerRadius: 14).stroke(AtlasPalette.contour) }
                 .accessibilityLabel(ritual == 0 ? "Morning reflection" : "Evening reflection")
-        }
-    }
-
-    private var habits: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            HStack {
-                Text("Small ways to be here").font(.title2.weight(.bold))
-                Spacer()
-                Text("No streaks").font(.caption.weight(.bold)).foregroundStyle(AtlasPalette.quietInk)
-            }
-            ForEach(model.document.habits.filter { !$0.isArchived }) { habit in
-                Button {
-                    if draft.completedHabitIDs.contains(habit.id) { draft.completedHabitIDs.remove(habit.id) }
-                    else { draft.completedHabitIDs.insert(habit.id) }
-                } label: {
-                    HStack(spacing: 12) {
-                        Image(systemName: draft.completedHabitIDs.contains(habit.id) ? "checkmark.circle.fill" : "circle")
-                            .font(.title3)
-                            .foregroundStyle(draft.completedHabitIDs.contains(habit.id) ? AtlasPalette.sage : AtlasPalette.quietInk)
-                        Text(habit.name).font(.body.weight(.medium))
-                        Spacer()
-                    }
-                    .foregroundStyle(AtlasPalette.ink)
-                    .frame(minHeight: 48)
-                }
-            }
-        }
-    }
-
-    private var newThing: some View {
-        VStack(alignment: .leading, spacing: 9) {
-            AtlasLabel(text: "One new thing")
-            TextField("A route, taste, person, idea…", text: $draft.newThing, axis: .vertical)
-                .lineLimit(2...4)
-                .padding(14)
-                .background(AtlasPalette.sky.opacity(0.58))
-                .clipShape(RoundedRectangle(cornerRadius: 13))
         }
     }
 
@@ -136,14 +112,14 @@ struct DailyView: View {
     private var priorContext: some View {
         VStack(alignment: .leading, spacing: 9) {
             AtlasLabel(text: "A thread from before")
-            if let previous = model.document.dailyEntries
-                .filter({ $0.date < Calendar.current.startOfDay(for: model.selectedDate) && !$0.journal.isEmpty })
-                .sorted(by: { $0.date > $1.date }).first {
+            if let previous = priorEntry {
                 Text(previous.journal).font(.system(.body, design: .serif)).foregroundStyle(AtlasPalette.quietInk)
                 Text(previous.date.formatted(date: .abbreviated, time: .omitted)).font(.caption.weight(.bold))
             } else {
                 Text("Earlier writing will return here as context, never as a score.").foregroundStyle(AtlasPalette.quietInk)
             }
+            Button("Browse Journal archive") { isArchivePresented = true }
+                .font(.subheadline.weight(.semibold))
         }
         .padding(16)
         .background(AtlasPalette.paper.opacity(0.7))
@@ -152,5 +128,65 @@ struct DailyView: View {
 
     private func loadDraft() {
         draft = model.document.dailyEntry(on: model.selectedDate) ?? DailyEntry(date: Calendar.current.startOfDay(for: model.selectedDate))
+        loadedDraft = draft
+        priorEntry = model.document.dailyEntries
+            .filter { $0.date < Calendar.current.startOfDay(for: model.selectedDate) && !$0.journal.isEmpty }
+            .max { $0.date < $1.date }
+    }
+
+    private var canMoveForward: Bool {
+        Calendar.current.startOfDay(for: model.selectedDate) < Calendar.current.startOfDay(for: .now)
+    }
+
+    private var archiveEntries: [DailyEntry] {
+        model.document.dailyEntries
+            .filter { !$0.morningReflection.isEmpty || !$0.eveningReflection.isEmpty || !$0.journal.isEmpty }
+            .sorted { $0.date > $1.date }
+    }
+
+    private var archive: some View {
+        NavigationStack {
+            List(archiveEntries) { entry in
+                Button {
+                    openDate(entry.date, dismissArchive: true)
+                } label: {
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text(entry.date.formatted(date: .long, time: .omitted))
+                            .font(.headline)
+                        Text(entry.journal.isEmpty ? entry.morningReflection + entry.eveningReflection : entry.journal)
+                            .lineLimit(2)
+                            .foregroundStyle(AtlasPalette.quietInk)
+                    }
+                }
+                .foregroundStyle(AtlasPalette.ink)
+            }
+            .overlay {
+                if archiveEntries.isEmpty {
+                    ContentUnavailableView("No Journal entries yet", systemImage: "book.closed")
+                }
+            }
+            .navigationTitle("Journal archive")
+            .toolbar {
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Done") { isArchivePresented = false }
+                }
+            }
+        }
+        .atlasBackground()
+    }
+
+    private func changeDate(by dayOffset: Int) {
+        let date = Calendar.current.date(byAdding: .day, value: dayOffset, to: model.selectedDate) ?? model.selectedDate
+        openDate(date)
+    }
+
+    private func openDate(_ date: Date, dismissArchive: Bool = false) {
+        Task {
+            if draft != loadedDraft {
+                guard await model.saveDaily(draft, announceSuccess: false) else { return }
+            }
+            model.selectedDate = Calendar.current.startOfDay(for: date)
+            if dismissArchive { isArchivePresented = false }
+        }
     }
 }

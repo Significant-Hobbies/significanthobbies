@@ -6,33 +6,27 @@ struct RootView: View {
 
     var body: some View {
         @Bindable var model = model
-        TabView(selection: $model.selectedTab) {
-            NavigationStack { LiveMoreView() }
-                .tabItem { Label("Live More", systemImage: "sun.max.fill") }
-                .tag(0)
-            NavigationStack { DailyView() }
-                .tabItem { Label("Daily", systemImage: "pencil.line") }
-                .tag(1)
-            NavigationStack { HistoryView() }
-                .tabItem { Label("See History", systemImage: "point.bottomleft.forward.to.point.topright.scurvepath") }
-                .tag(2)
+        NavigationStack {
+            if model.isLoading {
+                ProgressView("Opening your Journal…")
+            } else if model.isDataAvailable {
+                JournalView()
+            } else {
+                VStack(spacing: 18) {
+                    ContentUnavailableView(
+                        "Journal could not open your archive",
+                        systemImage: "exclamationmark.triangle",
+                        description: Text("Your existing file was left untouched. Restart Journal or restore a compatible archive before writing.")
+                    )
+                    Button("Open recovery settings") { model.isSettingsPresented = true }
+                        .buttonStyle(.borderedProminent)
+                }
+                .padding()
+            }
         }
         .atlasBackground()
         .sheet(isPresented: $model.isSettingsPresented) { SettingsView() }
-        .confirmationDialog(
-            model.pendingVisibility?.current == .privateOnly ? "Make this public?" : "Return this to private?",
-            isPresented: Binding(get: { model.pendingVisibility != nil }, set: { if !$0 { model.pendingVisibility = nil } })
-        ) {
-            Button(model.pendingVisibility?.current == .privateOnly ? "Make eligible for public profile" : "Make private") {
-                Task { await model.confirmVisibility() }
-            }
-            Button("Cancel", role: .cancel) { model.pendingVisibility = nil }
-        } message: {
-            Text(model.pendingVisibility?.current == .privateOnly
-                 ? "Only “\(model.pendingVisibility?.title ?? "this item")” will become publication-eligible. Daily writing and unrelated Living items stay private."
-                 : "This removes “\(model.pendingVisibility?.title ?? "this item")” from publication eligibility.")
-        }
-        .alert("Significant Hobbies", isPresented: Binding(
+        .alert("Journal", isPresented: Binding(
             get: { model.message != nil },
             set: { if !$0 { model.message = nil } }
         )) {

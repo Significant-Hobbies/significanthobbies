@@ -1,15 +1,34 @@
 import SwiftUI
+import UIKit
 
 enum AtlasPalette {
-    static let paper = Color(red: 252 / 255, green: 248 / 255, blue: 237 / 255)
-    static let ink = Color(red: 54 / 255, green: 47 / 255, blue: 28 / 255)
-    static let gold = Color(red: 234 / 255, green: 193 / 255, blue: 62 / 255)
-    static let sage = Color(red: 129 / 255, green: 179 / 255, blue: 120 / 255)
-    static let quietInk = Color(red: 111 / 255, green: 103 / 255, blue: 82 / 255)
-    static let contour = Color(red: 222 / 255, green: 211 / 255, blue: 183 / 255)
-    static let sky = Color(red: 166 / 255, green: 211 / 255, blue: 232 / 255)
-    static let coral = Color(red: 232 / 255, green: 127 / 255, blue: 97 / 255)
-    static let lilac = Color(red: 207 / 255, green: 190 / 255, blue: 226 / 255)
+    static let paper = adaptive(light: 0xFCF8ED, dark: 0x191712)
+    static let ink = adaptive(light: 0x362F1C, dark: 0xF4EEDB)
+    static let actionInk = Color(red: 54 / 255, green: 47 / 255, blue: 28 / 255)
+    static let gold = adaptive(light: 0xEAC13E, dark: 0xF1C94E)
+    static let sage = adaptive(light: 0x81B378, dark: 0x7FB776)
+    static let quietInk = adaptive(light: 0x6F6752, dark: 0xC0B799)
+    static let contour = adaptive(light: 0xDED3B7, dark: 0x4B4534)
+    static let sky = adaptive(light: 0xA6D3E8, dark: 0x477B94)
+    static let coral = adaptive(light: 0xE87F61, dark: 0xD9785F)
+    static let lilac = adaptive(light: 0xCFBEE2, dark: 0x695A79)
+
+    private static func adaptive(light: UInt32, dark: UInt32) -> Color {
+        Color(uiColor: UIColor { traits in
+            UIColor(rgb: traits.userInterfaceStyle == .dark ? dark : light)
+        })
+    }
+}
+
+private extension UIColor {
+    convenience init(rgb: UInt32) {
+        self.init(
+            red: CGFloat((rgb >> 16) & 0xFF) / 255,
+            green: CGFloat((rgb >> 8) & 0xFF) / 255,
+            blue: CGFloat(rgb & 0xFF) / 255,
+            alpha: 1
+        )
+    }
 }
 
 struct AtlasBackground: ViewModifier {
@@ -27,12 +46,12 @@ struct SHMark: View {
     var body: some View {
         ZStack {
             Circle().fill(AtlasPalette.ink)
-            Text("SH")
+            Text("J")
                 .font(.system(size: size * 0.32, weight: .bold, design: .serif))
                 .foregroundStyle(AtlasPalette.paper)
         }
         .frame(width: size, height: size)
-        .accessibilityLabel("Significant Hobbies")
+        .accessibilityLabel("Journal")
     }
 }
 
@@ -46,7 +65,7 @@ struct AtlasHeader: View {
         VStack(alignment: .leading, spacing: 12) {
             HStack {
                 SHMark()
-                Text("SIGNIFICANT HOBBIES")
+                Text("JOURNAL")
                     .font(.caption.weight(.bold))
                     .tracking(1.25)
                 Spacer()
@@ -93,7 +112,7 @@ struct AtlasPrimaryButtonStyle: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
             .font(.headline.weight(.bold))
-            .foregroundStyle(AtlasPalette.ink)
+            .foregroundStyle(AtlasPalette.actionInk)
             .frame(maxWidth: .infinity, minHeight: 54)
             .background(AtlasPalette.gold)
             .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))

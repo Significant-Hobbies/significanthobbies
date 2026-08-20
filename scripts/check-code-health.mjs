@@ -33,7 +33,7 @@ const baselines = {
     unresolved: 0,
   },
   suppressions: 11,
-  nativeFormatErrors: 184,
+  nativeFormatErrors: 104,
 };
 
 const acceptedHighAdvisories = new Set([

@@ -1,8 +1,8 @@
-# Significant Hobbies for iPhone and iPad
+# Journal for iPhone
 
-A native SwiftUI Life Atlas for iOS 17 and later. Live More, Daily, and See History remain the product's three destinations. Daily writing is private by domain design; eligible Living items require an explicit publication choice.
+A private native SwiftUI journal for iOS 17 and later. The app is focused on morning and evening reflection, free writing, dates, and finding earlier entries.
 
-The account adapter stores its bearer session in Keychain and syncs a separate, revisioned private Life Atlas. The additive D1 migration and production route activation are manual release gates; the native UI remains fully useful offline before activation.
+The existing `com.significanthobbies.app` identity and local document remain unchanged so current entries survive the split. Live and Habits records stay preserved in the compatible archive but are no longer exposed or edited by the Journal interface. Account sync remains revisioned and optional; the app is fully useful offline.
 
 ## Local checks
 
@@ -20,7 +20,7 @@ The script is locked to personal team `8F7LXHTJZR`, verifies the local signature
 
 ## Device-only checks before submission
 
-- Complete morning/evening Daily, hobby, commitment, bucket-list, quest, trajectory, and public-item flows on physical iPhone and iPad hardware.
+- Complete morning/evening reflection, writing, date navigation, and archive flows on physical iPhone hardware.
 - Verify the largest Dynamic Type sizes, VoiceOver chronology, Reduce Motion, and writing keyboard behavior on hardware.
-- Verify account callback, Keychain persistence, offline reconciliation, and public-profile propagation after native account sync is enabled.
-- Confirm screenshots, support/privacy URLs, age rating, App Privacy answers, and the final public-sharing review notes in App Store Connect before upload.
+- Verify account callback, Keychain persistence, and offline reconciliation after native account sync is enabled.
+- Confirm screenshots, support/privacy URLs, age rating, and App Privacy answers in App Store Connect before upload.

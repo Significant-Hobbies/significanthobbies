@@ -12,12 +12,11 @@ and record durable follow-up in this repository's GitHub Issues.
 
 ## What this is
 
-A life planner with two dimensions. **Daily** (private): one ritual page with
-AM/PM prompts, habit check-ins, and a compulsory journal entry. **Living**
-(opt-in public): hobby discovery, timeline builder, bucket lists, side quests,
-SEO blog, and public user profiles. The mortality frame (life grid, manifesto)
-connects both dimensions. Deployed at `significanthobbies.com` on Cloudflare
-Workers via OpenNext.
+The Significant Hobbies personal-app family. The apex is a read-only directory;
+**Live** is the web application for hobbies, bucket lists, timelines, and
+lifelong tracking; **Journal** is the native private writing app under `ios/`;
+and **Habits** is maintained in its own native repository. The web runtime is
+deployed at `significanthobbies.com` on Cloudflare Workers via OpenNext.
 
 ## Stack
 
