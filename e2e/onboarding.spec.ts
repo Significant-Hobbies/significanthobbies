@@ -231,8 +231,12 @@ test.describe('Onboarding', () => {
       .getByLabel('What is true about my life right now')
       .fill('Weekdays are busy, but Sunday mornings are open.');
     await page.getByRole('button', { name: /Enter my life/i }).click();
+    await expect(page).toHaveURL(/\/$/);
+    await page.getByRole('link', { name: /^Live/ }).first().click();
     await expect(page).toHaveURL(/\/live-more$/);
-    await expect(page.getByRole('heading', { name: /Live it, Complete/i })).toBeVisible();
+    await expect(
+      page.getByRole('heading', { name: /What do you still want to live, Complete/i })
+    ).toBeVisible();
     await page.goto('/habits');
     await expect(page.getByText('Connect with someone today', { exact: true })).toHaveCount(0);
   });

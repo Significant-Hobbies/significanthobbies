@@ -148,9 +148,7 @@ test.describe('authenticated surfaces', () => {
     await expect(authedPage.getByText(/1\/\d+ steps done/).first()).toBeVisible();
   });
 
-  test('the creed can be written and remains durable after the dashboard is removed', async ({
-    authedPage,
-  }) => {
+  test('the creed can be written and remains durable from the Hub', async ({ authedPage }) => {
     // `updateCreed` had zero callers, so users.creed was NULL for everyone and
     // the dashboard heading, the public-profile quote and the look-back
     // narrative all permanently took their fallback branch — for the field the
@@ -196,7 +194,10 @@ test.describe('authenticated surfaces', () => {
     await expect(authedPage.getByLabel('Your creed')).toHaveValue(creed);
 
     await authedPage.goto('/');
-    await expect(authedPage).toHaveURL(/\/live-more$/);
+    await expect(authedPage).toHaveURL(/\/$/);
+    await expect(
+      authedPage.getByRole('heading', { name: 'Your personal apps, in one place.' })
+    ).toBeVisible();
   });
 
   test('a bucket item can be advanced, published, and deleted', async ({ authedPage }) => {
