@@ -1,7 +1,7 @@
 import SignificantHobbiesCore
 import SwiftUI
 
-struct JournalView: View {
+struct DailyView: View {
     @Environment(AppModel.self) private var model
     @State private var draft = DailyEntry(date: .now)
     @State private var ritual = 0
@@ -21,11 +21,13 @@ struct JournalView: View {
                 }
                 .pickerStyle(.segmented)
                 reflectionField
+                habits
+                newThing
                 journal
                 Button {
                     Task { await model.saveDaily(draft) }
                 } label: {
-                    Label("Save private Journal entry", systemImage: "lock.fill")
+                    Label("Save private Daily entry", systemImage: "lock.fill")
                 }
                 .buttonStyle(AtlasPrimaryButtonStyle())
                 priorContext
@@ -72,6 +74,43 @@ struct JournalView: View {
                 .clipShape(RoundedRectangle(cornerRadius: 14))
                 .overlay { RoundedRectangle(cornerRadius: 14).stroke(AtlasPalette.contour) }
                 .accessibilityLabel(ritual == 0 ? "Morning reflection" : "Evening reflection")
+        }
+    }
+
+    private var habits: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            HStack {
+                Text("Small ways to be here").font(.title2.weight(.bold))
+                Spacer()
+                Text("No streaks").font(.caption.weight(.bold)).foregroundStyle(AtlasPalette.quietInk)
+            }
+            ForEach(model.document.habits.filter { !$0.isArchived }) { habit in
+                Button {
+                    if draft.completedHabitIDs.contains(habit.id) { draft.completedHabitIDs.remove(habit.id) }
+                    else { draft.completedHabitIDs.insert(habit.id) }
+                } label: {
+                    HStack(spacing: 12) {
+                        Image(systemName: draft.completedHabitIDs.contains(habit.id) ? "checkmark.circle.fill" : "circle")
+                            .font(.title3)
+                            .foregroundStyle(draft.completedHabitIDs.contains(habit.id) ? AtlasPalette.sage : AtlasPalette.quietInk)
+                        Text(habit.name).font(.body.weight(.medium))
+                        Spacer()
+                    }
+                    .foregroundStyle(AtlasPalette.ink)
+                    .frame(minHeight: 48)
+                }
+            }
+        }
+    }
+
+    private var newThing: some View {
+        VStack(alignment: .leading, spacing: 9) {
+            AtlasLabel(text: "One new thing")
+            TextField("A route, taste, person, idea…", text: $draft.newThing, axis: .vertical)
+                .lineLimit(2...4)
+                .padding(14)
+                .background(AtlasPalette.sky.opacity(0.58))
+                .clipShape(RoundedRectangle(cornerRadius: 13))
         }
     }
 

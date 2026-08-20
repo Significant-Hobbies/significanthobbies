@@ -41,6 +41,8 @@ where proof is the explicit job.
 ## Operating Context
 
 - The public product runs at `significanthobbies.com`.
+- `live.significanthobbies.com` serves the preserved Live landing; its calls to
+  action return to the existing same-origin application routes.
 - `/` is the same seven-product directory for signed-out and signed-in visitors.
 - `/live-more`, `/journal`, and `/habits` are the current same-origin product
   routes; `/daily` is a compatibility doorway to Journal and Habits.

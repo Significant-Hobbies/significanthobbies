@@ -27,12 +27,12 @@ struct SHMark: View {
     var body: some View {
         ZStack {
             Circle().fill(AtlasPalette.ink)
-            Text("J")
+            Text("SH")
                 .font(.system(size: size * 0.32, weight: .bold, design: .serif))
                 .foregroundStyle(AtlasPalette.paper)
         }
         .frame(width: size, height: size)
-        .accessibilityLabel("Journal")
+        .accessibilityLabel("Significant Hobbies")
     }
 }
 
@@ -46,7 +46,7 @@ struct AtlasHeader: View {
         VStack(alignment: .leading, spacing: 12) {
             HStack {
                 SHMark()
-                Text("JOURNAL")
+                Text("SIGNIFICANT HOBBIES")
                     .font(.caption.weight(.bold))
                     .tracking(1.25)
                 Spacer()

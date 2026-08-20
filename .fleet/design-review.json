@@ -71,16 +71,28 @@
         "path": ".fleet/design-evidence/split-products/hub-390.png"
       },
       {
+        "width": 768,
+        "path": ".fleet/design-evidence/split-products/hub-768.png"
+      },
+      {
         "width": 1440,
         "path": ".fleet/design-evidence/split-products/hub-1440.png"
       },
       {
         "width": 390,
-        "path": ".fleet/design-evidence/split-products/journal-native.png"
+        "path": ".fleet/design-evidence/split-products/live-390.png"
+      },
+      {
+        "width": 768,
+        "path": ".fleet/design-evidence/split-products/live-768.png"
+      },
+      {
+        "width": 1440,
+        "path": ".fleet/design-evidence/split-products/live-1440.png"
       }
     ],
     "projectCheck": {
-      "command": "pnpm typecheck; pnpm test; pnpm docs:check; pnpm build; Astro check/build; 6 Hub browser tests; 3 focused root-routing browser tests; ios/scripts/check.sh",
+      "command": "pnpm quality; Astro check/build; 8 Hub and Live browser tests",
       "status": "pass"
     },
     "critique": {
@@ -99,13 +111,13 @@
       "posture": "advisory",
       "findings": [
         "The detector returned zero deterministic findings across the split routes, navigation, practice surfaces, and Hub.",
-        "Manual review covered the Hub and Journal at phone and desktop widths. The Hub keeps all seven products scannable, leaves unavailable destinations non-interactive, and explicitly states that no combined database exists.",
+        "Manual review covered the Hub and preserved cinematic Live landing at phone, tablet, and desktop widths. The Hub keeps all seven products scannable and explicitly states that no combined database exists.",
         "The first Hub accessibility pass found four status labels just below WCAG AA contrast. Their text token was darkened and the complete axe baseline then passed."
       ]
     }
   },
   "ownerFeedback": {
-    "decision": "delegated",
-    "note": "The owner approved the seven-product grouping, the shared design language, and the direction to finish it with the least code possible. The Hub and product split preserve that direction without adding synchronization."
+    "decision": "keep",
+    "note": "The owner reviewed the built Hub at desktop and mobile widths and said they were happy with it. Live preserves the existing cinematic landing as requested."
   }
 }

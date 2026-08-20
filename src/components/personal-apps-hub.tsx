@@ -18,7 +18,7 @@ const products: Product[] = [
     description: 'A lifelong catalog for places, hobbies, side quests, and experiences.',
     platforms: 'Web',
     status: 'Available now',
-    href: '/live-more',
+    href: 'https://live.significanthobbies.com',
     color: '#fff09a',
   },
   {
@@ -26,7 +26,8 @@ const products: Product[] = [
     mark: 'J',
     description: 'A private page for morning, evening, and everything worth remembering.',
     platforms: 'iPhone · iPad',
-    status: 'Native app prepared',
+    status: 'Native app in preparation',
+    href: 'https://journal.significanthobbies.com',
     color: '#eadcf6',
   },
   {
@@ -34,7 +35,8 @@ const products: Product[] = [
     mark: 'H',
     description: 'Keep what helps, trade what does not, and remember the choices you made.',
     platforms: 'iPhone · iPad',
-    status: 'Native app prepared',
+    status: 'Native app in preparation',
+    href: 'https://habits.significanthobbies.com',
     color: '#dceeff',
   },
   {

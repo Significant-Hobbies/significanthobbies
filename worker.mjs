@@ -94,8 +94,7 @@ function isCacheableContentType(pathname, contentType) {
 // session in both prod (__Secure-) and dev variants so signed-in users
 // always see live SSR (e.g. redirect to /library).
 const AUTH_COOKIE_FRAGMENTS = ['session_token', 'session-token'];
-// Non-sensitive client hint; IndexedDB remains the local workspace authority.
-const LOCAL_WORKSPACE_COOKIE = 'sh_local_workspace=1';
+const LIVE_HOST = 'live.significanthobbies.com';
 
 function hasAuthCookie(request) {
   const cookie = request.headers.get('cookie');
@@ -103,17 +102,19 @@ function hasAuthCookie(request) {
   return AUTH_COOKIE_FRAGMENTS.some((c) => cookie.includes(c));
 }
 
-function hasLocalWorkspaceCookie(request) {
-  return request.headers.get('cookie')?.includes(LOCAL_WORKSPACE_COOKIE) ?? false;
-}
-
 export default {
   fetch: withTiming(async function fetch(request, env, ctx) {
+    const requestUrl = new URL(request.url);
+    if (requestUrl.hostname === LIVE_HOST && requestUrl.pathname !== '/') {
+      requestUrl.hostname = 'significanthobbies.com';
+      return Response.redirect(requestUrl, 308);
+    }
+
     // Agent / LLM indexing surfaces (fleet GEO standard)
     // `/llms-full.txt` is owned by the application because it is generated
     // from the complete editorial corpus. The portable fallback must not mask
     // that richer route with its generic product brief.
-    if (new URL(request.url).pathname !== '/llms-full.txt') {
+    if (requestUrl.pathname !== '/llms-full.txt') {
       const agent = handleAgentEdge(request);
       if (agent) return agent;
     }
@@ -149,23 +150,15 @@ export default {
       if (request.method !== 'GET') {
         return openNext.fetch(request, env, ctx);
       }
-      const url = new URL(request.url);
+      const url = requestUrl;
       if (!isCacheableDocumentPath(url.pathname)) {
         return openNext.fetch(request, env, ctx);
       }
       // Auth-bearing requests pass straight through; the user is likely
       // going to be redirected by middleware to /library or /dashboard.
-      if (hasAuthCookie(request)) {
+      const isLiveLanding = url.hostname === LIVE_HOST && url.pathname === '/';
+      if (hasAuthCookie(request) && !isLiveLanding) {
         return openNext.fetch(request, env, ctx);
-      }
-      if (url.pathname === '/' && hasLocalWorkspaceCookie(request)) {
-        // OpenNext normalizes request cookies and query hints before rendering
-        // `/`. Rewrite to the internal local-workspace entry instead; the
-        // browser remains at `/`, and IndexedDB is still verified after
-        // hydration.
-        url.pathname = '/local-workspace';
-        url.search = '';
-        return openNext.fetch(new Request(url, request), env, ctx);
       }
 
       // Short-circuit: the Astro landing is overlaid into
@@ -180,7 +173,10 @@ export default {
       // wrapper and CDN to encode it again, leaving browsers with gzip bytes
       // rendered as text after the cached variants crossed.
       if (env.ASSETS && url.pathname === '/') {
-        const assetResp = await env.ASSETS.fetch(request);
+        const assetRequest = isLiveLanding
+          ? new Request(new URL('/live.html', request.url), request)
+          : request;
+        const assetResp = await env.ASSETS.fetch(assetRequest);
         // The assets binding answers If-None-Match revalidations with 304.
         // Pass those through — falling through would serve the wrong page.
         if (assetResp.status === 304) {

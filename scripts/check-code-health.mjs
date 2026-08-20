@@ -37,6 +37,8 @@ const baselines = {
 };
 
 const acceptedHighAdvisories = new Set([
+  // #115, review 2026-09-20: unused Better Auth Prisma-adapter path; this app uses Drizzle.
+  'GHSA-ggr8-5vv4-36mx',
   'GHSA-28wg-ghj8-5hjv',
   'GHSA-2p49-hgcm-8545',
   'GHSA-2pvr-wf23-7pc7',

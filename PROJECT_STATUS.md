@@ -5,14 +5,14 @@
 > Update this file when durable current or shipped product truth changes. Do
 > not let deploy-version snapshots accumulate here — put those in the archive.
 
-Last updated: 2026-08-12
+Last updated: 2026-08-20
 
 ## Why / What
 
-Ship and operate **significanthobbies** — a life planner with two dimensions
-(Daily + Living) — at `significanthobbies.com` on Cloudflare Workers. The
-mortality frame (life grid, manifesto) connects both dimensions. The journal
-is the bridge between daily practice and life aspirations.
+Ship and operate the **Significant Hobbies** personal-app family. The apex is
+the read-only Hub for Live, Journal, Habits, Calorie, Setline, Kith, and Anchor.
+Live retains the existing web application and cinematic landing; Journal and
+Habits are focused products built from the existing private practice data.
 
 ## Dependencies
 
@@ -29,6 +29,11 @@ is the bridge between daily practice and life aspirations.
 
 ## Timeline
 
+- **2026-08-20:** Split the web surface into a seven-product Hub plus focused
+  Live, Journal, and Habits routes without changing storage. The existing
+  cinematic landing now belongs to `live.significanthobbies.com`; deeper Live
+  paths return to the existing apex application so auth and signed-out data
+  remain on one origin. Pace and native application releases are unchanged.
 - **2026-08-12:** Adopted the mixed web/native Fleet code-health gate, removed
   14 disconnected legacy files and unused public exports, restored type-safe
   Astro/Vite tooling, and added no-regression evidence for quality, native
@@ -158,9 +163,11 @@ Historical milestones live in
 
 - Universal native SwiftUI iPhone and iPad beta under `ios/`; App Store Connect/TestFlight
   transport remains manual.
-- Public product at `https://significanthobbies.com`.
-- Daily practice, Living planning, discovery, public profiles, and content
-  surfaces in one Cloudflare Worker.
+- Personal-app Hub at `https://significanthobbies.com`.
+- Live landing at `https://live.significanthobbies.com`; application routes,
+  discovery, public profiles, and content remain on the same Cloudflare Worker.
+- Journal and Habits web routes remain same-origin compatibility surfaces while
+  their standalone native applications are prepared separately.
 
 ## Features (shipped)
 
@@ -169,16 +176,17 @@ Historical milestones live in
   versioned data transfer, accessibility, simulator tests, personal-team
   archiving, and a locally prepared private account-sync adapter whose
   production migration/activation remains manual.
-- **Runtime:** Cloudflare Worker `significanthobbies` (OpenNext) + Astro
-  landing overlay for anon `GET /`. Cloudflare D1 + Drizzle ORM +
+- **Runtime:** Cloudflare Worker `significanthobbies` (OpenNext) + Astro Hub
+  and Live overlays. Cloudflare D1 + Drizzle ORM +
   better-auth Google OAuth. PostHog analytics.
+- **Personal-app Hub:** seven honest linked cards, no combined database, no
+  assistant, and no write actions.
+- **Focused web products:** Live at `/live-more`, Journal at `/journal`, Habits
+  at `/habits`, and `/daily` as the compatibility doorway.
 - **Owned product history:** public editorial changelog at `/changelog`.
 - **Public MCP projection:** bounded anonymous reads for hobbies, experiences,
   and public timelines, with legacy timestamp normalization and no private or
   unlisted records.
-- **Two dimensions shipped:** Daily ritual (`/daily` — AM/PM prompts, habits,
-  compulsory journal) and Living (timelines, bucket lists, side quests,
-  public profiles, SEO blog, discovery quiz).
 - **Trajectory contract built locally:** `/trajectory` holds one active private
   focus contract with constraints, intent, a decision policy, a feedback loop,
   and weekly or monthly review context. Reviews record observed signals and can
@@ -296,7 +304,8 @@ and is genuinely public — that one is consistent.
 ### Deploy fingerprint
 
 - **Worker:** `significanthobbies` (prod) / `significanthobbies-preview` (PR)
-- **Routes:** `significanthobbies.com/*`, `www.significanthobbies.com/*`
+- **Routes:** `significanthobbies.com/*`, `www.significanthobbies.com/*`, and
+  Worker custom domain `live.significanthobbies.com`
 - **Deploy trigger:** manual `workflow_dispatch` on `.github/workflows/deploy.yml`
 - **DB:** Cloudflare D1 `significanthobbies` (authoritative)
 

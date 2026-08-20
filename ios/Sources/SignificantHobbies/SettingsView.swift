@@ -7,6 +7,7 @@ struct SettingsView: View {
     @Environment(AppModel.self) private var model
     @Environment(\.colorScheme) private var colorScheme
     @Environment(\.dismiss) private var dismiss
+    @State private var isProfileEditorPresented = false
     @State private var isImporterPresented = false
     @State private var showReset = false
     @State private var showDeleteAccount = false
@@ -17,6 +18,7 @@ struct SettingsView: View {
         NavigationStack {
             ScrollView {
                 VStack(alignment: .leading, spacing: 24) {
+                    publicPreview
                     settingsSection("Account & sync") {
                         HStack(spacing: 12) {
                             Image(systemName: model.account == nil ? "iphone.gen3" : "person.crop.circle.fill")
@@ -26,7 +28,7 @@ struct SettingsView: View {
                                 .clipShape(RoundedRectangle(cornerRadius: 12))
                             VStack(alignment: .leading, spacing: 3) {
                                 Text(model.account?.name ?? "Private on this device").font(.headline)
-                                Text(model.account?.email ?? "Journal works offline.")
+                                Text(model.account?.email ?? "Every Life Atlas tool works offline.")
                                     .font(.subheadline).foregroundStyle(AtlasPalette.quietInk)
                             }
                             Spacer()
@@ -34,12 +36,12 @@ struct SettingsView: View {
                                 .font(.caption2.weight(.black))
                                 .foregroundStyle(AtlasPalette.quietInk)
                         }
-                        Text("Account sync keeps one private copy of your Journal archive. Journal entries are never published.")
+                        Text("Account sync keeps one private copy of Daily and Living. It never publishes a journal or silently changes an item's visibility.")
                             .font(.subheadline).foregroundStyle(AtlasPalette.quietInk)
                         if model.isAccountBusy {
                             HStack(spacing: 10) {
                                 ProgressView()
-                                Text("Contacting Journal…")
+                                Text("Contacting Significant Hobbies…")
                             }
                             .frame(maxWidth: .infinity, minHeight: 48)
                         } else if model.account == nil {
@@ -55,11 +57,11 @@ struct SettingsView: View {
                                 }
                             }
                             Button { Task { await model.syncNow() } } label: {
-                                Label("Sync private Journal", systemImage: "arrow.triangle.2.circlepath")
+                                Label("Sync private Life Atlas", systemImage: "arrow.triangle.2.circlepath")
                             }
                             .buttonStyle(AtlasPrimaryButtonStyle())
                             if model.account?.hasApple == false {
-                                Text("Add Apple to this account so future Apple sign-ins open the same private Journal.")
+                                Text("Add Apple to this account so future Apple sign-ins open the same private Life Atlas.")
                                     .font(.footnote)
                                     .foregroundStyle(AtlasPalette.quietInk)
                                 appleAccountButton
@@ -80,9 +82,27 @@ struct SettingsView: View {
                                 .accessibilityLabel("Account status: \(accountMessage)")
                         }
                     }
+                    settingsSection("Soundtrack") {
+                        Menu {
+                            ForEach(["Here Comes the Sun", "Lovely Day", "Send Me On My Way", "None"], id: \.self) { track in
+                                Button(track) {
+                                    var profile = model.document.profile
+                                    profile.soundtrack = track == "None" ? nil : track
+                                    Task { await model.updateProfile(profile) }
+                                }
+                            }
+                        } label: {
+                            HStack {
+                                Label(model.document.profile.soundtrack ?? "No soundtrack", systemImage: "music.note")
+                                Spacer(); Image(systemName: "chevron.up.chevron.down")
+                            }
+                            .frame(minHeight: 48)
+                        }
+                        Text("A preference only. Significant Hobbies does not stream or download music.").font(.caption).foregroundStyle(AtlasPalette.quietInk)
+                    }
                     settingsSection("Your data") {
-                        ShareLink(item: AtlasExportPayload(document: model.document), preview: SharePreview("Journal archive")) {
-                            Label("Export Journal archive", systemImage: "square.and.arrow.up").frame(maxWidth: .infinity, alignment: .leading)
+                        ShareLink(item: AtlasExportPayload(document: model.document), preview: SharePreview("Life Atlas")) {
+                            Label("Export Life Atlas", systemImage: "square.and.arrow.up").frame(maxWidth: .infinity, alignment: .leading)
                         }
                         .frame(minHeight: 48)
                         Button { isImporterPresented = true } label: {
@@ -90,19 +110,19 @@ struct SettingsView: View {
                         }
                         .frame(minHeight: 48)
                         Button(role: .destructive) { showReset = true } label: {
-                            Label("Reset local Journal archive", systemImage: "trash").frame(maxWidth: .infinity, alignment: .leading)
+                            Label("Reset local Life Atlas", systemImage: "trash").frame(maxWidth: .infinity, alignment: .leading)
                         }
                         .frame(minHeight: 48)
                     }
                     settingsSection("Privacy") {
-                        Label("Journal entries: always private", systemImage: "lock.fill").font(.headline).frame(minHeight: 44)
-                        Text("Journal has no public profile, social feed, or publishing control.")
+                        Label("Daily journal: always private", systemImage: "lock.fill").font(.headline).frame(minHeight: 44)
+                        Text("Hobbies and commitments begin private. Only the item whose Public control you explicitly confirm becomes publication-eligible.")
                             .font(.subheadline).foregroundStyle(AtlasPalette.quietInk)
                     }
                     settingsSection("About") {
                         LabeledContent("Version", value: "1.0.0 (1)")
-                        Link("Privacy", destination: URL(string: "https://journal.significanthobbies.com/privacy")!).frame(minHeight: 44)
-                        Link("Support", destination: URL(string: "https://journal.significanthobbies.com/support")!).frame(minHeight: 44)
+                        Link("Privacy", destination: URL(string: "https://significanthobbies.com/privacy")!).frame(minHeight: 44)
+                        Link("Support", destination: URL(string: "https://significanthobbies.com")!).frame(minHeight: 44)
                     }
                 }
                 .padding(18)
@@ -113,30 +133,31 @@ struct SettingsView: View {
                 ToolbarItem(placement: .cancellationAction) { Button("Done") { dismiss() } }
             }
         }
+        .sheet(isPresented: $isProfileEditorPresented) { ProfileEditorView() }
         .fileImporter(isPresented: $isImporterPresented, allowedContentTypes: [.json]) { result in
             guard case let .success(url) = result else { return }
             let accessed = url.startAccessingSecurityScopedResource()
             defer { if accessed { url.stopAccessingSecurityScopedResource() } }
             if let data = try? Data(contentsOf: url) { Task { await model.prepareImport(data) } }
         }
-        .alert("Replace your Journal archive?", isPresented: $model.isImportConfirmationPresented) {
+        .alert("Replace your Life Atlas?", isPresented: $model.isImportConfirmationPresented) {
             Button("Replace", role: .destructive) { Task { await model.confirmImport() } }
             Button("Cancel", role: .cancel) { model.importPreview = nil }
         } message: {
-            Text("The import contains \(model.importPreview?.dailyEntries.count ?? 0) Journal entries. Preserved split-product data stays in the archive.")
+            Text("The import contains \(model.importPreview?.dailyEntries.count ?? 0) Daily entries and \(model.importPreview?.hobbies.count ?? 0) hobbies.")
         }
-        .confirmationDialog("Reset local Journal data?", isPresented: $showReset) {
-            Button("Reset Journal archive", role: .destructive) { Task { await model.resetLocalData() } }
+        .confirmationDialog("Reset local Significant Hobbies data?", isPresented: $showReset) {
+            Button("Reset Life Atlas", role: .destructive) { Task { await model.resetLocalData() } }
             Button("Cancel", role: .cancel) {}
         }
         .confirmationDialog(
-            "Delete your account and private cloud Journal?",
+            "Delete your account and private cloud Life Atlas?",
             isPresented: $showDeleteAccount
         ) {
             Button("Delete account", role: .destructive) { Task { await model.deleteAccount() } }
             Button("Cancel", role: .cancel) {}
         } message: {
-            Text("Export your Journal archive first if you want a recovery copy. The copy already on this device remains local, but account deletion cannot be undone.")
+            Text("Export your Life Atlas first if you want a recovery copy. The copy already on this device remains local, but account deletion cannot be undone.")
         }
         .sheet(item: $model.cloudConflict) { conflict in
             NavigationStack {
@@ -148,7 +169,7 @@ struct SettingsView: View {
                             .foregroundStyle(AtlasPalette.ink)
                     }
                     .frame(width: 68, height: 68)
-                    Text("Choose the Journal archive to keep")
+                    Text("Choose the Life Atlas to keep")
                         .font(.system(.title2, design: .serif, weight: .semibold))
                     Text("This device and your private account changed separately. Nothing is replaced or published until you decide.")
                         .foregroundStyle(AtlasPalette.quietInk)
@@ -207,6 +228,33 @@ struct SettingsView: View {
         .disabled(model.isAccountBusy)
     }
 
+    private var publicPreview: some View {
+        VStack(alignment: .leading, spacing: 13) {
+            HStack {
+                SHMark(size: 48)
+                VStack(alignment: .leading) {
+                    Text(model.document.profile.displayName.isEmpty ? "Your profile" : model.document.profile.displayName)
+                        .font(.system(.title2, design: .serif, weight: .semibold))
+                    Text(model.document.profile.publicProfileEnabled ? "Public profile on" : "Public profile off")
+                        .font(.caption.weight(.bold)).foregroundStyle(AtlasPalette.quietInk)
+                }
+                Spacer()
+                Button("Edit") { isProfileEditorPresented = true }.font(.subheadline.weight(.bold)).frame(minHeight: 44)
+            }
+            Text(model.document.profile.bio.isEmpty ? "Add a short public-profile introduction." : model.document.profile.bio)
+                .font(.subheadline).foregroundStyle(AtlasPalette.quietInk)
+            let publicCount = model.document.hobbies.count { $0.visibility == .publicProfile } + model.document.commitments.count { $0.visibility == .publicProfile }
+            Text("\(publicCount) Living items eligible · 0 Daily entries eligible")
+                .font(.caption.weight(.bold))
+                .padding(.horizontal, 10).padding(.vertical, 7)
+                .background(AtlasPalette.gold.opacity(0.5))
+                .clipShape(Capsule())
+        }
+        .padding(17)
+        .background(AtlasPalette.sky.opacity(0.45))
+        .clipShape(RoundedRectangle(cornerRadius: 16))
+    }
+
     private func settingsSection<Content: View>(_ title: String, @ViewBuilder content: () -> Content) -> some View {
         VStack(alignment: .leading, spacing: 9) {
             AtlasLabel(text: title)
@@ -244,6 +292,38 @@ struct SettingsView: View {
         case .synced: "Synced"
         case .conflict: "Decision needed"
         case .failed: "Retry needed"
+        }
+    }
+}
+
+private struct ProfileEditorView: View {
+    @Environment(AppModel.self) private var model
+    @Environment(\.dismiss) private var dismiss
+    @State private var profile = Profile()
+
+    var body: some View {
+        NavigationStack {
+            Form {
+                Section("Profile") {
+                    TextField("Display name", text: $profile.displayName)
+                    TextField("A short introduction", text: $profile.bio, axis: .vertical).lineLimit(2...5)
+                    Toggle("Enable public profile", isOn: $profile.publicProfileEnabled)
+                }
+                Section {
+                    DatePicker("Birth date (optional)", selection: Binding(
+                        get: { profile.birthDate ?? Calendar.current.date(byAdding: .year, value: -30, to: .now)! },
+                        set: { profile.birthDate = $0 }
+                    ), displayedComponents: .date)
+                } footer: {
+                    Text("Used only to make finite time concrete in your private history. It is never published automatically.")
+                }
+            }
+            .navigationTitle("Profile")
+            .onAppear { profile = model.document.profile }
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) { Button("Cancel") { dismiss() } }
+                ToolbarItem(placement: .confirmationAction) { Button("Save") { Task { await model.updateProfile(profile); dismiss() } } }
+            }
         }
     }
 }

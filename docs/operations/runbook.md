@@ -21,8 +21,8 @@ The workflow:
    `https://www.significanthobbies.com/` via the Cloudflare API. Uses
    `continue-on-error: true` — a missing `cache_purge` permission (401) must
    not fail a good deploy.
-4. Smoke check: fetches the homepage and verifies the Hub heading and exactly
-   seven product cards in the overlaid HTML.
+4. Smoke check: verifies the Hub heading and exactly seven product cards, then
+   verifies the cinematic Live landing at `live.significanthobbies.com`.
 
 If the smoke check fails, the deploy is considered stale — the Astro overlay
 did not rebuild or the cache was not purged. Re-run the workflow; if it

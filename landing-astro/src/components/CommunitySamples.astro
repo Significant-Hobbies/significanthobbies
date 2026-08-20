@@ -1,0 +1,110 @@
+---
+const featured = {
+  title: 'From calligraphy to Apple',
+  username: 'stevejobs',
+  img: '/categories/creative-800.webp',
+  hobbies: 'Electronics · Calligraphy · Yoga · Meditation · Walking · Reading',
+};
+
+const supporting = [
+  {
+    title: 'Violin, sailing, and the universe',
+    name: 'Albert Einstein',
+    username: 'alberteinstein',
+    img: '/categories/music-800.webp',
+    hobbies: 'Violin · Sailing · Puzzles · Philosophy',
+  },
+  {
+    title: 'Bongos, safecracking, and physics',
+    name: 'Richard Feynman',
+    username: 'richardfeynman',
+    img: '/categories/outdoor-800.webp',
+    hobbies: 'Electronics · Drums · Lock picking · Drawing',
+  },
+];
+---
+
+<section class="border-y border-border bg-[#b9dcf5] px-6 py-28 lg:px-12 lg:py-36">
+  <div class="mx-auto max-w-6xl">
+    <div class="mb-12 flex flex-col items-start justify-between gap-6 sm:flex-row sm:items-end">
+      <div class="max-w-2xl">
+        <p class="mb-4 text-base font-medium text-primary">Lives shaped by curiosity</p>
+        <h2 class="font-serif text-4xl font-medium tracking-tight text-foreground sm:text-5xl">
+          One interest rarely tells the whole story.
+        </h2>
+      </div>
+      <a
+        href="/find-your-hobby"
+        class="inline-flex min-h-11 items-center gap-2 border-b border-primary pb-1 text-sm font-semibold text-primary no-underline transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-4 focus-visible:ring-offset-card focus-visible:outline-none"
+      >
+        Find your next hobby <span aria-hidden="true">→</span>
+      </a>
+    </div>
+
+    <div class="grid gap-10 lg:grid-cols-[1.55fr_0.85fr] lg:gap-14">
+      <a
+        href={`/u/${featured.username}`}
+        class="group relative block min-h-[30rem] overflow-hidden bg-background no-underline sm:min-h-[38rem]"
+      >
+        <img
+          src={featured.img}
+          alt={`Steve Jobs’ hobby journey: ${featured.hobbies}`}
+          loading="lazy"
+          width="800"
+          height="800"
+          class="absolute inset-0 h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.025]"
+        />
+        <div
+          class="absolute inset-0"
+          style="background: linear-gradient(to top, oklch(0.10 0.01 285 / 0.98) 0%, oklch(0.10 0.01 285 / 0.38) 58%, transparent 100%);"
+        />
+        <div class="absolute inset-x-0 bottom-0 max-w-2xl p-7 sm:p-10">
+          <p class="text-sm font-medium text-[#fff1a8]">Steve Jobs · 3 life phases</p>
+          <h3 class="mt-3 font-serif text-3xl font-medium leading-tight text-white sm:text-5xl">
+            {featured.title}
+          </h3>
+          <p class="mt-4 max-w-xl text-sm leading-relaxed text-white/75 sm:text-base">
+            {featured.hobbies}
+          </p>
+          <span class="mt-7 inline-flex min-h-11 items-center text-sm font-semibold text-white">
+            See the full journey
+            <span class="ml-2 transition-transform group-hover:translate-x-1" aria-hidden="true">→</span>
+          </span>
+        </div>
+      </a>
+
+      <div class="border-t border-border">
+        {
+          supporting.map((sample) => (
+            <a
+              href={`/u/${sample.username}`}
+              class="group grid grid-cols-[5.5rem_1fr] gap-5 border-b border-border py-7 no-underline sm:grid-cols-[7rem_1fr] sm:py-9"
+            >
+              <div class="aspect-square overflow-hidden">
+                <img
+                  src={sample.img}
+                  alt=""
+                  loading="lazy"
+                  width="800"
+                  height="800"
+                  class="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"
+                />
+              </div>
+              <div class="self-center">
+                <p class="text-sm font-medium text-primary">{sample.name}</p>
+                <h3 class="mt-2 text-xl font-semibold leading-tight text-foreground sm:text-2xl">
+                  {sample.title}
+                </h3>
+                <p class="mt-3 text-sm leading-relaxed text-muted-foreground">{sample.hobbies}</p>
+                <span class="mt-4 inline-flex min-h-11 items-center text-sm font-semibold text-foreground">
+                  View journey
+                  <span class="ml-2 transition-transform group-hover:translate-x-1" aria-hidden="true">→</span>
+                </span>
+              </div>
+            </a>
+          ))
+        }
+      </div>
+    </div>
+  </div>
+</section>

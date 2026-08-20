@@ -79,7 +79,7 @@ final class AppModel {
 
     func saveDaily(_ entry: DailyEntry) async {
         await mutate { $0.saveDaily(entry) }
-        message = "Private Journal entry saved on this device."
+        message = "Private Daily entry saved on this device."
     }
 
     func toggleHabit(_ habit: Habit) async {
@@ -154,7 +154,7 @@ final class AppModel {
             document = importPreview
             self.importPreview = nil
             isImportConfirmationPresented = false
-            message = "Journal archive replaced."
+            message = "Life Atlas replaced."
             requestSyncAfterLocalChange()
         } catch { message = error.localizedDescription }
     }
@@ -163,7 +163,7 @@ final class AppModel {
         do {
             try await store.reset()
             document = .sample
-            message = "Local Journal archive reset."
+            message = "Local Life Atlas reset."
             requestSyncAfterLocalChange()
         } catch { message = error.localizedDescription }
     }
@@ -192,7 +192,7 @@ final class AppModel {
         do {
             if let account, !account.hasApple {
                 self.account = try await accountClient.linkApple(payload)
-                accountMessage = "Apple sign-in added to this Journal account."
+                accountMessage = "Apple sign-in added to this Significant Hobbies account."
             } else {
                 account = try await accountClient.signInWithApple(payload)
             }
@@ -250,7 +250,7 @@ final class AppModel {
         deferredConflict = nil
         document.syncState = .localOnly
         try? await store.save(document)
-        accountMessage = "Signed out. Your Journal remains on this device."
+        accountMessage = "Signed out. Your Life Atlas remains on this device."
     }
 
     func deleteAccount() async {
@@ -336,7 +336,7 @@ final class AppModel {
         document.syncState = .synced
         document.lastSyncedAt = .now
         try? await store.save(document)
-        accountMessage = "Your private Journal is up to date."
+        accountMessage = "Your private Life Atlas is up to date."
     }
 
     private func requestSyncAfterLocalChange() {
@@ -352,7 +352,7 @@ final class AppModel {
         if let native = error as? NativeAccountError {
             return native.errorDescription ?? "Significant Hobbies account service is unavailable."
         }
-        return "Journal could not complete that account action. Try again."
+        return "Significant Hobbies could not complete that account action. Try again."
     }
 
     private func mutate(_ operation: (inout AtlasDocument) throws -> Void) async {

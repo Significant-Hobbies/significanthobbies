@@ -81,6 +81,14 @@ jobs:
             exit 1
           fi
           echo "Overlay OK: seven Hub product cards"
+
+          live_html=$(curl -fsS --retry 6 --retry-all-errors --retry-delay 10 --max-time 20 \
+            -H "Cache-Control: no-cache" https://live.significanthobbies.com/)
+          if ! printf '%s' "$live_html" | grep -q 'Live — Map your hobby journey across life'; then
+            echo "ERROR: Live custom domain is missing the cinematic landing"
+            exit 1
+          fi
+          echo "Live OK: cinematic landing is available on its custom domain"
       - name: Smoke check a Worker-rendered page
         # Two different questions, and only the first should fail a deploy.
         #

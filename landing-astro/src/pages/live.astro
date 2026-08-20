@@ -1,0 +1,74 @@
+---
+import BucketListPanel from '@/components/BucketListPanel.astro';
+import CommunitySamples from '@/components/CommunitySamples.astro';
+import FaqSection from '@/components/FaqSection.astro';
+import FeatureRow from '@/components/FeatureRow.astro';
+import FinalCta from '@/components/FinalCta.astro';
+import FleetFooter from '@/components/FleetFooter.astro';
+import HowItWorks from '@/components/HowItWorks.astro';
+import Layout from '@/layouts/Layout.astro';
+
+const TITLE = 'Live — Map your hobby journey across life';
+const DESCRIPTION =
+  'Map hobbies across life phases: what rekindled, what persisted, and what to try next. A lifelong catalog for curious adults.';
+---
+
+<Layout title={TITLE} description={DESCRIPTION}>
+  <main id="main">
+    <section class="cinematic-hero">
+      <video
+        class="cinematic-hero__video"
+        poster="/hero/hobby-horizon-poster.jpg"
+        autoplay
+        muted
+        loop
+        playsinline
+        preload="auto"
+        width="1280"
+        height="720"
+        aria-hidden="true"
+      >
+        <source src="/hero/hobby-horizon.mp4" type="video/mp4" />
+      </video>
+      <div class="cinematic-hero__scrim" aria-hidden="true"></div>
+
+      <div class="cinematic-hero__inner">
+        <p class="cinematic-hero__wordmark">Live by Significant Hobbies</p>
+        <div class="cinematic-hero__copy">
+          <h1>
+            <span>What will you do</span>
+            <span>with the time you have?</span>
+          </h1>
+          <p>
+            Start with your birth date. See the weeks behind you, the weeks still
+            yours, and make room for what matters.
+          </p>
+          <a class="cinematic-hero__cta" href="/life-in-weeks">
+            See my life in weeks
+            <span aria-hidden="true">→</span>
+          </a>
+          <p class="cinematic-hero__note">Takes 10 seconds. No sign-up required.</p>
+        </div>
+
+        <p class="cinematic-hero__prompt" aria-hidden="true">
+          The rest is still unwritten.
+        </p>
+      </div>
+    </section>
+
+    <FeatureRow />
+    <BucketListPanel />
+    <HowItWorks />
+    <CommunitySamples />
+    <FaqSection />
+    <FinalCta />
+  </main>
+  <FleetFooter />
+</Layout>
+
+<script>
+  const heroVideo = document.querySelector<HTMLVideoElement>('.cinematic-hero__video');
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    heroVideo?.pause();
+  }
+</script>

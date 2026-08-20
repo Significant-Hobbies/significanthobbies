@@ -72,8 +72,8 @@ migrations or deploys.**
   `/hobbies`, `/explore`, `/journeys` from the homepage/nav/footer until the
   7-day PostHog funnel readout is in. See
   [`docs/product/discovery-funnel.md`](docs/product/discovery-funnel.md).
-- **Astro owns anon `GET /`.** Do not add per-request dynamic content to the
-  homepage without rebuilding the Astro overlay. See
+- **Astro owns the anonymous Hub and Live landing.** Do not add per-request
+  dynamic content to either static landing without rebuilding the Astro overlay. See
   [`docs/architecture/decisions.md`](docs/architecture/decisions.md) A1.
 - **Pre-push hook** runs `pnpm lint` + a secret-pattern scan. Do not weaken
   the secret patterns; exclude false-positive file patterns instead.

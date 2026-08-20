@@ -1,5 +1,5 @@
 ---
-import '@/styles/hub.css';
+import '@/styles/landing.css';
 
 interface Props {
   title: string;
@@ -7,7 +7,7 @@ interface Props {
 }
 
 const { title, description } = Astro.props;
-const SITE_URL = 'https://significanthobbies.com';
+const SITE_URL = 'https://live.significanthobbies.com';
 const OG_IMAGE = `${SITE_URL}/opengraph-image`;
 ---
 
@@ -16,9 +16,100 @@ const OG_IMAGE = `${SITE_URL}/opengraph-image`;
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <base href="https://significanthobbies.com/" />
+    {/* Tiny critical CSS first — paints #lcp-shell before the full Tailwind block below. */}
+    <style is:inline>
+      #lcp-shell {
+        position: relative;
+        box-sizing: border-box;
+        display: flex;
+        min-height: 100svh;
+        margin: 0;
+        overflow: hidden;
+        background:
+          linear-gradient(
+            90deg,
+            oklch(0.08 0.025 250 / 0.92) 0%,
+            oklch(0.08 0.025 250 / 0.7) 38%,
+            oklch(0.08 0.025 250 / 0.18) 72%
+          ),
+          linear-gradient(
+            180deg,
+            oklch(0.08 0.025 250 / 0.48) 0%,
+            transparent 35%,
+            oklch(0.08 0.025 250 / 0.72) 100%
+          ),
+          url('/hero/hobby-horizon-poster.jpg') 54% center / cover no-repeat;
+        padding: clamp(1.5rem, 3vw, 3rem);
+        flex-direction: column;
+      }
+      #lcp-shell .lcp-wordmark {
+        margin: 0;
+        color: oklch(0.98 0.005 90);
+        font-family: 'Geist', Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        font-size: 0.95rem;
+        font-weight: 650;
+        letter-spacing: -0.01em;
+      }
+      #lcp-shell .lcp-copy {
+        width: min(100%, 56rem);
+        margin-block: auto;
+        padding-block: clamp(4rem, 10vh, 8rem);
+      }
+      #lcp-shell .lcp-title {
+        margin: 0;
+        color: oklch(0.99 0.004 90);
+        font-family: 'Fraunces', Georgia, Cambria, 'Times New Roman', serif;
+        font-size: clamp(3rem, 6.8vw, 6rem);
+        font-weight: 500;
+        line-height: 0.96;
+        letter-spacing: -0.03em;
+      }
+      #lcp-shell .lcp-line {
+        display: block;
+      }
+      #lcp-shell .lcp-prompt {
+        margin: 0;
+        align-self: flex-end;
+        color: oklch(0.92 0.018 88);
+        font-family: 'Geist', Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        font-size: 0.875rem;
+      }
+      @media (max-width: 48rem) {
+        #lcp-shell {
+          background:
+            linear-gradient(
+              90deg,
+              oklch(0.08 0.025 250 / 0.84) 0%,
+              oklch(0.08 0.025 250 / 0.46) 100%
+            ),
+            linear-gradient(
+              180deg,
+              oklch(0.08 0.025 250 / 0.56) 0%,
+              transparent 30%,
+              oklch(0.08 0.025 250 / 0.86) 100%
+            ),
+            url('/hero/hobby-horizon-poster.jpg') 61% center / cover no-repeat;
+        }
+        #lcp-shell .lcp-title {
+          font-size: clamp(3rem, 14vw, 4.5rem);
+        }
+        #lcp-shell .lcp-prompt {
+          align-self: flex-start;
+        }
+      }
+      /* Hide the real landing until the shell drops — avoids double hero flash. */
+      body.lcp-pending main,
+      body.lcp-pending > :not(#lcp-shell):not(script) {
+        visibility: hidden;
+      }
+    </style>
     <title>{title}</title>
     <meta name="description" content={description} />
-    <meta name="keywords" content="personal apps, local-first apps, journal, habits, bucket list" />
+    <meta
+      name="keywords"
+      content="hobby discovery, life phases hobbies, hobby timeline, bucket list, find your hobby, hobby quiz, life planner"
+    />
     <meta name="author" content="Significant Hobbies" />
     <meta
       name="robots"
@@ -27,7 +118,7 @@ const OG_IMAGE = `${SITE_URL}/opengraph-image`;
     <link rel="canonical" href={SITE_URL} />
     <meta property="og:type" content="website" />
     <meta property="og:url" content={SITE_URL} />
-    <meta property="og:site_name" content="Significant Hobbies" />
+    <meta property="og:site_name" content="Live by Significant Hobbies" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:image" content={OG_IMAGE} />
@@ -35,15 +126,30 @@ const OG_IMAGE = `${SITE_URL}/opengraph-image`;
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={OG_IMAGE} />
-    <meta name="theme-color" content="#fffdf4" />
+    <meta name="theme-color" content="#1a1a1a" />
+    <link
+      rel="preload"
+      href="/hero/hobby-horizon-poster.jpg"
+      as="image"
+      type="image/jpeg"
+      fetchpriority="high"
+    />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="icon" href="/favicon.ico" sizes="any" />
     <script is:inline type="application/ld+json" set:html={JSON.stringify({
       "@context": "https://schema.org",
-      "@type": "CollectionPage",
-      "name": "Significant Hobbies Personal Apps",
+      "@type": "SoftwareApplication",
+      "name": "Live",
+      "alternateName": ["Live by Significant Hobbies", "live.significanthobbies.com"],
+      "applicationCategory": "LifestyleApplication",
+      "operatingSystem": "Web Browser",
       "url": SITE_URL,
-      "description": description,
+      "description": "Map your hobby history across life phases. Visualize insights, share your journey, and discover what to explore next. Timeline builder with drag-and-drop phases and auto-save for guests.",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
       "creator": {
         "@type": "Person",
         "name": "Sarthak Agrawal",
@@ -53,12 +159,36 @@ const OG_IMAGE = `${SITE_URL}/opengraph-image`;
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400..700&family=Geist:wght@400..700&display=swap"
+      rel="preload"
+      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400..700&family=Geist:wght@400..700&display=optional"
+      as="style"
+      onload="this.setAttribute('rel','stylesheet')"
     />
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400..700&family=Geist:wght@400..700&display=optional" /></noscript>
   </head>
-  <body>
-    <a class="skip-link" href="#main">Skip to content</a>
+  <body class="antialiased lcp-pending">
+    <div id="lcp-shell" aria-hidden="true">
+      <p class="lcp-wordmark">Significant Hobbies</p>
+      <div class="lcp-copy">
+        <div class="lcp-title">
+          <span class="lcp-line">What will you do</span>
+          <span class="lcp-line">with the time you have?</span>
+        </div>
+      </div>
+      <p class="lcp-prompt">The rest is still unwritten.</p>
+    </div>
+    <script is:inline>
+      // Hand off to the fully styled static hero on the next paint. Waiting
+      // for idle kept the duplicate shell visible for several seconds on
+      // throttled devices and turned that intentional delay into the LCP.
+      (function () {
+        var drop = function () {
+          document.getElementById('lcp-shell')?.remove();
+          document.body.classList.remove('lcp-pending');
+        };
+        requestAnimationFrame(drop);
+      })();
+    </script>
     <slot />
     <script
       is:inline

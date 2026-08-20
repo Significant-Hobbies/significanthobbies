@@ -1,0 +1,89 @@
+---
+const journeyPhases = [
+  {
+    label: 'Childhood',
+    color: 'oklch(0.92 0.12 145)',
+    img: '/categories/gaming-800.webp',
+    hobbies: 'Lego · Swimming · Chess · Drawing',
+  },
+  {
+    label: 'Teen years',
+    color: 'oklch(0.94 0.12 88)',
+    img: '/categories/music-800.webp',
+    hobbies: 'Guitar · Skateboarding · Video games',
+  },
+  {
+    label: 'College',
+    color: 'oklch(0.91 0.09 205)',
+    img: '/categories/outdoor-800.webp',
+    hobbies: 'Hiking · Photography · Coding',
+  },
+  {
+    label: 'Now',
+    color: 'oklch(0.92 0.08 320)',
+    img: '/categories/culinary-800.webp',
+    hobbies: 'Running · Cooking · Pottery',
+  },
+];
+---
+
+<section class="bg-[#fff8d6] px-6 py-28 lg:px-12 lg:py-36">
+  <div class="mx-auto max-w-6xl">
+    <div class="grid gap-10 lg:grid-cols-[0.78fr_1.22fr] lg:items-end lg:gap-20">
+      <div>
+        <p class="mb-5 text-base font-medium text-primary">A record of what made you, you.</p>
+        <h2
+          class="font-serif text-4xl font-medium tracking-tight text-foreground sm:text-5xl lg:text-6xl"
+          style="line-height: 1.02;"
+        >
+          Your interests already tell a story.
+        </h2>
+      </div>
+      <div class="max-w-2xl lg:pb-1">
+        <p class="text-lg leading-relaxed text-muted-foreground sm:text-xl">
+          Put every hobby you remember on one timeline. The abandoned experiments,
+          lifelong obsessions, and quiet returns become a map of the life you have lived.
+        </p>
+        <a
+          href="/timeline/new"
+          class="mt-7 inline-flex min-h-11 items-center gap-2 border-b border-primary pb-1 text-sm font-semibold text-primary no-underline transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-4 focus-visible:ring-offset-background focus-visible:outline-none"
+        >
+          Map your hobby journey <span aria-hidden="true">→</span>
+        </a>
+      </div>
+    </div>
+
+    <ol class="mt-16 grid list-none border-y border-border sm:grid-cols-2 lg:mt-20 lg:grid-cols-4">
+      {
+        journeyPhases.map((phase, index) => (
+          <li class="group relative border-border py-6 sm:[&:nth-child(odd)]:border-r lg:border-r lg:last:border-r-0 lg:[&:nth-child(odd)]:border-r">
+            <div class="relative mx-4 aspect-[4/3] overflow-hidden sm:mx-6">
+              <img
+                src={phase.img}
+                alt={`${phase.label}: ${phase.hobbies}`}
+                loading="lazy"
+                width="800"
+                height="600"
+                class="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
+              />
+              <div
+                class="absolute inset-0"
+                style="background: linear-gradient(to top, oklch(0.11 0.01 285 / 0.72), transparent 65%);"
+              />
+              <span
+                class="absolute right-3 bottom-3 text-xs font-semibold"
+                style={`color: ${phase.color};`}
+              >
+                0{index + 1}
+              </span>
+            </div>
+            <div class="px-4 pt-5 sm:px-6">
+              <h3 class="text-lg font-semibold text-foreground">{phase.label}</h3>
+              <p class="mt-2 text-sm leading-relaxed text-muted-foreground">{phase.hobbies}</p>
+            </div>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+</section>

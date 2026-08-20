@@ -10,12 +10,14 @@ description: Durable architectural decisions for significanthobbies and the why 
 > and [`knowledge/archive/side-quests-design-2026-03-06.md`](../knowledge/archive/side-quests-design-2026-03-06.md).
 > This page keeps the choices that still constrain the current codebase.
 
-## A1 — Astro and Next.js render the same Hub at `GET /`
+## A1 — Astro owns the Hub and Live landing roots
 
 **Decision:** The anonymous Hub is a static Astro site (`landing-astro/`)
 overlaid into `.open-next/assets/`. The Worker runs first for `/`: anonymous
 requests are served directly from the ASSETS binding while auth-bearing requests
 reach the equivalent Next.js Hub. Both paths show the same seven-product directory.
+The same Astro build emits the preserved cinematic Live landing as `live.html`;
+the Worker serves it at the root of `live.significanthobbies.com`.
 
 **Why:** The homepage is the LCP path and the highest-traffic page. Serving the
 anonymous response from the ASSETS binding avoids starting OpenNext. Astro is
@@ -447,7 +449,8 @@ of personal products without losing the current Live product.
 - All three products remain on the same origin until a separate synchronization
   contract exists. Moving signed-out IndexedDB data across subdomains without
   that contract would strand local records.
-- The next architecture decision must define product synchronization and
-  identity before `journal.significanthobbies.com`,
-  `habits.significanthobbies.com`, or `live.significanthobbies.com` becomes an
-  independent deployment boundary.
+- Journal and Habits may publish static marketing pages on their own domains.
+  Their native data does not cross origins in this release.
+- The Live hostname is a marketing alias on the existing Worker, not an
+  independent data boundary. Deeper Live paths redirect to the apex application
+  until a later synchronization and identity decision makes a true move safe.
