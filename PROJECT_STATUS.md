@@ -32,6 +32,12 @@ Habits are focused products built from the existing private practice data.
 
 ## Timeline
 
+- **2026-08-21:** Added a private proof surface to the authenticated Hub. It
+  reads the existing Personal Platform summary contract with the current
+  Better Auth session and shows per-product record counts, freshness,
+  provenance, and privacy-safe latest-record labels. The anonymous Astro
+  landing remains unchanged, raw journal text and relationship notes are not
+  rendered, and production deployment remains manual.
 - **2026-08-21:** Journal 1.0.0 (3) completed internal-only TestFlight
   processing on personal team `8F7LXHTJZR`. It publishes each signed-in writing
   version into Personal Platform while retaining the existing local document,
@@ -202,8 +208,9 @@ Historical milestones live in
 - **Runtime:** Cloudflare Worker `significanthobbies` (OpenNext) + Astro Hub
   and Live overlays. Cloudflare D1 + Drizzle ORM +
   better-auth Google OAuth. PostHog analytics.
-- **Personal-app Hub:** seven honest linked cards, no combined database, no
-  assistant, and no write actions.
+- **Personal-app Hub:** seven honest linked cards plus an authenticated,
+  read-only Personal Platform inventory. The Hub owns no combined database,
+  assistant, or write actions.
 - **Focused web products:** Live at `/live-more`, Journal at `/journal`, Habits
   at `/habits`, and `/daily` as the compatibility doorway.
 - **Owned product history:** public editorial changelog at `/changelog`.
