@@ -6,6 +6,7 @@ import { db } from '~/server/db';
 export const NATIVE_AUTH_CALLBACK = 'significanthobbies://auth';
 const PERSONAL_APP_AUTH_CALLBACKS = [
   NATIVE_AUTH_CALLBACK,
+  'calorie://auth',
   'kith://auth',
   'setline://auth',
   'habits://auth',

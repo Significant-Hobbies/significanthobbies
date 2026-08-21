@@ -6,6 +6,8 @@ import { eq } from 'drizzle-orm';
 import { account, session, user, users, verification } from '~/db/schema';
 import { db } from '~/server/db';
 
+import { nativeAppleAudiences } from './native-apple';
+
 const canUseLocalAuthSecret =
   process.env.NODE_ENV !== 'production' ||
   process.env.npm_lifecycle_event === 'build' ||
@@ -42,6 +44,10 @@ const baseURL =
 const googleClientId = process.env.GOOGLE_CLIENT_ID?.trim();
 const googleClientSecret = process.env.GOOGLE_CLIENT_SECRET?.trim();
 const appleBundleIdentifier = process.env.APPLE_APP_BUNDLE_IDENTIFIER?.trim();
+const appleNativeAudiences = nativeAppleAudiences(
+  appleBundleIdentifier,
+  process.env.APPLE_NATIVE_AUDIENCES
+);
 
 export const auth = betterAuth({
   secret: authSecret,
@@ -60,6 +66,7 @@ export const auth = betterAuth({
             clientId: appleBundleIdentifier,
             clientSecret: '',
             appBundleIdentifier: appleBundleIdentifier,
+            audience: appleNativeAudiences,
           },
         }
       : {}),
