@@ -1,5 +1,4 @@
 import AuthenticationServices
-import CryptoKit
 import Foundation
 import Observation
 import PersonalSyncKit
@@ -16,30 +15,33 @@ final class AppModel {
     var message: String?
     var importPreview: AtlasDocument?
     var isImportConfirmationPresented = false
-    var account: SignificantHobbiesAccount?
-    var isAccountBusy = false
-    var cloudConflict: AtlasCloudSnapshot?
+    let account: PersonalAccountModel?
+    private(set) var isAccountDemo = false
     var accountMessage: String?
 
     private let store: AtlasStore
-    private let accountClient: SignificantHobbiesNativeAccountClient
-    private let webAuthenticator: SignificantHobbiesWebAuthenticator
     private let platform: PersonalPlatformConnection?
-    private var remoteRevision: Int?
-    private var syncRequested = false
-    private var isSyncing = false
-    private var deferredConflict: AtlasCloudSnapshot?
 
     init(
         store: AtlasStore = AtlasStore(),
-        accountClient: SignificantHobbiesNativeAccountClient = SignificantHobbiesNativeAccountClient(),
-        webAuthenticator: SignificantHobbiesWebAuthenticator = SignificantHobbiesWebAuthenticator(),
         platform: PersonalPlatformConnection? = AppModel.makePlatformConnection()
     ) {
         self.store = store
-        self.accountClient = accountClient
-        self.webAuthenticator = webAuthenticator
-        self.platform = Self.isAutomatedLaunch ? nil : platform
+        let activePlatform = Self.isAutomatedLaunch ? nil : platform
+        self.platform = activePlatform
+        account = activePlatform.map {
+            PersonalAccountModel(identity: $0.identity, callbackScheme: "significanthobbies")
+        }
+    }
+
+    var isAccountConnected: Bool { isAccountDemo || account?.isSignedIn == true }
+    var isAccountBusy: Bool { account?.isConnecting == true }
+    var accountName: String { isAccountDemo ? "Sarthak" : "Significant Hobbies account" }
+    var accountEmail: String? {
+        isAccountDemo ? "sarthak@example.com" : account?.session?.email
+    }
+    var hasAppleAccount: Bool {
+        isAccountDemo || account?.session?.appleSubject != nil
     }
 
     func load() async {
@@ -49,27 +51,9 @@ final class AppModel {
             isDataAvailable = true
             if ProcessInfo.processInfo.arguments.contains("--daily-demo") { selectedDate = .now }
             if ProcessInfo.processInfo.arguments.contains("--account-demo") {
-                account = SignificantHobbiesAccount(
-                    name: "Sarthak",
-                    email: "sarthak@example.com",
-                    providers: ["google"]
-                )
+                isAccountDemo = true
                 document.syncState = .synced
                 document.lastSyncedAt = Date().addingTimeInterval(-240)
-                isSettingsPresented = true
-            } else if ProcessInfo.processInfo.arguments.contains("--account-conflict-demo") {
-                account = SignificantHobbiesAccount(
-                    name: "Sarthak",
-                    email: "sarthak@example.com",
-                    providers: ["google"]
-                )
-                document.syncState = .conflict
-                var accountDocument = document
-                accountDocument.hobbies.append(Hobby(name: "Ceramics", category: "Make"))
-                cloudConflict = AtlasCloudSnapshot(
-                    document: AtlasCloudDocument(document: accountDocument),
-                    revision: 3
-                )
                 isSettingsPresented = true
             } else {
                 await restoreAccount()
@@ -101,196 +85,98 @@ final class AppModel {
     func confirmImport() async {
         guard let importPreview else { return }
         do {
+            let previous = document
             try await store.replace(with: importPreview)
             document = importPreview
             isDataAvailable = true
             self.importPreview = nil
             isImportConfirmationPresented = false
             message = "Compatible archive replaced."
-            requestSyncAfterLocalChange()
+            await enqueueJournalChanges(from: previous, to: importPreview)
         } catch { message = error.localizedDescription }
     }
 
     func clearJournalWriting() async {
         do {
+            let previous = document
             var next = document
             next.clearJournalWriting()
             try await store.replace(with: next)
             document = next
-            message = account == nil
+            message = !isAccountConnected
                 ? "Journal writing cleared from this device."
                 : "Journal writing cleared from this device and synced archive."
-            requestSyncAfterLocalChange()
+            await enqueueJournalChanges(from: previous, to: next)
         } catch { message = error.localizedDescription }
     }
 
     func connectAccount() async {
-        isAccountBusy = true
         accountMessage = nil
-        defer { isAccountBusy = false }
-        do {
-            let url = await accountClient.googleStartURL
-            let code = try await webAuthenticator.authenticate(at: url)
-            account = try await accountClient.exchangeHandoff(code)
-            try await reconcileAccountCopy()
+        guard let account else { return }
+        await account.connectWithGoogle()
+        if account.isSignedIn {
             await syncWithPlatform()
-        } catch let error as NSError
-            where error.domain == ASWebAuthenticationSessionErrorDomain && error.code == 1 {
-            accountMessage = nil
-        } catch {
-            accountMessage = friendlyMessage(for: error)
+        } else {
+            accountMessage = account.errorMessage
         }
     }
 
-    func completeAppleSignIn(_ payload: AppleIdentityPayload) async {
-        isAccountBusy = true
+    func completeAppleSignIn(_ result: Result<ASAuthorization, Error>) async {
         accountMessage = nil
-        defer { isAccountBusy = false }
-        do {
-            if let account, !account.hasApple {
-                self.account = try await accountClient.linkApple(payload)
-                accountMessage = "Apple sign-in added to this Journal account."
-            } else {
-                account = try await accountClient.signInWithApple(payload)
-            }
-            try await reconcileAccountCopy()
+        guard let account else { return }
+        await account.completeApple(result)
+        if account.isSignedIn {
             await syncWithPlatform()
-        } catch {
-            accountMessage = friendlyMessage(for: error)
+        } else {
+            accountMessage = account.errorMessage
         }
     }
 
     func syncNow() async {
-        guard account != nil else { return }
-        if let deferredConflict {
-            self.deferredConflict = nil
-            cloudConflict = deferredConflict
-            return
-        }
-        await queueSync()
+        guard isAccountConnected else { return }
         await syncWithPlatform(announcing: true)
     }
 
-    func keepDeviceCopy() async {
-        guard let conflict = cloudConflict else { return }
-        cloudConflict = nil
-        deferredConflict = nil
-        remoteRevision = conflict.revision
-        await queueSync()
-    }
-
-    func useAccountCopy() async {
-        guard let conflict = cloudConflict else { return }
-        do {
-            let restored = conflict.document.localDocument()
-            try await store.replace(with: restored)
-            document = restored
-            remoteRevision = conflict.revision
-            cloudConflict = nil
-            deferredConflict = nil
-            accountMessage = "Your private account copy is now on this device."
-        } catch {
-            accountMessage = friendlyMessage(for: error)
-        }
-    }
-
-    func decideConflictLater() {
-        deferredConflict = cloudConflict
-        cloudConflict = nil
-        document.syncState = .conflict
-        Task { try? await store.save(document) }
-    }
-
     func signOut() async {
-        await accountClient.signOut()
-        account = nil
-        remoteRevision = nil
-        cloudConflict = nil
-        deferredConflict = nil
+        await account?.signOut()
         document.syncState = .localOnly
         try? await store.save(document)
         accountMessage = "Signed out. Your Journal archive remains on this device."
     }
 
-    func deleteAccount() async {
-        isAccountBusy = true
-        defer { isAccountBusy = false }
+    func deleteJournalCloudData() async {
+        guard isAccountConnected, let platform else { return }
+        accountMessage = nil
+        guard await syncWithPlatform() else {
+            accountMessage = "Journal cloud data could not be loaded. Nothing was deleted."
+            return
+        }
         do {
-            try await accountClient.deleteAccount()
-            account = nil
-            remoteRevision = nil
-            cloudConflict = nil
-            deferredConflict = nil
+            for entry in document.dailyEntries {
+                try await platform.sync.enqueue(
+                    recordId: JournalPlatformRecord.recordId(entry),
+                    operation: .delete,
+                    occurredAt: JournalPlatformRecord.iso(.now)
+                )
+            }
+            _ = try await platform.sync.synchronize()
+            await account?.signOut()
             document.syncState = .localOnly
             try await store.save(document)
-            accountMessage = "Account and private cloud copy deleted. Your exported or local archive remains yours."
+            accountMessage = "Journal cloud data deleted. Your local archive and shared account remain intact."
         } catch {
             accountMessage = friendlyMessage(for: error)
         }
     }
 
     private func restoreAccount() async {
-        do {
-            account = try await accountClient.restoreAccount()
-            if account != nil {
-                try await reconcileAccountCopy()
-                await syncWithPlatform()
-            }
-        } catch {
-            account = nil
+        guard let account else { return }
+        await account.restore()
+        if account.isSignedIn {
+            await syncWithPlatform()
+        } else if let error = account.errorMessage {
             document.syncState = .localOnly
-            accountMessage = friendlyMessage(for: error)
-        }
-    }
-
-    private func reconcileAccountCopy() async throws {
-        let remote = try await accountClient.fetchState()
-        guard let remote else {
-            let saved = try await accountClient.pushState(
-                AtlasCloudDocument(document: document),
-                baseRevision: nil
-            )
-            remoteRevision = saved.revision
-            await markSynced()
-            return
-        }
-        remoteRevision = remote.revision
-        if remote.document == AtlasCloudDocument(document: document) {
-            await markSynced()
-        } else {
-            document.syncState = .conflict
-            try await store.save(document)
-            cloudConflict = remote
-        }
-    }
-
-    private func queueSync() async {
-        syncRequested = true
-        guard !isSyncing, deferredConflict == nil, cloudConflict == nil else { return }
-        isSyncing = true
-        defer { isSyncing = false }
-        while syncRequested {
-            syncRequested = false
-            document.syncState = .pending
-            try? await store.save(document)
-            do {
-                let saved = try await accountClient.pushState(
-                    AtlasCloudDocument(document: document),
-                    baseRevision: remoteRevision
-                )
-                remoteRevision = saved.revision
-                await markSynced()
-            } catch let NativeAccountError.conflict(conflict) {
-                document.syncState = .conflict
-                try? await store.save(document)
-                cloudConflict = conflict
-                return
-            } catch {
-                document.syncState = .failed
-                try? await store.save(document)
-                accountMessage = friendlyMessage(for: error)
-                return
-            }
+            accountMessage = error
         }
     }
 
@@ -298,36 +184,35 @@ final class AppModel {
         document.syncState = .synced
         document.lastSyncedAt = .now
         try? await store.save(document)
-        accountMessage = "Your private archive is up to date."
-    }
-
-    private func requestSyncAfterLocalChange() {
-        guard account != nil, deferredConflict == nil, cloudConflict == nil else { return }
-        document.syncState = .pending
-        Task {
-            try? await store.save(document)
-            await queueSync()
-        }
+        accountMessage = "Journal is up to date."
     }
 
     private func enqueueJournal(_ entry: DailyEntry) {
-        guard account != nil, let platform else { return }
+        guard isAccountConnected, let platform else { return }
         let payload = JournalPlatformRecord.encode(entry)
-        let recordId = JournalPlatformRecord.versionedRecordId(entry)
+        let recordId = JournalPlatformRecord.recordId(entry)
         Task {
+            document.syncState = .pending
+            try? await store.save(document)
             do {
                 try await platform.sync.enqueue(
                     recordId: recordId,
                     occurredAt: JournalPlatformRecord.iso(entry.date),
                     record: payload
                 )
-                _ = try? await platform.sync.synchronize()
-            } catch {}
+                await syncWithPlatform()
+            } catch {
+                document.syncState = .failed
+                try? await store.save(document)
+            }
         }
     }
 
-    private func syncWithPlatform(announcing: Bool = false) async {
-        guard account != nil, let platform else { return }
+    @discardableResult
+    private func syncWithPlatform(announcing: Bool = false) async -> Bool {
+        guard isAccountConnected, let platform else { return false }
+        document.syncState = .pending
+        try? await store.save(document)
         do {
             let changes = try await platform.sync.synchronize()
             var next = document
@@ -343,15 +228,46 @@ final class AppModel {
                 try await store.save(next)
                 document = next
             }
-            if announcing { accountMessage = "Journal and Personal Platform are up to date." }
+            await markSynced()
+            if announcing { accountMessage = "Journal is up to date." }
+            return true
         } catch {
+            document.syncState = .failed
+            try? await store.save(document)
             if announcing { accountMessage = "Journal sync will retry when you are online." }
+            return false
+        }
+    }
+
+    private func enqueueJournalChanges(from previous: AtlasDocument, to next: AtlasDocument) async {
+        guard isAccountConnected, let platform else { return }
+        let previousEntries = Dictionary(uniqueKeysWithValues: previous.dailyEntries.map { ($0.id, $0) })
+        let nextEntries = Dictionary(uniqueKeysWithValues: next.dailyEntries.map { ($0.id, $0) })
+        do {
+            for removedId in previousEntries.keys where nextEntries[removedId] == nil {
+                try await platform.sync.enqueue(
+                    recordId: JournalPlatformRecord.recordId(removedId),
+                    operation: .delete,
+                    occurredAt: JournalPlatformRecord.iso(.now)
+                )
+            }
+            for entry in next.dailyEntries where previousEntries[entry.id] != entry {
+                try await platform.sync.enqueue(
+                    recordId: JournalPlatformRecord.recordId(entry),
+                    occurredAt: JournalPlatformRecord.iso(entry.date),
+                    record: JournalPlatformRecord.encode(entry)
+                )
+            }
+            await syncWithPlatform()
+        } catch {
+            document.syncState = .failed
+            try? await store.save(document)
         }
     }
 
     private func friendlyMessage(for error: Error) -> String {
-        if let native = error as? NativeAccountError {
-            return native.errorDescription ?? "Journal account service is unavailable."
+        if let identity = error as? PersonalIdentityError {
+            return identity.errorDescription ?? "Journal account service is unavailable."
         }
         return "Journal could not complete that account action. Try again."
     }
@@ -385,7 +301,6 @@ final class AppModel {
             try operation(&next)
             try await store.save(next)
             document = next
-            requestSyncAfterLocalChange()
             return true
         } catch {
             message = error.localizedDescription

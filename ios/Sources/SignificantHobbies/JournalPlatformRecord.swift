@@ -38,17 +38,8 @@ enum JournalPlatformRecord {
         return UUID(uuidString: source)
     }
 
-    static func versionedRecordId(_ entry: DailyEntry) -> String {
-        let content = [
-            entry.morningReflection,
-            entry.eveningReflection,
-            entry.journal,
-            entry.newThing,
-        ].joined(separator: "\u{1f}")
-        let digest = SHA256.hash(data: Data(content.utf8)).prefix(8)
-            .map { String(format: "%02x", $0) }.joined()
-        return "\(entry.id.uuidString.lowercased()):\(digest)"
-    }
+    static func recordId(_ entry: DailyEntry) -> String { recordId(entry.id) }
+    static func recordId(_ id: UUID) -> String { id.uuidString.lowercased() }
 
     static func iso(_ date: Date) -> String { ISO8601DateFormatter().string(from: date) }
 

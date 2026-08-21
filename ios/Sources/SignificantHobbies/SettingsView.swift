@@ -9,8 +9,7 @@ struct SettingsView: View {
     @Environment(\.dismiss) private var dismiss
     @State private var isImporterPresented = false
     @State private var showReset = false
-    @State private var showDeleteAccount = false
-    @State private var appleNonce = AppleNonce.make()
+    @State private var showDeleteCloudData = false
 
     var body: some View {
         @Bindable var model = model
@@ -19,14 +18,14 @@ struct SettingsView: View {
                 VStack(alignment: .leading, spacing: 24) {
                     settingsSection("Account & sync") {
                         HStack(spacing: 12) {
-                            Image(systemName: model.account == nil ? "iphone.gen3" : "person.crop.circle.fill")
+                            Image(systemName: model.isAccountConnected ? "person.crop.circle.fill" : "iphone.gen3")
                                 .font(.title2)
                                 .frame(width: 46, height: 46)
-                                .background(model.account == nil ? AtlasPalette.sky : AtlasPalette.sage)
+                                .background(model.isAccountConnected ? AtlasPalette.sage : AtlasPalette.sky)
                                 .clipShape(RoundedRectangle(cornerRadius: 12))
                             VStack(alignment: .leading, spacing: 3) {
-                                Text(model.account?.name ?? "Private on this device").font(.headline)
-                                Text(model.account?.email ?? "Journal works offline.")
+                                Text(model.isAccountConnected ? model.accountName : "Private on this device").font(.headline)
+                                Text(model.accountEmail ?? "Journal works offline.")
                                     .font(.subheadline).foregroundStyle(AtlasPalette.quietInk)
                             }
                             Spacer()
@@ -34,7 +33,7 @@ struct SettingsView: View {
                                 .font(.caption2.weight(.black))
                                 .foregroundStyle(AtlasPalette.quietInk)
                         }
-                        Text("Account sync keeps the existing private archive intact. Journal is the only part shown or edited here.")
+                        Text("Journal stays immediate on this device and syncs its typed entries through your shared Significant Hobbies account.")
                             .font(.subheadline).foregroundStyle(AtlasPalette.quietInk)
                         if model.isAccountBusy {
                             HStack(spacing: 10) {
@@ -42,7 +41,7 @@ struct SettingsView: View {
                                 Text("Contacting Journal…")
                             }
                             .frame(maxWidth: .infinity, minHeight: 48)
-                        } else if model.account == nil {
+                        } else if !model.isAccountConnected {
                             Button { Task { await model.connectAccount() } } label: {
                                 Label("Connect Google account", systemImage: "person.crop.circle.badge.plus")
                             }
@@ -58,8 +57,8 @@ struct SettingsView: View {
                                 Label("Sync compatible archive", systemImage: "arrow.triangle.2.circlepath")
                             }
                             .buttonStyle(AtlasPrimaryButtonStyle())
-                            if model.account?.hasApple == false {
-                                Text("Add Apple to this account so future Apple sign-ins open the same private archive.")
+                            if !model.hasAppleAccount {
+                                Text("Add Apple to this shared account so future Apple sign-ins open the same Journal data.")
                                     .font(.footnote)
                                     .foregroundStyle(AtlasPalette.quietInk)
                                 appleAccountButton
@@ -68,8 +67,8 @@ struct SettingsView: View {
                                 Label("Sign out", systemImage: "rectangle.portrait.and.arrow.right")
                                     .frame(maxWidth: .infinity, minHeight: 48, alignment: .leading)
                             }
-                            Button(role: .destructive) { showDeleteAccount = true } label: {
-                                Label("Delete account and cloud copy", systemImage: "person.crop.circle.badge.minus")
+                            Button(role: .destructive) { showDeleteCloudData = true } label: {
+                                Label("Delete Journal cloud data", systemImage: "person.crop.circle.badge.minus")
                                     .frame(maxWidth: .infinity, minHeight: 48, alignment: .leading)
                             }
                         }
@@ -137,89 +136,37 @@ struct SettingsView: View {
             Text(resetDialogMessage)
         }
         .confirmationDialog(
-            "Delete your account and private cloud archive?",
-            isPresented: $showDeleteAccount
+            "Delete Journal data from the cloud?",
+            isPresented: $showDeleteCloudData
         ) {
-            Button("Delete account", role: .destructive) { Task { await model.deleteAccount() } }
+            Button("Delete Journal cloud data", role: .destructive) {
+                Task { await model.deleteJournalCloudData() }
+            }
             Button("Cancel", role: .cancel) {}
         } message: {
-            Text("Export your compatible archive first if you want a recovery copy. The copy already on this device remains local, but account deletion cannot be undone.")
-        }
-        .sheet(item: $model.cloudConflict) { conflict in
-            NavigationStack {
-                VStack(alignment: .leading, spacing: 22) {
-                    ZStack {
-                        RoundedRectangle(cornerRadius: 18).fill(AtlasPalette.lilac)
-                        Image(systemName: "arrow.triangle.branch")
-                            .font(.system(size: 34, weight: .bold))
-                            .foregroundStyle(AtlasPalette.ink)
-                    }
-                    .frame(width: 68, height: 68)
-                    Text("Choose the private archive to keep")
-                        .font(.system(.title2, design: .serif, weight: .semibold))
-                    Text("This device and your private account changed separately. Nothing is replaced or published until you decide.")
-                        .foregroundStyle(AtlasPalette.quietInk)
-                    atlasSummary("This device", document: model.document)
-                    atlasSummary("Account copy", document: conflict.document.localDocument())
-                    Button("Keep this device’s copy") { Task { await model.keepDeviceCopy() } }
-                        .buttonStyle(AtlasPrimaryButtonStyle())
-                    Button("Use the account copy") { Task { await model.useAccountCopy() } }
-                        .buttonStyle(.bordered)
-                        .controlSize(.large)
-                        .frame(maxWidth: .infinity)
-                    Button("Decide later") { model.decideConflictLater() }
-                        .frame(maxWidth: .infinity, minHeight: 44)
-                    Spacer()
-                }
-                .padding(24)
-                .atlasBackground()
-                .navigationTitle("Sync decision")
-                .navigationBarTitleDisplayMode(.inline)
-            }
-            .interactiveDismissDisabled()
+            Text("The shared account and this device archive remain intact. Sign in again later to create a fresh Journal cloud copy.")
         }
     }
 
     private var resetButtonTitle: String {
-        model.account == nil ? "Clear Journal writing on this device" : "Clear synced Journal writing"
+        !model.isAccountConnected ? "Clear Journal writing on this device" : "Clear synced Journal writing"
     }
 
     private var resetDialogTitle: String {
-        model.account == nil ? "Clear Journal writing on this device?" : "Clear Journal writing everywhere?"
+        !model.isAccountConnected ? "Clear Journal writing on this device?" : "Clear Journal writing everywhere?"
     }
 
     private var resetDialogMessage: String {
-        model.account == nil
+        !model.isAccountConnected
             ? "This clears Journal writing from this device while preserving compatible Live and Habits records."
             : "This clears Journal writing from this device and pushes the change to your synced archive. Compatible Live and Habits records are preserved."
     }
 
     private var appleAccountButton: some View {
         SignInWithAppleButton(.continue) { request in
-            appleNonce = AppleNonce.make()
-            request.requestedScopes = [.fullName, .email]
-            request.nonce = AppleNonce.digest(appleNonce)
+            model.account?.prepareApple(request)
         } onCompletion: { result in
-            guard
-                case let .success(authorization) = result,
-                let credential = authorization.credential as? ASAuthorizationAppleIDCredential,
-                let tokenData = credential.identityToken,
-                let token = String(data: tokenData, encoding: .utf8)
-            else {
-                if case let .failure(error) = result,
-                   (error as? ASAuthorizationError)?.code != .canceled {
-                    model.accountMessage = error.localizedDescription
-                }
-                return
-            }
-            let payload = AppleIdentityPayload(
-                identityToken: token,
-                nonce: appleNonce,
-                email: credential.email,
-                firstName: credential.fullName?.givenName,
-                lastName: credential.fullName?.familyName
-            )
-            Task { await model.completeAppleSignIn(payload) }
+            Task { await model.completeAppleSignIn(result) }
         }
         .signInWithAppleButtonStyle(colorScheme == .dark ? .white : .black)
         .frame(maxWidth: .infinity, minHeight: 48)
@@ -235,25 +182,6 @@ struct SettingsView: View {
                 .padding(15).background(AtlasPalette.paper).clipShape(RoundedRectangle(cornerRadius: 14))
                 .overlay { RoundedRectangle(cornerRadius: 14).stroke(AtlasPalette.contour) }
         }
-    }
-
-    private func atlasSummary(_ title: String, document: AtlasDocument) -> some View {
-        VStack(alignment: .leading, spacing: 5) {
-            Text(title).font(.headline)
-            Text(
-                "\(countLabel(document.dailyEntries.count, singular: "Journal entry", plural: "Journal entries")) · split-product data preserved"
-            )
-                .font(.subheadline)
-                .foregroundStyle(AtlasPalette.quietInk)
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(14)
-        .background(AtlasPalette.sky.opacity(0.38))
-        .clipShape(RoundedRectangle(cornerRadius: 13))
-    }
-
-    private func countLabel(_ count: Int, singular: String, plural: String) -> String {
-        "\(count) \(count == 1 ? singular : plural)"
     }
 
     private func syncLabel(_ state: SyncState) -> String {

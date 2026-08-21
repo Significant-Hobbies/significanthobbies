@@ -74,7 +74,7 @@ final class SignificantHobbiesUITests: XCTestCase {
         XCTAssertTrue(app.staticTexts["SYNCED"].exists)
         XCTAssertTrue(app.staticTexts["Journal entries: always private"].exists)
         XCTAssertTrue(app.buttons["Export compatible archive"].exists)
-        XCTAssertTrue(app.buttons["Delete account and cloud copy"].exists)
+        XCTAssertTrue(app.buttons["Delete Journal cloud data"].exists)
     }
 
     func testAccountScreenOffersAppleAlongsideGoogle() {

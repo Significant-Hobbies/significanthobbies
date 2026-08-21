@@ -24,10 +24,7 @@ final class JournalPlatformRecordTests: XCTestCase {
         XCTAssertEqual(payload["sourceId"], .string(id.uuidString.lowercased()))
         XCTAssertEqual(payload["body"], .string("A clear day."))
         XCTAssertEqual(payload["occurredOn"], .string("2026-08-21T05:30:00Z"))
-        XCTAssertEqual(
-            JournalPlatformRecord.versionedRecordId(entry),
-            JournalPlatformRecord.versionedRecordId(entry)
-        )
+        XCTAssertEqual(JournalPlatformRecord.recordId(entry), id.uuidString.lowercased())
     }
 
     func testRemoteEntryUsesSourceIdentityAndSections() throws {

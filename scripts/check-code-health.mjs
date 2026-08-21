@@ -13,15 +13,17 @@ const productionPaths = ['src', 'ios/Sources', 'scripts'];
 
 const baselines = {
   complexity: {
-    violations: 82,
+    violations: 81,
     maxCcn: 46,
     maxLength: 741,
     maxParams: 12,
   },
   duplication: {
-    clones: 50,
-    duplicatedLines: 771,
-    percentage: 1.308154331670569,
+    clones: 49,
+    duplicatedLines: 763,
+    // Removing the obsolete native account client reduced duplicate lines but
+    // also reduced total production LOC, so the percentage denominator moved.
+    percentage: 1.3134338635268195,
   },
   unused: {
     files: 0,

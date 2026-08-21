@@ -28,7 +28,6 @@
 		E3CAE2317CCCC6B79A306D9B /* SignificantHobbiesCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8016DC426444E2D76EF32BB4 /* SignificantHobbiesCore.framework */; };
 		E8D072E503C4BFBE7C6D668C /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24C7DF31D7BBD34A504FB0B5 /* Persistence.swift */; };
 		E99B4FB1629093EA9C77A575 /* JournalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0188FEAC7CFA0623B6FF0EA /* JournalView.swift */; };
-		FCE1765D393AE0E6495557B5 /* NativeAccountClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C2B9B72A49B3D8612FD520D /* NativeAccountClient.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -89,7 +88,6 @@
 
 /* Begin PBXFileReference section */
 		05EA8F0EE78476D9881C7347 /* AppModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppModel.swift; sourceTree = "<group>"; };
-		0C2B9B72A49B3D8612FD520D /* NativeAccountClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NativeAccountClient.swift; sourceTree = "<group>"; };
 		24C7DF31D7BBD34A504FB0B5 /* Persistence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Persistence.swift; sourceTree = "<group>"; };
 		3D99A5939D824B344E6704A9 /* Design.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Design.swift; sourceTree = "<group>"; };
 		45756EFDB3A45F83CBF63F78 /* SignificantHobbies.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SignificantHobbies.entitlements; sourceTree = "<group>"; };
@@ -182,7 +180,6 @@
 				7AA77312B5602FD12AB082F1 /* Info.plist */,
 				8FA8E53174F333BE6F42CD41 /* JournalPlatformRecord.swift */,
 				D0188FEAC7CFA0623B6FF0EA /* JournalView.swift */,
-				0C2B9B72A49B3D8612FD520D /* NativeAccountClient.swift */,
 				AD5D1654F75D6BD52DEA4738 /* RootView.swift */,
 				AE73F47A9024224B92970695 /* SettingsView.swift */,
 				45756EFDB3A45F83CBF63F78 /* SignificantHobbies.entitlements */,
@@ -445,7 +442,6 @@
 				713D9934D1E2EF54F4778EF9 /* Design.swift in Sources */,
 				C7F9594990F4F3C0BB4EB769 /* JournalPlatformRecord.swift in Sources */,
 				E99B4FB1629093EA9C77A575 /* JournalView.swift in Sources */,
-				FCE1765D393AE0E6495557B5 /* NativeAccountClient.swift in Sources */,
 				232BE0083A654EDA0678E35F /* RootView.swift in Sources */,
 				0B24EAB9D913E1CB7E11390C /* SettingsView.swift in Sources */,
 				73997EF2CCBE316A8A4AB154 /* SignificantHobbiesApp.swift in Sources */,
