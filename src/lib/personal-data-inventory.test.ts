@@ -4,36 +4,49 @@ import { buildPersonalDataInventory } from './personal-data-inventory';
 
 describe('buildPersonalDataInventory', () => {
   it('maps the Personal Platform snapshot in a stable product order', () => {
-    const inventory = buildPersonalDataInventory({
-      generatedAt: '2026-08-21T10:00:00.000Z',
-      source: 'personal-platform',
-      summaries: [
-        {
-          domain: 'journal',
-          activeCount: 2,
-          lastUpdatedAt: '2026-08-21T09:00:00.000Z',
-          latest: { occurredOn: '2026-08-21', body: 'private writing' },
-          source: 'personal-platform',
-        },
-        {
-          domain: 'live',
-          activeCount: 1,
-          lastUpdatedAt: '2026-08-20T09:00:00.000Z',
-          latest: { title: 'See the northern lights', notes: 'private plans' },
-          source: 'personal-platform',
-        },
-        {
-          domain: 'calorie',
-          status: 'connected',
-          source: 'calorie-service',
-          summary: {
-            entryCount: 3,
-            lastUpdatedAt: '2026-08-21T08:00:00.000Z',
-            totals: { calories: 1240, proteinG: 86.5 },
+    const inventory = buildPersonalDataInventory(
+      {
+        generatedAt: '2026-08-21T10:00:00.000Z',
+        source: 'personal-platform',
+        summaries: [
+          {
+            domain: 'journal',
+            activeCount: 2,
+            lastUpdatedAt: '2026-08-21T09:00:00.000Z',
+            latest: { occurredOn: '2026-08-21', body: 'private writing' },
+            source: 'personal-platform',
           },
-        },
-      ],
-    });
+          {
+            domain: 'live',
+            activeCount: 1,
+            lastUpdatedAt: '2026-08-20T09:00:00.000Z',
+            latest: { title: 'See the northern lights', notes: 'private plans' },
+            source: 'personal-platform',
+          },
+          {
+            domain: 'calorie',
+            status: 'connected',
+            source: 'calorie-service',
+            summary: {
+              entryCount: 3,
+              lastUpdatedAt: '2026-08-21T08:00:00.000Z',
+              totals: { calories: 1240, proteinG: 86.5 },
+            },
+          },
+        ],
+      },
+      {
+        items: [
+          {
+            id: 'event-1',
+            domain: 'journal',
+            eventType: 'journal.updated',
+            occurredAt: '2026-08-21T09:00:00.000Z',
+            summary: 'private content must not pass through',
+          },
+        ],
+      }
+    );
 
     expect(inventory.status).toBe('connected');
     expect(inventory.domains.map((domain) => domain.domain)).toEqual([
@@ -60,6 +73,16 @@ describe('buildPersonalDataInventory', () => {
       latestLabel: '1,240 kcal · 86.5 g protein',
     });
     expect(inventory.domains[2].status).toBe('unavailable');
+    expect(inventory.recentActivity).toEqual([
+      {
+        id: 'event-1',
+        domain: 'journal',
+        name: 'Journal',
+        occurredAt: '2026-08-21T09:00:00.000Z',
+        action: 'updated',
+      },
+    ]);
+    expect(JSON.stringify(inventory)).not.toContain('private content');
   });
 
   it('does not carry journal bodies or relationship notes into the Hub model', () => {

@@ -14,22 +14,29 @@ export async function getPersonalDataInventory(): Promise<PersonalDataInventory 
   if (!session?.session.token) return null;
 
   try {
-    const response = await fetch(personalPlatformTodayURL(), {
-      cache: 'no-store',
+    const request = {
+      cache: 'no-store' as const,
       signal: AbortSignal.timeout(4_000),
       headers: {
         Accept: 'application/json',
         Authorization: `Bearer ${session.session.token}`,
       },
-    });
-    if (!response.ok) return unavailablePersonalDataInventory();
-    return buildPersonalDataInventory(await response.json());
+    };
+    const [todayResponse, activityResponse] = await Promise.all([
+      fetch(personalPlatformURL('/v1/life/today'), request),
+      fetch(personalPlatformURL('/v1/life/events?limit=8'), request),
+    ]);
+    if (!todayResponse.ok) return unavailablePersonalDataInventory();
+    return buildPersonalDataInventory(
+      await todayResponse.json(),
+      activityResponse.ok ? await activityResponse.json() : undefined
+    );
   } catch {
     return unavailablePersonalDataInventory();
   }
 }
 
-function personalPlatformTodayURL(): string {
+function personalPlatformURL(path: string): string {
   const baseURL = process.env.PERSONAL_PLATFORM_URL?.trim() || DEFAULT_PERSONAL_PLATFORM_URL;
-  return new URL('/v1/life/today', baseURL).toString();
+  return new URL(path, baseURL).toString();
 }

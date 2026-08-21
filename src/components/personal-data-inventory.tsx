@@ -110,6 +110,37 @@ export function PersonalDataInventory({ inventory }: { inventory: PersonalDataIn
             </span>
             <span className="tabular-nums">Snapshot {formatTimestamp(inventory.generatedAt)}</span>
           </div>
+
+          <div className="border-t border-[#ded5be] px-5 py-6 sm:px-7">
+            <div className="flex flex-wrap items-baseline justify-between gap-2">
+              <h3 className="font-serif text-2xl font-semibold">Recent sync activity</h3>
+              <p className="text-xs text-[#675f53]">Metadata only; private writing stays hidden.</p>
+            </div>
+            {inventory.recentActivity.length > 0 ? (
+              <ol className="mt-4 grid gap-x-8 gap-y-3 md:grid-cols-2">
+                {inventory.recentActivity.map((item) => (
+                  <li
+                    key={item.id}
+                    className="flex min-w-0 items-center justify-between gap-4 border-t border-[#ebe5d7] pt-3"
+                  >
+                    <p className="min-w-0 truncate text-sm text-[#37332c]">
+                      <span className="font-semibold">{item.name}</span> record {item.action}
+                    </p>
+                    <time
+                      className="shrink-0 text-xs tabular-nums text-[#675f53]"
+                      dateTime={item.occurredAt}
+                    >
+                      {formatTimestamp(item.occurredAt)}
+                    </time>
+                  </li>
+                ))}
+              </ol>
+            ) : (
+              <p className="mt-3 text-sm leading-6 text-[#625b50]">
+                No native-app sync activity has reached Personal Platform yet.
+              </p>
+            )}
+          </div>
         </div>
       ) : (
         <div className="mt-8 rounded-[1.75rem] border border-[#dfbd91] bg-[#fff8ea] p-6 sm:p-8">

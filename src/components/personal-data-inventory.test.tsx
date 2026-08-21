@@ -10,19 +10,32 @@ import { PersonalDataInventory } from './personal-data-inventory';
 
 describe('PersonalDataInventory', () => {
   it('renders connected counts and provenance without raw payloads', () => {
-    const inventory = buildPersonalDataInventory({
-      generatedAt: '2026-08-21T10:00:00.000Z',
-      source: 'personal-platform',
-      summaries: [
-        {
-          domain: 'journal',
-          activeCount: 2,
-          lastUpdatedAt: '2026-08-21T09:00:00.000Z',
-          latest: { occurredOn: '2026-08-21', body: 'private journal body' },
-          source: 'personal-platform',
-        },
-      ],
-    });
+    const inventory = buildPersonalDataInventory(
+      {
+        generatedAt: '2026-08-21T10:00:00.000Z',
+        source: 'personal-platform',
+        summaries: [
+          {
+            domain: 'journal',
+            activeCount: 2,
+            lastUpdatedAt: '2026-08-21T09:00:00.000Z',
+            latest: { occurredOn: '2026-08-21', body: 'private journal body' },
+            source: 'personal-platform',
+          },
+        ],
+      },
+      {
+        items: [
+          {
+            id: 'event-1',
+            domain: 'journal',
+            eventType: 'journal.updated',
+            occurredAt: '2026-08-21T09:00:00.000Z',
+            summary: 'private activity summary',
+          },
+        ],
+      }
+    );
 
     const html = renderToString(<PersonalDataInventory inventory={inventory} />);
 
@@ -30,6 +43,10 @@ describe('PersonalDataInventory', () => {
     expect(html).toContain('2 records');
     expect(html).toContain('Personal Platform D1');
     expect(html).not.toContain('private journal body');
+    expect(html).toContain('Recent sync activity');
+    expect(html).toContain('Journal</span> record');
+    expect(html).toContain('updated');
+    expect(html).not.toContain('private activity summary');
   });
 
   it('renders an honest non-empty failure state', () => {

@@ -26,6 +26,15 @@ export type PersonalDataInventory = {
   source: string | null;
   status: 'connected' | 'unavailable';
   domains: PersonalDataDomainInventory[];
+  recentActivity: PersonalDataActivity[];
+};
+
+type PersonalDataActivity = {
+  id: string;
+  domain: PersonalDataDomain;
+  name: string;
+  occurredAt: string;
+  action: 'updated' | 'deleted';
 };
 
 const domainNames: Record<PersonalDataDomain, string> = {
@@ -38,7 +47,10 @@ const domainNames: Record<PersonalDataDomain, string> = {
   anchor: 'Anchor',
 };
 
-export function buildPersonalDataInventory(value: unknown): PersonalDataInventory {
+export function buildPersonalDataInventory(
+  value: unknown,
+  activityValue?: unknown
+): PersonalDataInventory {
   const payload = record(value);
   const summaries = Array.isArray(payload?.summaries) ? payload.summaries : null;
   if (!payload || !summaries) return unavailablePersonalDataInventory();
@@ -47,6 +59,7 @@ export function buildPersonalDataInventory(value: unknown): PersonalDataInventor
     generatedAt: text(payload.generatedAt),
     source: text(payload.source),
     status: 'connected',
+    recentActivity: buildRecentActivity(activityValue),
     domains: personalDataDomains.map((domain) => {
       const summary = summaries.map(record).find((item) => item?.domain === domain) ?? null;
       return domain === 'calorie'
@@ -71,7 +84,36 @@ export function unavailablePersonalDataInventory(): PersonalDataInventory {
       source: null,
       status: 'unavailable',
     })),
+    recentActivity: [],
   };
+}
+
+function buildRecentActivity(value: unknown): PersonalDataActivity[] {
+  const payload = record(value);
+  const items = Array.isArray(payload?.items) ? payload.items : [];
+  return items
+    .flatMap((value) => {
+      const item = record(value);
+      const domain = item?.domain;
+      const id = text(item?.id);
+      const occurredAt = text(item?.occurredAt);
+      const eventType = text(item?.eventType);
+      if (!isPersonalDataDomain(domain) || !id || !occurredAt || !eventType) return [];
+      return [
+        {
+          id,
+          domain,
+          name: domainNames[domain],
+          occurredAt,
+          action: eventType.endsWith('.deleted') ? ('deleted' as const) : ('updated' as const),
+        },
+      ];
+    })
+    .slice(0, 8);
+}
+
+function isPersonalDataDomain(value: unknown): value is PersonalDataDomain {
+  return typeof value === 'string' && personalDataDomains.includes(value as PersonalDataDomain);
 }
 
 function platformDomainInventory(

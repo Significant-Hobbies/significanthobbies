@@ -214,6 +214,13 @@ final class AppModel {
         document.syncState = .pending
         try? await store.save(document)
         do {
+            for entry in document.dailyEntries {
+                try await platform.sync.enqueue(
+                    recordId: JournalPlatformRecord.recordId(entry),
+                    occurredAt: JournalPlatformRecord.iso(entry.date),
+                    record: JournalPlatformRecord.encode(entry)
+                )
+            }
             let changes = try await platform.sync.synchronize()
             var next = document
             for change in changes {
