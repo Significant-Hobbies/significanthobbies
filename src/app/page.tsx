@@ -1,4 +1,5 @@
 import { PersonalAppsHub } from '~/components/personal-apps-hub';
+import { getPersonalDataInventory } from '~/server/personal-platform';
 
 export const metadata = {
   title: 'Significant Hobbies — Personal Apps',
@@ -6,6 +7,7 @@ export const metadata = {
   alternates: { canonical: 'https://significanthobbies.com' },
 };
 
-export default function HomePage() {
-  return <PersonalAppsHub />;
+export default async function HomePage() {
+  const inventory = await getPersonalDataInventory();
+  return <PersonalAppsHub inventory={inventory} />;
 }

@@ -1,6 +1,10 @@
 import { ArrowUpRight } from 'lucide-react';
 import Link from 'next/link';
 
+import type { PersonalDataInventory as PersonalDataInventoryModel } from '~/lib/personal-data-inventory';
+
+import { PersonalDataInventory } from './personal-data-inventory';
+
 type Product = {
   name: string;
   mark: string;
@@ -77,9 +81,9 @@ const products: Product[] = [
   },
 ];
 
-export function PersonalAppsHub() {
+export function PersonalAppsHub({ inventory }: { inventory: PersonalDataInventoryModel | null }) {
   return (
-    <main id="main" className="min-h-[calc(100vh-4.5rem)] bg-[#fffdf4] px-4 py-12 sm:py-20">
+    <div className="min-h-[calc(100vh-4.5rem)] bg-[#fffdf4] px-4 py-12 sm:py-20">
       <div className="mx-auto max-w-6xl">
         <header className="max-w-3xl">
           <p className="text-sm font-bold text-[#7658ad]">Significant Hobbies</p>
@@ -96,7 +100,7 @@ export function PersonalAppsHub() {
             <h2 id="products-heading" className="text-3xl sm:text-4xl">
               The collection
             </h2>
-            <p className="text-sm text-[#5f584c]">Directory now. Shared summaries later.</p>
+            <p className="text-sm text-[#5f584c]">Directory plus a read-only sync check.</p>
           </div>
 
           <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -151,19 +155,22 @@ export function PersonalAppsHub() {
           </div>
         </section>
 
-        <aside className="mt-10 rounded-3xl border border-[#ded5be] bg-white p-6 sm:flex sm:items-center sm:justify-between sm:gap-8">
-          <div>
-            <p className="font-semibold">No combined database yet.</p>
-            <p className="mt-1 text-sm leading-6 text-[#5f584c]">
-              Each product still owns its interface and data. Connections will be added only after
-              the split is stable.
-            </p>
-          </div>
-          <span className="mt-4 inline-flex rounded-full bg-[#f1ecdf] px-3 py-1.5 text-xs font-bold sm:mt-0">
-            Read-only Hub
-          </span>
-        </aside>
+        {inventory ? (
+          <PersonalDataInventory inventory={inventory} />
+        ) : (
+          <aside className="mt-10 rounded-3xl border border-[#ded5be] bg-white p-6 sm:flex sm:items-center sm:justify-between sm:gap-8">
+            <div>
+              <p className="font-semibold">Each product owns its data.</p>
+              <p className="mt-1 text-sm leading-6 text-[#5f584c]">
+                Sign in to confirm what has synchronized through Personal Platform.
+              </p>
+            </div>
+            <span className="mt-4 inline-flex rounded-full bg-[#f1ecdf] px-3 py-1.5 text-xs font-bold sm:mt-0">
+              Read-only Hub
+            </span>
+          </aside>
+        )}
       </div>
-    </main>
+    </div>
   );
 }

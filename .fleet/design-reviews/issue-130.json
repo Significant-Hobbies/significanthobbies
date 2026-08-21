@@ -1,0 +1,65 @@
+{
+  "$schema": "fleet.design-review.v1",
+  "version": 1,
+  "project": "significanthobbies",
+  "target": "Authenticated Hub Personal Platform data inventory",
+  "mode": "preserve",
+  "register": "product",
+  "context": {
+    "product": "PRODUCT.md",
+    "design": "DESIGN.md"
+  },
+  "direction": {
+    "references": [],
+    "probes": [],
+    "selected": "existing Life Atlas daylight system with an open ledger below the product directory",
+    "approval": "not-required",
+    "before": ".fleet/design-evidence/hub-data-inventory/before/hub-1440.png"
+  },
+  "evidence": {
+    "screenshots": [
+      {
+        "width": 390,
+        "path": ".fleet/design-evidence/hub-data-inventory/after/hub-390.png"
+      },
+      {
+        "width": 768,
+        "path": ".fleet/design-evidence/hub-data-inventory/after/hub-768.png"
+      },
+      {
+        "width": 1440,
+        "path": ".fleet/design-evidence/hub-data-inventory/after/hub-1440.png"
+      }
+    ],
+    "projectCheck": {
+      "command": "pnpm check; pnpm typecheck; pnpm test; pnpm build; pnpm cf:build; git diff --check; axe at 390, 768, and 1440",
+      "status": "pass"
+    },
+    "critique": {
+      "score": 35,
+      "maximum": 40
+    },
+    "audit": {
+      "score": 18,
+      "maximum": 20
+    },
+    "unresolved": {
+      "p0": 0,
+      "p1": 0
+    },
+    "detector": {
+      "posture": "advisory",
+      "findings": [
+        "The detector reported seven advisory design-system-color notes for the existing product identity pastels; no blocking findings were found.",
+        "The inventory reuses those established product colors as small wayfinding marks and introduces no new visual language.",
+        "Manual review covered populated and unavailable states. The populated state was captured at 390, 768, and 1440 px.",
+        "Axe reported zero violations at all three required widths after removing the Hub component's duplicate main landmark.",
+        "The Hub model strips raw journal bodies and relationship notes before rendering."
+      ]
+    }
+  },
+  "ownerFeedback": {
+    "decision": "delegated",
+    "note": "The owner explicitly requested a small proof-of-work surface in the Hub that shows the data available for the signed-in user."
+  }
+}
