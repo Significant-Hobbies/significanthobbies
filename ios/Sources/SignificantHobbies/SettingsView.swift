@@ -42,11 +42,11 @@ struct SettingsView: View {
                             }
                             .frame(maxWidth: .infinity, minHeight: 48)
                         } else if !model.isAccountConnected {
+                            appleAccountButton
                             Button { Task { await model.connectAccount() } } label: {
-                                Label("Connect Google account", systemImage: "person.crop.circle.badge.plus")
+                                Label("Continue with Google", systemImage: "person.crop.circle.badge.plus")
                             }
                             .buttonStyle(AtlasPrimaryButtonStyle())
-                            appleAccountButton
                         } else {
                             if let lastSync = model.document.lastSyncedAt {
                                 LabeledContent("Last synced") {

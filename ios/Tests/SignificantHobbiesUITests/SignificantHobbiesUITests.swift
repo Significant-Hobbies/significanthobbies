@@ -77,13 +77,16 @@ final class SignificantHobbiesUITests: XCTestCase {
         XCTAssertTrue(app.buttons["Delete Journal cloud data"].exists)
     }
 
-    func testAccountScreenOffersAppleAlongsideGoogle() {
+    func testAccountScreenOffersAppleBeforeGoogle() {
         let app = XCUIApplication()
         app.launchArguments = ["--fresh-demo"]
         app.launch()
 
         app.buttons["Profile and settings"].tap()
-        XCTAssertTrue(app.buttons["Connect Google account"].waitForExistence(timeout: 3))
-        XCTAssertTrue(app.buttons["apple-account-button"].exists)
+        let appleButton = app.buttons["apple-account-button"]
+        let googleButton = app.buttons["Continue with Google"]
+        XCTAssertTrue(appleButton.waitForExistence(timeout: 3))
+        XCTAssertTrue(googleButton.exists)
+        XCTAssertLessThan(appleButton.frame.minY, googleButton.frame.minY)
     }
 }
