@@ -1,4 +1,4 @@
-export const personalDataDomains = [
+const personalDataDomains = [
   'live',
   'journal',
   'habits',
@@ -10,7 +10,7 @@ export const personalDataDomains = [
 
 export type PersonalDataDomain = (typeof personalDataDomains)[number];
 
-export type PersonalDataDomainInventory = {
+type PersonalDataDomainInventory = {
   domain: PersonalDataDomain;
   name: string;
   count: number | null;
