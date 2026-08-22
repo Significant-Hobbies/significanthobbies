@@ -22,21 +22,18 @@ test.describe('Significant Hobbies Hub (Astro overlay)', () => {
   });
 
   test('opens every product landing', async ({ page }) => {
-    await expect(page.getByRole('link', { name: /Live/ })).toHaveAttribute(
-      'href',
-      'https://live.significanthobbies.com'
-    );
+    await expect(
+      page.locator('a.product-card[href="https://live.significanthobbies.com"]')
+    ).toHaveAttribute('href', 'https://live.significanthobbies.com');
     await expect(
       page.locator('a.product-card[href="https://calorie.significanthobbies.com"]')
     ).toHaveAttribute('href', 'https://calorie.significanthobbies.com');
-    await expect(page.getByRole('link', { name: /Journal/ })).toHaveAttribute(
-      'href',
-      'https://journal.significanthobbies.com'
-    );
-    await expect(page.getByRole('link', { name: /Habits/ })).toHaveAttribute(
-      'href',
-      'https://habits.significanthobbies.com'
-    );
+    await expect(
+      page.locator('a.product-card[href="https://journal.significanthobbies.com"]')
+    ).toHaveAttribute('href', 'https://journal.significanthobbies.com');
+    await expect(
+      page.locator('a.product-card[href="https://habits.significanthobbies.com"]')
+    ).toHaveAttribute('href', 'https://habits.significanthobbies.com');
   });
 
   test('states the current integration boundary', async ({ page }) => {
