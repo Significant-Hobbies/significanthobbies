@@ -1,8 +1,8 @@
 {
   "$schema": "fleet.design-review.v1",
   "version": 1,
-  "project": "significanthobbies-split",
-  "target": "Split Live, Journal, and Habits, add the Hub, and extract the focused Journal native client",
+  "project": "journal-onboarding-128",
+  "target": "Journal first-entry onboarding",
   "mode": "preserve",
   "register": "product",
   "context": {
@@ -12,35 +12,35 @@
   "direction": {
     "references": [],
     "probes": [],
-    "selected": "existing Life Atlas daylight system",
+    "selected": "existing-design",
     "approval": "not-required",
-    "before": ".fleet/design-evidence/primary-pages-v2/daily-390.png"
+    "before": "ios/artifacts/design/journal/journal-home-final.png"
   },
   "evidence": {
     "screenshots": [
       {
         "width": 390,
-        "path": "ios/artifacts/design/journal/review/journal-390.png"
+        "path": "ios/artifacts/design/journal/onboarding/after-390.png"
       },
       {
         "width": 768,
-        "path": "ios/artifacts/design/journal/review/journal-768.png"
+        "path": "ios/artifacts/design/journal/onboarding/after-768.png"
       },
       {
         "width": 1440,
-        "path": "ios/artifacts/design/journal/review/journal-1440.png"
+        "path": "ios/artifacts/design/journal/onboarding/after-1440.png"
       }
     ],
     "projectCheck": {
-      "command": "pnpm quality:native; ios/scripts/check.sh; design workflow check; git diff --check",
+      "command": "ios/scripts/check.sh",
       "status": "pass"
     },
     "critique": {
-      "score": 33,
+      "score": 35,
       "maximum": 40
     },
     "audit": {
-      "score": 16,
+      "score": 18,
       "maximum": 20
     },
     "unresolved": {
@@ -49,19 +49,11 @@
     },
     "detector": {
       "posture": "advisory",
-      "findings": [
-        "The detector returned zero deterministic findings across the split routes, navigation, practice surfaces, and Hub.",
-        "Manual review covered the Hub and preserved cinematic Live landing at phone, tablet, and desktop widths. The Hub keeps all seven products scannable and explicitly states that no combined database exists.",
-        "The first Hub accessibility pass found four status labels just below WCAG AA contrast. Their text token was darkened and the complete axe baseline then passed.",
-        "The native app target now compiles only Journal, account, settings, and shared core surfaces; Live, History, and Habits UI files were removed from the target.",
-        "Journal starts from an empty production document and gates editing until the local archive loads, preventing demo data from overwriting real writing.",
-        "Dirty drafts save before date changes, persistence failures never announce success, and a browsable archive provides direct access to older entries.",
-        "The final native audit passed at 16/20 with zero unresolved P0/P1 after adaptive colors, dark-mode action contrast, accessible date controls, readable iPad widths, explicit synced-reset copy, and archive recovery were added."
-      ]
+      "findings": []
     }
   },
   "ownerFeedback": {
-    "decision": "keep",
-    "note": "The owner reviewed and kept the Hub and Live split, then explicitly delegated finishing the Journal and Habits native applications with Live remaining web-only."
+    "decision": "delegated",
+    "note": "Owner asked Codex to resolve the application tickets end to end and continue without per-app pauses."
   }
 }

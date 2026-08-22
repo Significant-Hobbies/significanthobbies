@@ -5,7 +5,7 @@
 > Update this file when durable current or shipped product truth changes. Do
 > not let deploy-version snapshots accumulate here — put those in the archive.
 
-Last updated: 2026-08-21
+Last updated: 2026-08-22
 
 ## Why / What
 
@@ -31,6 +31,13 @@ Habits are focused products built from the existing private practice data.
   immediate store and existing whole-atlas sync stays available during rollout.
 
 ## Timeline
+
+- **2026-08-22:** Added Journal's private first-entry onboarding. New owners
+  choose a prompt or blank page, keep drafts across relaunches, and complete
+  onboarding only after the existing local store accepts a real entry. Existing
+  writing bypasses the flow; optional account sync is explained after local
+  value. iPhone/iPad evidence, focused accessibility and reduced-motion UI
+  coverage, the full native check, and the design review gate pass.
 
 - **2026-08-22:** Released the Significant Hobbies directory and Live to
   Cloudflare. The authenticated inventory had been implemented in the Next root,

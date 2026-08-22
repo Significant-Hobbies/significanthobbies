@@ -18,6 +18,75 @@ final class SignificantHobbiesUITests: XCTestCase {
         XCTAssertTrue(app.buttons["Browse Journal archive"].exists)
     }
 
+    func testFirstEntryOnboardingSavesIntoTheRealJournal() {
+        let app = XCUIApplication()
+        app.launchArguments = ["--onboarding-demo", "--reset-onboarding"]
+        app.launch()
+
+        XCTAssertTrue(app.staticTexts["A private room for what matters."].waitForExistence(timeout: 3))
+        app.buttons["Begin privately"].tap()
+        app.buttons["What do you want to remember?"].tap()
+
+        let editor = app.textViews["First private Journal entry"]
+        XCTAssertTrue(editor.waitForExistence(timeout: 3))
+        editor.tap()
+        editor.typeText("The rain made the street feel new.")
+        app.buttons["Save my first private entry"].tap()
+
+        XCTAssertTrue(app.staticTexts["Your first page is here."].waitForExistence(timeout: 3))
+        app.buttons["Open Journal"].tap()
+        let journal = app.textViews["Private journal"]
+        XCTAssertTrue(journal.waitForExistence(timeout: 3))
+        XCTAssertTrue((journal.value as? String)?.contains("The rain made the street feel new.") == true)
+    }
+
+    func testOnboardingDraftSurvivesRelaunch() {
+        let app = XCUIApplication()
+        app.launchArguments = ["--onboarding-demo", "--reset-onboarding"]
+        app.launch()
+        app.buttons["Begin privately"].tap()
+        app.buttons["Blank page"].tap()
+
+        let editor = app.textViews["First private Journal entry"]
+        XCTAssertTrue(editor.waitForExistence(timeout: 3))
+        editor.tap()
+        editor.typeText("Keep this unfinished thought.")
+        app.terminate()
+
+        app.launchArguments = ["--onboarding-demo"]
+        app.launch()
+        let restored = app.textViews["First private Journal entry"]
+        XCTAssertTrue(restored.waitForExistence(timeout: 3))
+        XCTAssertTrue((restored.value as? String)?.contains("Keep this unfinished thought.") == true)
+    }
+
+    func testExistingWritingBypassesOnboarding() {
+        let app = XCUIApplication()
+        app.launchArguments = ["--fresh-demo", "--reset-onboarding"]
+        app.launch()
+
+        XCTAssertFalse(app.staticTexts["A private room for what matters."].exists)
+        XCTAssertTrue(app.textViews["Private journal"].waitForExistence(timeout: 3))
+    }
+
+    func testOnboardingKeepsAccessibleNamesWithLargeTypeAndReducedMotion() {
+        let app = XCUIApplication()
+        app.launchArguments = [
+            "--onboarding-demo",
+            "--reset-onboarding",
+            "--reduce-motion-demo",
+            "-UIPreferredContentSizeCategoryName",
+            "UICTContentSizeCategoryAccessibilityExtraExtraExtraLarge",
+        ]
+        app.launch()
+
+        XCTAssertTrue(app.staticTexts["A private room for what matters."].waitForExistence(timeout: 3))
+        let beginButton = app.buttons["Begin privately"]
+        XCTAssertTrue(beginButton.exists)
+        beginButton.tap()
+        XCTAssertTrue(app.buttons["Blank page"].waitForExistence(timeout: 3))
+    }
+
     func testDailyJournalSavesPrivately() {
         let app = XCUIApplication()
         app.launchArguments = ["--fresh-demo"]

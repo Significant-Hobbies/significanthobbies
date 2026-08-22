@@ -18,6 +18,7 @@ final class AppModel {
     let account: PersonalAccountModel?
     private(set) var isAccountDemo = false
     var accountMessage: String?
+    private(set) var forceJournalOnboarding = false
 
     private let store: AtlasStore
     private let platform: PersonalPlatformConnection?
@@ -47,10 +48,19 @@ final class AppModel {
     func load() async {
         defer { isLoading = false }
         do {
-            document = ProcessInfo.processInfo.arguments.contains("--fresh-demo") ? .sample : try await store.load()
+            let arguments = ProcessInfo.processInfo.arguments
+            if arguments.contains("--reset-onboarding") {
+                JournalOnboardingPreferences.reset()
+            }
+            if arguments.contains("--onboarding-demo") {
+                document = AtlasDocument()
+                forceJournalOnboarding = true
+            } else {
+                document = arguments.contains("--fresh-demo") ? .sample : try await store.load()
+            }
             isDataAvailable = true
-            if ProcessInfo.processInfo.arguments.contains("--daily-demo") { selectedDate = .now }
-            if ProcessInfo.processInfo.arguments.contains("--account-demo") {
+            if arguments.contains("--daily-demo") { selectedDate = .now }
+            if arguments.contains("--account-demo") {
                 isAccountDemo = true
                 document.syncState = .synced
                 document.lastSyncedAt = Date().addingTimeInterval(-240)
@@ -63,6 +73,14 @@ final class AppModel {
             isDataAvailable = false
             message = error.localizedDescription
         }
+    }
+
+    func shouldPresentJournalOnboarding(completed: Bool) -> Bool {
+        JournalOnboardingPolicy.shouldPresent(
+            completed: completed,
+            entries: document.dailyEntries,
+            forced: forceJournalOnboarding
+        )
     }
 
     @discardableResult

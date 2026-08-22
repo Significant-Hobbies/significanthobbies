@@ -3,6 +3,7 @@ import SwiftUI
 
 struct RootView: View {
     @Environment(AppModel.self) private var model
+    @AppStorage(JournalOnboardingPreferences.completedKey) private var onboardingCompleted = false
 
     var body: some View {
         @Bindable var model = model
@@ -10,7 +11,13 @@ struct RootView: View {
             if model.isLoading {
                 ProgressView("Opening your Journal…")
             } else if model.isDataAvailable {
-                JournalView()
+                if model.shouldPresentJournalOnboarding(completed: onboardingCompleted) {
+                    JournalOnboardingView {
+                        onboardingCompleted = true
+                    }
+                } else {
+                    JournalView()
+                }
             } else {
                 VStack(spacing: 18) {
                     ContentUnavailableView(

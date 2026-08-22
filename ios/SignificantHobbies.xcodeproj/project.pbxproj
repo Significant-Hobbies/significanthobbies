@@ -12,11 +12,13 @@
 		232BE0083A654EDA0678E35F /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD5D1654F75D6BD52DEA4738 /* RootView.swift */; };
 		2744CFC51415CDCE0A39B0BC /* SignificantHobbiesCore.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 8016DC426444E2D76EF32BB4 /* SignificantHobbiesCore.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		4ED00C45ADB96002493EF597 /* Domain.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF7B72C12049FE81DEEE108E /* Domain.swift */; };
+		608F090145AE02AF5EBE58B2 /* JournalOnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B6701A8C205693AB1394619 /* JournalOnboardingView.swift */; };
 		69B25EAE82A093562DF00E01 /* PersonalSyncKit in Frameworks */ = {isa = PBXBuildFile; productRef = D6234645F92BDC746B6319AB /* PersonalSyncKit */; };
 		713D9934D1E2EF54F4778EF9 /* Design.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D99A5939D824B344E6704A9 /* Design.swift */; };
 		73997EF2CCBE316A8A4AB154 /* SignificantHobbiesApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55CADA0312E38B323127C310 /* SignificantHobbiesApp.swift */; };
 		8718C60F2A3C7A593418343B /* CloudSync.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70587D4024EBCBD4A2335D71 /* CloudSync.swift */; };
 		942A77EEE223A4E0945EC4BE /* SignificantHobbiesCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8016DC426444E2D76EF32BB4 /* SignificantHobbiesCore.framework */; };
+		99974319E21B944CCD0F55C1 /* JournalOnboardingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B876757C6C93E0C702304829 /* JournalOnboardingTests.swift */; };
 		9CB054BDE18BF67E2F120AD6 /* SignificantHobbiesCoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9AFFF3B28DF309BB620A727 /* SignificantHobbiesCoreTests.swift */; };
 		AD89875F157AA02A1D13EBBF /* AppModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05EA8F0EE78476D9881C7347 /* AppModel.swift */; };
 		C2FD601717B6E3743C988122 /* PersonalSyncKit in Frameworks */ = {isa = PBXBuildFile; productRef = 9A34C6845C1CC7A25E8C327F /* PersonalSyncKit */; };
@@ -89,6 +91,7 @@
 /* Begin PBXFileReference section */
 		05EA8F0EE78476D9881C7347 /* AppModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppModel.swift; sourceTree = "<group>"; };
 		24C7DF31D7BBD34A504FB0B5 /* Persistence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Persistence.swift; sourceTree = "<group>"; };
+		3B6701A8C205693AB1394619 /* JournalOnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JournalOnboardingView.swift; sourceTree = "<group>"; };
 		3D99A5939D824B344E6704A9 /* Design.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Design.swift; sourceTree = "<group>"; };
 		45756EFDB3A45F83CBF63F78 /* SignificantHobbies.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SignificantHobbies.entitlements; sourceTree = "<group>"; };
 		48EFA0E8BD9B98537969A433 /* SignificantHobbies.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = SignificantHobbies.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -102,6 +105,7 @@
 		8FA8E53174F333BE6F42CD41 /* JournalPlatformRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JournalPlatformRecord.swift; sourceTree = "<group>"; };
 		AD5D1654F75D6BD52DEA4738 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
 		AE73F47A9024224B92970695 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		B876757C6C93E0C702304829 /* JournalOnboardingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JournalOnboardingTests.swift; sourceTree = "<group>"; };
 		CE1BB86859D853186F562517 /* JournalPlatformRecordTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JournalPlatformRecordTests.swift; sourceTree = "<group>"; };
 		D0188FEAC7CFA0623B6FF0EA /* JournalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JournalView.swift; sourceTree = "<group>"; };
 		D18715A25D2EC787F766FD6C /* SignificantHobbiesUITests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = SignificantHobbiesUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -166,6 +170,7 @@
 		5A5F9D8D04952A401B506D51 /* SignificantHobbiesTests */ = {
 			isa = PBXGroup;
 			children = (
+				B876757C6C93E0C702304829 /* JournalOnboardingTests.swift */,
 				CE1BB86859D853186F562517 /* JournalPlatformRecordTests.swift */,
 			);
 			name = SignificantHobbiesTests;
@@ -178,6 +183,7 @@
 				05EA8F0EE78476D9881C7347 /* AppModel.swift */,
 				3D99A5939D824B344E6704A9 /* Design.swift */,
 				7AA77312B5602FD12AB082F1 /* Info.plist */,
+				3B6701A8C205693AB1394619 /* JournalOnboardingView.swift */,
 				8FA8E53174F333BE6F42CD41 /* JournalPlatformRecord.swift */,
 				D0188FEAC7CFA0623B6FF0EA /* JournalView.swift */,
 				AD5D1654F75D6BD52DEA4738 /* RootView.swift */,
@@ -412,6 +418,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				99974319E21B944CCD0F55C1 /* JournalOnboardingTests.swift in Sources */,
 				DFB69840DDC0716771EA0E9C /* JournalPlatformRecordTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -440,6 +447,7 @@
 			files = (
 				AD89875F157AA02A1D13EBBF /* AppModel.swift in Sources */,
 				713D9934D1E2EF54F4778EF9 /* Design.swift in Sources */,
+				608F090145AE02AF5EBE58B2 /* JournalOnboardingView.swift in Sources */,
 				C7F9594990F4F3C0BB4EB769 /* JournalPlatformRecord.swift in Sources */,
 				E99B4FB1629093EA9C77A575 /* JournalView.swift in Sources */,
 				232BE0083A654EDA0678E35F /* RootView.swift in Sources */,
