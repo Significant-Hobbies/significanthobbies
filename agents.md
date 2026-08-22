@@ -1,121 +1,23 @@
-# AGENTS.md — significanthobbies
+# Significant Hobbies Hub agent instructions
 
-> Concise agent bootloader. Depth lives in [`docs/`](docs/index.md).
-> Current/shipped product truth is in [`PROJECT_STATUS.md`](PROJECT_STATUS.md).
+## Product boundary
 
-## Repository operating rules
+This repository is the canonical source for the Significant Hobbies Hub, its
+shared `personal-platform` Cloudflare Worker, and the `PersonalSyncKit` Swift
+package. The Hub joins independently owned apps through privacy-safe summaries
+and typed semantic actions; it does not absorb their local stores.
 
-This repository is independently operable. Its tracked instructions and
-commands are authoritative; no sibling Fleet checkout is required. Protect
-production stability, keep changes scoped, verify work with repo-local checks,
-and record durable follow-up in this repository's GitHub Issues.
+Live belongs in `Significant-Hobbies/live`. Journal belongs in
+`Significant-Hobbies/journal`. Do not reintroduce their product source here.
 
-## What this is
-
-The Significant Hobbies personal-app family. The apex is a read-only directory;
-**Live** is the web application for hobbies, bucket lists, timelines, and
-lifelong tracking; **Journal** is the native private writing app under `ios/`;
-and **Habits** is maintained in its own native repository. The web runtime is
-deployed at `significanthobbies.com` on Cloudflare Workers via OpenNext.
-
-## Stack
-
-- **Framework:** Next.js 16 (App Router, React 19) + TypeScript (strict)
-- **Styling:** Tailwind CSS v4 + shadcn/ui
-- **DB:** Cloudflare D1 via Drizzle ORM
-- **Auth:** better-auth (Google OAuth)
-- **Testing:** Vitest (unit, co-located in `src/lib/*.test.ts`), Playwright (e2e in `e2e/`)
-- **Deploy:** Cloudflare Workers (`significanthobbies`) via `@opennextjs/cloudflare`
-- **Package manager:** pnpm (workspace: `.` + `landing-astro` + `docs-site`)
-
-## Essential commands
+## Commands
 
 ```bash
-pnpm install
-cp .env.example .env          # fill in BETTER_AUTH_SECRET and GOOGLE_CLIENT_*
-pnpm db:migrate:local         # apply tracked migrations to isolated local D1
-pnpm db:seed                  # seed hobby catalog (tsx prisma/seed.ts — legacy dir name)
-pnpm dev                      # next dev on localhost:3000
-
-pnpm typecheck                # tsc --noEmit
-pnpm test                     # vitest run
-pnpm test:coverage            # vitest with v8 coverage thresholds on core src/lib
-pnpm test:e2e                 # playwright (assumes pnpm dev on :3000)
-pnpm lint                     # biome check .
-pnpm build                    # next build + inline critical CSS
-pnpm quality                  # complete web/Fleet code-health gate
-pnpm quality:native           # Swift format ratchet + native tests/build/coverage
-pnpm quality:all              # web and native gates together
-
-pnpm docs:check               # markdown link + frontmatter validation (no deps)
-pnpm docs:build               # blume build (presentation layer only) → docs-site/dist/
+npm --prefix services/hub-backend ci
+npm run check
+npm run test:worker
+npm run test:swift
 ```
 
-Full command list in `package.json`. Schema changes: edit `src/db/schema.ts`,
-`pnpm db:push` (dev) or `pnpm db:generate` (migration). **Do not run prod
-migrations or deploys.**
-
-## Critical constraints
-
-- **Do not deploy, migrate, release, or rotate credentials.** Production
-  deploys are manual (`workflow_dispatch`) and operator-owned.
-- **Do not read, print, or commit secrets** (`.env`, `.env.local`, `.dev.vars`,
-  Turso tokens, OAuth secrets). Local secret hygiene is operator-owned. See
-  [`docs/operations/security-audit.md`](docs/operations/security-audit.md).
-- **`prisma/` is a legacy directory name.** The seed script uses Drizzle.
-  `src/db/schema.ts` is the source of truth. Do not reintroduce Prisma.
-- **No scoring on daily practice.** Habits are simple check-ins. Commitments
-  have streaks; the daily ritual does not. See
-  [`docs/architecture/decisions.md`](docs/architecture/decisions.md) A4.
-- **The hobby quiz is the single primary discovery UX.** Do not re-surface
-  `/hobbies`, `/explore`, `/journeys` from the homepage/nav/footer until the
-  7-day PostHog funnel readout is in. See
-  [`docs/product/discovery-funnel.md`](docs/product/discovery-funnel.md).
-- **Astro owns the anonymous Hub and Live landing.** Do not add per-request
-  dynamic content to either static landing without rebuilding the Astro overlay. See
-  [`docs/architecture/decisions.md`](docs/architecture/decisions.md) A1.
-- **Pre-push hook** runs `pnpm lint` + a secret-pattern scan. Do not weaken
-  the secret patterns; exclude false-positive file patterns instead.
-- **Markdown in `docs/` is the source of truth.** Blume only renders it. See
-  [`docs/maintenance.md`](docs/maintenance.md).
-
-## Documentation navigation
-
-| If you want to… | Read |
-| --- | --- |
-| Current/shipped product truth | [`PROJECT_STATUS.md`](PROJECT_STATUS.md) |
-| Open work and blockers | GitHub Issues |
-| Product thesis, two dimensions, brand | [`docs/product/overview.md`](docs/product/overview.md) |
-| Discovery funnel (quiz-as-primary) | [`docs/product/discovery-funnel.md`](docs/product/discovery-funnel.md) |
-| Runtime shape (Worker, Astro overlay, storage) | [`docs/architecture/overview.md`](docs/architecture/overview.md) |
-| Durable architectural decisions + the why | [`docs/architecture/decisions.md`](docs/architecture/decisions.md) |
-| Data model + invariants enforced by indexes | [`docs/architecture/data-model.md`](docs/architecture/data-model.md) |
-| Dev workflow (setup, schema, CI, build) | [`docs/development/workflows.md`](docs/development/workflows.md) |
-| Testing (Vitest, Playwright, coverage) | [`docs/development/testing.md`](docs/development/testing.md) |
-| Operations runbook (deploy, cache, failures) | [`docs/operations/runbook.md`](docs/operations/runbook.md) |
-| Scheduled jobs (smoke, weekly, CI, docs) | [`docs/operations/jobs.md`](docs/operations/jobs.md) |
-| Security audit | [`docs/operations/security-audit.md`](docs/operations/security-audit.md) |
-| Durable learnings | [`docs/knowledge/learnings.md`](docs/knowledge/learnings.md) |
-| Failed approaches / resolved traps | [`docs/knowledge/failed-approaches.md`](docs/knowledge/failed-approaches.md) |
-| How to edit this docs system | [`docs/maintenance.md`](docs/maintenance.md) |
-| Full docs map | [`docs/index.md`](docs/index.md) |
-
-## Documentation-maintenance rules
-
-1. **One fact, one home.** If a fact lives in code, link to the code. If a
-   fact has a canonical doc, edit that doc — do not add a second home.
-2. **Do not duplicate easily-discoverable facts** (route lists, script names,
-   binding config, schema fields). Link to the code instead.
-3. **Do not invent information.** Track unresolved questions in GitHub Issues.
-4. **Preserve snapshots.** `docs/knowledge/archive/` files are snapshots — do
-   not rewrite their bodies to "update" them. Update the current doc and let
-   the archive stay a snapshot.
-5. **Prefer `git mv`** when reorganizing so rename history is preserved.
-6. **Validate before committing docs changes:** `pnpm docs:check`.
-7. Full rules in [`docs/maintenance.md`](docs/maintenance.md).
-
-## Active context
-
-See [`PROJECT_STATUS.md`](PROJECT_STATUS.md) for current/shipped product truth
-and GitHub Issues for open work. Do not start new discovery or progression
-features before the 7-day quiz-funnel readout.
+Never copy secrets between Workers, alter production bindings, migrate D1, or
+change native data authorities without explicit operator approval.

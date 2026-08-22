@@ -1,0 +1,35 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "personal-platform",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-08-21",
+  "compatibility_flags": ["nodejs_compat"],
+  "observability": {
+    "enabled": true
+  },
+  "vars": {
+    "AUTH_MODE": "production",
+    "LOCAL_AUTH_TOKEN": "",
+    "LOCAL_AUTH_USER_ID": "",
+    "OWNER_TIMEZONE": "Asia/Kolkata",
+    "ALLOWED_ORIGINS": "https://sh.com,https://significanthobbies.com"
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "personal-platform",
+      "database_id": "61f421a2-f8c7-49c4-97f2-58a1f9b6feda",
+      "migrations_dir": "migrations"
+    }
+  ],
+  "services": [
+    {
+      "binding": "AUTH_SERVICE",
+      "service": "significanthobbies"
+    },
+    {
+      "binding": "CALORIE_SERVICE",
+      "service": "calorie"
+    }
+  ]
+}
