@@ -20,7 +20,7 @@ final class SignificantHobbiesUITests: XCTestCase {
 
     func testFirstEntryOnboardingSavesIntoTheRealJournal() {
         let app = XCUIApplication()
-        app.launchArguments = ["--onboarding-demo", "--reset-onboarding"]
+        app.launchArguments = ["--onboarding-demo", "--onboarding-production-policy", "--reset-onboarding"]
         app.launch()
 
         XCTAssertTrue(app.staticTexts["A private room for what matters."].waitForExistence(timeout: 3))

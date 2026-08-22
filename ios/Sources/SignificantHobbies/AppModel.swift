@@ -54,7 +54,7 @@ final class AppModel {
             }
             if arguments.contains("--onboarding-demo") {
                 document = AtlasDocument()
-                forceJournalOnboarding = true
+                forceJournalOnboarding = !arguments.contains("--onboarding-production-policy")
             } else {
                 document = arguments.contains("--fresh-demo") ? .sample : try await store.load()
             }
