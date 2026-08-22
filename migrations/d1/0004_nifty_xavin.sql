@@ -1,1 +1,0 @@
-ALTER TABLE `JournalEntry` ADD `noveltyText` text;
