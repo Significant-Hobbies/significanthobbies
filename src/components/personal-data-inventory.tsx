@@ -163,6 +163,7 @@ function countLabel(item: PersonalDataInventoryModel['domains'][number]): string
 
 function sourceLabel(source: string | null): string {
   if (source === 'personal-platform') return 'Personal Platform D1';
+  if (source === 'significant-hobbies-service') return 'Significant Hobbies D1 connector';
   if (source === 'calorie-service') return 'Calorie D1 connector';
   return source ?? 'Connector unavailable';
 }

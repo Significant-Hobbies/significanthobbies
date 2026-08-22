@@ -32,11 +32,13 @@ Habits are focused products built from the existing private practice data.
 
 ## Timeline
 
-- **2026-08-22:** Released the Significant Hobbies directory, authenticated
-  read-only Hub, and Live to Cloudflare from exact green commit
-  `67ad6bfe5ca62f51c6ebe3e38aa5d1567510efab`. Apple completed processing
-  Journal 1.0.0 (4); the build still needs internal tester assignment before it
-  appears in TestFlight.
+- **2026-08-22:** Released the Significant Hobbies directory and Live to
+  Cloudflare. The authenticated inventory had been implemented in the Next root,
+  but the production Astro overlay masked that route. A dedicated `/hub` route,
+  preserved sign-in return path, current native-app labels, and seven-domain
+  browser coverage are prepared locally and still require release. Apple
+  completed processing Journal 1.0.0 (4); the build still needs internal tester
+  assignment before it appears in TestFlight.
 
 - **2026-08-21:** Added a private proof surface to the authenticated Hub. It
   reads the existing Personal Platform summary contract with the current
@@ -214,9 +216,10 @@ Historical milestones live in
 - **Runtime:** Cloudflare Worker `significanthobbies` (OpenNext) + Astro Hub
   and Live overlays. Cloudflare D1 + Drizzle ORM +
   better-auth Google OAuth. PostHog analytics.
-- **Personal-app Hub:** seven honest linked cards plus an authenticated,
-  read-only Personal Platform inventory. The Hub owns no combined database,
-  assistant, or write actions.
+- **Personal-app Hub:** seven linked cards are shipped at the apex. An
+  authenticated, read-only Personal Platform inventory is prepared locally at
+  `/hub`; it owns no combined database, assistant, or write actions and is not
+  yet released.
 - **Focused web products:** Live at `/live-more`, Journal at `/journal`, Habits
   at `/habits`, and `/daily` as the compatibility doorway.
 - **Owned product history:** public editorial changelog at `/changelog`.

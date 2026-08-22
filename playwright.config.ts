@@ -7,7 +7,9 @@ const ci = Boolean(process.env.CI);
 const APP_URL = 'http://localhost:3000';
 // The anonymous landing page is a static Astro build, not a Next route
 // (decisions.md A1). It needs its own server and its own baseURL.
-const LANDING_URL = 'http://localhost:4321';
+const LANDING_PORT = process.env.LANDING_PORT ?? '4321';
+const LANDING_URL = `http://localhost:${LANDING_PORT}`;
+const PERSONAL_PLATFORM_FIXTURE_URL = 'http://127.0.0.1:4010/health';
 
 /**
  * `landing.spec.ts` validates the production anonymous Astro overlay. The Next
@@ -61,6 +63,12 @@ export default defineConfig({
   projects,
   webServer: [
     {
+      command: 'node scripts/personal-platform-e2e-fixture.mjs',
+      url: PERSONAL_PLATFORM_FIXTURE_URL,
+      reuseExistingServer: false,
+      timeout: 10_000,
+    },
+    {
       // ENABLE_TEST_AUTH gates better-auth's email provider behind NODE_ENV too
       // (src/lib/auth.ts), so the authenticated specs run instead of skipping.
       command: 'pnpm dev:test-auth',
@@ -70,8 +78,7 @@ export default defineConfig({
     },
     {
       // `astro preview` serves dist/, so it has to be built first.
-      command:
-        'pnpm --filter significanthobbies-landing-astro build && pnpm --filter significanthobbies-landing-astro preview --port 4321',
+      command: `pnpm --filter significanthobbies-landing-astro build && pnpm --filter significanthobbies-landing-astro preview --port ${LANDING_PORT}`,
       url: LANDING_URL,
       reuseExistingServer: !ci,
       timeout: 120_000,

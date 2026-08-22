@@ -14,6 +14,7 @@ import { waitForHydrated } from './fixtures/hydration';
 
 const LOGGED_IN_ROUTES = [
   '/',
+  '/hub',
   '/daily',
   '/journal',
   '/habits',
@@ -45,6 +46,32 @@ test.describe('authenticated surfaces', () => {
       expect(authedPage.url()).not.toContain('/login');
     });
   }
+
+  test('/hub requires sign-in and preserves its destination', async ({ page }) => {
+    await page.goto('/hub');
+    await expect(page).toHaveURL(/\/login\?callbackUrl=%2Fhub$/);
+  });
+
+  test('/hub renders the read-only inventory for a signed-in user', async ({ authedPage }) => {
+    await authedPage.goto('/hub');
+    const inventory = authedPage.locator('section[aria-labelledby="data-inventory-heading"]');
+    await expect(
+      inventory.getByRole('heading', { name: 'What Cloudflare has for you.' })
+    ).toBeVisible();
+    await expect(inventory.getByText('Platform read confirmed')).toBeVisible();
+    await expect(inventory.locator('ul > li')).toHaveCount(7);
+    await expect(inventory.getByText('See the northern lights')).toBeVisible();
+    await expect(inventory.getByText('Significant Hobbies D1 connector')).toBeVisible();
+    await expect(inventory.getByText('Entry from 2026-08-21')).toBeVisible();
+    await expect(inventory.getByText('640 kcal · 42 g protein')).toBeVisible();
+    await expect(inventory.getByText('Calorie D1 connector')).toBeVisible();
+    await expect(inventory.getByText('Anchor record updated')).toBeVisible();
+  });
+
+  test('an already-signed-in login request returns to /hub', async ({ authedPage }) => {
+    await authedPage.goto('/login?callbackUrl=%2Fhub');
+    await expect(authedPage).toHaveURL(/\/hub$/);
+  });
 
   test('/daily points to Journal and Habits instead of mixing them', async ({ authedPage }) => {
     await authedPage.goto('/daily');

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { guestRouteFor, loginPath } from './auth-routing';
+import { guestRouteFor, loginPath, safeCallbackUrl } from './auth-routing';
 
 describe('loginPath', () => {
   it('round-trips through the callbackUrl param the login page reads', () => {
@@ -20,6 +20,18 @@ describe('loginPath', () => {
     const url = new URL(loginPath('/journal?tab=pm&x=1'), 'https://significanthobbies.com');
     expect(url.searchParams.get('callbackUrl')).toBe('/journal?tab=pm&x=1');
     expect(url.searchParams.get('x')).toBeNull();
+  });
+});
+
+describe('safeCallbackUrl', () => {
+  it('preserves an internal Hub destination', () => {
+    expect(safeCallbackUrl('/hub')).toBe('/hub');
+  });
+
+  it('rejects external and protocol-relative redirects', () => {
+    expect(safeCallbackUrl('https://example.com')).toBe('/');
+    expect(safeCallbackUrl('//example.com')).toBe('/');
+    expect(safeCallbackUrl(undefined)).toBe('/');
   });
 });
 

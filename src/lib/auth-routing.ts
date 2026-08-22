@@ -17,6 +17,11 @@ export function loginPath(callbackUrl: string): string {
   return `/login?callbackUrl=${encodeURIComponent(callbackUrl)}`;
 }
 
+/** Keep sign-in redirects on this origin and fall back to the public directory. */
+export function safeCallbackUrl(value: string | undefined): string {
+  return value?.startsWith('/') && !value.startsWith('//') ? value : '/';
+}
+
 export type GuestRoute = {
   /** Anonymous surface closest to what the visitor was trying to reach. */
   href: string;

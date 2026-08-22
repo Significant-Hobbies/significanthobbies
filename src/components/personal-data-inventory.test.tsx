@@ -16,6 +16,13 @@ describe('PersonalDataInventory', () => {
         source: 'personal-platform',
         summaries: [
           {
+            domain: 'live',
+            activeCount: 1,
+            lastUpdatedAt: '2026-08-21T08:00:00.000Z',
+            latest: { title: 'See the northern lights' },
+            source: 'significant-hobbies-service',
+          },
+          {
             domain: 'journal',
             activeCount: 2,
             lastUpdatedAt: '2026-08-21T09:00:00.000Z',
@@ -42,6 +49,7 @@ describe('PersonalDataInventory', () => {
     expect(html).toContain('Platform read confirmed');
     expect(html).toContain('2 records');
     expect(html).toContain('Personal Platform D1');
+    expect(html).toContain('Significant Hobbies D1 connector');
     expect(html).not.toContain('private journal body');
     expect(html).toContain('Recent sync activity');
     expect(html).toContain('Journal</span> record');

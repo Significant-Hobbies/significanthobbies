@@ -22,7 +22,7 @@
     "test:watch": "vitest",
     "db:migrate:local": "wrangler d1 migrations apply DB --local --config wrangler.local.toml",
     "db:migrate:remote": "wrangler d1 migrations apply DB --remote",
-    "dev:test-auth": "ENABLE_TEST_AUTH=1 next dev",
+    "dev:test-auth": "ENABLE_TEST_AUTH=1 PERSONAL_PLATFORM_URL=http://127.0.0.1:4010 next dev",
     "db:generate": "drizzle-kit generate",
     "db:seed": "tsx prisma/seed.ts",
     "test:e2e": "playwright test",

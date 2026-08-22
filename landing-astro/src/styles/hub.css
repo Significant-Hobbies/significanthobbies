@@ -87,6 +87,30 @@ p {
   line-height: 1.7;
 }
 
+.hub__dashboard-link {
+  display: inline-flex;
+  min-height: 2.75rem;
+  margin-top: 1.5rem;
+  padding-inline: 1rem;
+  align-items: center;
+  gap: 0.75rem;
+  border-radius: 0.875rem;
+  background: #211e18;
+  color: white;
+  font-size: 0.875rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.hub__dashboard-link:hover {
+  background: #363229;
+}
+
+.hub__dashboard-link:focus-visible {
+  outline: 3px solid #7658ad;
+  outline-offset: 3px;
+}
+
 .collection {
   margin-top: 4rem;
 }

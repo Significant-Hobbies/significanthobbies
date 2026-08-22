@@ -9,6 +9,10 @@ test.describe('Significant Hobbies Hub (Astro overlay)', () => {
   test('introduces the personal app collection', async ({ page }) => {
     await expect(page.locator('h1')).toHaveText('Your personal apps, in one place.');
     await expect(page.getByRole('heading', { name: 'The collection' })).toBeVisible();
+    await expect(page.getByRole('link', { name: /Open the read-only dashboard/ })).toHaveAttribute(
+      'href',
+      '/hub'
+    );
   });
 
   test('shows all seven products once', async ({ page }) => {
@@ -36,8 +40,9 @@ test.describe('Significant Hobbies Hub (Astro overlay)', () => {
   });
 
   test('states the current integration boundary', async ({ page }) => {
-    await expect(page.getByText('No combined database yet.')).toBeVisible();
+    await expect(page.getByText('One shared read-only view.')).toBeVisible();
     await expect(page.getByText('Read-only Hub')).toBeVisible();
+    await expect(page.getByText('Web app available')).toHaveCount(0);
   });
 
   test('carries indexable metadata', async ({ page }) => {

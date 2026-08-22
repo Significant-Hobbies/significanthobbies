@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { redirect } from 'next/navigation';
 
 import { FadeIn, SpotlightCard, TextGenerateEffect } from '~/components/aceternity';
-import { guestRouteFor } from '~/lib/auth-routing';
+import { guestRouteFor, safeCallbackUrl } from '~/lib/auth-routing';
 import { getServerAuthSession } from '~/server/auth';
 
 import { LoginForm } from './login-form';
@@ -16,13 +16,10 @@ export default async function LoginPage({
 }: {
   searchParams: Promise<{ callbackUrl?: string }>;
 }) {
-  const session = await getServerAuthSession();
-  if (session?.user) redirect('/');
   const { callbackUrl: requestedCallback } = await searchParams;
-  const callbackUrl =
-    requestedCallback?.startsWith('/') && !requestedCallback.startsWith('//')
-      ? requestedCallback
-      : '/';
+  const callbackUrl = safeCallbackUrl(requestedCallback);
+  const session = await getServerAuthSession();
+  if (session?.user) redirect(callbackUrl);
   // The guest link has to follow the same intent as the callback, or it strands
   // people: arriving from /daily used to offer the timeline builder.
   const guestRoute = guestRouteFor(callbackUrl);
