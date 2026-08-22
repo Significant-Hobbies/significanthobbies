@@ -1,133 +1,33 @@
 name: CI
+
 on:
   push:
-    branches: [main, master]
+    branches: [main]
   pull_request:
-    branches: [main, master]
+    branches: [main]
 
 jobs:
-  quality:
+  worker:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-
+    defaults:
+      run:
+        working-directory: services/hub-backend
     steps:
       - uses: actions/checkout@v6
-        with:
-          fetch-depth: 2
-
       - uses: actions/setup-node@v6
         with:
           node-version: '22'
+          cache: npm
+          cache-dependency-path: services/hub-backend/package-lock.json
+      - run: npm ci
+      - run: npm run check
 
-      - uses: actions/setup-python@v6
-        with:
-          python-version: '3.12'
-
-      - name: Prepare pnpm
-        run: |
-          corepack enable
-          if node -e "const pm=require('./package.json').packageManager||''; process.exit(pm.startsWith('pnpm@')?0:1)"; then
-            corepack install
-          else
-            corepack prepare pnpm@10.33.2 --activate
-          fi
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile --ignore-scripts
-
-      - name: Install complexity analyzer
-        run: python -m pip install lizard==1.23.0
-
-      - name: Run quality checks
-        run: pnpm quality
-
-  native-quality:
+  sync-kit:
     runs-on: macos-15
     permissions:
       contents: read
     steps:
       - uses: actions/checkout@v6
-
-      - uses: actions/setup-node@v6
-        with:
-          node-version: '22'
-
-      - name: Prepare pnpm
-        run: |
-          corepack enable
-          if node -e "const pm=require('./package.json').packageManager||''; process.exit(pm.startsWith('pnpm@')?0:1)"; then
-            corepack install
-          else
-            corepack prepare pnpm@10.33.2 --activate
-          fi
-
-      - name: Install XcodeGen
-        run: command -v xcodegen >/dev/null || brew install xcodegen
-
-      - name: Run native quality checks
-        run: pnpm quality:native
-
-  # Playwright has never run in CI. That is why several specs sat failing for a
-  # long time unnoticed — including two real bugs (/journeys gated from crawlers,
-  # eleven SEO pages with no h1) and a 500 on /llms-full.txt. Separate job so a
-  # browser download does not slow the fast quality gate.
-  e2e:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-    steps:
-      - uses: actions/checkout@v6
-
-      - uses: actions/setup-node@v6
-        with:
-          node-version: '22'
-
-      - name: Prepare pnpm
-        run: |
-          corepack enable
-          if node -e "const pm=require('./package.json').packageManager||''; process.exit(pm.startsWith('pnpm@')?0:1)"; then
-            corepack install
-          else
-            corepack prepare pnpm@10.33.2 --activate
-          fi
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile --ignore-scripts
-
-      - name: Cache Playwright browsers
-        uses: actions/cache@v4
-        id: pw-cache
-        with:
-          path: ~/.cache/ms-playwright
-          key: ${{ runner.os }}-playwright-${{ hashFiles('pnpm-lock.yaml') }}
-
-      - name: Install Playwright Chromium
-        # Only Chromium: every project in playwright.config.ts uses a Chromium device.
-        run: pnpm exec playwright install --with-deps chromium
-
-      - name: Prepare a local database
-        # A throwaway local D1 database — no remote database or secrets in CI.
-        # ENABLE_TEST_AUTH lets the authenticated specs sign in through
-        # better-auth's own email provider instead of skipping (src/lib/auth.ts).
-        run: |
-          pnpm db:migrate:local
-          pnpm db:seed
-
-      - name: Run e2e
-        env:
-          ENABLE_TEST_AUTH: '1'
-          BETTER_AUTH_SECRET: ci-not-a-real-secret-e2e-only
-          BETTER_AUTH_URL: http://localhost:3000
-        # desktop covers the app; landing covers the Astro overlay on its own
-        # server. The device-matrix projects (mobile/tablet/wide) are left out to
-        # keep CI quick — they re-run the same specs at other widths.
-        run: pnpm exec playwright test --project=desktop --project=landing
-
-      - name: Upload report on failure
-        if: failure()
-        uses: actions/upload-artifact@v4
-        with:
-          name: playwright-report
-          path: playwright-report/
-          retention-days: 7
+      - run: swift test

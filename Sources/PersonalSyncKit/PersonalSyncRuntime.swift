@@ -1,0 +1,113 @@
+import Foundation
+
+/// Small composition root shared by native apps. Apps keep applying changes to
+/// their own local store; this type only owns authentication, the durable
+/// mutation outbox, the pull cursor, and transport.
+public struct PersonalPlatformConnection: Sendable {
+    public let identity: PersonalIdentityClient
+    public let sync: PersonalSyncRuntime
+
+    #if canImport(Security)
+    public init(
+        domain: PersonalDomain,
+        keychainService: String,
+        supportDirectory: URL,
+        deviceId: String,
+        platformURL: URL = URL(string: "https://personal-platform.sarthakagrawal927.workers.dev")!,
+        identityURL: URL = URL(string: "https://significanthobbies.com")!
+    ) throws {
+        let identity = PersonalIdentityClient(
+            baseURL: identityURL,
+            tokenStore: KeychainBearerTokenStore(service: keychainService)
+        )
+        self.identity = identity
+        sync = try PersonalSyncRuntime(
+            domain: domain,
+            deviceId: deviceId,
+            supportDirectory: supportDirectory,
+            identity: identity,
+            client: PersonalSyncClient(baseURL: platformURL)
+        )
+    }
+    #endif
+}
+
+public actor PersonalSyncRuntime {
+    public let domain: PersonalDomain
+    private let deviceId: String
+    private let identity: PersonalIdentityClient
+    private let outbox: MutationOutbox
+    private let versions: SyncVersionStore
+    private let fingerprints: SyncFingerprintStore
+    private let coordinator: SyncCoordinator
+
+    public init(
+        domain: PersonalDomain,
+        deviceId: String,
+        supportDirectory: URL,
+        identity: PersonalIdentityClient,
+        client: PersonalSyncClient
+    ) throws {
+        self.domain = domain
+        self.deviceId = deviceId
+        self.identity = identity
+        let outbox = try MutationOutbox(fileURL: supportDirectory.appending(path: "personal-sync-outbox.json"))
+        self.outbox = outbox
+        let versions = try SyncVersionStore(
+            fileURL: supportDirectory.appending(path: "personal-sync-versions.json")
+        )
+        self.versions = versions
+        let fingerprints = try SyncFingerprintStore(
+            fileURL: supportDirectory.appending(path: "personal-sync-fingerprints.json")
+        )
+        self.fingerprints = fingerprints
+        coordinator = SyncCoordinator(
+            client: client,
+            outbox: outbox,
+            cursors: try SyncCursorStore(fileURL: supportDirectory.appending(path: "personal-sync-cursors.json")),
+            versions: versions,
+            fingerprints: fingerprints
+        )
+    }
+
+    public func enqueue(
+        recordId: String,
+        operation: MutationOperation = .upsert,
+        baseVersion: Int? = nil,
+        occurredAt: String,
+        record: JSONValue? = nil,
+        idempotencyKey: String? = nil
+    ) async throws {
+        let fingerprint = syncFingerprint(operation: operation, record: record)
+        if await fingerprints.fingerprint(for: recordId, in: domain) == fingerprint {
+            return
+        }
+        let resolvedBaseVersion: Int
+        if let baseVersion {
+            resolvedBaseVersion = baseVersion
+        } else {
+            resolvedBaseVersion = await versions.version(for: recordId, in: domain)
+        }
+        let mutation = SyncMutation(
+            id: recordId,
+            idempotencyKey: idempotencyKey ?? UUID().uuidString.lowercased(),
+            operation: operation,
+            baseVersion: resolvedBaseVersion,
+            occurredAt: occurredAt,
+            record: record
+        )
+        try await outbox.enqueue(OutboxEntry(domain: domain, mutation: mutation))
+        try await fingerprints.setFingerprint(fingerprint, for: recordId, in: domain)
+    }
+
+    /// Returns immediately with no changes while signed out. Network failures
+    /// are surfaced to the app, while the durable outbox remains intact.
+    public func synchronize() async throws -> [SyncChange] {
+        guard let bearerToken = try await identity.bearerToken() else { return [] }
+        return try await coordinator.synchronize(
+            domain: domain,
+            deviceId: deviceId,
+            bearerToken: bearerToken
+        )
+    }
+}
