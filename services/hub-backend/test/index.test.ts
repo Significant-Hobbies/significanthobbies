@@ -293,7 +293,8 @@ describe("Hub Backend Worker", () => {
       body.summaries.filter(
         (summary) => typeof summary.activeCount === "number" && summary.activeCount >= 1,
       ),
-    ).toHaveLength(6);
+    ).toHaveLength(7);
+    expect(body.summaries.at(-1)?.activeCount).toBe(1);
     expect(body.summaries.at(-1)?.summary?.entryCount).toBe(1);
   });
 
