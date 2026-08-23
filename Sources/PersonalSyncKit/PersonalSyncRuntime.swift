@@ -100,6 +100,13 @@ public actor PersonalSyncRuntime {
         try await fingerprints.setFingerprint(fingerprint, for: recordId, in: domain)
     }
 
+    /// Number of durable local mutations still waiting for this domain.
+    /// Apps use this to distinguish a healthy, current connection from a
+    /// signed-out or failed sync that is safely retaining local changes.
+    public func pendingMutationCount() async -> Int {
+        await outbox.pending(for: domain).count
+    }
+
     /// Returns immediately with no changes while signed out. Network failures
     /// are surfaced to the app, while the durable outbox remains intact.
     public func synchronize() async throws -> [SyncChange] {

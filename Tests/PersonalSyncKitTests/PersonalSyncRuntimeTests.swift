@@ -35,7 +35,9 @@ private actor RuntimeTokenStore: PersonalBearerTokenStore {
         record: JSONValue.object(["personId": JSONValue.string("person-2")])
     )
 
+    #expect(await runtime.pendingMutationCount() == 1)
     #expect(try await runtime.synchronize().isEmpty)
+    #expect(await runtime.pendingMutationCount() == 1)
     let stored = try JSONDecoder().decode(
         [OutboxEntry].self,
         from: Data(contentsOf: directory.appending(path: "personal-sync-outbox.json"))
