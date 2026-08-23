@@ -61,11 +61,15 @@ export async function getCalorieToday(
       },
     });
     if (!response.ok) return unavailableSummary(`upstream_${response.status}`);
+    const summary = (await response.json()) as Record<string, unknown>;
     return {
       domain: "calorie",
       source: "calorie-service",
       status: "connected",
-      summary: await response.json(),
+      activeCount: typeof summary.entryCount === "number" ? summary.entryCount : 0,
+      lastUpdatedAt:
+        typeof summary.lastUpdatedAt === "string" ? summary.lastUpdatedAt : null,
+      summary,
     };
   } catch {
     return unavailableSummary("upstream_unreachable");
