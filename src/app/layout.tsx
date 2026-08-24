@@ -120,6 +120,16 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <VitalsReporter />
           </Providers>
         </AnalyticsProvider>
+        <script
+          src="https://sassmaker.com/project-strip.js"
+          data-project="significanthobbies"
+          defer
+        />
+        <script
+          src="https://sassmaker.com/ai-chat-footer.js"
+          data-name="Significant Hobbies"
+          defer
+        />
       </body>
     </html>
   );
