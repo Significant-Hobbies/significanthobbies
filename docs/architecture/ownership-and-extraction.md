@@ -9,8 +9,9 @@ Last reviewed: 2026-08-23
 | Live | `Significant-Hobbies/live` | existing `significanthobbies` Worker | existing Significant Hobbies D1 and signed-out IndexedDB | `https://live.significanthobbies.com` plus compatible apex app paths |
 | Journal | `Significant-Hobbies/journal` | Journal native release | versioned local atlas first; optional Personal Platform sync | Apple bundle `com.significanthobbies.app` |
 
-Anchor, Calorie, Indulge, Kith, Setline, and Habits remain independently owned.
-Repository movement does not move their local data.
+Anchor, Calorie, Kith, and Setline remain independently owned. Anchor is the
+maintained successor to Indulge/Habits; the old native repository is retained
+as recoverable history. Repository movement does not move local data.
 
 ## Compatibility
 
@@ -21,6 +22,9 @@ Repository movement does not move their local data.
   IndexedDB records, callbacks, and bookmarks keep working.
 - Hub Backend calls Live and Calorie only through typed service bindings.
 - Journal keeps the same local atlas and optional sync semantics.
+- Personal Platform keeps the `habits` domain, stored records, callbacks, and
+  typed contracts so historical builds and data remain compatible. It is no
+  longer represented as a separate maintained app in the Hub directory.
 
 ## Rollback
 

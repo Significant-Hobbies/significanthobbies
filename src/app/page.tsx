@@ -3,7 +3,7 @@ import { getPersonalDataInventory } from '~/server/personal-platform';
 
 export const metadata = {
   title: 'Significant Hobbies — Personal Apps',
-  description: 'A simple directory for Live, Journal, Habits, Calorie, Setline, Kith, and Anchor.',
+  description: 'A simple directory for Live, Journal, Calorie, Setline, Kith, and Anchor.',
   alternates: { canonical: 'https://significanthobbies.com' },
 };
 

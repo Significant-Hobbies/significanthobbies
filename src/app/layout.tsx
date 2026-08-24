@@ -24,8 +24,8 @@ export const metadata: Metadata = {
     default: 'Significant Hobbies — Personal Apps',
     template: '%s | Significant Hobbies',
   },
-  description: 'A simple directory for Live, Journal, Habits, Calorie, Setline, Kith, and Anchor.',
-  keywords: ['personal apps', 'local-first apps', 'bucket list', 'journal', 'habits'],
+  description: 'A simple directory for Live, Journal, Calorie, Setline, Kith, and Anchor.',
+  keywords: ['personal apps', 'local-first apps', 'bucket list', 'journal', 'focus'],
   authors: [{ name: 'Significant Hobbies' }],
   robots: {
     index: true,
@@ -57,7 +57,7 @@ export const metadata: Metadata = {
     url: 'https://significanthobbies.com',
     title: 'Significant Hobbies — Personal Apps',
     description:
-      'A simple directory for Live, Journal, Habits, Calorie, Setline, Kith, and Anchor.',
+      'A simple directory for Live, Journal, Calorie, Setline, Kith, and Anchor.',
     images: [
       {
         url: 'https://significanthobbies.com/opengraph-image',
@@ -71,7 +71,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'Significant Hobbies — Personal Apps',
-    description: 'Seven focused personal apps in one simple directory.',
+    description: 'Six focused personal apps in one simple directory.',
     images: ['https://significanthobbies.com/opengraph-image'],
   },
 };

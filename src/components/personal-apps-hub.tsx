@@ -35,15 +35,6 @@ const products: Product[] = [
     color: '#eadcf6',
   },
   {
-    name: 'Habits',
-    mark: 'H',
-    description: 'Keep what helps, trade what does not, and remember the choices you made.',
-    platforms: 'iPhone · iPad',
-    status: 'Native app',
-    href: 'https://habits.significanthobbies.com',
-    color: '#dceeff',
-  },
-  {
     name: 'Calorie',
     mark: 'C',
     description: 'A private food, water, medicine, and weight journal.',
@@ -73,7 +64,7 @@ const products: Product[] = [
   {
     name: 'Anchor',
     mark: 'A',
-    description: 'See where your time went, including the interruptions around it.',
+    description: 'Plan the day, follow it with a focus timer, and learn what changed it.',
     platforms: 'Mac · iPhone · Watch',
     status: 'Native app',
     href: 'https://anchor.significanthobbies.com',
@@ -91,7 +82,7 @@ export function PersonalAppsHub({ inventory }: { inventory: PersonalDataInventor
             Your personal apps, in one place.
           </h1>
           <p className="mt-6 max-w-2xl text-lg leading-8 text-[#625b50]">
-            Seven focused products. Each stays useful on its own. This Hub is the simple front door.
+            Six focused products. Each stays useful on its own. This Hub is the simple front door.
           </p>
         </header>
 

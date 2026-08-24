@@ -30,7 +30,7 @@ const COMMON_PROPERTIES = {
 };
 
 const TOOLS = [
-  tool("life_get_today", "Get a privacy-safe current summary from all seven personal domains."),
+  tool("life_get_today", "Get a privacy-safe current summary from all seven personal data domains."),
   tool("life_search_events", "Search bounded cross-domain activity with provenance.", {
     ...COMMON_PROPERTIES,
     domain: { type: "string", enum: ["live", "journal", "habits", "calorie", "setline", "kith", "anchor"] },
@@ -69,7 +69,7 @@ export async function handleMcp(
       protocolVersion: "2025-06-18",
       capabilities: { tools: { listChanged: false } },
       serverInfo: { name: "significant-hobbies-personal-apps", version: "1.0.0" },
-      instructions: "Read-only access to the owners seven personal applications. Never claim to mutate source data.",
+      instructions: "Read-only access to the owner's personal applications and retained data domains. Never claim to mutate source data.",
     });
   }
   if (body.method === "tools/list") return mcpResult(body.id, { tools: TOOLS });

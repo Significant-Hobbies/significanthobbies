@@ -1,7 +1,9 @@
 # Significant Hobbies Hub
 
-The Hub is the front door and privacy-safe control plane for seven personal
-apps: Live, Journal, Habits, Calorie, Setline, Kith, and Anchor.
+The Hub is the front door and privacy-safe control plane for six personal apps:
+Live, Journal, Calorie, Setline, Kith, and Anchor. Anchor has absorbed the
+maintained Indulge/Habits product; the backend keeps `habits` records and typed
+contracts only for compatibility.
 
 This repository owns:
 

@@ -6,11 +6,10 @@ import { getLiveSummary } from "./live";
 const PRODUCTS = [
   ["live", "Live", "A lifelong catalog for places, hobbies, side quests, and experiences.", "https://live.significanthobbies.com", "#fff09a"],
   ["journal", "Journal", "A private page for morning, evening, and everything worth remembering.", "https://journal.significanthobbies.com", "#eadcf6"],
-  ["habits", "Habits", "Keep what helps and remember the choices you made.", "https://habits.significanthobbies.com", "#dceeff"],
   ["calorie", "Calorie", "A private food, water, medicine, and weight journal.", "https://calorie.significanthobbies.com", "#e4efd9"],
   ["setline", "Setline", "A personal record for practice and progress.", "https://setline.significanthobbies.com", "#f5e2d2"],
   ["kith", "Kith", "A private place for the people you want to keep close.", "https://kith.significanthobbies.com", "#f6e1d4"],
-  ["anchor", "Anchor", "See where your time went, including interruptions.", "https://anchor.significanthobbies.com", "#dce8f0"],
+  ["anchor", "Anchor", "Plan the day, follow it with a focus timer, and learn what changed it.", "https://anchor.significanthobbies.com", "#dce8f0"],
 ] as const;
 
 export async function handleHub(request: Request, env: Env): Promise<Response> {
@@ -42,7 +41,7 @@ function page(summaries: Map<string, Record<string, unknown>> | null): string {
   const action = summaries
     ? '<span class="pill">Private read-only dashboard</span>'
     : '<a class="dashboard" href="/hub">Open the read-only dashboard →</a>';
-  return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Significant Hobbies — Personal Apps</title><meta name="description" content="Seven focused personal apps and one privacy-safe Hub."><style>${CSS}</style></head><body><main><header><p class="kicker">Significant Hobbies</p><h1>Your personal apps,<br>in one place.</h1><p class="lede">Seven focused products. Each remains useful and owns its own data.</p>${action}</header><section aria-label="Personal apps">${cards}</section><footer>Each product owns its interface and data. The Hub shows privacy-safe summaries only.</footer></main></body></html>`;
+  return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Significant Hobbies — Personal Apps</title><meta name="description" content="Six focused personal apps and one privacy-safe Hub."><style>${CSS}</style></head><body><main><header><p class="kicker">Significant Hobbies</p><h1>Your personal apps,<br>in one place.</h1><p class="lede">Six focused products. Each remains useful and owns its own data.</p>${action}</header><section aria-label="Personal apps">${cards}</section><footer>Each product owns its interface and data. The Hub shows privacy-safe summaries only.</footer></main></body></html>`;
 }
 
 function html(body: string, extra: HeadersInit = {}): Response {
