@@ -372,7 +372,7 @@ export const stamps = sqliteTable(
   ]
 );
 
-// ─── Daily Ritual (from today-little-log merge) ────────────────────────────
+// ─── Daily Ritual ──────────────────────────────────────────────────────────
 // One daily ritual page merges habits, rituals, and journal into a single
 // flow. Private by default — no visibility fields on any of these tables.
 
