@@ -138,24 +138,31 @@ public final class PersonalAccountModel: NSObject,
             URLQueryItem(name: "callback", value: "\(callbackScheme)://auth"),
         ]
         let url = components.url!
+        let expectedCallbackScheme = callbackScheme
+        defer { webSession = nil }
         return try await withCheckedThrowingContinuation { continuation in
-            let session = ASWebAuthenticationSession(url: url, callbackURLScheme: callbackScheme) {
-                callbackURL, error in
-                if let error {
+            // AuthenticationServices may invoke this closure on Safari's XPC
+            // executor. Keep it nonisolated: resuming a checked continuation is
+            // thread-safe, while touching this @MainActor model here traps under
+            // Swift 6 executor enforcement.
+            let completion: ASWebAuthenticationSession.CompletionHandler = { callbackURL, error in
+                do {
+                    continuation.resume(
+                        returning: try Self.browserHandoffCode(
+                            from: callbackURL,
+                            error: error,
+                            expectedScheme: expectedCallbackScheme
+                        )
+                    )
+                } catch {
                     continuation.resume(throwing: error)
-                    return
                 }
-                guard let callbackURL,
-                      callbackURL.scheme == self.callbackScheme,
-                      callbackURL.host == "auth",
-                      let code = URLComponents(url: callbackURL, resolvingAgainstBaseURL: false)?
-                        .queryItems?.first(where: { $0.name == "code" })?.value
-                else {
-                    continuation.resume(throwing: PersonalIdentityError.invalidResponse)
-                    return
-                }
-                continuation.resume(returning: code)
             }
+            let session = ASWebAuthenticationSession(
+                url: url,
+                callbackURLScheme: expectedCallbackScheme,
+                completionHandler: completion
+            )
             session.presentationContextProvider = self
             session.prefersEphemeralWebBrowserSession = false
             webSession = session
@@ -164,6 +171,24 @@ public final class PersonalAccountModel: NSObject,
                 return
             }
         }
+    }
+
+    nonisolated static func browserHandoffCode(
+        from callbackURL: URL?,
+        error: Error?,
+        expectedScheme: String
+    ) throws -> String {
+        if let error { throw error }
+        guard let callbackURL,
+              callbackURL.scheme == expectedScheme,
+              callbackURL.host == "auth",
+              let code = URLComponents(url: callbackURL, resolvingAgainstBaseURL: false)?
+                .queryItems?.first(where: { $0.name == "code" })?.value,
+              !code.isEmpty
+        else {
+            throw PersonalIdentityError.invalidResponse
+        }
+        return code
     }
 
     private static func sha256(_ value: String) -> String {
