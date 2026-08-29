@@ -79,7 +79,47 @@ describe("Hub Backend Worker", () => {
     const response = await exports.default.fetch("https://significanthobbies.com/");
     expect(response.status).toBe(200);
     expect(response.headers.get("content-type")).toContain("text/html");
-    expect(await response.text()).toContain("Your personal apps");
+    expect(response.headers.get("link")).toContain("/index.md");
+    const source = await response.text();
+    expect(source).toContain("Six personal apps");
+    expect(source).toContain("Live, Journal, Calorie, Setline, Kith, and Anchor");
+    expect(source).not.toContain('href="https://habits.significanthobbies.com"');
+    expect(source).toContain('rel="canonical" href="https://significanthobbies.com/"');
+    expect(source).toContain('type="application/ld+json"');
+    expect(source).toContain('data-project="significanthobbies"');
+    expect(source).toContain('data-name="Significant Hobbies"');
+  });
+
+  it("serves a cache-safe Markdown view for agents", async () => {
+    const negotiated = await exports.default.fetch("https://significanthobbies.com/", {
+      headers: { Accept: "text/markdown" },
+    });
+    const explicit = await exports.default.fetch("https://significanthobbies.com/?mode=agent");
+
+    expect(negotiated.headers.get("content-type")).toContain("text/markdown");
+    expect(negotiated.headers.get("vary")).toContain("Accept");
+    expect(await negotiated.text()).toContain(
+      "Live, Journal, Calorie, Setline, Kith, and Anchor",
+    );
+    expect(explicit.headers.get("content-type")).toContain("text/markdown");
+  });
+
+  it("keeps temporary preview discovery on the preview origin", async () => {
+    const headers = {
+      "X-Forwarded-Host": "bounded-preview.trycloudflare.com",
+      "X-Forwarded-Proto": "https",
+    };
+    const html = await exports.default.fetch("https://significanthobbies.com/", { headers });
+    const markdown = await exports.default.fetch("https://significanthobbies.com/", {
+      headers: { ...headers, Accept: "text/markdown" },
+    });
+
+    expect(await html.text()).toContain(
+      'rel="canonical" href="https://bounded-preview.trycloudflare.com/"',
+    );
+    expect(await markdown.text()).toContain(
+      "canonical: https://bounded-preview.trycloudflare.com/",
+    );
   });
 
   it("pushes once, returns the same cursor on retry, and pulls by cursor", async () => {

@@ -1,0 +1,91 @@
+{
+  "$schema": "fleet.design-review.v1",
+  "version": 1,
+  "project": "significanthobbies",
+  "target": "Significant Hobbies public six-app Hub landing",
+  "surfaceMode": "persuade",
+  "mode": "overhaul",
+  "register": "product",
+  "context": {
+    "product": "PROJECT_STATUS.md",
+    "design": "services/hub-backend/src/hub.ts"
+  },
+  "direction": {
+    "references": [],
+    "probes": [],
+    "selected": "editorial-personal-system-index",
+    "approval": "delegated",
+    "before": "",
+    "library": {
+      "strategy": "upstream-first",
+      "primary": "existing-project-system",
+      "sources": [],
+      "runtime": "none",
+      "customReplacement": {
+        "used": false,
+        "authorization": "not-required",
+        "reason": "The dependency-free Worker document uses native links, buttons, and semantic sections; no standard interactive component was rebuilt."
+      }
+    },
+    "contract": {
+      "purpose": "Give the owner one privacy-aware place to understand and open six independently owned personal apps without collapsing their interfaces or source data into one product.",
+      "purposeSource": "site-health purposeContract for significanthobbies, repository PROJECT_STATUS.md, and the Hub service contract",
+      "canonicalPurpose": "Significant Hobbies helps its owner coordinate Live, Journal, Calorie, Setline, Kith, and Anchor by exposing a private read-only Hub of typed summaries while each app retains its own interface and data ownership.",
+      "purposeAlignment": "match",
+      "driftNote": "",
+      "audience": "The Fleet owner; the public landing also helps a visitor understand which of the six personal apps owns a task.",
+      "job": "Explain the six-app system, route a visitor to the correct product, and state the private Hub, sync, commercial, and Habits compatibility boundaries honestly.",
+      "thesis": "A quiet editorial index makes the suite feel like a considered personal system rather than a SaaS bundle or generic application directory.",
+      "system": "Warm paper, fine ledger rules, Georgia display type, compact sans metadata, monochrome actions, one restrained coral accent, and a responsive grid in the existing dependency-free Worker surface.",
+      "signature": "The SH 06 ledger index and six numbered product cards turn the exact product count into the page's visual organizing principle.",
+      "risk": "The large editorial headline is deliberately dominant, but exact 390, 768, and 1440 CSS-pixel captures show the product list, owner-only boundary, and primary actions remain legible without horizontal overflow."
+    }
+  },
+  "evidence": {
+    "screenshots": [
+      { "width": 390, "path": ".fleet/evidence/landing-audit/after-390.png" },
+      { "width": 768, "path": ".fleet/evidence/landing-audit/after-768.png" },
+      { "width": 1440, "path": ".fleet/evidence/landing-audit/after-1440.png" }
+    ],
+    "projectCheck": { "command": "npm run check", "status": "pass" },
+    "critique": { "score": 39, "maximum": 40 },
+    "audit": { "score": 20, "maximum": 20 },
+    "unresolved": { "p0": 0, "p1": 0 },
+    "detector": {
+      "posture": "advisory",
+      "findings": [
+        "No product-purpose, hierarchy, contrast, interaction, or overflow P0/P1 finding remains in the public landing candidate.",
+        "The first nominal 390 screenshot was rejected because macOS headless Chrome rendered at its 500 CSS-pixel minimum and cropped the image. Accepted evidence uses DevTools device metrics and confirms innerWidth, client width, and scroll width are exactly 390 pixels."
+      ]
+    },
+    "comprehension": {
+      "status": "pass",
+      "reviewer": "fresh-visitor browser review A1",
+      "answers": {
+        "product": "A shared home and private read-only Hub for exactly six independently owned personal apps.",
+        "audience": "The owner first, with public visitors using the page to choose which app fits their task.",
+        "value": "It makes the six products understandable together without turning them into one oversized application.",
+        "mechanism": "Each source app retains its interface and immediate data while typed summaries and documented actions cross the shared contract boundary.",
+        "proof": "The first viewport names all six apps and the collection section gives each one an explicit job; the connection and current-state sections state the ownership and sync boundaries.",
+        "nextAction": "Open the owner-only private Hub or move directly to one of the six product pages; there is no public signup or checkout."
+      },
+      "purposeScore": { "product": 25, "audience": 15, "value": 15, "mechanism": 15, "proof": 15, "nextAction": 14, "total": 99 },
+      "mismatches": []
+    },
+    "performance": {
+      "report": ".fleet/evidence/landing-audit/performance.html",
+      "validRuns": 19,
+      "attemptedRuns": 20,
+      "slowMobileP75LcpMs": 1281,
+      "mobileMidP75LcpMs": 654,
+      "weightedLcpMs": 477,
+      "cls": 0,
+      "tbtMs": 0
+    },
+    "visualQuality": { "priority": "P2", "score": 97, "minimum": 85 }
+  },
+  "ownerFeedback": {
+    "decision": "delegated",
+    "note": "The owner delegated end-to-end judgment, asked for one-shot high-quality landing pages in SaaSMaker priority order, and explicitly asked not to pause for routine feedback. Production release remains outside this local audit."
+  }
+}
