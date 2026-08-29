@@ -1,0 +1,76 @@
+{
+  "$schema": "fleet.landing-audit.scorecard.v1",
+  "project": "significanthobbies",
+  "priority": "P2",
+  "candidate": "https://follow-quoted-hence-correctly.trycloudflare.com/",
+  "productionChanged": false,
+  "checkedAt": "2026-08-28",
+  "purpose": {
+    "score": 99,
+    "minimum": 85,
+    "p0": 0,
+    "p1": 0,
+    "note": "The first viewport identifies exactly six apps, explains why they remain separate, names the owner-only read-only Hub, discloses unfinished real-owner sync verification, and avoids treating Habits compatibility data as a seventh product."
+  },
+  "design": {
+    "score": 97,
+    "minimum": 85,
+    "p0": 0,
+    "p1": 0,
+    "note": "The warm editorial ledger, SH 06 index, exact six-card system, restrained palette, and fine grid are specific to a private personal-app collection. Exact 390, 768, and 1440 CSS-pixel captures show intentional reflow with no horizontal overflow."
+  },
+  "seo": {
+    "score": 96,
+    "passed": 15,
+    "failed": 0,
+    "warnings": 0,
+    "note": "The local landing passes focused metadata, canonical, structured-data, heading, action, and crawlability checks. The shared apex proxy retains the broader Live-owned sitemap corpus by design."
+  },
+  "geo": {
+    "score": 100,
+    "productionTier": "A",
+    "productionScore": 70,
+    "note": "The fully composed latest-source candidate is S-tier at 100%. The Hub catalog now owns only the Hub home surface, keeps Live discovery in Live's separate contract, publishes the root in the shared sitemap, and rebinds preview discovery URLs consistently. Production still reflects the older proxy state."
+  },
+  "performance": {
+    "score": 100,
+    "successfulCoverageRuns": 19,
+    "attemptedCoverageRuns": 20,
+    "weightedLcpMs": 477,
+    "weightedCls": 0,
+    "weightedTbtMs": 0,
+    "profiles": {
+      "mobileSlowScore": 100,
+      "mobileSlowLcpMs": 1281,
+      "mobileMidScore": 100,
+      "mobileMidLcpMs": 654,
+      "mobileFastScore": 100,
+      "mobileFastLcpMs": 328,
+      "desktopScore": 100,
+      "desktopLcpMs": 176
+    },
+    "note": "Every successful profile scores 100 with no Lighthouse opportunity, zero CLS, and zero TBT. One slow-mobile browser launch failed as instrumentation noise; a preceding twenty-audit run completed every profile before its local report writer hit a Node ABI mismatch."
+  },
+  "verification": {
+    "primaryJourney": "A visitor can understand the six-app system, choose an app, and distinguish the public product directory from the authenticated private Hub.",
+    "repositoryCheck": "npm run check passes Worker type generation, TypeScript, 23 tests, and a no-release Wrangler dry run.",
+    "sharedHostCheck": "Live host-routing and sitemap contract tests pass 10 of 10 focused cases.",
+    "seoAudit": "15 passed, 0 failed, 0 warnings.",
+    "agentIndex": "Latest-source candidate is S-tier at 100%; production remains A-tier at 70 until a separately authorized release.",
+    "footer": {
+      "askAi": "pass",
+      "projectStrip": "pass",
+      "note": "The Ask AI loader preserves the separately mounted fleet project strip through data-compose=false."
+    },
+    "responsiveScreenshots": [
+      ".fleet/evidence/landing-audit/after-390.png",
+      ".fleet/evidence/landing-audit/after-768.png",
+      ".fleet/evidence/landing-audit/after-1440.png"
+    ]
+  },
+  "limitations": [
+    "No deployment, commit, push, DNS change, account action, database mutation, or production configuration change was performed.",
+    "The authenticated Hub was not opened against real owner services; this pass verifies the public purpose surface and the repository's existing authenticated contract tests.",
+    "Production agent readiness remains stale until a separately authorized release of both the Hub and Live-owned apex proxy changes."
+  ]
+}
