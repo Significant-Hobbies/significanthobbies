@@ -48,14 +48,24 @@ export async function authenticateSession(
   env: Env,
 ): Promise<AuthenticatedUser | null> {
   const authService = optionalFetcher(env, "AUTH_SERVICE");
-  if (!authService) return null;
-  const response = await authService.fetch(AUTH_SERVICE_URL, { headers: request.headers });
+  if (!authService) {
+    throw new HttpError(503, "auth_not_configured", "session authentication is unavailable");
+  }
+  let response: Response;
+  try {
+    response = await authService.fetch(AUTH_SERVICE_URL, { headers: request.headers });
+  } catch {
+    throw new HttpError(502, "auth_service_unavailable", "auth service could not verify the session");
+  }
   if (response.status === 401) return null;
   if (!response.ok) {
     throw new HttpError(502, "auth_service_unavailable", "auth service could not verify the session");
   }
   const body = (await response.json()) as Record<string, unknown>;
-  return typeof body.userId === "string" && body.userId.length > 0 ? { id: body.userId } : null;
+  if (typeof body.userId !== "string" || body.userId.length === 0) {
+    throw new HttpError(502, "invalid_auth_response", "auth service returned no user ID");
+  }
+  return { id: body.userId };
 }
 
 export async function ensureUser(env: Env, user: AuthenticatedUser): Promise<void> {

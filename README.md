@@ -44,9 +44,11 @@ Original requirements and discussion: [#147](https://github.com/Significant-Hobb
 ### Preserve the Hub destination through sign-in
 
 [The entry-contract repair (#154)](https://github.com/Significant-Hobbies/significanthobbies/issues/154)
-must prove the complete cross-host login and private-summary journey. A fresh
-Chrome check on 2026-09-07 reached Live's login with `returnTo=/hub`, while that
-page reads only `callbackUrl`. Changing the parameter alone does not establish
-the correct host or session scope. Keep existing authentication identities and
-require real browser return, expiry and account-isolation evidence before
-calling the private Hub shareable.
+now keeps sign-in and the private Hub on Live's authenticated origin, using the
+existing Hub renderer and Live host-only session. [Local qualification](docs/hub-login-qualification-2026-09-07.md)
+verified real synthetic sessions, two-account summary isolation, expiry, revoked
+sessions, retry and unavailable-auth behavior. The public directory stays on the
+apex; the authenticated entry is `https://live.significanthobbies.com/hub`.
+Deployment and actual hosted Google sign-in remain unqualified. Keep #154 open
+until exact deployed revisions and a real hosted return/expiry/isolation journey
+are recorded; local test-provider proof does not make the private Hub shareable.

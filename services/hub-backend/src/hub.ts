@@ -80,8 +80,12 @@ export async function handleHub(request: Request, env: Env): Promise<Response> {
     }
     return html(page(null, origin));
   }
+  // Live owns the host-only browser session. Never send it across subdomains.
+  if (url.hostname !== "live.significanthobbies.com") {
+    return privateRedirect("https://live.significanthobbies.com/hub");
+  }
   const user = await authenticateSession(request, env);
-  if (!user) return Response.redirect(new URL("/login?returnTo=%2Fhub", request.url).toString(), 302);
+  if (!user) return privateRedirect("https://live.significanthobbies.com/login?callbackUrl=%2Fhub");
   await ensureUser(env, user);
   const [platform, live, calorie] = await Promise.all([
     getToday(env, user.id),
@@ -93,6 +97,13 @@ export async function handleHub(request: Request, env: Env): Promise<Response> {
     entries.map((summary) => [String(summary.domain), summary]),
   );
   return html(page(summaries, origin), { "Cache-Control": "private, no-store" });
+}
+
+function privateRedirect(location: string): Response {
+  return new Response(null, {
+    status: 302,
+    headers: { Location: location, "Cache-Control": "private, no-store" },
+  });
 }
 
 function page(summaries: Map<string, Record<string, unknown>> | null, origin: string): string {
@@ -152,7 +163,7 @@ function page(summaries: Map<string, Record<string, unknown>> | null, origin: st
     </nav>
     <main id="main">
       <header class="hero">
-        <div class="hero-index" aria-hidden="true">SH<br>06</div>
+        <div class="hero-index" aria-hidden="true">SH<br>${String(PRODUCTS.length).padStart(2, "0")}</div>
         <div class="hero-copy">
           <p class="eyebrow">A connected personal system</p>
           <h1>Five personal apps. One quiet place to see how they fit.</h1>
@@ -189,7 +200,7 @@ function page(summaries: Map<string, Record<string, unknown>> | null, origin: st
       <section class="proof" aria-labelledby="proof-title">
         <div class="proof-heading"><p class="eyebrow">Current product truth</p><h2 id="proof-title">Built as a system, kept honest as five products.</h2></div>
         <dl class="proof-grid">
-          <div><dt>06</dt><dd>maintained personal apps</dd></div>
+          <div><dt>${String(PRODUCTS.length).padStart(2, "0")}</dt><dd>maintained personal apps</dd></div>
           <div><dt>01</dt><dd>shared typed sync package</dd></div>
           <div><dt>Private</dt><dd>read-only Hub access</dd></div>
           <div><dt>Retained</dt><dd>Habits compatibility data</dd></div>

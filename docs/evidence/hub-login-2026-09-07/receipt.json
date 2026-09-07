@@ -1,0 +1,49 @@
+{
+  "transport": "Browser HTTPS hosts resolved to loopback port5280; local TLS adapter only adds port to redirects, actual source handlers and Next dev",
+  "auth": "Actual Live better-auth email test provider and two isolated local D1 databases",
+  "steps": [
+    {
+      "case": "provider-unavailable-ui",
+      "account": "alpha",
+      "retryVisible": true
+    },
+    {
+      "account": "alpha",
+      "userId": "bLZ9xHfng2jTCqWtbxqEFul5cRJ1pYgR",
+      "hostOnlyCookie": true,
+      "hubUrl": "https://live.significanthobbies.com:5280/hub",
+      "setlineRecords": 1
+    },
+    {
+      "case": "provider-unavailable-ui",
+      "account": "beta",
+      "retryVisible": true
+    },
+    {
+      "account": "beta",
+      "userId": "Bxh1mDOQyEjzBrMdRnjWj61oYdodGixc",
+      "hostOnlyCookie": true,
+      "hubUrl": "https://live.significanthobbies.com:5280/hub",
+      "setlineRecords": 2
+    },
+    {
+      "case": "unavailable-auth",
+      "status": 502,
+      "redirected": false
+    },
+    {
+      "case": "expired-session",
+      "destination": "https://live.significanthobbies.com:5280/login?callbackUrl=%2Fhub",
+      "authorityExpiry": true
+    },
+    {
+      "case": "revoked-session",
+      "destination": "https://live.significanthobbies.com:5280/login?callbackUrl=%2Fhub"
+    },
+    {
+      "case": "cancelled-login",
+      "retry": true,
+      "publicDirectoryExit": true
+    }
+  ]
+}
