@@ -1,7 +1,7 @@
 # Significant Hobbies Hub
 
-The Hub is the front door and privacy-safe control plane for six personal apps:
-Live, Journal, Calorie, Setline, Kith, and Anchor. Anchor has absorbed the
+The Hub is the front door and privacy-safe control plane for five personal apps:
+Live, Calorie, Setline, Kith, and Anchor. Anchor has absorbed the
 maintained Indulge/Habits product; the backend keeps `habits` records and typed
 contracts only for compatibility.
 
@@ -16,6 +16,8 @@ Live and Journal were extracted with preserved history into
 [`Significant-Hobbies/live`](https://github.com/Significant-Hobbies/live) and
 [`Significant-Hobbies/journal`](https://github.com/Significant-Hobbies/journal).
 Their runtime and local data identities did not move.
+Journal has since been removed from the Fleet product lineup; its independent
+source and compatibility history are retained.
 
 ## Checks
 
@@ -38,3 +40,13 @@ These are unresolved requirements retained at the owner’s request. They are no
 Define the shared design foundation around the retained apps, while preserving independent stores and app ownership.
 
 Original requirements and discussion: [#147](https://github.com/Significant-Hobbies/significanthobbies/issues/147).
+
+### Preserve the Hub destination through sign-in
+
+[The entry-contract repair (#154)](https://github.com/Significant-Hobbies/significanthobbies/issues/154)
+must prove the complete cross-host login and private-summary journey. A fresh
+Chrome check on 2026-09-07 reached Live's login with `returnTo=/hub`, while that
+page reads only `callbackUrl`. Changing the parameter alone does not establish
+the correct host or session scope. Keep existing authentication identities and
+require real browser return, expiry and account-isolation evidence before
+calling the private Hub shareable.
