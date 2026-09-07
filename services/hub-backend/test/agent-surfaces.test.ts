@@ -31,7 +31,7 @@ describe("apex crawler and agent contract", () => {
     expect(response.status).toBe(200);
   });
 
-  it("names Significant Hobbies, never one of the six apps, in every channel", async () => {
+  it("names Significant Hobbies, never one of the five apps, in every channel", async () => {
     const catalog = (await (await anonymous("/api/ai")).json()) as Record<string, unknown>;
     expect(catalog.name).toBe(SITE_NAME);
     expect(catalog.url).toBe(APEX_ORIGIN);
@@ -82,13 +82,12 @@ describe("apex crawler and agent contract", () => {
     expect(catalog.llms).toBe(`${APEX_ORIGIN}/llms.txt`);
   });
 
-  it("advertises the six apps outside surfaces, since they are other origins", async () => {
+  it("advertises the five apps outside surfaces, since they are other origins", async () => {
     const catalog = (await (await anonymous("/api/ai")).json()) as {
       apps: Array<{ id: string; url: string }>;
     };
     expect(catalog.apps.map((app) => app.id)).toEqual([
       "live",
-      "journal",
       "calorie",
       "setline",
       "kith",

@@ -27,3 +27,14 @@ npm run test:swift
 
 See [the ownership matrix](docs/architecture/ownership-and-extraction.md) for
 canonical repositories, data authorities, compatibility, and rollback.
+
+<!-- portfolio-retained-work:2026-09-07 -->
+## Retained work from the portfolio review
+
+These are unresolved requirements retained at the owner’s request. They are not completed features. Work should follow a concrete need and fresh evidence.
+
+### Add a shared Significant Hobbies design foundation
+
+Define the shared design foundation around the retained apps, while preserving independent stores and app ownership.
+
+Original requirements and discussion: [#147](https://github.com/Significant-Hobbies/significanthobbies/issues/147).

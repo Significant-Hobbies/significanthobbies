@@ -13,14 +13,6 @@ export const PRODUCTS = [
     color: "#f4df52",
   },
   {
-    id: "journal",
-    name: "Journal",
-    category: "Reflection",
-    description: "Write private morning and evening pages, plus anything worth remembering.",
-    href: "https://journal.significanthobbies.com",
-    color: "#c9afe5",
-  },
-  {
     id: "calorie",
     name: "Calorie",
     category: "Health record",
@@ -56,27 +48,26 @@ export const PRODUCTS = [
 
 export const HOME_MARKDOWN = `---
 title: Significant Hobbies
-description: The private Hub for six independently owned personal apps.
+description: The private Hub for five independently owned personal apps.
 canonical: https://significanthobbies.com/
 updated: 2026-08-27
 ---
 
 # Significant Hobbies
 
-Significant Hobbies is the shared home and privacy-aware control plane for six independently owned personal apps: Live, Journal, Calorie, Setline, Kith, and Anchor.
+Significant Hobbies is the shared home and privacy-aware control plane for five independently owned personal apps: Live, Calorie, Setline, Kith, and Anchor.
 
 ## Choose an app
 
 - [Live](https://live.significanthobbies.com): Places, hobbies, side quests, and experiences.
-- [Journal](https://journal.significanthobbies.com): Private morning and evening reflection.
 - [Calorie](https://calorie.significanthobbies.com): Food, water, medicine, weight, and daily totals.
 - [Setline](https://setline.significanthobbies.com): Practice, training, and progress.
 - [Kith](https://kith.significanthobbies.com): People and relationship follow-through.
 - [Anchor](https://anchor.significanthobbies.com): Daily plans, focused work, interruptions, and review.
 
-Each app keeps its own interface and immediate data. The owner-only Hub is currently read-only, has no public signup or checkout, and is still completing real-owner sync verification across all six apps.
+Each app keeps its own interface and immediate data. The owner-only Hub is currently read-only, has no public signup or checkout, and is still completing real-owner sync verification across all five apps.
 
-Habits was absorbed into Anchor. Historical Habits records and compatibility contracts remain, but Habits is not a seventh maintained product.
+Habits was absorbed into Anchor. Historical Habits records and compatibility contracts remain, but Habits is not another maintained product.
 `;
 
 export async function handleHub(request: Request, env: Env): Promise<Response> {
@@ -136,19 +127,19 @@ function page(summaries: Map<string, Record<string, unknown>> | null, origin: st
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="theme-color" content="#f2efe6">
-    <title>Significant Hobbies — Six Personal Apps</title>
-    <meta name="description" content="Six independently owned personal apps for planning, reflection, health, relationships, and progress, connected by a private read-only Hub.">
+    <title>Significant Hobbies — Five Personal Apps</title>
+    <meta name="description" content="Five independently owned personal apps for planning, reflection, health, relationships, and progress, connected by a private read-only Hub.">
     <link rel="canonical" href="${origin}/">
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="Significant Hobbies">
-    <meta property="og:title" content="Significant Hobbies — Six Personal Apps">
-    <meta property="og:description" content="Six independently owned personal apps, connected by a private read-only Hub.">
+    <meta property="og:title" content="Significant Hobbies — Five Personal Apps">
+    <meta property="og:description" content="Five independently owned personal apps, connected by a private read-only Hub.">
     <meta property="og:url" content="${origin}/">
     <meta property="og:image" content="${origin}/hub-opengraph-image">
     <meta property="og:image:alt" content="Significant Hobbies personal apps">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Significant Hobbies — Six Personal Apps">
-    <meta name="twitter:description" content="Six independently owned personal apps, connected by a private read-only Hub.">
+    <meta name="twitter:title" content="Significant Hobbies — Five Personal Apps">
+    <meta name="twitter:description" content="Five independently owned personal apps, connected by a private read-only Hub.">
     <meta name="twitter:image" content="${origin}/hub-opengraph-image">
     <script type="application/ld+json">${structuredData(origin)}</script>
     <style>${CSS}</style>
@@ -157,20 +148,20 @@ function page(summaries: Map<string, Record<string, unknown>> | null, origin: st
     <a class="skip-link" href="#main">Skip to content</a>
     <nav class="site-nav" aria-label="Primary">
       <a class="wordmark" href="/" aria-current="page"><span class="wordmark-dot" aria-hidden="true"></span>Significant Hobbies</a>
-      <div class="nav-meta"><span>Six apps</span><a href="/hub">Private Hub</a></div>
+      <div class="nav-meta"><span>Five apps</span><a href="/hub">Private Hub</a></div>
     </nav>
     <main id="main">
       <header class="hero">
         <div class="hero-index" aria-hidden="true">SH<br>06</div>
         <div class="hero-copy">
           <p class="eyebrow">A connected personal system</p>
-          <h1>Six personal apps. One quiet place to see how they fit.</h1>
-          <p class="lede">Live, Journal, Calorie, Setline, Kith, and Anchor each do one job and keep ownership of their own experience. The Hub brings their privacy-safe summaries together without turning them into one oversized app.</p>
+          <h1>Five personal apps. One quiet place to see how they fit.</h1>
+          <p class="lede">Live, Calorie, Setline, Kith, and Anchor each do one job and keep ownership of their own experience. The Hub brings their privacy-safe summaries together without turning them into one oversized app.</p>
           <div class="hero-actions">
             ${hubAction}
-            <a class="button button-secondary" href="#apps">Meet the six apps <span aria-hidden="true">↓</span></a>
+            <a class="button button-secondary" href="#apps">Meet the five apps <span aria-hidden="true">↓</span></a>
           </div>
-          <p class="access-note"><strong>Owner-only system.</strong> The Hub has no public signup or checkout. Real-owner sync verification across all six apps is still in progress.</p>
+          <p class="access-note"><strong>Owner-only system.</strong> The Hub has no public signup or checkout. Real-owner sync verification across all five apps is still in progress.</p>
         </div>
       </header>
 
@@ -189,28 +180,28 @@ function page(summaries: Map<string, Record<string, unknown>> | null, origin: st
           <p>Each product keeps its immediate data and interface. Shared contracts carry only the summaries and documented actions the Hub needs.</p>
         </div>
         <ol class="connection-steps">
-          <li><span>01</span><div><h3>Keep the original record</h3><p>A journal entry stays with Journal. A focus session stays with Anchor. The Hub does not replace the app that created it.</p></div></li>
+          <li><span>01</span><div><h3>Keep the original record</h3><p>A workout stays with Setline. A focus session stays with Anchor. The Hub does not replace the app that created it.</p></div></li>
           <li><span>02</span><div><h3>Exchange a typed summary</h3><p>PersonalSyncKit and the shared backend use explicit domain contracts instead of passing around an unbounded copy of personal data.</p></div></li>
           <li><span>03</span><div><h3>See the day together</h3><p>The current Hub is a private, read-only view of safe summaries. Cross-app actions will expand only after real-owner sync is verified.</p></div></li>
         </ol>
       </section>
 
       <section class="proof" aria-labelledby="proof-title">
-        <div class="proof-heading"><p class="eyebrow">Current product truth</p><h2 id="proof-title">Built as a system, kept honest as six products.</h2></div>
+        <div class="proof-heading"><p class="eyebrow">Current product truth</p><h2 id="proof-title">Built as a system, kept honest as five products.</h2></div>
         <dl class="proof-grid">
           <div><dt>06</dt><dd>maintained personal apps</dd></div>
           <div><dt>01</dt><dd>shared typed sync package</dd></div>
           <div><dt>Private</dt><dd>read-only Hub access</dd></div>
           <div><dt>Retained</dt><dd>Habits compatibility data</dd></div>
         </dl>
-        <p class="proof-note">Habits was absorbed into Anchor. Its historical records and compatibility contracts remain intact, but it is not a seventh maintained product.</p>
+        <p class="proof-note">Habits was absorbed into Anchor. Its historical records and compatibility contracts remain intact, but it is not another maintained product.</p>
       </section>
     </main>
 
     <footer class="site-footer">
-      <div class="footer-lead"><span class="wordmark-dot" aria-hidden="true"></span><p>Six independently useful apps, connected only where the connection earns its place.</p></div>
+      <div class="footer-lead"><span class="wordmark-dot" aria-hidden="true"></span><p>Five independently useful apps, connected only where the connection earns its place.</p></div>
       <div class="footer-columns">
-        <div><p class="footer-label">Product</p><a href="#apps">The six apps</a><a href="/hub">Private Hub</a></div>
+        <div><p class="footer-label">Product</p><a href="#apps">The five apps</a><a href="/hub">Private Hub</a></div>
         <div><p class="footer-label">Project</p><a href="https://github.com/Significant-Hobbies/significanthobbies" aria-label="GitHub repository" title="GitHub repository" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 16 16" width="20" height="20" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg></a><a href="https://github.com/Significant-Hobbies/significanthobbies/issues">Roadmap</a></div>
         <div><p class="footer-label">Current state</p><span>Owner-only</span><span>No public checkout</span><span>Sync verification in progress</span></div>
       </div>
@@ -275,7 +266,7 @@ function structuredData(origin: string): string {
         name: "Significant Hobbies",
         url: `${origin}/`,
         description:
-          "The private Hub for six independently owned personal apps: Live, Journal, Calorie, Setline, Kith, and Anchor.",
+          "The private Hub for five independently owned personal apps: Live, Calorie, Setline, Kith, and Anchor.",
         isAccessibleForFree: true,
       },
       {
@@ -284,7 +275,7 @@ function structuredData(origin: string): string {
         name: "Significant Hobbies",
         url: `${origin}/`,
         description:
-          "The project organization for a private Hub and six independently owned personal apps.",
+          "The project organization for a private Hub and five independently owned personal apps.",
         sameAs: ["https://github.com/Significant-Hobbies/significanthobbies"],
       },
       {

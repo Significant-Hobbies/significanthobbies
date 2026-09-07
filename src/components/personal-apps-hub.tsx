@@ -26,15 +26,6 @@ const products: Product[] = [
     color: '#fff09a',
   },
   {
-    name: 'Journal',
-    mark: 'J',
-    description: 'A private page for morning, evening, and everything worth remembering.',
-    platforms: 'iPhone · iPad',
-    status: 'Native app',
-    href: 'https://journal.significanthobbies.com',
-    color: '#eadcf6',
-  },
-  {
     name: 'Calorie',
     mark: 'C',
     description: 'A private food, water, medicine, and weight journal.',
@@ -82,7 +73,7 @@ export function PersonalAppsHub({ inventory }: { inventory: PersonalDataInventor
             Your personal apps, in one place.
           </h1>
           <p className="mt-6 max-w-2xl text-lg leading-8 text-[#625b50]">
-            Six focused products. Each stays useful on its own. This Hub is the simple front door.
+            Five focused products. Each stays useful on its own. This Hub is the simple front door.
           </p>
         </header>
 

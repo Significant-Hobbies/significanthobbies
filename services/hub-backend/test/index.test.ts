@@ -81,8 +81,8 @@ describe("Hub Backend Worker", () => {
     expect(response.headers.get("content-type")).toContain("text/html");
     expect(response.headers.get("link")).toContain("/index.md");
     const source = await response.text();
-    expect(source).toContain("Six personal apps");
-    expect(source).toContain("Live, Journal, Calorie, Setline, Kith, and Anchor");
+    expect(source).toContain("Five personal apps");
+    expect(source).toContain("Live, Calorie, Setline, Kith, and Anchor");
     expect(source).not.toContain('href="https://habits.significanthobbies.com"');
     expect(source).toContain('rel="canonical" href="https://significanthobbies.com/"');
     expect(source).toContain('type="application/ld+json"');
@@ -99,7 +99,7 @@ describe("Hub Backend Worker", () => {
     expect(negotiated.headers.get("content-type")).toContain("text/markdown");
     expect(negotiated.headers.get("vary")).toContain("Accept");
     expect(await negotiated.text()).toContain(
-      "Live, Journal, Calorie, Setline, Kith, and Anchor",
+      "Live, Calorie, Setline, Kith, and Anchor",
     );
     expect(explicit.headers.get("content-type")).toContain("text/markdown");
   });

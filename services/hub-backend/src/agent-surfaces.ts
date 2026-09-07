@@ -1,9 +1,9 @@
 // Apex crawler + agent contract — public, no auth required.
 //
-// significanthobbies.com is the Hub over six apps, but the apex used to
+// significanthobbies.com is the Hub over five apps, but the apex used to
 // redirect /robots.txt, /sitemap.xml, /llms.txt and /api/ai to
 // live.significanthobbies.com. Every crawler and model that followed those
-// files was told, authoritatively, that this domain is Live — one of the six
+// files was told, authoritatively, that this domain is Live — one of the five
 // apps it hosts — and the apex advertised no sitemap of its own, so nothing on
 // it was discoverable beyond the homepage.
 //
@@ -25,7 +25,7 @@ import { HOME_MARKDOWN, PRODUCTS } from "./hub";
  */
 export const APEX_ORIGIN = "https://significanthobbies.com";
 
-/** The entity that owns this host. Not "Live" — Live is one of the six apps. */
+/** The entity that owns this host. Not "Live" — Live is one of the five apps. */
 export const SITE_NAME = "Significant Hobbies";
 
 /**
@@ -34,7 +34,7 @@ export const SITE_NAME = "Significant Hobbies";
  * audit sees a handover again.
  */
 export const SITE_SUMMARY =
-  "The private Hub for six independently owned personal apps: Live, Journal, Calorie, Setline, Kith, and Anchor.";
+  "The private Hub for five independently owned personal apps: Live, Calorie, Setline, Kith, and Anchor.";
 
 /** Public, indexable, apex-owned routes. The sitemap is exactly this list. */
 const PUBLIC_ROUTES = [
@@ -42,7 +42,7 @@ const PUBLIC_ROUTES = [
     id: "home",
     path: "/",
     markdown: "/index.md",
-    description: "Hub home — the six apps and how they connect",
+    description: "Hub home — the five apps and how they connect",
     changefreq: "weekly",
     priority: "1.0",
   },
@@ -82,7 +82,7 @@ const LLMS_TXT = `# ${SITE_NAME}
 
 > ${SITE_SUMMARY}
 
-## The six apps
+## The five apps
 
 ${APP_LINES}
 
@@ -153,7 +153,7 @@ ${entries}
 }
 
 /**
- * Only apex-owned routes belong in `surfaces`. The six apps live on their own
+ * Only apex-owned routes belong in `surfaces`. The five apps live on their own
  * origins and are advertised separately as `apps`, because the catalog audit
  * requires every surface URL to be same-origin and present in this host's
  * sitemap — and because cross-listing another host's routes here is the
