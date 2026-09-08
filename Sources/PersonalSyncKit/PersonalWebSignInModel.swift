@@ -31,6 +31,7 @@ public final class PersonalAccountModel: NSObject,
     private var browserPresentationWindow: NSWindow?
     #endif
     private var rawAppleNonce: String?
+    private var operationID = UUID()
 
     public init(
         identity: PersonalIdentityClient,
@@ -45,15 +46,24 @@ public final class PersonalAccountModel: NSObject,
     public var isSignedIn: Bool { session != nil }
 
     public func restore() async {
-        isConnecting = true
-        defer { isConnecting = false }
+        let operation = beginOperation()
+        defer { if operationID == operation { isConnecting = false } }
         do {
-            session = try await identity.restoreSession()
+            let restored = try await identity.restoreSession()
+            guard operationID == operation else { return }
+            session = restored
             errorMessage = nil
         } catch {
+            guard operationID == operation else { return }
             session = nil
             errorMessage = error.localizedDescription
         }
+    }
+
+    private func beginOperation() -> UUID {
+        operationID = UUID()
+        isConnecting = true
+        return operationID
     }
 
     public func connectWithGoogle() async {
@@ -87,16 +97,21 @@ public final class PersonalAccountModel: NSObject,
         using authenticationCode: @MainActor () async throws -> String
     ) async {
         guard !isConnecting else { return }
-        isConnecting = true
-        defer { isConnecting = false }
+        let operation = beginOperation()
+        defer { if operationID == operation { isConnecting = false } }
         do {
             let code = try await authenticationCode()
-            session = try await identity.exchangeBrowserHandoff(code)
+            guard operationID == operation else { return }
+            let connected = try await identity.exchangeBrowserHandoff(code)
+            guard operationID == operation else { return }
+            session = connected
             errorMessage = nil
         } catch let error as ASWebAuthenticationSessionError
             where error.code == .canceledLogin {
+            guard operationID == operation else { return }
             errorMessage = nil
         } catch {
+            guard operationID == operation else { return }
             session = nil
             errorMessage = error.localizedDescription
         }
@@ -114,10 +129,12 @@ public final class PersonalAccountModel: NSObject,
     }
 
     public func completeApple(_ result: Result<ASAuthorization, Error>) async {
-        isConnecting = true
+        let operation = beginOperation()
         defer {
-            isConnecting = false
-            rawAppleNonce = nil
+            if operationID == operation {
+                isConnecting = false
+                rawAppleNonce = nil
+            }
         }
         do {
             let authorization = try result.get()
@@ -135,24 +152,33 @@ public final class PersonalAccountModel: NSObject,
                 firstName: apple.fullName?.givenName,
                 lastName: apple.fullName?.familyName
             )
-            session = if session == nil {
+            let connected = if session == nil {
                 try await identity.signInWithApple(credential)
             } else {
                 try await identity.linkApple(credential)
             }
+            guard operationID == operation else { return }
+            session = connected
             errorMessage = nil
         } catch let error as ASAuthorizationError where error.code == .canceled {
+            guard operationID == operation else { return }
             errorMessage = nil
         } catch {
+            guard operationID == operation else { return }
             session = nil
             errorMessage = error.localizedDescription
         }
     }
 
     public func signOut() async {
-        await identity.signOut()
+        // Invalidate old UI callbacks immediately, before remote revocation.
+        operationID = UUID()
+        isConnecting = false
         session = nil
         errorMessage = nil
+        rawAppleNonce = nil
+        webSession?.cancel()
+        await identity.signOut()
     }
 
     public func presentationAnchor(for _: ASWebAuthenticationSession) -> ASPresentationAnchor {

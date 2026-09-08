@@ -28,6 +28,17 @@ authority.
 
 ## Next
 
+Account isolation is tracked in [issue 156](https://github.com/Significant-Hobbies/significanthobbies/issues/156).
+A synthetic restart test confirmed that the shared queue can send account A's
+work under B; account-owned sync bookkeeping and product-document backfill
+remain required. The first repair rejects stale identity completions, validates
+new bearer sessions before saving them, removes signed-out sessions before
+remote revocation, and protects account UI state from older callbacks. Five
+client race scenarios and two account-model scenarios pass within the full
+27-test Swift suite. This is source-level identity protection; native consumers
+must update their package pins and complete account ownership work before
+signed-in sharing is qualified.
+
 The sync commit-boundary repair is tracked in [issue 155](https://github.com/Significant-Hobbies/significanthobbies/issues/155).
 `synchronize(applyChanges:)` waits for the owning app's durable commit before
 advancing downloaded-record metadata and cursor. Sync attempts serialize, and

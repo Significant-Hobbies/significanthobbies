@@ -36,6 +36,7 @@ public struct PersonalIdentitySession: Codable, Equatable, Sendable {
 
 public enum PersonalIdentityError: LocalizedError, Equatable, Sendable {
     case missingSession
+    case sessionChanged
     case invalidResponse
     case unavailablePresentationContext
     case server(status: Int, message: String)
@@ -43,6 +44,7 @@ public enum PersonalIdentityError: LocalizedError, Equatable, Sendable {
 
     public var errorDescription: String? {
         switch self {
+        case .sessionChanged: "The account changed. Try again with your current account."
         case .missingSession: "Sign in again to connect this app."
         case .invalidResponse: "The personal account service returned an invalid response."
         case .unavailablePresentationContext:
@@ -128,6 +130,9 @@ public actor PersonalIdentityClient {
     private let tokenStore: any PersonalBearerTokenStore
     private let decoder = JSONDecoder()
     private let encoder = JSONEncoder()
+    private var sessionRevision = UUID()
+    private var isWritingToken = false
+    private var tokenWriteWaiters: [CheckedContinuation<Void, Never>] = []
 
     public init(
         baseURL: URL = URL(string: "https://significanthobbies.com")!,
@@ -142,6 +147,7 @@ public actor PersonalIdentityClient {
     public func signInWithApple(_ credential: PersonalAppleCredential) async throws
         -> PersonalIdentitySession
     {
+        let revision = beginSessionChange()
         var request = URLRequest(url: endpoint("api/auth/sign-in/social"))
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
@@ -150,32 +156,41 @@ public actor PersonalIdentityClient {
         guard let token = response.value(forHTTPHeaderField: "set-auth-token"), !token.isEmpty else {
             throw PersonalIdentityError.missingSession
         }
-        try await tokenStore.save(token)
-        return try await identitySession(bearerToken: token)
+        return try await adoptValidatedToken(token, revision: revision)
     }
 
     public func linkApple(_ credential: PersonalAppleCredential) async throws
         -> PersonalIdentitySession
     {
+        let revision = sessionRevision
         guard let token = try await tokenStore.load() else {
             throw PersonalIdentityError.missingSession
         }
+        try requireRevision(revision)
         var request = URLRequest(url: endpoint("api/auth/link-social"))
         request.httpMethod = "POST"
         request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.httpBody = try encoder.encode(AppleSignInRequest(credential: credential))
         _ = try await send(request)
-        return try await identitySession(bearerToken: token)
+        try requireRevision(revision)
+        let restored = try await identitySession(bearerToken: token)
+        try await requireCurrent(token, revision: revision)
+        return restored
     }
 
     public func restoreSession() async throws -> PersonalIdentitySession? {
-        guard let token = try await tokenStore.load() else { return nil }
+        let revision = sessionRevision
+        let savedToken = try await tokenStore.load()
+        try requireRevision(revision)
+        guard let token = savedToken else { return nil }
         do {
-            return try await identitySession(bearerToken: token)
+            let restored = try await identitySession(bearerToken: token)
+            try await requireCurrent(token, revision: revision)
+            return restored
         } catch let error as PersonalIdentityError {
             if case .server(status: 401, message: _) = error {
-                try? await tokenStore.delete()
+                try? await removeToken(token, revision: revision)
             }
             throw error
         }
@@ -190,38 +205,98 @@ public actor PersonalIdentityClient {
     /// are not the Journal app's native Apple client.
     public func adoptBearerToken(_ token: String) async throws -> PersonalIdentitySession {
         guard !token.isEmpty else { throw PersonalIdentityError.missingSession }
-        try await tokenStore.save(token)
-        do {
-            return try await identitySession(bearerToken: token)
-        } catch {
-            try? await tokenStore.delete()
-            throw error
-        }
+        return try await adoptValidatedToken(token, revision: beginSessionChange())
     }
 
     /// Exchanges the one-use code returned by the native browser handoff and
     /// persists the resulting Significant Hobbies bearer session.
     public func exchangeBrowserHandoff(_ code: String) async throws -> PersonalIdentitySession {
         guard !code.isEmpty else { throw PersonalIdentityError.invalidResponse }
+        let revision = beginSessionChange()
         var request = URLRequest(url: endpoint("api/native/auth/exchange"))
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.httpBody = try encoder.encode(HandoffRequest(code: code))
         let (data, _) = try await send(request)
         let response = try decoder.decode(HandoffResponse.self, from: data)
-        return try await adoptBearerToken(response.token)
+        return try await adoptValidatedToken(response.token, revision: revision)
     }
 
     public func signOut() async {
-        if let token = try? await tokenStore.load() {
-            var request = URLRequest(url: endpoint("api/auth/sign-out"))
-            request.httpMethod = "POST"
-            request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
-            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-            request.httpBody = Data("{}".utf8)
-            _ = try? await send(request)
+        let revision = beginSessionChange()
+        // Read and remove under the same write lock so an earlier suspended
+        // save cannot publish a token after this sign-out has cleared storage.
+        await acquireTokenWrite()
+        let token: String
+        do {
+            try requireRevision(revision)
+            guard let saved = try await tokenStore.load() else {
+                releaseTokenWrite()
+                return
+            }
+            try requireRevision(revision)
+            token = saved
+            try await tokenStore.delete()
+        } catch {
+            releaseTokenWrite()
+            return
         }
-        try? await tokenStore.delete()
+        releaseTokenWrite()
+        // Never delete again after slow revocation: a newer sign-in may finish.
+
+        var request = URLRequest(url: endpoint("api/auth/sign-out"))
+        request.httpMethod = "POST"
+        request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.httpBody = Data("{}".utf8)
+        _ = try? await send(request)
+    }
+
+    private func beginSessionChange() -> UUID {
+        sessionRevision = UUID()
+        return sessionRevision
+    }
+
+    private func requireRevision(_ revision: UUID) throws {
+        guard sessionRevision == revision else { throw PersonalIdentityError.sessionChanged }
+    }
+
+    private func requireCurrent(_ token: String, revision: UUID) async throws {
+        let current = try await tokenStore.load()
+        try requireRevision(revision)
+        guard current == token else { throw PersonalIdentityError.sessionChanged }
+    }
+
+    private func acquireTokenWrite() async {
+        if isWritingToken {
+            await withCheckedContinuation { tokenWriteWaiters.append($0) }
+        } else { isWritingToken = true }
+    }
+
+    private func releaseTokenWrite() {
+        if tokenWriteWaiters.isEmpty { isWritingToken = false }
+        else { tokenWriteWaiters.removeFirst().resume() }
+    }
+
+    private func removeToken(_ token: String, revision: UUID) async throws {
+        await acquireTokenWrite()
+        defer { releaseTokenWrite() }
+        try await requireCurrent(token, revision: revision)
+        try await tokenStore.delete()
+    }
+
+    private func adoptValidatedToken(_ token: String, revision: UUID) async throws -> PersonalIdentitySession {
+        try requireRevision(revision)
+        guard !token.isEmpty else { throw PersonalIdentityError.missingSession }
+        // Failed validation preserves any previous session. A token only becomes
+        // current after the server confirms it and this attempt is still current.
+        let validated = try await identitySession(bearerToken: token)
+        await acquireTokenWrite()
+        defer { releaseTokenWrite() }
+        try requireRevision(revision)
+        try await tokenStore.save(token)
+        try requireRevision(revision)
+        return validated
     }
 
     private func identitySession(bearerToken: String) async throws -> PersonalIdentitySession {
