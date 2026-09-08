@@ -1,10 +1,10 @@
 # Significant Hobbies Hub — PROJECT STATUS
 
-Last updated: 2026-08-24
+Last updated: 2026-09-08
 
 ## Why / What
 
-The Hub joins six independently useful personal applications in one UI. It
+The Hub joins five independently useful personal applications in one UI. It
 shows privacy-safe status and provenance and offers only documented semantic
 actions, while every product retains its own interface and immediate data
 authority.
@@ -16,8 +16,8 @@ authority.
 - The root `PersonalSyncKit` package is the single native sync-client source.
 - Live is independently owned at `Significant-Hobbies/live` and retains the
   existing `significanthobbies` Worker, D1, auth, and apex compatibility paths.
-- Journal is independently owned at `Significant-Hobbies/journal` and retains
-  bundle `com.significanthobbies.app` plus its local-first atlas.
+- Journal is removed from the maintained lineup; its independently owned
+  repository and compatibility records remain retained.
 - The Hub UI and backend use the existing `personal-platform` Worker and D1;
   there is no schema, credential, or user-data migration in this split.
 - **2026-08-24:** Removed Habits as a separate maintained Hub directory card
@@ -28,6 +28,14 @@ authority.
 
 ## Next
 
-Finish real-owner sync testing across the six maintained products, then improve Hub
+The sync commit-boundary repair is tracked in [issue 155](https://github.com/Significant-Hobbies/significanthobbies/issues/155).
+`synchronize(applyChanges:)` waits for the owning app's durable commit before
+advancing downloaded-record metadata and cursor. Sync attempts serialize, and
+failed bookkeeping writes retain prior in-memory state. Existing return-only
+sync calls remain deprecated compatibility paths and do not gain the app-commit
+guarantee until their consumers migrate. Kith is the first consumer to update;
+physical signed-in round trips remain unqualified.
+
+Finish real-owner sync testing across the five maintained products, then improve Hub
 summaries and actions from observed use. Product work belongs in this
 repository's GitHub Issues.

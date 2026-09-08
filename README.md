@@ -30,6 +30,20 @@ npm run test:swift
 See [the ownership matrix](docs/architecture/ownership-and-extraction.md) for
 canonical repositories, data authorities, compatibility, and rollback.
 
+## Native sync commit contract
+
+Native consumers should call `synchronize(applyChanges:)` and atomically save
+the supplied batch in their own store before that closure returns. Throw if
+the save fails. Download metadata and the cursor advance only after the closure
+succeeds. The app must tolerate replay: if its save succeeds but bookkeeping
+fails, the same batch can arrive again. Do not recursively synchronize inside
+the apply closure. Concurrent sync attempts wait for the current commit.
+
+The return-only `synchronize()` API is deprecated. It remains available for
+compatibility, but cannot establish that downloaded records reached the app's
+durable store. Consumer migration and physical signed-in qualification are
+tracked in [#155](https://github.com/Significant-Hobbies/significanthobbies/issues/155).
+
 <!-- portfolio-retained-work:2026-09-07 -->
 ## Retained work from the portfolio review
 

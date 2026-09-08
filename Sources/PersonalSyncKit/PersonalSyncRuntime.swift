@@ -109,12 +109,24 @@ public actor PersonalSyncRuntime {
 
     /// Returns immediately with no changes while signed out. Network failures
     /// are surfaced to the app, while the durable outbox remains intact.
+    @available(*, deprecated, message: "Use synchronize(applyChanges:) to commit downloaded records before advancing sync progress.")
     public func synchronize() async throws -> [SyncChange] {
+        try await synchronize(applyChanges: { _ in })
+    }
+
+    /// Commit the supplied batch to the application's durable store before this
+    /// closure returns. Throwing leaves downloads retryable; application must
+    /// tolerate replay if bookkeeping fails after its own commit succeeds.
+    @discardableResult
+    public func synchronize(
+        applyChanges: @Sendable ([SyncChange]) async throws -> Void
+    ) async throws -> [SyncChange] {
         guard let bearerToken = try await identity.bearerToken() else { return [] }
         return try await coordinator.synchronize(
             domain: domain,
             deviceId: deviceId,
-            bearerToken: bearerToken
+            bearerToken: bearerToken,
+            applyChanges: applyChanges
         )
     }
 }

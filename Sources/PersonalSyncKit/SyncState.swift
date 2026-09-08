@@ -14,15 +14,16 @@ public actor MutationOutbox {
     }
 
     public func enqueue(_ entry: OutboxEntry) throws {
-        if let index = entries.firstIndex(where: {
+        var candidate = entries
+        if let index = candidate.firstIndex(where: {
             $0.domain == entry.domain && $0.mutation.id == entry.mutation.id
         }) {
-            entries[index] = entry
-            try persist()
+            candidate[index] = entry
         } else {
-            entries.append(entry)
-            try persist()
+            candidate.append(entry)
         }
+        try persist(candidate)
+        entries = candidate
     }
 
     public func pending(for domain: PersonalDomain) -> [OutboxEntry] {
@@ -30,16 +31,17 @@ public actor MutationOutbox {
     }
 
     public func acknowledge(idempotencyKeys: Set<String>) throws {
-        entries.removeAll { idempotencyKeys.contains($0.mutation.idempotencyKey) }
-        try persist()
+        let candidate = entries.filter { !idempotencyKeys.contains($0.mutation.idempotencyKey) }
+        try persist(candidate)
+        entries = candidate
     }
 
-    private func persist() throws {
+    private func persist(_ candidate: [OutboxEntry]) throws {
         try FileManager.default.createDirectory(
             at: fileURL.deletingLastPathComponent(),
             withIntermediateDirectories: true
         )
-        try JSONEncoder().encode(entries).write(to: fileURL, options: .atomic)
+        try JSONEncoder().encode(candidate).write(to: fileURL, options: .atomic)
     }
 }
 
@@ -65,16 +67,18 @@ public actor SyncVersionStore {
 
     public func setVersion(_ version: Int, for recordId: String, in domain: PersonalDomain) throws {
         guard version >= 0 else { return }
-        versions[domain, default: [:]][recordId] = version
-        try persist()
+        var candidate = versions
+        candidate[domain, default: [:]][recordId] = version
+        try persist(candidate)
+        versions = candidate
     }
 
-    private func persist() throws {
+    private func persist(_ candidate: [PersonalDomain: [String: Int]]) throws {
         try FileManager.default.createDirectory(
             at: fileURL.deletingLastPathComponent(),
             withIntermediateDirectories: true
         )
-        try JSONEncoder().encode(versions).write(to: fileURL, options: .atomic)
+        try JSONEncoder().encode(candidate).write(to: fileURL, options: .atomic)
     }
 }
 
@@ -103,16 +107,18 @@ public actor SyncFingerprintStore {
         for recordId: String,
         in domain: PersonalDomain
     ) throws {
-        fingerprints[domain, default: [:]][recordId] = fingerprint
-        try persist()
+        var candidate = fingerprints
+        candidate[domain, default: [:]][recordId] = fingerprint
+        try persist(candidate)
+        fingerprints = candidate
     }
 
-    private func persist() throws {
+    private func persist(_ candidate: [PersonalDomain: [String: String]]) throws {
         try FileManager.default.createDirectory(
             at: fileURL.deletingLastPathComponent(),
             withIntermediateDirectories: true
         )
-        try JSONEncoder().encode(fingerprints).write(to: fileURL, options: .atomic)
+        try JSONEncoder().encode(candidate).write(to: fileURL, options: .atomic)
     }
 }
 
@@ -137,24 +143,28 @@ public actor SyncCursorStore {
     }
 
     public func setCursor(_ cursor: Int, for domain: PersonalDomain) throws {
-        cursors[domain] = cursor
+        var candidate = cursors
+        candidate[domain] = cursor
         try FileManager.default.createDirectory(
             at: fileURL.deletingLastPathComponent(),
             withIntermediateDirectories: true
         )
-        try JSONEncoder().encode(cursors).write(to: fileURL, options: .atomic)
+        try JSONEncoder().encode(candidate).write(to: fileURL, options: .atomic)
+        cursors = candidate
     }
 }
 
 public actor SyncCoordinator {
-    private let client: PersonalSyncClient
+    private let client: any PersonalSyncTransport
     private let outbox: MutationOutbox
     private let cursors: SyncCursorStore
     private let versions: SyncVersionStore
     private let fingerprints: SyncFingerprintStore
+    private var isSynchronizing = false
+    private var waiters: [CheckedContinuation<Void, Never>] = []
 
     public init(
-        client: PersonalSyncClient,
+        client: any PersonalSyncTransport,
         outbox: MutationOutbox,
         cursors: SyncCursorStore,
         versions: SyncVersionStore,
@@ -167,11 +177,36 @@ public actor SyncCoordinator {
         self.fingerprints = fingerprints
     }
 
+    @available(*, deprecated, message: "Use synchronize(..., applyChanges:) and commit local records inside its closure before acknowledging downloads.")
     public func synchronize(
         domain: PersonalDomain,
         deviceId: String,
         bearerToken: String
     ) async throws -> [SyncChange] {
+        try await synchronize(domain: domain, deviceId: deviceId, bearerToken: bearerToken, applyChanges: { _ in })
+    }
+
+    /// The callback must atomically persist downloaded records and tolerate replay.
+    /// A failure retains the old cursor. Bookkeeping failures after a successful
+    /// app commit can replay that batch, but can never acknowledge an unapplied one.
+    /// Do not call synchronize recursively from the callback.
+    @discardableResult
+    public func synchronize(
+        domain: PersonalDomain,
+        deviceId: String,
+        bearerToken: String,
+        applyChanges: @Sendable ([SyncChange]) async throws -> Void
+    ) async throws -> [SyncChange] {
+        if isSynchronizing {
+            await withCheckedContinuation { waiters.append($0) }
+        } else {
+            isSynchronizing = true
+        }
+        defer {
+            if waiters.isEmpty { isSynchronizing = false }
+            else { waiters.removeFirst().resume() }
+        }
+        try Task.checkCancellation()
         let queued = await outbox.pending(for: domain)
         if !queued.isEmpty {
             let pushed = try await client.push(
@@ -207,17 +242,22 @@ public actor SyncCoordinator {
                 bearerToken: bearerToken
             )
             allChanges.append(contentsOf: page.changes)
-            for change in page.changes {
-                try await versions.setVersion(change.version, for: change.id, in: domain)
-                try await fingerprints.setFingerprint(
-                    syncFingerprint(operation: change.operation, record: change.record),
-                    for: change.id,
-                    in: domain
-                )
+            guard page.cursor >= nextCursor,
+                  !page.hasMore || page.cursor > nextCursor else {
+                throw PersonalSyncError.invalidResponse
             }
             nextCursor = page.cursor
             if !page.hasMore { break }
         } while true
+        if !allChanges.isEmpty { try await applyChanges(allChanges) }
+        for change in allChanges {
+            try await versions.setVersion(change.version, for: change.id, in: domain)
+            try await fingerprints.setFingerprint(
+                syncFingerprint(operation: change.operation, record: change.record),
+                for: change.id,
+                in: domain
+            )
+        }
         try await cursors.setCursor(nextCursor, for: domain)
         return allChanges
     }

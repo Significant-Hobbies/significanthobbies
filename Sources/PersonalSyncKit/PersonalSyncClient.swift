@@ -8,7 +8,12 @@ public enum PersonalSyncError: Error, Equatable, Sendable {
     case server(status: Int, message: String)
 }
 
-public struct PersonalSyncClient: Sendable {
+public protocol PersonalSyncTransport: Sendable {
+    func push(domain: PersonalDomain, deviceId: String, mutations: [SyncMutation], bearerToken: String) async throws -> PushResponse
+    func pull(domain: PersonalDomain, cursor: Int, bearerToken: String) async throws -> PullResponse
+}
+
+public struct PersonalSyncClient: PersonalSyncTransport {
     public let baseURL: URL
     private let session: URLSession
     private let encoder = JSONEncoder()
