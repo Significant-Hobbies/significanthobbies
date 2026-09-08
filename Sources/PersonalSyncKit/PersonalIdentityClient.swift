@@ -34,6 +34,14 @@ public struct PersonalIdentitySession: Codable, Equatable, Sendable {
     public let appleSubject: String?
 }
 
+/// A server-verified account and its captured session. Tokens are kept internal
+/// to the shared package; callers use only the stable user ID for local ownership.
+public struct PersonalSyncAccount: Sendable {
+    public let userID: String
+    let bearerToken: String
+    let revision: UUID
+}
+
 public enum PersonalIdentityError: LocalizedError, Equatable, Sendable {
     case missingSession
     case sessionChanged
@@ -194,6 +202,21 @@ public actor PersonalIdentityClient {
             }
             throw error
         }
+    }
+
+    public func verifiedSyncAccount() async throws -> PersonalSyncAccount? {
+        let revision = sessionRevision
+        let saved = try await tokenStore.load()
+        try requireRevision(revision)
+        guard let token = saved else { return nil }
+        let verified = try await identitySession(bearerToken: token)
+        try await requireCurrent(token, revision: revision)
+        guard !verified.userId.isEmpty else { throw PersonalIdentityError.invalidResponse }
+        return PersonalSyncAccount(userID: verified.userId, bearerToken: token, revision: revision)
+    }
+
+    public func requireCurrentAccount(_ account: PersonalSyncAccount) async throws {
+        try await requireCurrent(account.bearerToken, revision: account.revision)
     }
 
     public func bearerToken() async throws -> String? {

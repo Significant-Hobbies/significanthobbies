@@ -66,3 +66,25 @@ apex; the authenticated entry is `https://live.significanthobbies.com/hub`.
 Deployment and actual hosted Google sign-in remain unqualified. Keep #154 open
 until exact deployed revisions and a real hosted return/expiry/isolation journey
 are recorded; local test-provider proof does not make the private Hub shareable.
+
+## Native sync account ownership
+
+Before first sync, the native app must ask the person to approve which verified
+Hub account owns its local document, save that choice atomically with the local
+data, and bind the runtime with `bindAccount(account, adoptingUnownedData: true)`.
+Obtain `account` from `identity.verifiedSyncAccount()`; its public `userID` is the
+server-verified stable ID. Existing ownership never transfers to another user.
+Legacy queues without ownership stay intact and cannot upload before approval.
+
+Pass the captured account to `enqueue(..., account: account)` and
+`synchronize(account: account, applyChanges: ...)`. The app's commit callback
+must also check its local document owner before saving downloaded changes.
+Account changes invalidate older grants; same-user token refresh can obtain a
+new grant and resume the same durable queue. Unscoped enqueue is supported only
+for a still-unowned offline queue. Use a separate local document and sync storage
+for another account; do not delete or reassign old data to make sign-in succeed.
+
+The runtime serializes binding, enqueue and sync. Its apply callback must commit
+only the app document; it must not await enqueue or another sync on the same
+runtime. Changes needed after a download should be staged after synchronize
+returns. Native consumer adoption remains tracked in issue 156.

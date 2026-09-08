@@ -195,6 +195,7 @@ public actor SyncCoordinator {
         domain: PersonalDomain,
         deviceId: String,
         bearerToken: String,
+        validateSession: @Sendable () async throws -> Void = {},
         applyChanges: @Sendable ([SyncChange]) async throws -> Void
     ) async throws -> [SyncChange] {
         if isSynchronizing {
@@ -207,14 +208,17 @@ public actor SyncCoordinator {
             else { waiters.removeFirst().resume() }
         }
         try Task.checkCancellation()
+        try await validateSession()
         let queued = await outbox.pending(for: domain)
         if !queued.isEmpty {
+            try await validateSession()
             let pushed = try await client.push(
                 domain: domain,
                 deviceId: deviceId,
                 mutations: queued.map(\.mutation),
                 bearerToken: bearerToken
             )
+            try await validateSession()
             let acknowledged = Set(
                 pushed.results
                     .filter {
@@ -223,12 +227,14 @@ public actor SyncCoordinator {
                     .map(\.idempotencyKey)
             )
             for result in pushed.results {
+                try await validateSession()
                 if let version = result.version {
                     try await versions.setVersion(version, for: result.id, in: domain)
                 } else if let actualVersion = result.actualVersion {
                     try await versions.setVersion(actualVersion, for: result.id, in: domain)
                 }
             }
+            try await validateSession()
             try await outbox.acknowledge(idempotencyKeys: acknowledged)
         }
 
@@ -236,11 +242,13 @@ public actor SyncCoordinator {
         var allChanges: [SyncChange] = []
         var nextCursor = currentCursor
         repeat {
+            try await validateSession()
             let page = try await client.pull(
                 domain: domain,
                 cursor: nextCursor,
                 bearerToken: bearerToken
             )
+            try await validateSession()
             allChanges.append(contentsOf: page.changes)
             guard page.cursor >= nextCursor,
                   !page.hasMore || page.cursor > nextCursor else {
@@ -249,8 +257,11 @@ public actor SyncCoordinator {
             nextCursor = page.cursor
             if !page.hasMore { break }
         } while true
+        try await validateSession()
         if !allChanges.isEmpty { try await applyChanges(allChanges) }
+        try await validateSession()
         for change in allChanges {
+            try await validateSession()
             try await versions.setVersion(change.version, for: change.id, in: domain)
             try await fingerprints.setFingerprint(
                 syncFingerprint(operation: change.operation, record: change.record),
@@ -258,6 +269,7 @@ public actor SyncCoordinator {
                 in: domain
             )
         }
+        try await validateSession()
         try await cursors.setCursor(nextCursor, for: domain)
         return allChanges
     }

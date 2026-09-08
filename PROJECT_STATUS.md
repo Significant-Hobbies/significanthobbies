@@ -30,12 +30,14 @@ authority.
 
 Account isolation is tracked in [issue 156](https://github.com/Significant-Hobbies/significanthobbies/issues/156).
 A synthetic restart test confirmed that the shared queue can send account A's
-work under B; account-owned sync bookkeeping and product-document backfill
-remain required. The first repair rejects stale identity completions, validates
+work under B. The shared runtime now stores a stable account owner alongside
+its queue, requires explicit adoption of unowned data, rejects different-account
+binding, and rechecks the captured session around transport and app commits.
+Product-document ownership and consumer migrations remain required. The first repair rejects stale identity completions, validates
 new bearer sessions before saving them, removes signed-out sessions before
 remote revocation, and protects account UI state from older callbacks. Five
 client race scenarios and two account-model scenarios pass within the full
-27-test Swift suite. This is source-level identity protection; native consumers
+34-test Swift suite, including seven durable ownership and in-flight sync tests. This is source-level identity protection; native consumers
 must update their package pins and complete account ownership work before
 signed-in sharing is qualified.
 
