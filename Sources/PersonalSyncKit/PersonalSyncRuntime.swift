@@ -7,6 +7,11 @@ public struct PersonalPlatformConnection: Sendable {
     public let identity: PersonalIdentityClient
     public let sync: PersonalSyncRuntime
 
+    public init(identity: PersonalIdentityClient, sync: PersonalSyncRuntime) {
+        self.identity = identity
+        self.sync = sync
+    }
+
     #if canImport(Security)
     public init(
         domain: PersonalDomain,

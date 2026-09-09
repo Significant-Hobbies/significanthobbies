@@ -23,8 +23,12 @@ private actor RuntimeTokenStore: PersonalBearerTokenStore {
         identity: identity,
         client: PersonalSyncClient(baseURL: URL(string: "https://platform.invalid")!)
     )
+    defer { try? FileManager.default.removeItem(at: directory) }
+    let connection = PersonalPlatformConnection(identity: identity, sync: runtime)
+    #expect(connection.identity === identity)
+    #expect(connection.sync === runtime)
 
-    try await runtime.enqueue(
+    try await connection.sync.enqueue(
         recordId: "entry-1",
         occurredAt: "2026-08-21T06:00:00.000Z",
         record: JSONValue.object(["personId": JSONValue.string("person-1")])
