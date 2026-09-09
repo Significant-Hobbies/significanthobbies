@@ -63,9 +63,22 @@ existing Hub renderer and Live host-only session. [Local qualification](docs/hub
 verified real synthetic sessions, two-account summary isolation, expiry, revoked
 sessions, retry and unavailable-auth behavior. The public directory stays on the
 apex; the authenticated entry is `https://live.significanthobbies.com/hub`.
-Deployment and actual hosted Google sign-in remain unqualified. Keep #154 open
-until exact deployed revisions and a real hosted return/expiry/isolation journey
-are recorded; local test-provider proof does not make the private Hub shareable.
+On 9 September 2026, source `629d8e7be44295044e60c950395ec3232541a373`
+was deployed to `personal-platform` as version
+`8549fc16-e9dd-4ed8-864f-363c6cfde642`, verified at 100% traffic with its
+full Git SHA tag. The [release receipt](https://github.com/Significant-Hobbies/significanthobbies/issues/154#issuecomment-5598004640)
+records six passing deployment gates, 53 Worker tests, and actual 390px browser
+verification: five apps without Journal, no horizontal overflow, and apex
+`/hub` → Live `/hub` → Live `/login?callbackUrl=%2Fhub`, with private/no-store
+redirects and a working public-directory guest exit.
+
+Google still rejects the actual sign-in handoff with `redirect_uri_mismatch`;
+[Live issue 14](https://github.com/Significant-Hobbies/live/issues/14) retains the
+callback registration requirement. Keep #154 open for real hosted account
+return, expiry and isolation qualification. The private Hub is not yet shareable.
+Rollback for this release is Worker version
+`d9b6ea57-7b9c-4a75-8f25-db62bd6d4db8` (source `c821abf`). No schema,
+credential or binding configuration change was made.
 
 ## Native sync account ownership
 
