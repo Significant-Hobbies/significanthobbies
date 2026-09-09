@@ -179,6 +179,7 @@ public actor PersonalSyncRuntime {
     @discardableResult
     public func synchronize(
         account suppliedAccount: PersonalSyncAccount? = nil,
+        replayFromStart: Bool = false,
         applyChanges: @Sendable ([SyncChange]) async throws -> Void
     ) async throws -> [SyncChange] {
         let verified: PersonalSyncAccount?
@@ -192,6 +193,7 @@ public actor PersonalSyncRuntime {
             domain: domain,
             deviceId: deviceId,
             bearerToken: account.bearerToken,
+            replayFromStart: replayFromStart,
             validateSession: { try await self.identity.requireCurrentAccount(account) },
             applyChanges: applyChanges
         )

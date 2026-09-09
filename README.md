@@ -88,3 +88,19 @@ The runtime serializes binding, enqueue and sync. Its apply callback must commit
 only the app document; it must not await enqueue or another sync on the same
 runtime. Changes needed after a download should be staged after synchronize
 returns. Native consumer adoption remains tracked in issue 156.
+
+## Opt-in download recovery
+
+Compatible callers can request `synchronize(account: account, replayFromStart: true, applyChanges: ...)`
+to recover records an older client acknowledged without retaining. This keeps the
+verified-owner lock and existing outbox processing, reads historical pages from
+zero without resetting durable state, and commits the app before updating progress.
+Replay is cancellable and limited to 100 pages of at most 500 records; a limit,
+partial download or app-write failure leaves the cursor retryable. The cursor
+never moves backwards.
+
+The callback receives the latest replayed version of each record, excluding
+versions older than already-known metadata. Callers must still preserve newer
+local edits and local tombstones; replay is not permission to replace their store.
+Do not opt outbound-only callers such as Anchor into imports. Kith/Setline caller
+acceptance and actual account recovery remain in [#155](https://github.com/Significant-Hobbies/significanthobbies/issues/155).

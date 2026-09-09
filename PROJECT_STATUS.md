@@ -1,6 +1,6 @@
 # Significant Hobbies Hub — PROJECT STATUS
 
-Last updated: 2026-09-08
+Last updated: 2026-09-09
 
 ## Why / What
 
@@ -27,6 +27,13 @@ authority.
   compatibility data; no schema, user-data, or provider migration occurred.
 
 ## Next
+
+An opt-in native replay API now supports recovery of previously acknowledged
+records without resetting owner state. It retains verified-account serialization,
+latest-version precedence, bounded/cancellable pagination and app-commit-before-
+progress semantics. Caller preservation of current edits/tombstones is required;
+Kith/Setline integration and real-account recovery remain in issue 155. No Worker
+or schema deployment accompanies this package change.
 
 Account isolation is tracked in [issue 156](https://github.com/Significant-Hobbies/significanthobbies/issues/156).
 A synthetic restart test confirmed that the shared queue can send account A's

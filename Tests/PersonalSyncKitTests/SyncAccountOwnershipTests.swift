@@ -73,7 +73,7 @@ struct SyncAccountOwnershipTests {
         #expect(await runtime.pendingMutationCount() == 1)
     }
 
-    @Test func accountAQueueSurvivesRestartAndCannotBeSentOrAdoptedByB() async throws {
+    @Test(arguments: [false, true]) func accountAQueueSurvivesRestartAndCannotBeSentOrAdoptedByB(replay: Bool) async throws {
         let f = OwnershipFixture(); defer { f.cleanup() }
         await f.tokens.save("account-a")
         let a = try #require(await f.identity.verifiedSyncAccount())
@@ -84,7 +84,7 @@ struct SyncAccountOwnershipTests {
         let b = try #require(await f.identity.verifiedSyncAccount())
         let reopened = try f.runtime()
         await #expect(throws: PersonalSyncOwnershipError.differentAccount) { try await reopened.bindAccount(b, adoptingUnownedData: true) }
-        await #expect(throws: PersonalSyncOwnershipError.differentAccount) { try await reopened.synchronize(account: b) { _ in } }
+        await #expect(throws: PersonalSyncOwnershipError.differentAccount) { try await reopened.synchronize(account: b, replayFromStart: replay) { _ in } }
         await #expect(throws: PersonalSyncOwnershipError.differentAccount) {
             try await reopened.enqueue(recordId: "b-person", occurredAt: "2026-09-08", record: .string("B-only"), account: b)
         }
@@ -126,7 +126,7 @@ struct SyncAccountOwnershipTests {
         #expect(await f.requests.pushes == ["Bearer account-a"])
     }
 
-    @Test func switchedAccountDuringPullCannotCommitDownloadedRecordsOrCursor() async throws {
+    @Test(arguments: [false, true]) func switchedAccountDuringPullCannotCommitDownloadedRecordsOrCursor(replay: Bool) async throws {
         let f = OwnershipFixture(); defer { f.cleanup() }
         await f.tokens.save("account-a")
         let account = try #require(await f.identity.verifiedSyncAccount())
@@ -143,7 +143,7 @@ struct SyncAccountOwnershipTests {
             }
             return await f.requests.respond(request)
         }
-        let sync = Task { try await runtime.synchronize(account: account) { _ in Issue.record("Stale download was applied") } }
+        let sync = Task { try await runtime.synchronize(account: account, replayFromStart: replay) { _ in Issue.record("Stale download was applied") } }
         for await _ in entered.stream { break }
         await f.tokens.save("account-b")
         released.continuation.yield(())
@@ -180,7 +180,7 @@ struct SyncAccountOwnershipTests {
         #expect(await versions.version(for: "a-person", in: .kith) == 0)
     }
 
-    @Test func accountChangeInsideAppCommitLeavesCursorRetryable() async throws {
+    @Test(arguments: [false, true]) func accountChangeInsideAppCommitLeavesCursorRetryable(replay: Bool) async throws {
         let f = OwnershipFixture(); defer { f.cleanup() }
         await f.tokens.save("account-a")
         let account = try #require(await f.identity.verifiedSyncAccount())
@@ -193,7 +193,7 @@ struct SyncAccountOwnershipTests {
             return await f.requests.respond(request)
         }
         await #expect(throws: PersonalIdentityError.sessionChanged) {
-            try await runtime.synchronize(account: account) { changes in
+            try await runtime.synchronize(account: account, replayFromStart: replay) { changes in
                 #expect(changes.count == 1)
                 await f.tokens.save("account-b")
             }

@@ -195,6 +195,7 @@ public actor SyncCoordinator {
         domain: PersonalDomain,
         deviceId: String,
         bearerToken: String,
+        replayFromStart: Bool = false,
         validateSession: @Sendable () async throws -> Void = {},
         applyChanges: @Sendable ([SyncChange]) async throws -> Void
     ) async throws -> [SyncChange] {
@@ -240,15 +241,33 @@ public actor SyncCoordinator {
 
         let currentCursor = await cursors.cursor(for: domain)
         var allChanges: [SyncChange] = []
-        var nextCursor = currentCursor
+        var nextCursor = replayFromStart ? 0 : currentCursor
+        var replayPages = 0
         repeat {
+            try Task.checkCancellation()
+            if replayFromStart {
+                // The server emits at most 500 records/page. Do not buffer an
+                // unbounded history or acknowledge a partial recovery.
+                guard replayPages < 100 else { throw PersonalSyncError.invalidResponse }
+                replayPages += 1
+            }
             try await validateSession()
             let page = try await client.pull(
                 domain: domain,
                 cursor: nextCursor,
                 bearerToken: bearerToken
             )
+            try Task.checkCancellation()
             try await validateSession()
+            if replayFromStart {
+                guard page.changes.count <= 500 else { throw PersonalSyncError.invalidResponse }
+                var previousCursor = nextCursor
+                for change in page.changes {
+                    guard change.domain == domain, change.cursor > previousCursor,
+                          change.cursor <= page.cursor else { throw PersonalSyncError.invalidResponse }
+                    previousCursor = change.cursor
+                }
+            }
             allChanges.append(contentsOf: page.changes)
             guard page.cursor >= nextCursor,
                   !page.hasMore || page.cursor > nextCursor else {
@@ -257,7 +276,24 @@ public actor SyncCoordinator {
             nextCursor = page.cursor
             if !page.hasMore { break }
         } while true
+        try Task.checkCancellation()
         try await validateSession()
+        if replayFromStart {
+            // A historical delete must not replace a later version. Preserve
+            // known versions too, including accepted local writes before pull.
+            var latest: [String: SyncChange] = [:]
+            for change in allChanges {
+                if let prior = latest[change.id], prior.version > change.version { continue }
+                latest[change.id] = change
+            }
+            var recoverable: [SyncChange] = []
+            for change in latest.values {
+                if change.version >= (await versions.version(for: change.id, in: domain)) {
+                    recoverable.append(change)
+                }
+            }
+            allChanges = recoverable.sorted { $0.cursor < $1.cursor }
+        }
         if !allChanges.isEmpty { try await applyChanges(allChanges) }
         try await validateSession()
         for change in allChanges {
@@ -270,7 +306,7 @@ public actor SyncCoordinator {
             )
         }
         try await validateSession()
-        try await cursors.setCursor(nextCursor, for: domain)
+        try await cursors.setCursor(replayFromStart ? max(currentCursor, nextCursor) : nextCursor, for: domain)
         return allChanges
     }
 }
