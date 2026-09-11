@@ -72,10 +72,14 @@ verification: five apps without Journal, no horizontal overflow, and apex
 `/hub` → Live `/hub` → Live `/login?callbackUrl=%2Fhub`, with private/no-store
 redirects and a working public-directory guest exit.
 
-Google still rejects the actual sign-in handoff with `redirect_uri_mismatch`;
-[Live issue 14](https://github.com/Significant-Hobbies/live/issues/14) retains the
-callback registration requirement. Keep #154 open for real hosted account
-return, expiry and isolation qualification. The private Hub is not yet shareable.
+On 11 September 2026, the existing Google OAuth client was updated with the
+canonical Live callback while retaining its existing redirect entries. Native
+Chrome owner verification reached the authenticated Live Hub, and the owner
+bucket-list workflow created, completed, reopened, reloaded and deleted a
+synthetic item; the Hub Live summary returned to its prior baseline. Keep #154
+open for hosted two-account isolation and hosted cancelled, expired and
+unavailable-auth behavior. The private Hub remains personal-use only until
+those hosted cases are qualified.
 Rollback for this release is Worker version
 `d9b6ea57-7b9c-4a75-8f25-db62bd6d4db8` (source `c821abf`). No schema,
 credential or binding configuration change was made.
