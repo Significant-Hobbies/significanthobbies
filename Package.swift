@@ -10,9 +10,12 @@ let package = Package(
     ],
     products: [
         .library(name: "PersonalSyncKit", targets: ["PersonalSyncKit"]),
+        .library(name: "SignificantDesignKit", targets: ["SignificantDesignKit"]),
     ],
     targets: [
         .target(name: "PersonalSyncKit"),
+        .target(name: "SignificantDesignKit"),
         .testTarget(name: "PersonalSyncKitTests", dependencies: ["PersonalSyncKit"]),
+        .testTarget(name: "SignificantDesignKitTests", dependencies: ["SignificantDesignKit"]),
     ]
 )
