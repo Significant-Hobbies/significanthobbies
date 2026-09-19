@@ -19,7 +19,7 @@ public struct PersonalPlatformConnection: Sendable {
         supportDirectory: URL,
         deviceId: String,
         platformURL: URL = URL(string: "https://personal-platform.sarthakagrawal927.workers.dev")!,
-        identityURL: URL = URL(string: "https://significanthobbies.com")!
+        identityURL: URL = URL(string: "https://live.significanthobbies.com")!
     ) throws {
         let identity = PersonalIdentityClient(
             baseURL: identityURL,

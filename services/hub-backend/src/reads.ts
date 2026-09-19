@@ -5,18 +5,20 @@ const OCCURRED_FIELDS: Record<Domain, readonly string[]> = {
   live: ["targetDate"],
   journal: ["occurredOn"],
   habits: ["occurredOn"],
-  setline: ["occurredOn"],
+  setline: ["occurredOn", "occurredAt"],
   kith: ["occurredAt", "createdAt"],
-  anchor: ["startedAt"],
+  anchor: ["startedAt", "updatedAt", "createdAt", "occurredAt", "capturedAt", "day", "plannedStart"],
+  calorie: ["timestamp", "date", "startOn", "updatedAt"],
 };
 
 const SEARCH_FIELDS: Record<Domain, readonly string[]> = {
   live: ["title", "status", "category"],
   journal: ["mood"],
   habits: ["name", "status"],
-  setline: ["title", "notes"],
+  setline: ["title", "notes", "data.templateName", "data.name"],
   kith: ["personName", "circle", "kind"],
-  anchor: ["title"],
+  anchor: ["title", "name", "details", "intent", "recordType"],
+  calorie: ["recordType", "name", "foodName", "meal", "kind"],
 };
 
 interface RecordRow {
@@ -230,6 +232,34 @@ export function projectRecord(
       ]);
     case "live":
       return select(record, ["title", "status", "targetDate", "category"]);
+    case "setline":
+      // Mirror envelopes: metadata without the entity body. Legacy activity
+      // rows keep their summary fields.
+      return select(record, [
+        "recordType",
+        "entityId",
+        "occurredAt",
+        "title",
+        "occurredOn",
+        "minutes",
+      ]);
+    case "calorie":
+      return select(record, [
+        "recordType",
+        "name",
+        "foodName",
+        "meal",
+        "timestamp",
+        "date",
+        "servings",
+        "millilitres",
+        "kilograms",
+        "period",
+        "kind",
+        "startOn",
+        "endOn",
+        "nutrients",
+      ]);
     default:
       return record;
   }
@@ -239,6 +269,7 @@ function sensitiveSearchFields(domain: Domain): readonly string[] {
   switch (domain) {
     case "journal": return ["body", "morningReflection", "eveningReflection", "newThing"];
     case "kith": return ["howWeMet", "standingNotes", "note"];
+    case "setline": return ["notes", "data"];
     case "live": return ["notes"];
     default: return [];
   }

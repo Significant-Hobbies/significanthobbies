@@ -1,6 +1,6 @@
 # Significant Hobbies Hub — PROJECT STATUS
 
-Last updated: 2026-09-09
+Last updated: 2026-09-19
 
 ## Why / What
 
@@ -11,6 +11,14 @@ authority.
 
 ## Current status
 
+- Issue #158's shared mirror source now provides CloudKit and Hub transports,
+  local commit before cursor advancement, bounded Hub batches, verified per-record
+  acknowledgements, and conditional CloudKit saves. Corrupt bookkeeping stops
+  synchronization instead of discarding ownership and tombstone history. Local
+  verification passes 64 Swift tests and 55 Worker tests with typecheck and a
+  deployment dry run. This is source qualification: app pins, real-account
+  restores, native release gates, and the Calorie production migration remain
+  pending. Existing applications and production storage have not been migrated.
 - Canonical source: `Significant-Hobbies/significanthobbies`.
 - Hub Backend was consolidated here with its complete repository history.
 - The root `PersonalSyncKit` package is the single native sync-client source.

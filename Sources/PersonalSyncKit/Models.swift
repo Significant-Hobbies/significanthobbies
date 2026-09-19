@@ -7,6 +7,7 @@ public enum PersonalDomain: String, Codable, CaseIterable, Sendable {
     case setline
     case kith
     case anchor
+    case calorie
 }
 
 public enum MutationOperation: String, Codable, Sendable {

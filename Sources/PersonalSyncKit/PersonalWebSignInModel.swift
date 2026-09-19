@@ -36,7 +36,7 @@ public final class PersonalAccountModel: NSObject,
     public init(
         identity: PersonalIdentityClient,
         callbackScheme: String,
-        identityURL: URL = URL(string: "https://significanthobbies.com")!
+        identityURL: URL = URL(string: "https://live.significanthobbies.com")!
     ) {
         self.identity = identity
         self.callbackScheme = callbackScheme
