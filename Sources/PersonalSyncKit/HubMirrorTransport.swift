@@ -54,6 +54,15 @@ public struct HubMirrorTransport: MirrorTransport {
         return verified
     }
 
+    private func requireCurrent(_ expected: PersonalSyncAccount) async throws {
+        guard let current = try await resolvedAccount(),
+              current.userID == expected.userID,
+              current.revision == expected.revision,
+              current.bearerToken == expected.bearerToken else {
+            throw PersonalIdentityError.sessionChanged
+        }
+    }
+
     public func availability() async -> MirrorAvailability {
         do {
             return try await resolvedAccount() == nil
@@ -100,6 +109,7 @@ public struct HubMirrorTransport: MirrorTransport {
             mutations: mutations,
             bearerToken: verified.bearerToken
         )
+        try await requireCurrent(verified)
         guard response.results.count == mutations.count,
               Set(response.results.map(\.idempotencyKey)).count == mutations.count else {
             throw MirrorSyncError.invalidResponse
@@ -142,6 +152,7 @@ public struct HubMirrorTransport: MirrorTransport {
             pages += 1
             guard pages <= 100 else { throw MirrorSyncError.invalidResponse }
             let page = try await client.pull(domain: domain, cursor: cursor, bearerToken: verified.bearerToken)
+            try await requireCurrent(verified)
             for change in page.changes {
                 guard change.domain == domain, let modifiedAt = Self.date(change.occurredAt),
                       change.operation == .delete || change.record != .null else {

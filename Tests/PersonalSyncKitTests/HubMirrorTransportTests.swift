@@ -27,9 +27,10 @@ private actor MirrorHubFixture: PersonalSyncTransport {
 private func makeHubMirror(_ client: MirrorHubFixture) throws -> HubMirrorTransport {
     let file = FileManager.default.temporaryDirectory.appending(path: UUID().uuidString)
         .appending(path: "versions.json")
+    let account = PersonalSyncAccount(userID: "fixture", bearerToken: "test-only", revision: UUID())
     return HubMirrorTransport(domain: .kith, deviceId: "fixture", client: client,
                               versions: try SyncVersionStore(fileURL: file), account: {
-        PersonalSyncAccount(userID: "fixture", bearerToken: "test-only", revision: UUID())
+        account
     })
 }
 
@@ -50,4 +51,33 @@ private func hubMirrorRefusesIncompleteOrRejectedAcknowledgement(reply: MirrorHu
     await #expect(throws: MirrorSyncError.invalidResponse) {
         try await transport.push([MirrorRecord(name: "person-1", modifiedAt: .now, payload: Data("{}".utf8))])
     }
+}
+
+private actor SwitchingMirrorAccount {
+    private var calls = 0
+    private let revision = UUID()
+
+    func resolve() -> PersonalSyncAccount {
+        calls += 1
+        return PersonalSyncAccount(userID: calls == 1 ? "original" : "replacement",
+                                   bearerToken: "test-only", revision: revision)
+    }
+}
+
+@Test(arguments: [true, false])
+private func hubMirrorRejectsResponseAfterAccountSwitch(push: Bool) async throws {
+    let account = SwitchingMirrorAccount()
+    let file = FileManager.default.temporaryDirectory.appending(path: UUID().uuidString)
+        .appending(path: "versions.json")
+    let versions = try SyncVersionStore(fileURL: file)
+    let transport = HubMirrorTransport(domain: .kith, deviceId: "fixture", client: MirrorHubFixture(),
+                                       versions: versions, account: { await account.resolve() })
+    await #expect(throws: PersonalIdentityError.sessionChanged) {
+        if push {
+            try await transport.push([MirrorRecord(name: "person-1", modifiedAt: .now, payload: Data("{}".utf8))])
+        } else {
+            _ = try await transport.pull(since: nil)
+        }
+    }
+    #expect(await versions.version(for: "person-1", in: .kith) == 0)
 }
