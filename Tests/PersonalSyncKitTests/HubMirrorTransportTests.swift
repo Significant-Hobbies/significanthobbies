@@ -2,6 +2,14 @@ import Foundation
 import Testing
 @testable import PersonalSyncKit
 
+@Test(arguments: ["2026-09-09", "2026-09-09T00:00:00Z", "2026-09-09T00:00:00.000Z",
+                  "2026-09-09T05:30:00.000+05:30"])
+func hubMirrorPreservesAcceptedTimestampFormats(value: String) throws {
+    let canonical = try #require(HubMirrorTransport.date("2026-09-09T00:00:00Z"))
+    #expect(HubMirrorTransport.date(value) == canonical)
+    #expect(HubMirrorTransport.date("invalid-date") == nil)
+}
+
 private actor MirrorHubFixture: PersonalSyncTransport {
     enum Reply: Sendable { case accepted, missing, rejected }
     let reply: Reply
