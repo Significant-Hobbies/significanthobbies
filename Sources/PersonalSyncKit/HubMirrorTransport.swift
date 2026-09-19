@@ -200,6 +200,9 @@ public struct HubMirrorTransport: MirrorTransport {
             try await requireCurrent(verified)
             let page = try await client.pull(domain: domain, cursor: cursor, bearerToken: verified.bearerToken)
             try await requireCurrent(verified)
+            // The server emits at most 500 changes per page; a larger page is
+            // a malformed response, not a bigger batch.
+            guard page.changes.count <= 500 else { throw MirrorSyncError.invalidResponse }
             for change in page.changes {
                 guard change.domain == domain, let modifiedAt = Self.date(change.occurredAt),
                       change.operation == .delete || change.record != .null else {
@@ -229,8 +232,17 @@ public struct HubMirrorTransport: MirrorTransport {
     }
 
     nonisolated(unsafe) private static let isoFormatter = ISO8601DateFormatter()
+    /// Writes carry fractional seconds so the Hub transports the same
+    /// `modifiedAt` CloudKit stores; truncating to whole seconds reads the
+    /// record back older through one mirror than the other and can misorder
+    /// same-second edits.
+    nonisolated(unsafe) private static let isoWriteFormatter: ISO8601DateFormatter = {
+        let formatter = ISO8601DateFormatter()
+        formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+        return formatter
+    }()
 
-    static func iso(_ date: Date) -> String { isoFormatter.string(from: date) }
+    static func iso(_ date: Date) -> String { isoWriteFormatter.string(from: date) }
 
     static func date(_ value: String) -> Date? {
         if let date = isoFormatter.date(from: value) { return date }

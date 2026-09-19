@@ -147,6 +147,10 @@ public actor MirrorRuntime {
     /// after capture, including passes without a pulled winner. Apply must also
     /// validate inside its own write lock; the callback alone is not a lock.
     ///
+    /// Do not call `synchronize` from inside the `records`/`apply` callbacks:
+    /// passes serialize, so a nested call cannot proceed until the outer one
+    /// finishes.
+    ///
     /// This is the whole-set variant; it delegates to the transport-scoped
     /// overload, so both forms share the one-pass-at-a-time permit.
     @discardableResult
@@ -202,9 +206,17 @@ public actor MirrorRuntime {
 
         var outcomes: [TransportOutcome] = []
         for transport in transports {
+            // A cancelled pass stops here rather than starting fresh remote
+            // work for transports it has not reached yet.
+            try Task.checkCancellation()
             var outcome = TransportOutcome(transportID: transport.id)
             do {
                 try await syncOne(transport, now: now, recordsForTransport: recordsForTransport, validateLocalSnapshot: validateLocalSnapshot, applyFromTransport: applyFromTransport, outcome: &outcome)
+            } catch let cancelled as CancellationError {
+                // Cancellation is not a transport failure: abort the pass so a
+                // cancelled caller never sees a partial outcome read as a
+                // completed sync.
+                throw cancelled
             } catch {
                 outcome.failure = String(describing: error)
             }
