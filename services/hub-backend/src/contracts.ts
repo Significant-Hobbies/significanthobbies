@@ -112,9 +112,16 @@ export function requireInteger(
   value: unknown,
   label: string,
   minimum = 0,
+  maximum?: number,
 ): number {
-  if (!Number.isInteger(value) || (value as number) < minimum) {
-    throw new HttpError(400, "invalid_request", `${label} must be an integer >= ${minimum}`);
+  const valid = Number.isInteger(value)
+    && (value as number) >= minimum
+    && (maximum === undefined || (value as number) <= maximum);
+  if (!valid) {
+    const expectation = maximum === undefined
+      ? `an integer >= ${minimum}`
+      : `an integer between ${minimum} and ${maximum}`;
+    throw new HttpError(400, "invalid_request", `${label} must be ${expectation}`);
   }
   return value as number;
 }
@@ -213,11 +220,13 @@ export function validateDomainRecord(
           personId: requireString(input.personId, "record.personId", 128),
           personName: requireString(input.personName, "record.personName", 240),
           circle: requireString(input.circle, "record.circle", 80),
-          closeness: requireInteger(input.closeness, "record.closeness", 1),
+          closeness: requireInteger(input.closeness, "record.closeness", 1, 5),
           hue: requireString(input.hue, "record.hue", 80),
           birthday: optionalIsoDate(input.birthday, "record.birthday"),
           howWeMet: optionalString(input.howWeMet, "record.howWeMet", 20_000),
           standingNotes: optionalString(input.standingNotes, "record.standingNotes", 20_000),
+          details: optionalPersonDetails(input.details),
+          listItems: optionalPersonListItems(input.listItems),
           createdAt: requireIsoDate(input.createdAt, "record.createdAt"),
         });
       }
@@ -448,6 +457,50 @@ function requireNutrients(value: unknown): void {
   requireNumber(nutrients.carbohydrates, "record.nutrients.carbohydrates");
   requireNumber(nutrients.fat, "record.nutrients.fat");
   requireNumber(nutrients.fibre, "record.nutrients.fibre");
+}
+
+// Kith emits person detail rows and list items in the order the person
+// arranged them, and either may hold an empty string, so they validate by
+// type and length rather than requireString's non-empty rule. The arrays get
+// no manual cap: the request payload budget bounds the whole record.
+function optionalPersonDetails(
+  value: unknown,
+): Array<{ key: string; value: string }> | undefined {
+  if (value === undefined || value === null) return undefined;
+  if (!Array.isArray(value)) {
+    throw new HttpError(400, "invalid_request", "record.details must be an array");
+  }
+  return value.map((item, index) => {
+    const detail = requireObject(item, `record.details[${index}]`);
+    return {
+      key: requireStringOrEmpty(detail.key, `record.details[${index}].key`),
+      value: requireStringOrEmpty(detail.value, `record.details[${index}].value`),
+    };
+  });
+}
+
+function optionalPersonListItems(value: unknown): string[] | undefined {
+  if (value === undefined || value === null) return undefined;
+  if (!Array.isArray(value)) {
+    throw new HttpError(400, "invalid_request", "record.listItems must be an array");
+  }
+  return value.map((item, index) =>
+    requireStringOrEmpty(item, `record.listItems[${index}]`),
+  );
+}
+
+function requireStringOrEmpty(
+  value: unknown,
+  label: string,
+  maximumLength = 20_000,
+): string {
+  if (typeof value !== "string") {
+    throw new HttpError(400, "invalid_request", `${label} must be a string`);
+  }
+  if (value.length > maximumLength) {
+    throw new HttpError(400, "invalid_request", `${label} is too long`);
+  }
+  return value;
 }
 
 export function parsePushRequest(value: unknown): PushRequest {

@@ -66,9 +66,7 @@ public actor MirrorRuntime {
     /// missing records". Pushed fingerprints and the ledger survive, so nothing
     /// already seen is re-uploaded or misdated.
     public func repullAll() async throws {
-        var state = try await store.load()
-        state.pullTokens = [:]
-        try await store.save(state)
+        try await store.repullAll()
     }
 
     public func availability() async -> [String: MirrorAvailability] {
@@ -105,13 +103,7 @@ public actor MirrorRuntime {
     /// inherit another account's pull tokens, pushed fingerprints, or ledger.
     /// Pass `nil` to require only that no *different* owner is bound yet.
     public func bindOwner(_ userID: String?) async throws {
-        var state = try await store.load()
-        if let bound = state.ownerID, bound != userID {
-            throw PersonalSyncOwnershipError.differentAccount
-        }
-        guard let userID else { return }
-        state.ownerID = userID
-        try await store.save(state)
+        try await store.bindOwner(userID)
     }
 
     /// The account this bookkeeping is bound to, if approved yet.
@@ -124,7 +116,7 @@ public actor MirrorRuntime {
     public func unpushedCount(transportID: String, records: [MirrorRecord]) async throws -> Int {
         let pushed = try await store.load().pushedFingerprints[transportID] ?? [:]
         return records.filter {
-            pushed[$0.name] != MirrorLedger.fingerprint(of: $0.payload)
+            pushed[$0.name] != MirrorLedger.fingerprint(of: $0)
         }.count
     }
 
@@ -141,11 +133,61 @@ public actor MirrorRuntime {
     /// the batch retries; it must never acknowledge records it did not persist.
     /// Transports sync independently: an unreachable or failing remote does not
     /// block the others, and its records stay pending for the next pass.
+    ///
+    /// Each transport's pass runs inside the session its `beginSynchronization`
+    /// returned, re-validated after the `records` snapshot returns and around
+    /// `apply` and `push`. Because `apply` is arbitrary async code that can
+    /// suspend, the guard cannot make it atomic — an apply that already
+    /// committed after an account switch stays committed. Callers whose own
+    /// commits can outlive a suspension must recheck their owner/epoch before
+    /// their durable commit. Checks reject observed session changes; external
+    /// identity changes are not atomic with app or bookkeeping writes.
+    /// Bookkeeping controls invalidate suspended passes through a store revision.
+    /// `validateLocalSnapshot` lets callers reject edits or store replacement
+    /// after capture, including passes without a pulled winner. Apply must also
+    /// validate inside its own write lock; the callback alone is not a lock.
+    ///
+    /// This is the whole-set variant; it delegates to the transport-scoped
+    /// overload, so both forms share the one-pass-at-a-time permit.
     @discardableResult
     public func synchronize(
         now: Date = .now,
         records: @Sendable () async throws -> [MirrorRecord],
+        validateLocalSnapshot: @Sendable (String) async throws -> Void = { _ in },
         apply: @Sendable ([MirrorRecord]) async throws -> Void
+    ) async throws -> Outcome {
+        try await synchronize(
+            now: now,
+            recordsForTransport: { _ in try await records() },
+            validateLocalSnapshot: validateLocalSnapshot,
+            applyFromTransport: { _, pulled in try await apply(pulled) }
+        )
+    }
+
+    /// Reconciles each remote against the local set eligible for that remote.
+    ///
+    /// `recordsForTransport` is called once per transport with the runtime's
+    /// own `transport.id` — never an identifier carried inside a record — and
+    /// must return the app's full syncable set *eligible for that transport*
+    /// (entities plus tombstones for deleted ones). Records filtered out of a
+    /// transport's snapshot are simply never offered to it: absence is a
+    /// filter, never a deletion, so per-transport eligibility cannot erase a
+    /// record from a remote it was withheld from.
+    ///
+    /// `applyFromTransport` commits pulled winners like `apply`, with the
+    /// pulling transport's id as its first argument so the caller can
+    /// attribute the source (e.g. record which remote a write arrived from).
+    /// `validateLocalSnapshot` is likewise invoked with the runtime's
+    /// `transport.id` at every snapshot boundary. All other guarantees match
+    /// `synchronize(now:records:validateLocalSnapshot:apply:)`: session pin,
+    /// bookkeeping CAS, serialized one-pass permit, and independent
+    /// per-transport failure isolation.
+    @discardableResult
+    public func synchronize(
+        now: Date = .now,
+        recordsForTransport: @Sendable (String) async throws -> [MirrorRecord],
+        validateLocalSnapshot: @Sendable (String) async throws -> Void = { _ in },
+        applyFromTransport: @Sendable (String, [MirrorRecord]) async throws -> Void
     ) async throws -> Outcome {
         if isSynchronizing {
             await withCheckedContinuation { waiters.append($0) }
@@ -162,7 +204,7 @@ public actor MirrorRuntime {
         for transport in transports {
             var outcome = TransportOutcome(transportID: transport.id)
             do {
-                try await syncOne(transport, now: now, records: records, apply: apply, outcome: &outcome)
+                try await syncOne(transport, now: now, recordsForTransport: recordsForTransport, validateLocalSnapshot: validateLocalSnapshot, applyFromTransport: applyFromTransport, outcome: &outcome)
             } catch {
                 outcome.failure = String(describing: error)
             }
@@ -174,8 +216,9 @@ public actor MirrorRuntime {
     private func syncOne(
         _ transport: any MirrorTransport,
         now: Date,
-        records: @Sendable () async throws -> [MirrorRecord],
-        apply: @Sendable ([MirrorRecord]) async throws -> Void,
+        recordsForTransport: @Sendable (String) async throws -> [MirrorRecord],
+        validateLocalSnapshot: @Sendable (String) async throws -> Void,
+        applyFromTransport: @Sendable (String, [MirrorRecord]) async throws -> Void,
         outcome: inout TransportOutcome
     ) async throws {
         let availability = await transport.availability()
@@ -188,26 +231,55 @@ public actor MirrorRuntime {
             return
         }
 
-        var bookkeeping = try await store.load()
+        // One pass, one session: transports that authenticate pin their
+        // verified account here so a mid-pass sign-in is detected, never
+        // adopted as the session for the rest of the pass.
+        let session = try await transport.beginSynchronization()
 
-        let pulled = try await transport.pull(since: bookkeeping.pullTokens[transport.id])
+        let snapshot = try await store.loadSnapshot()
+        var bookkeeping = snapshot.state
+
+        let pulled = try await session.pull(since: bookkeeping.pullTokens[transport.id])
         try Task.checkCancellation()
         // Network requests can outlive a local edit. Merge with the current
         // snapshot so a response cannot overwrite work saved during the pull.
-        var staged = try await records()
+        var staged = try await recordsForTransport(transport.id)
+        try await session.validateSynchronization()
+        try await store.requireRevision(snapshot.revision)
+        try await validateLocalSnapshot(transport.id)
         for index in staged.indices {
             staged[index].modifiedAt = bookkeeping.ledger.stamp(staged[index], now: staged[index].modifiedAt)
         }
 
         let merge = MirrorMerge.merge(local: staged, remote: pulled.records)
+        var committed = staged
 
         if !merge.toPull.isEmpty {
-            try await apply(merge.toPull)
+            try await session.validateSynchronization()
+            try await store.requireRevision(snapshot.revision)
+            try await validateLocalSnapshot(transport.id)
+            try await applyFromTransport(transport.id, merge.toPull)
+            try await session.validateSynchronization()
+            try await store.requireRevision(snapshot.revision)
+            try await validateLocalSnapshot(transport.id)
             // Applied records keep their remote write time: stamping with each
             // record's own modifiedAt prevents an applied pull from looking
             // freshly written here and winning merges it should lose.
             for record in merge.toPull {
                 _ = bookkeeping.ledger.stamp(record, now: record.modifiedAt)
+            }
+            // Applying one record may atomically change related records too.
+            // Re-read the caller's committed projection before deciding what
+            // to push; `merge.merged` still describes the pre-apply snapshot
+            // and could otherwise upload a child that apply just deleted.
+            committed = try await recordsForTransport(transport.id)
+            try await session.validateSynchronization()
+            try await store.requireRevision(snapshot.revision)
+            try await validateLocalSnapshot(transport.id)
+            for index in committed.indices {
+                committed[index].modifiedAt = bookkeeping.ledger.stamp(
+                    committed[index], now: committed[index].modifiedAt
+                )
             }
         }
 
@@ -217,16 +289,20 @@ public actor MirrorRuntime {
         // a just-pulled record from echoing back as a push, while the merged
         // winner (a different fingerprint) still goes up.
         for record in pulled.records {
-            pushed[record.name] = MirrorLedger.fingerprint(of: record.payload)
+            pushed[record.name] = MirrorLedger.fingerprint(of: record)
         }
-        let toPush = merge.merged.filter {
-            pushed[$0.name] != MirrorLedger.fingerprint(of: $0.payload)
+        let outgoing = MirrorMerge.merge(local: committed, remote: pulled.records).merged
+        let toPush = outgoing.filter {
+            pushed[$0.name] != MirrorLedger.fingerprint(of: $0)
         }
         if !toPush.isEmpty {
-            try await transport.push(toPush)
+            try await session.validateSynchronization()
+            try await store.requireRevision(snapshot.revision)
+            try await validateLocalSnapshot(transport.id)
+            try await session.push(toPush)
             var next = pushed
             for record in toPush {
-                next[record.name] = MirrorLedger.fingerprint(of: record.payload)
+                next[record.name] = MirrorLedger.fingerprint(of: record)
             }
             pushed = next
             outcome.pushed = toPush.count
@@ -235,10 +311,14 @@ public actor MirrorRuntime {
 
         // A token is only worth keeping once its changes have been applied and
         // everything owed to the remote has been accepted. Saving it earlier
-        // would skip those records forever on the next run.
+        // would skip those records forever on the next run. A stale pass must
+        // not reach this point at all: validate before any of it is durable.
         bookkeeping.pullTokens[transport.id] = pulled.nextToken
         bookkeeping.lastSyncedAt = now
-        try await store.save(bookkeeping)
+        try await session.validateSynchronization()
+        try await store.requireRevision(snapshot.revision)
+        try await validateLocalSnapshot(transport.id)
+        try await store.save(bookkeeping, ifRevision: snapshot.revision)
         outcome.pulled = merge.toPull.count
     }
 }

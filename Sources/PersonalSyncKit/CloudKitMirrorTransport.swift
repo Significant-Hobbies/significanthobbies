@@ -93,9 +93,7 @@ public struct CloudKitMirrorTransport: MirrorTransport {
                     guard let cloudError = error as? CKError, cloudError.code == .unknownItem else { throw error }
                     destination = CKRecord(recordType: recordType, recordID: recordID)
                 }
-                destination["modifiedAt"] = record.modifiedAt as CKRecordValue
-                destination["payload"] = record.payload as CKRecordValue?
-                destination["appendOnly"] = (record.appendOnly ? 1 : 0) as CKRecordValue
+                try Self.populate(destination, from: record)
                 saving.append(destination)
             }
             let result = try await database.modifyRecords(
@@ -187,14 +185,32 @@ public struct CloudKitMirrorTransport: MirrorTransport {
 
     // MARK: - Mapping
 
+    static func populate(_ destination: CKRecord, from record: MirrorRecord) throws {
+        if let owner = record.hubOwnerID,
+           let existingOwner = destination["hubOwnerID"] as? String, existingOwner != owner {
+            throw MirrorSyncError.conflict(recordName: record.name)
+        }
+        destination["modifiedAt"] = record.modifiedAt as CKRecordValue
+        destination["payload"] = record.payload as CKRecordValue?
+        destination["appendOnly"] = (record.appendOnly ? 1 : 0) as CKRecordValue
+        // Old callers cannot erase a retained affiliation. A different known
+        // owner requires explicit recovery, never a last-writer-wins rewrite.
+        if let owner = record.hubOwnerID { destination["hubOwnerID"] = owner as CKRecordValue }
+    }
+
     private func mirrorRecord(from ckRecord: CKRecord) -> MirrorRecord? {
+        Self.decodeRecord(ckRecord, appendOnly: appendOnly(ckRecord.recordID.recordName))
+    }
+
+    static func decodeRecord(_ ckRecord: CKRecord, appendOnly: Bool = false) -> MirrorRecord? {
         guard let modifiedAt = ckRecord["modifiedAt"] as? Date else { return nil }
         let appendOnlyFlag = (ckRecord["appendOnly"] as? Int ?? 0) != 0
         return MirrorRecord(
             name: ckRecord.recordID.recordName,
             modifiedAt: modifiedAt,
             payload: ckRecord["payload"] as? Data,
-            appendOnly: appendOnlyFlag || appendOnly(ckRecord.recordID.recordName)
+            appendOnly: appendOnlyFlag || appendOnly,
+            hubOwnerID: ckRecord["hubOwnerID"] as? String
         )
     }
 }
