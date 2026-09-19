@@ -184,7 +184,17 @@ public struct HubMirrorTransport: MirrorTransport {
 
     static func iso(_ date: Date) -> String { isoFormatter.string(from: date) }
 
-    static func date(_ value: String) -> Date? { isoFormatter.date(from: value) }
+    static func date(_ value: String) -> Date? {
+        if let date = isoFormatter.date(from: value) { return date }
+        let formatter = ISO8601DateFormatter()
+        formatter.timeZone = TimeZone(secondsFromGMT: 0)
+        // Match the Hub's retained requireIsoDate contract, including old
+        // date-only records and fractional-second timestamps.
+        formatter.formatOptions = value.contains("T")
+            ? [.withInternetDateTime, .withFractionalSeconds]
+            : [.withFullDate]
+        return formatter.date(from: value)
+    }
 
     /// Re-encodes a pulled JSON payload to bytes. Sorted keys keep the encoding
     /// deterministic so fingerprints compare content, not formatting.
