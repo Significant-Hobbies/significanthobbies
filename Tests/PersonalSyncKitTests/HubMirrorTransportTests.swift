@@ -15,9 +15,11 @@ private actor MirrorHubFixture: PersonalSyncTransport {
     let reply: Reply
     var pullPages: [PullResponse]
     var onPush: (@Sendable () async -> Void)?
+    var pullHandler: (@Sendable (Int) throws -> PullResponse)?
     var batches: [Int] = []
     var tokens: [String] = []
-    private var pullCalls = 0
+    private(set) var sentMutations: [SyncMutation] = []
+    private(set) var pullCalls = 0
 
     init(reply: Reply = .accepted, pullPages: [PullResponse] = []) {
         self.reply = reply
@@ -28,6 +30,7 @@ private actor MirrorHubFixture: PersonalSyncTransport {
         await onPush?()
         batches.append(mutations.count)
         tokens.append(bearerToken)
+        sentMutations.append(contentsOf: mutations)
         guard mutations.count <= 100 else { throw PersonalSyncError.invalidResponse }
         let results = mutations.map {
             PushResult(id: $0.id, idempotencyKey: $0.idempotencyKey,
@@ -37,8 +40,9 @@ private actor MirrorHubFixture: PersonalSyncTransport {
         return PushResponse(results: reply == .missing ? Array(results.dropLast()) : results)
     }
 
-    func pull(domain: PersonalDomain, cursor: Int, bearerToken: String) -> PullResponse {
+    func pull(domain: PersonalDomain, cursor: Int, bearerToken: String) throws -> PullResponse {
         pullCalls += 1
+        if let pullHandler { return try pullHandler(cursor) }
         if !pullPages.isEmpty {
             return pullPages[min(pullCalls - 1, pullPages.count - 1)]
         }
@@ -46,6 +50,7 @@ private actor MirrorHubFixture: PersonalSyncTransport {
     }
 
     func setOnPush(_ action: @escaping @Sendable () async -> Void) { onPush = action }
+    func setPullHandler(_ handler: @escaping @Sendable (Int) throws -> PullResponse) { pullHandler = handler }
 }
 
 private func makeHubMirror(_ client: MirrorHubFixture) throws -> HubMirrorTransport {
@@ -373,4 +378,154 @@ func hubMirrorSessionRejectsBatchAfterAccountSwitch(sameUserRefresh: Bool) async
     #expect(!outcome.isComplete)
     #expect(await versions.version(for: "person-1", in: .kith) == 0)
     #expect(try await bookkeeping.load() == MirrorBookkeepingStore.State())
+}
+
+// MARK: - Wire precision and pull validation
+
+/// The Hub carries `modifiedAt` as `occurredAt` text; CloudKit keeps the full
+/// `Date`. A write that truncates sub-second precision makes the same record
+/// read back older through the Hub than through CloudKit, and can order a
+/// same-second tombstone behind the live copy it deleted.
+@Test func hubMirrorPreservesSubSecondWritePrecision() async throws {
+    let client = MirrorHubFixture()
+    let transport = try makeHubMirror(client)
+    let written = Date(timeIntervalSince1970: 1_758_000_100.456)
+    try await transport.push([
+        MirrorRecord(name: "person-1", modifiedAt: written, payload: Data("{}".utf8)),
+    ])
+    let occurredAt = try #require(await client.sentMutations.first?.occurredAt)
+    #expect(HubMirrorTransport.date(occurredAt) == written)
+    #expect(HubMirrorTransport.date(HubMirrorTransport.iso(written)) == written)
+}
+
+private func pullChange(
+    id: String,
+    domain: PersonalDomain = .kith,
+    operation: MutationOperation = .upsert,
+    occurredAt: String = "2026-09-01T00:00:00Z",
+    record: JSONValue = .object(["value": .string("ok")])
+) -> SyncChange {
+    SyncChange(
+        cursor: 1, changeId: "c-\(id)", domain: domain, id: id,
+        operation: operation, version: 1, occurredAt: occurredAt,
+        recordedAt: occurredAt, originDeviceId: "fixture", record: record
+    )
+}
+
+private let malformedPullPages: [PullResponse] = [
+    // Cursor moves backwards.
+    PullResponse(changes: [], cursor: -1, hasMore: false),
+    // hasMore without cursor progress would loop forever.
+    PullResponse(changes: [], cursor: 0, hasMore: true),
+    // A change belonging to another domain must not enter this domain's merge.
+    PullResponse(changes: [pullChange(id: "x", domain: .setline)], cursor: 1, hasMore: false),
+    // An unparsable write time cannot be merged.
+    PullResponse(changes: [pullChange(id: "x", occurredAt: "not-a-date")], cursor: 1, hasMore: false),
+    // An upsert without a payload is neither a live record nor a tombstone.
+    PullResponse(changes: [pullChange(id: "x", record: .null)], cursor: 1, hasMore: false),
+]
+
+@Test(arguments: malformedPullPages)
+func hubMirrorRejectsMalformedPullPages(page: PullResponse) async throws {
+    let transport = try makeHubMirror(MirrorHubFixture(pullPages: [page]))
+    await #expect(throws: MirrorSyncError.invalidResponse) {
+        _ = try await transport.pull(since: nil)
+    }
+}
+
+/// A page larger than the server's own 500-change emission limit is a
+/// malformed response, not a bigger batch.
+@Test func hubMirrorRejectsOversizedPullPage() async throws {
+    let oversized = PullResponse(
+        changes: (0..<501).map { pullChange(id: "c-\($0)") },
+        cursor: 501, hasMore: false
+    )
+    let transport = try makeHubMirror(MirrorHubFixture(pullPages: [oversized]))
+    await #expect(throws: MirrorSyncError.invalidResponse) {
+        _ = try await transport.pull(since: nil)
+    }
+}
+
+/// A server that always claims another page must not pull forever.
+@Test func hubMirrorBoundsPullPagination() async throws {
+    let client = MirrorHubFixture()
+    await client.setPullHandler { cursor in
+        PullResponse(changes: [], cursor: cursor + 1, hasMore: true)
+    }
+    let transport = try makeHubMirror(client)
+    await #expect(throws: MirrorSyncError.invalidResponse) {
+        _ = try await transport.pull(since: nil)
+    }
+    #expect(await client.pullCalls == 100)
+}
+
+/// Deletes map to tombstones, and the injected append-only resolver flags
+/// pulled records whose kind is append-only.
+@Test func hubMirrorPullMapsDeletesAndResolvesAppendOnly() async throws {
+    let page = PullResponse(
+        changes: [
+            pullChange(id: "session-1"),
+            pullChange(id: "gone-1", operation: .delete, record: .null),
+        ],
+        cursor: 3, hasMore: false
+    )
+    let file = FileManager.default.temporaryDirectory.appending(path: UUID().uuidString)
+        .appending(path: "versions.json")
+    let account = PersonalSyncAccount(userID: "fixture", bearerToken: "test-only", revision: UUID())
+    let transport = HubMirrorTransport(
+        domain: .kith, deviceId: "fixture", client: MirrorHubFixture(pullPages: [page]),
+        versions: try SyncVersionStore(fileURL: file), account: { account },
+        appendOnly: { $0.hasPrefix("session-") }
+    )
+    let pulled = try await transport.pull(since: nil)
+    #expect(pulled.nextToken == Data("3".utf8))
+    #expect(pulled.records.count == 2)
+    #expect(pulled.records.first { $0.name == "session-1" }?.appendOnly == true)
+    let tombstone = try #require(pulled.records.first { $0.name == "gone-1" })
+    #expect(tombstone.isDeleted && !tombstone.appendOnly)
+}
+
+// MARK: - Account gate
+
+private actor ApprovalGate {
+    private(set) var open = false
+    private(set) var seenUserIDs: [String] = []
+    func set(_ value: Bool) { open = value }
+    func allows(_ account: PersonalSyncAccount) -> Bool {
+        seenUserIDs.append(account.userID)
+        return open
+    }
+}
+
+/// The gate keeps the Hub leg quiet — every entry point reports the transport
+/// as unavailable — until the app approves the verified account, which is the
+/// account the gate is asked about.
+@Test func hubMirrorAccountGateKeepsTransportUnavailableUntilApproved() async throws {
+    let gate = ApprovalGate()
+    let file = FileManager.default.temporaryDirectory.appending(path: UUID().uuidString)
+        .appending(path: "versions.json")
+    let account = accountA()
+    let transport = HubMirrorTransport(
+        domain: .kith, deviceId: "fixture", client: MirrorHubFixture(),
+        versions: try SyncVersionStore(fileURL: file),
+        account: { account },
+        accountGate: { account in await gate.allows(account) }
+    )
+
+    #expect(await transport.availability() == .unavailable("not signed in"))
+    await #expect(throws: MirrorSyncError.unavailable("not signed in")) {
+        _ = try await transport.beginSynchronization()
+    }
+    await #expect(throws: MirrorSyncError.unavailable("not signed in")) {
+        try await transport.push([sessionRecord("person-1")])
+    }
+    await #expect(throws: MirrorSyncError.unavailable("not signed in")) {
+        _ = try await transport.pull(since: nil)
+    }
+    let seen = await gate.seenUserIDs
+    #expect(!seen.isEmpty && seen.allSatisfy { $0 == "a" })
+
+    await gate.set(true)
+    #expect(await transport.availability() == .available)
+    _ = try await transport.beginSynchronization()
 }

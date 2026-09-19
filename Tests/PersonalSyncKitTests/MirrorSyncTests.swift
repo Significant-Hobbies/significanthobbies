@@ -9,6 +9,9 @@ private actor InMemoryTransport: MirrorTransport {
     var isAvailable = true
     var store: [String: MirrorRecord] = [:]
     var onPull: (@Sendable () async throws -> Void)?
+    private(set) var pullCalls = 0
+    private(set) var pullTokens: [Data?] = []
+    private(set) var pushedBatches = 0
 
     init(id: String) { self.id = id }
 
@@ -17,6 +20,7 @@ private actor InMemoryTransport: MirrorTransport {
     }
 
     func push(_ records: [MirrorRecord]) throws {
+        pushedBatches += 1
         for record in records {
             if let existing = store[record.name] {
                 store[record.name] = MirrorMerge.winner(existing, record)
@@ -26,7 +30,9 @@ private actor InMemoryTransport: MirrorTransport {
         }
     }
 
-    func pull(since _: Data?) async throws -> MirrorPullPage {
+    func pull(since token: Data?) async throws -> MirrorPullPage {
+        pullCalls += 1
+        pullTokens.append(token)
         try await onPull?()
         return MirrorPullPage(
             records: store.values.sorted { $0.name < $1.name },
@@ -638,4 +644,288 @@ private actor CascadingLocalStore {
     #expect(await hub.store["note-1"]?.isDeleted == true)
     #expect(await hub.store["note-1"]?.payload != pendingChild.payload)
     #expect(await local.records["note-1"]?.isDeleted == true)
+}
+
+// MARK: - Cancellation and serialization
+
+/// A cancelled pass must not start network work for transports it has not
+/// reached yet: cancellation aborts the whole pass instead of running the
+/// remaining remotes and reporting a partial outcome.
+@Test func cancelledMirrorSyncDoesNotStartRemainingTransports() async throws {
+    let first = InMemoryTransport(id: "first")
+    let second = InMemoryTransport(id: "second")
+    await first.setOnPull { withUnsafeCurrentTask { $0?.cancel() } }
+    let (runtime, _) = try makeRuntime([first, second])
+    let doc = FakeLocalStore()
+    try await doc.apply([record("person-1", at: 100, payload: "local")])
+
+    let pass = Task {
+        try await runtime.synchronize { await doc.snapshot() } apply: { try await doc.apply($0) }
+    }
+    await #expect(throws: CancellationError.self) { try await pass.value }
+    #expect(await second.pullCalls == 0)
+    #expect(await second.pushedBatches == 0)
+    #expect(await second.store.isEmpty)
+}
+
+/// Holds only the first pull a transport performs so a second pass can be
+/// observed waiting on the runtime permit.
+private actor FirstPullGate {
+    private var calls = 0
+    private let entered: AsyncStream<Void>.Continuation
+    init(entered: AsyncStream<Void>.Continuation) { self.entered = entered }
+    func hold(released: AsyncStream<Void>) async {
+        calls += 1
+        guard calls == 1 else { return }
+        entered.yield(())
+        for await _ in released { break }
+    }
+}
+
+private actor SnapshotProbe {
+    private(set) var invocations = 0
+    func mark() { invocations += 1 }
+}
+
+/// Two overlapping synchronize calls serialize: the second cannot even read
+/// the app's record set while the first pass is suspended mid-pull.
+@Test(.timeLimit(.minutes(1))) func overlappingMirrorSyncPassesRunSerially() async throws {
+    let hub = InMemoryTransport(id: "hub")
+    let (runtime, _) = try makeRuntime([hub])
+    let doc = FakeLocalStore()
+    try await doc.apply([record("person-1", at: 100, payload: "local")])
+    let entered = AsyncStream<Void>.makeStream()
+    let released = AsyncStream<Void>.makeStream()
+    defer { entered.continuation.finish(); released.continuation.finish() }
+    let gate = FirstPullGate(entered: entered.continuation)
+    await hub.setOnPull { await gate.hold(released: released.stream) }
+
+    let probe = SnapshotProbe()
+    let first = Task {
+        try await runtime.synchronize { await doc.snapshot() } apply: { try await doc.apply($0) }
+    }
+    for await _ in entered.stream { break }
+    let second = Task {
+        try await runtime.synchronize(
+            records: {
+                await probe.mark()
+                return await doc.snapshot()
+            },
+            apply: { try await doc.apply($0) }
+        )
+    }
+    // Give the competing pass a chance to enter while the first is held.
+    try await Task.sleep(for: .milliseconds(50))
+    #expect(await probe.invocations == 0)
+    released.continuation.yield(())
+    #expect(try await first.value.isComplete)
+    #expect(try await second.value.isComplete)
+    #expect(await probe.invocations == 1)
+    #expect(await hub.pullCalls == 2)
+}
+
+// MARK: - Recovery and introspection
+
+/// repullAll drops pull tokens so the next pass refetches the remote's full
+/// set, but pushed fingerprints survive: already-seen records are not
+/// re-uploaded and an unchanged pull is not re-applied.
+@Test func repullAllForcesFullRefetchWithoutRepushingOrReapplying() async throws {
+    let hub = InMemoryTransport(id: "hub")
+    try await hub.push([record("r-1", at: 100, payload: "remote")])
+    let (runtime, _) = try makeRuntime([hub])
+    let doc = FakeLocalStore()
+
+    let first = try await runtime.synchronize { await doc.snapshot() } apply: { try await doc.apply($0) }
+    #expect(first.isComplete)
+    #expect(await doc.records["r-1"]?.payload == Data("remote".utf8))
+    #expect(await hub.pullTokens == [nil])
+
+    try await runtime.repullAll()
+    let second = try await runtime.synchronize { await doc.snapshot() } apply: { try await doc.apply($0) }
+    #expect(second.isComplete)
+    // The pull restarted from scratch; nothing was re-pushed or re-applied.
+    #expect(await hub.pullTokens == [nil, nil])
+    #expect(second.transports.first?.pushed == 0)
+    #expect(await doc.appliedBatches == 1)
+}
+
+/// When the bookkeeping file cannot even be read, a pass refuses to do remote
+/// work at all rather than run against unknown bookkeeping — then recovers
+/// once the obstruction is gone.
+@Test func obstructedBookkeepingBlocksPassThenRecovers() async throws {
+    let hub = InMemoryTransport(id: "hub")
+    try await hub.push([record("r-1", at: 100, payload: "remote")])
+    let (runtime, directory) = try makeRuntime([hub])
+    defer { try? FileManager.default.removeItem(at: directory) }
+    let file = directory.appending(path: "mirror-sync.json")
+    try FileManager.default.createDirectory(at: file, withIntermediateDirectories: true)
+    let doc = FakeLocalStore()
+
+    let first = try await runtime.synchronize { await doc.snapshot() } apply: { try await doc.apply($0) }
+    #expect(!first.isComplete)
+    #expect(first.transports.first?.failure != nil)
+    #expect(await hub.pullCalls == 0)
+    #expect(await doc.appliedBatches == 0)
+
+    try FileManager.default.removeItem(at: file)
+    let second = try await runtime.synchronize { await doc.snapshot() } apply: { try await doc.apply($0) }
+    #expect(second.isComplete)
+    #expect(await doc.records["r-1"]?.payload == Data("remote".utf8))
+}
+
+/// The app's durable commit can succeed while the final bookkeeping write
+/// fails: the pull token must not advance, so the next pass replays the pull
+/// and the merge makes the replay a no-op.
+@Test func bookkeepingSaveFailureAfterCommitReplaysPullSafely() async throws {
+    let hub = InMemoryTransport(id: "hub")
+    try await hub.push([record("r-1", at: 100, payload: "remote")])
+    let (runtime, directory) = try makeRuntime([hub])
+    defer { try? FileManager.default.removeItem(at: directory) }
+    let file = directory.appending(path: "mirror-sync.json")
+    let doc = FakeLocalStore()
+
+    let first = try await runtime.synchronize(
+        records: { await doc.snapshot() },
+        apply: { pulled in
+            try await doc.apply(pulled)
+            // The commit is durable; the bookkeeping write now fails on disk.
+            try FileManager.default.createDirectory(at: file, withIntermediateDirectories: true)
+        }
+    )
+    #expect(!first.isComplete)
+    #expect(await doc.records["r-1"]?.payload == Data("remote".utf8))
+
+    try FileManager.default.removeItem(at: file)
+    let second = try await runtime.synchronize { await doc.snapshot() } apply: { try await doc.apply($0) }
+    #expect(second.isComplete)
+    // The failed save never persisted the token: the remote was re-read from
+    // scratch, and the already-committed winner did not apply twice.
+    #expect(await hub.pullTokens == [nil, nil])
+    #expect(await doc.appliedBatches == 1)
+}
+
+/// bindOwner pins the explicit-adoption contract: unbound stores accept a nil
+/// probe and a first bind, bound stores reject every other account including
+/// nil, and the binding survives a store reopen until reset.
+@Test func bindOwnerContractPersistsAndRejectsOtherAccounts() async throws {
+    let directory = FileManager.default.temporaryDirectory
+        .appending(path: UUID().uuidString, directoryHint: .isDirectory)
+    defer { try? FileManager.default.removeItem(at: directory) }
+    let file = directory.appending(path: "mirror-sync.json")
+    let store = MirrorBookkeepingStore(fileURL: file)
+
+    try await store.bindOwner(nil)
+    #expect(try await store.load().ownerID == nil)
+    try await store.bindOwner("owner-a")
+    try await store.bindOwner("owner-a")
+    #expect(try await store.load().ownerID == "owner-a")
+    await #expect(throws: PersonalSyncOwnershipError.differentAccount) {
+        try await store.bindOwner("owner-b")
+    }
+    await #expect(throws: PersonalSyncOwnershipError.differentAccount) {
+        try await store.bindOwner(nil)
+    }
+    let reopened = MirrorBookkeepingStore(fileURL: file)
+    #expect(try await reopened.load().ownerID == "owner-a")
+
+    try await reopened.reset()
+    #expect(try await reopened.load().ownerID == nil)
+    try await reopened.bindOwner("owner-b")
+    #expect(try await reopened.load().ownerID == "owner-b")
+}
+
+/// The introspection surfaces apps drive status UI from — pending counts,
+/// known names, stamps, append-only flags, last-sync time — must reflect the
+/// committed bookkeeping exactly.
+@Test func introspectionSurfacesTrackCommittedSyncState() async throws {
+    let hub = InMemoryTransport(id: "hub")
+    let (runtime, _) = try makeRuntime([hub])
+    let doc = FakeLocalStore()
+    let person = record("person-1", at: 100, payload: "Ravi")
+    let session = record("session-1", at: 50, payload: "log", appendOnly: true)
+    try await doc.apply([person, session])
+
+    #expect(try await runtime.lastSyncedAt() == nil)
+    #expect(try await runtime.unpushedCount(transportID: "hub", records: [person, session]) == 2)
+    #expect(try await runtime.knownRecordNames().isEmpty)
+
+    _ = try await runtime.synchronize { await doc.snapshot() } apply: { try await doc.apply($0) }
+
+    #expect(try await runtime.unpushedCount(transportID: "hub", records: [person, session]) == 0)
+    #expect(try await runtime.knownRecordNames() == ["person-1", "session-1"])
+    #expect(try await runtime.isAppendOnly("session-1") == true)
+    #expect(try await runtime.isAppendOnly("person-1") == false)
+    #expect(try await runtime.stamp(for: "person-1")?.modifiedAt == person.modifiedAt)
+    #expect(try await runtime.lastSyncedAt() != nil)
+
+    let edited = record("person-1", at: 200, payload: "Ravi II")
+    try await doc.apply([edited])
+    #expect(try await runtime.unpushedCount(transportID: "hub", records: [edited, session]) == 1)
+    // An append-only kind keeps its write time across replayed snapshots.
+    #expect(try await runtime.stamp(for: "session-1")?.modifiedAt == session.modifiedAt)
+}
+
+// MARK: - Ownership gate at the runtime boundary
+
+private actor RecordingSyncClient: PersonalSyncTransport {
+    private(set) var pulls = 0
+    private(set) var pushedIDs: [String] = []
+    func push(domain: PersonalDomain, deviceId: String, mutations: [SyncMutation], bearerToken: String) -> PushResponse {
+        pushedIDs.append(contentsOf: mutations.map(\.id))
+        return PushResponse(results: mutations.map {
+            PushResult(id: $0.id, idempotencyKey: $0.idempotencyKey, status: "accepted",
+                       version: 1, cursor: 1, expectedVersion: nil, actualVersion: nil)
+        })
+    }
+    func pull(domain: PersonalDomain, cursor: Int, bearerToken: String) -> PullResponse {
+        pulls += 1
+        return PullResponse(changes: [], cursor: cursor, hasMore: false)
+    }
+}
+
+private actor BoolFlag {
+    private(set) var value = false
+    func set(_ newValue: Bool) { value = newValue }
+}
+
+/// A Hub transport gated by account approval stays quiet inside a dual-mirror
+/// pass — no pull, no push — while the CloudKit leg still converges. Opening
+/// the gate resumes Hub work on the next pass.
+@Test func gatedHubLegStaysQuietWhileOtherRemoteSyncs() async throws {
+    let directory = FileManager.default.temporaryDirectory
+        .appending(path: UUID().uuidString, directoryHint: .isDirectory)
+    defer { try? FileManager.default.removeItem(at: directory) }
+    let approved = BoolFlag()
+    let client = RecordingSyncClient()
+    let account = PersonalSyncAccount(userID: "a", bearerToken: "synthetic", revision: UUID())
+    let hub = HubMirrorTransport(
+        domain: .kith, deviceId: "fixture", client: client,
+        versions: try SyncVersionStore(fileURL: directory.appending(path: "versions.json")),
+        account: { account },
+        accountGate: { _ in await approved.value }
+    )
+    let cloud = InMemoryTransport(id: "cloudkit")
+    let runtime = MirrorRuntime(
+        transports: [hub, cloud],
+        store: MirrorBookkeepingStore(fileURL: directory.appending(path: "mirror-sync.json"))
+    )
+    let doc = FakeLocalStore()
+    // Hub payloads are JSON documents; the fixture pushes a JSON object like a
+    // real adapter would.
+    try await doc.apply([record("person-1", at: 100, payload: #"{"value":"local"}"#)])
+
+    let first = try await runtime.synchronize { await doc.snapshot() } apply: { try await doc.apply($0) }
+    #expect(!first.isComplete)
+    #expect(first.transports.first { $0.transportID == "hub" }?.failure != nil)
+    #expect(first.transports.first { $0.transportID == "cloudkit" }?.failure == nil)
+    // The gated transport did no remote work; the other remote still got it.
+    #expect(await client.pulls == 0)
+    #expect(await client.pushedIDs.isEmpty)
+    #expect(await cloud.store["person-1"]?.payload == Data(#"{"value":"local"}"#.utf8))
+
+    await approved.set(true)
+    let second = try await runtime.synchronize { await doc.snapshot() } apply: { try await doc.apply($0) }
+    #expect(second.isComplete)
+    #expect(await client.pulls == 1)
+    #expect(await client.pushedIDs == ["person-1"])
 }
