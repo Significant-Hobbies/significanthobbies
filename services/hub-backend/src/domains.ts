@@ -13,7 +13,12 @@ import {
 import { ActionAudit, applyMutation, getRecord, tableForDomain } from "./sync";
 import { projectRecord } from "./reads";
 
-const PLATFORM_SUMMARY_DOMAINS = DOMAINS.filter((domain) => domain !== "live");
+// Calorie stays out of the platform summary batch for now: its today-summary
+// still comes from the typed connector to its own Worker until the D1
+// migration in issue #158 lands and the connector is demoted.
+const PLATFORM_SUMMARY_DOMAINS = DOMAINS.filter(
+  (domain) => domain !== "live" && domain !== "calorie",
+);
 
 const ACTIONS: Record<Domain, readonly string[]> = {
   live: ["add_item"],
@@ -22,6 +27,7 @@ const ACTIONS: Record<Domain, readonly string[]> = {
   setline: ["record_activity"],
   kith: ["record_interaction"],
   anchor: ["record_session"],
+  calorie: ["log_food"],
 };
 
 const SUGGESTIONS: Record<Domain, string> = {
@@ -31,6 +37,7 @@ const SUGGESTIONS: Record<Domain, string> = {
   setline: "Record the activity you completed.",
   kith: "Record a recent interaction or follow-up.",
   anchor: "Record a focused session and its interruptions.",
+  calorie: "Log what you ate or drank.",
 };
 
 interface SummaryRow {
@@ -316,6 +323,17 @@ function actionRecord(
           "input.interruptionCount",
         ),
       };
+    case "calorie":
+      return {
+        recordType: "foodEntry",
+        id: crypto.randomUUID(),
+        foodID: requireString(input.foodID, "input.foodID", 128),
+        foodName: requireString(input.foodName, "input.foodName", 240),
+        meal: input.meal,
+        timestamp: input.timestamp ?? new Date().toISOString(),
+        servings: input.servings ?? 1,
+        nutrients: input.nutrients,
+      };
   }
 }
 
@@ -329,6 +347,10 @@ function actionOccurredAt(domain: Domain, input: Record<string, unknown>): strin
       return requireIsoDate(input.occurredAt, "input.occurredAt");
     case "anchor":
       return requireIsoDate(input.startedAt, "input.startedAt");
+    case "calorie":
+      return input.timestamp === undefined
+        ? new Date().toISOString()
+        : requireIsoDate(input.timestamp, "input.timestamp");
     case "live":
       optionalIsoDate(input.targetDate, "input.targetDate");
       return new Date().toISOString();

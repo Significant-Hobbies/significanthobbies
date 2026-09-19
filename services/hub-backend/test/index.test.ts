@@ -527,11 +527,166 @@ describe("Hub Backend Worker", () => {
     }));
   });
 
+  it("accepts full-fidelity Setline mirror envelopes and rejects malformed ones", async () => {
+    const entityId = crypto.randomUUID();
+    const record = {
+      recordType: "session",
+      entityId,
+      occurredAt: "2026-09-10T06:00:00Z",
+      data: {
+        id: entityId.toUpperCase(),
+        templateID: crypto.randomUUID().toUpperCase(),
+        templateName: "Lower strength",
+        startedAt: 782_812_800,
+        completedAt: 782_814_700,
+        steps: [{ name: "Squat", segments: [{ weight: 60, repetitions: 8 }] }],
+        activeIndex: 0,
+      },
+    };
+    const push = await api("/v1/sync/push", {
+      method: "POST",
+      body: JSON.stringify({
+        domain: "setline",
+        deviceId: "setline-iphone",
+        mutations: [{
+          id: `session-${entityId}`,
+          idempotencyKey: `setline-mirror-${entityId}`,
+          operation: "upsert",
+          baseVersion: 0,
+          occurredAt: "2026-09-10T06:00:00.000Z",
+          record,
+        }],
+      }),
+    });
+    expect(push.status).toBe(200);
+    expect(await push.json()).toMatchObject({ results: [{ status: "accepted" }] });
+
+    const pull = await api("/v1/sync/pull?domain=setline&cursor=0", {
+      headers: { "X-Personal-Device-ID": "setline-second-client" },
+    });
+    const body = await pull.json<{
+      changes: Array<{ id: string; record: Record<string, unknown> }>;
+    }>();
+    // The payload is preserved verbatim so the receiving app can restore the
+    // exact entity — it is not compacted into a summary.
+    expect(body.changes).toContainEqual(expect.objectContaining({
+      id: `session-${entityId}`,
+      record: expect.objectContaining({ recordType: "session", entityId, data: record.data }),
+    }));
+
+    const invalid = await api("/v1/sync/push", {
+      method: "POST",
+      body: JSON.stringify({
+        domain: "setline",
+        deviceId: "setline-iphone",
+        mutations: [{
+          id: crypto.randomUUID(),
+          idempotencyKey: crypto.randomUUID(),
+          operation: "upsert",
+          baseVersion: 0,
+          occurredAt: "2026-09-10T06:00:00.000Z",
+          record: { recordType: "session", entityId: crypto.randomUUID(), occurredAt: "2026-09-10" },
+        }],
+      }),
+    });
+    expect(invalid.status).toBe(400);
+  });
+
   it("does not fall back to Hub Backend D1 for Calorie", async () => {
     const response = await api("/v1/domains/calorie/summary");
     expect(response.status).toBe(503);
     expect(await response.json()).toMatchObject({
       error: { code: "calorie_connector_unavailable" },
     });
+  });
+
+  it("accepts Calorie mirror records verbatim and rejects malformed ones", async () => {
+    const entryId = crypto.randomUUID();
+    const entry = {
+      recordType: "foodEntry",
+      id: entryId,
+      foodID: crypto.randomUUID(),
+      foodName: "Pulled oats",
+      meal: "Breakfast",
+      timestamp: "2026-09-01T08:00:00Z",
+      servings: 1,
+      nutrients: { calories: 380, protein: 12, carbohydrates: 66, fat: 7, fibre: 9 },
+    };
+    const push = await api("/v1/sync/push", {
+      method: "POST",
+      body: JSON.stringify({
+        domain: "calorie",
+        deviceId: "calorie-iphone",
+        mutations: [
+          {
+            id: `entry-${entryId}`,
+            idempotencyKey: `calorie-mirror-${entryId}`,
+            operation: "upsert",
+            baseVersion: 0,
+            occurredAt: "2026-09-01T08:00:00.000Z",
+            record: entry,
+          },
+          {
+            id: "note-2026-09-01",
+            idempotencyKey: "calorie-mirror-note-2026-09-01",
+            operation: "upsert",
+            baseVersion: 0,
+            occurredAt: "2026-09-01T08:00:00.000Z",
+            record: { recordType: "dailyNote", date: "2026-09-01", text: "Felt steady." },
+          },
+          {
+            id: "theme-00000000-0000-0000-0000-0000000000a3",
+            idempotencyKey: "calorie-mirror-theme",
+            operation: "upsert",
+            baseVersion: 0,
+            occurredAt: "2026-09-01T08:00:00.000Z",
+            record: { recordType: "theme", theme: "Dark" },
+          },
+        ],
+      }),
+    });
+    expect(push.status).toBe(200);
+    expect(await push.json()).toMatchObject({
+      results: [
+        { id: `entry-${entryId}`, status: "accepted" },
+        { id: "note-2026-09-01", status: "accepted" },
+        { status: "accepted" },
+      ],
+    });
+
+    const pull = await api("/v1/sync/pull?domain=calorie&cursor=0", {
+      headers: { "X-Personal-Device-ID": "calorie-second-client" },
+    });
+    expect(pull.status).toBe(200);
+    const body = await pull.json<{
+      changes: Array<{ id: string; record: Record<string, unknown> }>;
+    }>();
+    // Payloads are preserved verbatim — the receiving app restores the exact
+    // entity bytes, including fields the Hub never inspects (fat, labels).
+    expect(body.changes).toContainEqual(expect.objectContaining({
+      id: `entry-${entryId}`,
+      record: entry,
+    }));
+    expect(body.changes).toContainEqual(expect.objectContaining({
+      id: "note-2026-09-01",
+      record: { recordType: "dailyNote", date: "2026-09-01", text: "Felt steady." },
+    }));
+
+    const malformed = await api("/v1/sync/push", {
+      method: "POST",
+      body: JSON.stringify({
+        domain: "calorie",
+        deviceId: "calorie-iphone",
+        mutations: [{
+          id: crypto.randomUUID(),
+          idempotencyKey: crypto.randomUUID(),
+          operation: "upsert",
+          baseVersion: 0,
+          occurredAt: "2026-09-01T08:00:00.000Z",
+          record: { recordType: "theme", theme: "Neon" },
+        }],
+      }),
+    });
+    expect(malformed.status).toBe(400);
   });
 });

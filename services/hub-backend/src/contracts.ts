@@ -5,6 +5,7 @@ export const DOMAINS = [
   "setline",
   "kith",
   "anchor",
+  "calorie",
 ] as const;
 
 export type Domain = (typeof DOMAINS)[number];
@@ -175,13 +176,32 @@ export function validateDomainRecord(
           "planned",
         ] as const),
       });
-    case "setline":
-      return compact({
-        title: requireString(input.title, "record.title", 240),
-        occurredOn: requireIsoDate(input.occurredOn, "record.occurredOn"),
-        minutes: requireInteger(input.minutes, "record.minutes"),
-        notes: optionalString(input.notes, "record.notes", 10_000),
-      });
+    case "setline": {
+      if (input.recordType === undefined) {
+        // Legacy activity summaries: pre-mirror pushes and the record_activity
+        // action both write this shape.
+        return compact({
+          title: requireString(input.title, "record.title", 240),
+          occurredOn: requireIsoDate(input.occurredOn, "record.occurredOn"),
+          minutes: requireInteger(input.minutes, "record.minutes"),
+          notes: optionalString(input.notes, "record.notes", 10_000),
+        });
+      }
+      // Full-fidelity entity envelopes from the mirror runtime. The entity is
+      // encoded exactly as the local store encodes it (including its numeric
+      // timestamps), so the envelope carries an ISO occurredAt for reads. The
+      // payload is kept whole rather than compacted into a summary shape.
+      requireEnum(input.recordType, "record.recordType", [
+        "template",
+        "session",
+        "goal",
+        "programme",
+      ] as const);
+      requireString(input.entityId, "record.entityId", 128);
+      requireIsoDate(input.occurredAt, "record.occurredAt");
+      requireObject(input.data, "record.data");
+      return input;
+    }
     case "kith": {
       const recordType = requireEnum(input.recordType, "record.recordType", [
         "person",
@@ -212,17 +232,222 @@ export function validateDomainRecord(
       });
     }
     case "anchor":
-      return compact({
-        title: requireString(input.title, "record.title", 240),
-        startedAt: requireIsoDate(input.startedAt, "record.startedAt"),
-        endedAt: optionalIsoDate(input.endedAt, "record.endedAt"),
-        durationSeconds: requireInteger(input.durationSeconds, "record.durationSeconds"),
-        interruptionCount: requireInteger(
-          input.interruptionCount,
-          "record.interruptionCount",
-        ),
-      });
+      return validateAnchorRecord(input);
+    case "calorie":
+      return validateCalorieRecord(input);
   }
+}
+
+// Calorie syncs full-fidelity entities through the mirror runtime, so its
+// records keep every field the app wrote. The contract still checks the fields
+// that identify each entity, then returns the payload intact rather than
+// compacting it down to a summary shape.
+function validateCalorieRecord(input: Record<string, unknown>): Record<string, unknown> {
+  const recordType = requireEnum(input.recordType, "record.recordType", [
+    "food",
+    "foodEntry",
+    "waterEntry",
+    "weightEntry",
+    "routine",
+    "checkIn",
+    "profile",
+    "goalCycle",
+    "dailyNote",
+    "cycleContext",
+    "theme",
+  ] as const);
+  switch (recordType) {
+    case "food":
+      requireString(input.id, "record.id", 128);
+      requireString(input.name, "record.name", 240);
+      requireString(input.servingName, "record.servingName", 240);
+      requireNutrients(input.nutrients);
+      break;
+    case "foodEntry":
+      requireString(input.id, "record.id", 128);
+      requireString(input.foodID, "record.foodID", 128);
+      requireString(input.foodName, "record.foodName", 240);
+      requireEnum(input.meal, "record.meal", [
+        "Breakfast",
+        "Lunch",
+        "Dinner",
+        "Snack",
+      ] as const);
+      requireIsoDate(input.timestamp, "record.timestamp");
+      requireNumber(input.servings, "record.servings");
+      requireNutrients(input.nutrients);
+      break;
+    case "waterEntry":
+      requireString(input.id, "record.id", 128);
+      requireIsoDate(input.timestamp, "record.timestamp");
+      requireInteger(input.millilitres, "record.millilitres");
+      break;
+    case "weightEntry":
+      requireString(input.id, "record.id", 128);
+      requireIsoDate(input.date, "record.date");
+      requireNumber(input.kilograms, "record.kilograms");
+      break;
+    case "routine":
+      requireString(input.id, "record.id", 128);
+      requireString(input.name, "record.name", 240);
+      requireEnum(input.period, "record.period", [
+        "Morning",
+        "Evening",
+        "Either",
+      ] as const);
+      break;
+    case "checkIn":
+      requireString(input.id, "record.id", 128);
+      requireString(input.routineID, "record.routineID", 128);
+      requireIsoDate(input.date, "record.date");
+      break;
+    case "profile":
+      requireString(input.name, "record.name", 240);
+      if (input.goal !== undefined) {
+        requireEnum(input.goal, "record.goal", [
+          "Maintain",
+          "Gradual loss",
+          "Gradual gain",
+        ] as const);
+      }
+      if (input.activity !== undefined) {
+        requireEnum(input.activity, "record.activity", [
+          "Light",
+          "Moderate",
+          "High",
+        ] as const);
+      }
+      break;
+    case "goalCycle":
+      requireString(input.id, "record.id", 128);
+      requireEnum(input.kind, "record.kind", ["cut", "gain", "recomposition"] as const);
+      requireString(input.goal, "record.goal", 240);
+      requireIsoDate(input.startOn, "record.startOn");
+      optionalIsoDate(input.endOn, "record.endOn");
+      break;
+    case "dailyNote":
+      requireString(input.date, "record.date", 16);
+      requireString(input.text, "record.text", 8_000);
+      break;
+    case "cycleContext":
+      if (input.enabled !== undefined && typeof input.enabled !== "boolean") {
+        throw new HttpError(400, "invalid_request", "record.enabled must be a boolean");
+      }
+      optionalIsoDate(input.latestPeriodStart, "record.latestPeriodStart");
+      break;
+    case "theme":
+      requireEnum(input.theme, "record.theme", ["System", "Light", "Dark"] as const);
+      break;
+  }
+  return input;
+}
+
+// Anchor mirrors its whole SwiftData document through the shared runtime, so
+// recordType payloads preserve every field the app wrote. The legacy summary
+// shape (no recordType) stays valid for already-deployed clients; both kinds
+// validate identity fields and return the payload intact.
+function validateAnchorRecord(input: Record<string, unknown>): Record<string, unknown> {
+  if (input.recordType === undefined) {
+    compact({
+      title: requireString(input.title, "record.title", 240),
+      startedAt: requireIsoDate(input.startedAt, "record.startedAt"),
+      endedAt: optionalIsoDate(input.endedAt, "record.endedAt"),
+      durationSeconds: requireInteger(input.durationSeconds, "record.durationSeconds"),
+      interruptionCount: requireInteger(
+        input.interruptionCount,
+        "record.interruptionCount",
+      ),
+    });
+    return input;
+  }
+  const recordType = requireEnum(input.recordType, "record.recordType", [
+    "focusSession",
+    "distraction",
+    "goal",
+    "project",
+    "savedTag",
+    "machineActivityDay",
+    "preferences",
+    "behaviorProfile",
+    "scheduleTemplate",
+    "habitCompletion",
+    "dayPlanConfirmation",
+    "planBlock",
+    "divergenceEvent",
+  ] as const);
+  requireString(input.id, "record.id", 128);
+  switch (recordType) {
+    case "focusSession":
+      requireIsoDate(input.startedAt, "record.startedAt");
+      optionalIsoDate(input.endedAt, "record.endedAt");
+      break;
+    case "distraction":
+      requireIsoDate(input.capturedAt, "record.capturedAt");
+      if (input.note !== undefined || input.keywords !== undefined) {
+        throw new HttpError(
+          400,
+          "invalid_request",
+          "distraction notes and keywords never leave the device",
+        );
+      }
+      break;
+    case "goal":
+      requireString(input.title, "record.title", 240);
+      break;
+    case "project":
+      requireString(input.name, "record.name", 240);
+      break;
+    case "savedTag":
+      requireString(input.name, "record.name", 240);
+      break;
+    case "machineActivityDay":
+      requireIsoDate(input.day, "record.day");
+      break;
+    case "preferences":
+      requireEnum(input.appearanceRaw, "record.appearanceRaw", [
+        "system",
+        "light",
+        "dark",
+      ] as const);
+      break;
+    case "behaviorProfile":
+      break;
+    case "scheduleTemplate":
+      requireString(input.title, "record.title", 240);
+      break;
+    case "habitCompletion":
+      requireString(input.habitID, "record.habitID", 128);
+      requireIsoDate(input.day, "record.day");
+      break;
+    case "dayPlanConfirmation":
+      requireIsoDate(input.day, "record.day");
+      break;
+    case "planBlock":
+      requireString(input.title, "record.title", 240);
+      requireIsoDate(input.plannedStart, "record.plannedStart");
+      break;
+    case "divergenceEvent":
+      requireString(input.blockID, "record.blockID", 128);
+      requireIsoDate(input.occurredAt, "record.occurredAt");
+      break;
+  }
+  return input;
+}
+
+function requireNumber(value: unknown, label: string): number {
+  if (typeof value !== "number" || !Number.isFinite(value)) {
+    throw new HttpError(400, "invalid_request", `${label} must be a number`);
+  }
+  return value;
+}
+
+function requireNutrients(value: unknown): void {
+  const nutrients = requireObject(value, "record.nutrients");
+  requireNumber(nutrients.calories, "record.nutrients.calories");
+  requireNumber(nutrients.protein, "record.nutrients.protein");
+  requireNumber(nutrients.carbohydrates, "record.nutrients.carbohydrates");
+  requireNumber(nutrients.fat, "record.nutrients.fat");
+  requireNumber(nutrients.fibre, "record.nutrients.fibre");
 }
 
 export function parsePushRequest(value: unknown): PushRequest {

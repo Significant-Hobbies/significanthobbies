@@ -15,6 +15,7 @@ const TABLES: Record<Domain, string> = {
   setline: "setline_records",
   kith: "kith_records",
   anchor: "anchor_records",
+  calorie: "calorie_records",
 };
 
 interface StoredRecordRow {

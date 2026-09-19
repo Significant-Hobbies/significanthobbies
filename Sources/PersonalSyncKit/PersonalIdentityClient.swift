@@ -143,7 +143,7 @@ public actor PersonalIdentityClient {
     private var tokenWriteWaiters: [CheckedContinuation<Void, Never>] = []
 
     public init(
-        baseURL: URL = URL(string: "https://significanthobbies.com")!,
+        baseURL: URL = URL(string: "https://live.significanthobbies.com")!,
         session: URLSession = .shared,
         tokenStore: any PersonalBearerTokenStore
     ) {
