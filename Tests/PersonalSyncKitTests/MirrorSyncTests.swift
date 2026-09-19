@@ -386,3 +386,256 @@ private extension InMemoryTransport {
     #expect(await doc.records["person-1"]?.payload == Data("new local edit".utf8))
     #expect(await hub.store["person-1"]?.payload == Data("new local edit".utf8))
 }
+
+@Test(arguments: ["bind", "repull", "reset"])
+func mirrorControlMutationCannotBeOverwrittenBySuspendedPass(_ operation: String) async throws {
+    let hub = InMemoryTransport(id: "hub")
+    let (runtime, directory) = try makeRuntime([hub])
+    defer { try? FileManager.default.removeItem(at: directory) }
+    let remote = record("person-1", at: 100, payload: "remote")
+    try await hub.push([remote])
+    let doc = FakeLocalStore()
+    let outcome = try await runtime.synchronize {
+        // The runtime has read bookkeeping and is suspended in app code.
+        switch operation {
+        case "bind": try await runtime.bindOwner("owner-a")
+        case "repull": try await runtime.repullAll()
+        default: try await runtime.forgetBookkeeping()
+        }
+        return await doc.snapshot()
+    } apply: { try await doc.apply($0) }
+    #expect(!outcome.isComplete)
+    #expect(await doc.appliedBatches == 0)
+    let state = try await MirrorBookkeepingStore(
+        fileURL: directory.appending(path: "mirror-sync.json")
+    ).load()
+    #expect(state.pullTokens.isEmpty)
+    #expect(state.lastSyncedAt == nil)
+    #expect(state.ownerID == (operation == "bind" ? "owner-a" : nil))
+    #expect(state.ledger.stamps.isEmpty)
+}
+
+@Test(arguments: ["bind", "repull", "reset"])
+func mirrorBookkeepingRejectsStaleFinalSave(_ operation: String) async throws {
+    let directory = FileManager.default.temporaryDirectory.appending(path: UUID().uuidString)
+    defer { try? FileManager.default.removeItem(at: directory) }
+    let store = MirrorBookkeepingStore(fileURL: directory.appending(path: "mirror.json"))
+    let snapshot = try await store.loadSnapshot()
+    switch operation {
+    case "bind": try await store.bindOwner("owner-a")
+    case "repull": try await store.repullAll()
+    default: try await store.reset()
+    }
+    let afterControl = try await store.load()
+    await #expect(throws: MirrorSyncError.self) {
+        try await store.save(snapshot.state, ifRevision: snapshot.revision)
+    }
+    #expect(try await store.load() == afterControl)
+}
+
+private actor LocalSnapshotFence {
+    let failOnCall: Int
+    var calls = 0
+    init(failOnCall: Int) { self.failOnCall = failOnCall }
+    func validate() throws {
+        calls += 1
+        if calls == failOnCall { throw MirrorSyncError.unavailable("local document changed") }
+    }
+}
+
+@Test(arguments: [1, 2, 3])
+func mirrorLocalSnapshotValidationProtectsPushOnlyPassAndReceipt(_ failOnCall: Int) async throws {
+    let hub = InMemoryTransport(id: "hub")
+    let (runtime, directory) = try makeRuntime([hub])
+    defer { try? FileManager.default.removeItem(at: directory) }
+    let fence = LocalSnapshotFence(failOnCall: failOnCall)
+    let local = record("person-1", at: 100, payload: "local")
+    let outcome = try await runtime.synchronize(
+        records: { [local] },
+        validateLocalSnapshot: { _ in try await fence.validate() },
+        apply: { _ in Issue.record("A push-only pass must not apply anything") }
+    )
+    #expect(!outcome.isComplete)
+    let persisted = try await MirrorBookkeepingStore(fileURL: directory.appending(path: "mirror-sync.json")).load()
+    #expect(persisted.pullTokens.isEmpty)
+    #expect(persisted.lastSyncedAt == nil)
+    if failOnCall < 3 { #expect(await hub.store.isEmpty) }
+    else { #expect(await hub.store[local.name] == local) }
+}
+
+// MARK: - Runtime: transport-scoped snapshots
+
+/// Records what the scoped callbacks were invoked with, so tests can prove
+/// each transport's pass ran under its own runtime id.
+private actor ScopedCallbackLog {
+    var snapshots: [String] = []
+    var applies: [(source: String, names: [String])] = []
+    var validations: [String] = []
+
+    func recordSnapshot(_ transportID: String) { snapshots.append(transportID) }
+    func recordApply(source: String, names: [String]) { applies.append((source, names)) }
+    func recordValidation(_ transportID: String) { validations.append(transportID) }
+}
+
+@Test(arguments: [["hub", "cloudkit"], ["cloudkit", "hub"]])
+func transportScopedSnapshotFiltersIneligibleRecord(_ order: [String]) async throws {
+    let hub = InMemoryTransport(id: "hub")
+    let cloud = InMemoryTransport(id: "cloudkit")
+    let (runtime, _) = try makeRuntime(order.map { $0 == "hub" ? hub : cloud })
+    let shared = record("shared-1", at: 100, payload: "everywhere")
+    let cloudOnly = record("private-1", at: 100, payload: "cloud only")
+    let log = ScopedCallbackLog()
+
+    func synchronize() async throws -> MirrorRuntime.Outcome {
+        try await runtime.synchronize(
+            recordsForTransport: { transportID in
+                await log.recordSnapshot(transportID)
+                return transportID == "cloudkit" ? [shared, cloudOnly] : [shared]
+            },
+            applyFromTransport: { source, pulled in
+                await log.recordApply(source: source, names: pulled.map(\.name))
+            }
+        )
+    }
+
+    #expect(try await synchronize().isComplete)
+    // The record withheld from hub's snapshot is never offered to it —
+    // absence filters, it does not delete.
+    #expect(await hub.store["shared-1"]?.payload == Data("everywhere".utf8))
+    #expect(await hub.store["private-1"] == nil)
+    #expect(await cloud.store["shared-1"]?.payload == Data("everywhere".utf8))
+    #expect(await cloud.store["private-1"]?.payload == Data("cloud only".utf8))
+    #expect(await Set(log.snapshots) == Set(order))
+
+    // A later pass keeps the exclusion: the withheld record never leaks to
+    // the hub, and nothing about it is treated as a tombstone.
+    #expect(try await synchronize().isComplete)
+    #expect(await hub.store["private-1"] == nil)
+    #expect(await cloud.store["private-1"]?.payload == Data("cloud only".utf8))
+    #expect(await log.applies.isEmpty)
+}
+
+@Test func scopedCallbacksReceiveRuntimeTransportID() async throws {
+    let hub = InMemoryTransport(id: "hub")
+    let cloud = InMemoryTransport(id: "cloudkit")
+    try await hub.push([record("remote-1", at: 100, payload: "from hub")])
+    let (runtime, _) = try makeRuntime([hub, cloud])
+    let doc = FakeLocalStore()
+    let log = ScopedCallbackLog()
+
+    let outcome = try await runtime.synchronize(
+        recordsForTransport: { transportID in
+            await log.recordSnapshot(transportID)
+            return await doc.snapshot()
+        },
+        validateLocalSnapshot: { transportID in
+            await log.recordValidation(transportID)
+        },
+        applyFromTransport: { source, pulled in
+            await log.recordApply(source: source, names: pulled.map(\.name))
+            try await doc.apply(pulled)
+        }
+    )
+
+    #expect(outcome.isComplete)
+    // The winner pulled from the hub is attributed to "hub" — the runtime's
+    // transport id — and forwarded to CloudKit on its own pass.
+    #expect(await log.applies.map(\.source) == ["hub"])
+    #expect(await log.applies.map(\.names) == [["remote-1"]])
+    #expect(await doc.records["remote-1"]?.payload == Data("from hub".utf8))
+    #expect(await cloud.store["remote-1"]?.payload == Data("from hub".utf8))
+    #expect(await Set(log.snapshots) == ["hub", "cloudkit"])
+    #expect(await Set(log.validations) == ["hub", "cloudkit"])
+}
+
+@Test func failedScopedApplyLeavesPullTokenAndLaterTransportProceeds() async throws {
+    let hub = InMemoryTransport(id: "hub")
+    let cloud = InMemoryTransport(id: "cloudkit")
+    try await hub.push([record("remote-1", at: 200, payload: "from hub")])
+    let (runtime, directory) = try makeRuntime([hub, cloud])
+    defer { try? FileManager.default.removeItem(at: directory) }
+    let doc = FakeLocalStore()
+    try await doc.apply([record("local-1", at: 100, payload: "local")])
+    let log = ScopedCallbackLog()
+
+    await doc.setFailNextApply()
+    let first = try await runtime.synchronize(
+        recordsForTransport: { _ in await doc.snapshot() },
+        applyFromTransport: { source, pulled in
+            await log.recordApply(source: source, names: pulled.map(\.name))
+            try await doc.apply(pulled)
+        }
+    )
+
+    #expect(!first.isComplete)
+    #expect(first.transports.first { $0.transportID == "hub" }?.failure != nil)
+    #expect(first.transports.first { $0.transportID == "cloudkit" }?.failure == nil)
+    // The rejected batch was not committed and hub's pull token was not
+    // saved — the same delta must be offered again.
+    #expect(await doc.records["remote-1"] == nil)
+    #expect(await log.applies.map(\.source) == ["hub"])
+    let persisted = try await MirrorBookkeepingStore(
+        fileURL: directory.appending(path: "mirror-sync.json")
+    ).load()
+    #expect(persisted.pullTokens["hub"] == nil)
+    #expect(persisted.pullTokens["cloudkit"] != nil)
+    // Hub's failure did not block CloudKit, which accepted the local record.
+    #expect(await cloud.store["local-1"]?.payload == Data("local".utf8))
+
+    let second = try await runtime.synchronize(
+        recordsForTransport: { _ in await doc.snapshot() },
+        applyFromTransport: { source, pulled in
+            await log.recordApply(source: source, names: pulled.map(\.name))
+            try await doc.apply(pulled)
+        }
+    )
+    #expect(second.isComplete)
+    #expect(await doc.records["remote-1"]?.payload == Data("from hub".utf8))
+    #expect(await log.applies.map(\.source) == ["hub", "hub"])
+}
+
+private actor CascadingLocalStore {
+    var records: [String: MirrorRecord]
+
+    init(records: [MirrorRecord]) {
+        self.records = Dictionary(uniqueKeysWithValues: records.map { ($0.name, $0) })
+    }
+
+    func snapshot() -> [MirrorRecord] {
+        records.values.sorted { $0.name < $1.name }
+    }
+
+    func apply(_ pulled: [MirrorRecord]) {
+        for record in pulled {
+            records[record.name] = record
+            if record.name == "person-1", record.isDeleted {
+                records["note-1"] = MirrorRecord(
+                    name: "note-1",
+                    modifiedAt: record.modifiedAt,
+                    payload: nil
+                )
+            }
+        }
+    }
+}
+
+@Test func applyCascadeRefreshesOutgoingProjectionBeforePush() async throws {
+    let hub = InMemoryTransport(id: "hub")
+    let parent = record("person-1", at: 100, payload: "person")
+    let pendingChild = record("note-1", at: 200, payload: "private pending note")
+    let parentDeletion = record("person-1", at: 300, payload: nil)
+    try await hub.push([parentDeletion])
+    let (runtime, _) = try makeRuntime([hub])
+    let local = CascadingLocalStore(records: [parent, pendingChild])
+
+    let outcome = try await runtime.synchronize(
+        recordsForTransport: { _ in await local.snapshot() },
+        applyFromTransport: { _, records in await local.apply(records) }
+    )
+
+    #expect(outcome.isComplete)
+    #expect(await hub.store["person-1"]?.isDeleted == true)
+    #expect(await hub.store["note-1"]?.isDeleted == true)
+    #expect(await hub.store["note-1"]?.payload != pendingChild.payload)
+    #expect(await local.records["note-1"]?.isDeleted == true)
+}

@@ -1,0 +1,115 @@
+{
+  "date": "2026-09-19",
+  "status": "uncommitted local qualification; no migration or release approval",
+  "workspace": "/Users/sarthak/Desktop/fleet/.worktrees/personal-sync-158",
+  "candidates": {
+    "shared-safe-sync-158": {
+      "head": "8eef61c717d54a6fbfebc38f29671bfd00b24f4b",
+      "includesPreexistingNativeMigration": false,
+      "changedFilesSHA256": {
+        "Sources/PersonalSyncKit/HubMirrorTransport.swift": "c3330bb24db783d6a55911006f6178c594ba23a330a3cbef01da82f603cdbfa1",
+        "Sources/PersonalSyncKit/MirrorRuntime.swift": "11064abbf1ccbc5761ca59f982c38209b375ec89aa2ddb1994d60d099b635a2d",
+        "Sources/PersonalSyncKit/MirrorTransport.swift": "a83a0ddf4c40810d864b78fb93f802e848dddcf9cb861fd322e14f25289df037",
+        "Tests/PersonalSyncKitTests/HubMirrorTransportTests.swift": "b51407355e097c2afece1e232d723f0bffa9134141014b591bf860ef279bf693",
+        "Tests/PersonalSyncKitTests/MirrorSyncTests.swift": "2709fadc42f2075aba6c10cbaa9fe8659569a248942f4c4a0d5bc40917dac442",
+        "docs/qualification/personal-sync-safety-2026-09-19.md": "e014ddfaa93be6a1104463b1fc1f18d3b5863568d0cf817ba70b83122727aab2"
+      }
+    },
+    "anchor-safe-integrated-158": {
+      "head": "faab9d636395e1a480b2e1bc6efd0b032f7fd0a2",
+      "includesPreexistingNativeMigration": false,
+      "changedFilesSHA256": {
+        "Package.resolved": null,
+        "Package.swift": "da5c36d106ea5a33b196f4489f610f09ab5a64e74cadf5bc8c0e9d0b4b0d698c",
+        "Sources/AnchorCore/Store/AnchorMirror.swift": "6f04b7d2e193f2c6549d7fea6bd93b39fac45868dd127d1543962bc505772f83",
+        "Sources/AnchorCore/Store/AnchorPlatformSync.swift": "3b06e97b5be7a1809625e624d8bbd2082cc8654341b50cdb52326c1e0e8319c7",
+        "Sources/AnchorCore/Store/AnchorStore.swift": "cb2174f4f8c323fc95e88db3d014cb8e09dd9d561d400a6550ebb5ed5d5ef5a4",
+        "Sources/AnchorUI/Root/AnchorAppWorld.swift": "83a944ae32527bf933c1358ef0a3dfc044278ed459f374dfd26251ebfa57e000",
+        "Tests/AnchorCoreTests/AnchorAccountSyncTests.swift": "9ceebf7026a5c9543144d28a6191e221eddc21cb4130c41cf360cddff65a2580",
+        "Tests/AnchorCoreTests/FormatAndStoreTests.swift": "25069a80ebf4918025e2250472b89ef0d6664a6dda7e58c65bec53722b67674c",
+        "docs/qualification/mirror-2026-09-19.md": "db43b6ab9b7a6bdab93695db1431fcaaeda8eddaa9906e9a75194514c4ea0be5"
+      }
+    },
+    "calorie-safe-sync-158": {
+      "head": "82f624b09e63b8e7ff909903838638fc691cb271",
+      "includesPreexistingNativeMigration": true,
+      "changedFilesSHA256": {
+        "ios/Calorie.xcodeproj/project.pbxproj": "981e56e3e552a55e5f29cb5c1347e7a1cfe4bb8a3418daaf5e2d563aa9341b98",
+        "ios/Calorie.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved": null,
+        "ios/Sources/Calorie/AppModel.swift": "889aff05cf2fcb46ef6034394723b0aad725c3e4c73dd54ddfd94f510b744253",
+        "ios/Sources/Calorie/Calorie.entitlements": "1626e356629cd119ff637d146e86e2486839efed563fbf84ec15f1bad4553876",
+        "ios/Sources/Calorie/CalorieAccount.swift": "97acb1212fa9fc64f3b39bfdb3b784d06ee5c840036b9f046ce6d07c401ede14",
+        "ios/Sources/Calorie/CalorieApp.swift": "efff71191018dd3eb2e445482553e4000dba047e4cccf639081c7d39caac95d3",
+        "ios/Sources/Calorie/LegacyCalorieJournal.swift": "4032ddc3fcdb27abc86dc6b41b990d5d10ba299f6c36f78818c25ffb3bf8bf59",
+        "ios/Sources/Calorie/NativeAccountClient.swift": null,
+        "ios/Sources/Calorie/RootView.swift": "17030835d916f8ea6df5fa63cc55d9609cd40702639c7a245173c52577ac31df",
+        "ios/Sources/Calorie/SecondaryViews.swift": "a415fb75face9998216a209d0ce95d6767447a6c94ede0de5db2ef5d593ed36f",
+        "ios/Sources/Calorie/ServerStateQueryCache.swift": null,
+        "ios/Sources/CalorieCore/CloudJournal.swift": "0b61c90037b23ea1545c5c365cc10a72255b754cc1ea6ebf63f79d73da3feebc",
+        "ios/Sources/CalorieCore/Domain.swift": "72a026e8afccd946a7e4a9e7c0834bcd0af86f2d5beb62af31513b52fd502668",
+        "ios/Sources/CalorieCore/SyncQueue.swift": null,
+        "ios/Tests/CalorieCoreTests/CalorieCoreTests.swift": "6033331fe3a49d21aba9a69e6801d561018054054e03cf7bfea093a080eed98d",
+        "ios/Tests/CalorieCoreTests/SyncIntentPersistenceTests.swift": null,
+        "ios/Tests/CalorieTests/CalorieLocalSaveTests.swift": "eb14adac3171313da62e5927e5f8149ff12c466bb78ebe6d7b6aa39e4ad9afb4",
+        "ios/Tests/CalorieTests/CalorieOnboardingTests.swift": "eb3a4e7e9cb08e91a223524974f8b52b56f94da955c2151abab17cbaed564ddc",
+        "ios/Tests/CalorieTests/CalorieSyncCommitTests.swift": "99f196ce3ff3f1272a0989e03f4cc807e424d17460d34e6448081e0b8bb67f99",
+        "ios/Tests/CalorieTests/NativeAccountScopeTests.swift": null,
+        "ios/Tests/CalorieTests/NativeAccountTests.swift": null,
+        "ios/project.yml": "da78e98ac1297e971606bcbe99e08882f25bc97ba9ddf2c4b56401591029dc3b"
+      }
+    },
+    "setline-safe-sync-158": {
+      "head": "8cee9ccd3edd0b783fe3e1f0803ed28a55936223",
+      "includesPreexistingNativeMigration": true,
+      "changedFilesSHA256": {
+        "ios/Setline.xcodeproj/project.pbxproj": "d021d0ae5f0272871c01ace34144007aae2f9637273513b831c13a6f3d016bd6",
+        "ios/Setline.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved": null,
+        "ios/Sources/Setline/AppModel.swift": "5184092dc3297f6969e56cc8b1c1a7b481aaf4bfb4089343dae5cda805529d93",
+        "ios/Sources/Setline/SetlineApp.swift": "5f09afde2335e8d22716c38ce623af07036ea79a5eb58388aa064bb95e94245d",
+        "ios/Sources/Setline/SetlinePlatformRecord.swift": null,
+        "ios/Sources/SetlineCore/Domain.swift": "00643b523ab8f15e99a6c0bfa4a859da87d591c4504f285aef93851a23adb5d0",
+        "ios/Sources/SetlineCore/Sync/CloudKitRecordStore.swift": null,
+        "ios/Sources/SetlineCore/Sync/RemoteRecordStore.swift": null,
+        "ios/Sources/SetlineCore/Sync/SyncCoordinator.swift": null,
+        "ios/Sources/SetlineCore/Sync/SyncEngine.swift": "71b55aed61e09a3b12a1cfd387f973de25ffaba0727f31ed0779327df77a7677",
+        "ios/Sources/SetlineCore/Sync/SyncStateStore.swift": "d2f167b6ce2545aafa1f3bbb0f8c22edce11d5a000701a658390c149791cc37f",
+        "ios/Sources/SetlineCore/Sync/SyncTypes.swift": "7f91b9ab2031bcd5794823187b44be2a6a6c71131e464d15e866cf0528ab0f52",
+        "ios/Tests/SetlineCoreTests/CloudKitRecordStoreTests.swift": null,
+        "ios/Tests/SetlineCoreTests/SyncCoordinatorTests.swift": null,
+        "ios/Tests/SetlineCoreTests/SyncEngineTests.swift": "c945040c821f26d1576e48d10e4abe887eeab47fedfd566aeab80511da1724f3",
+        "ios/Tests/SetlineTests/SetlineCallerSyncTests.swift": "d1131c00c151e01f8348ce0ab73c175b37b7e41893f81f43cb983f4f5641ac87",
+        "ios/Tests/SetlineTests/SetlineLocalSaveTests.swift": "09aa6f975fc6d83c7942f664b06c7a6edd0ef5dd9687e079d17b83627e36e1fc",
+        "ios/Tests/SetlineTests/SetlinePlatformRecordTests.swift": null,
+        "ios/Tests/SetlineTests/SetlineSyncCommitTests.swift": "29c635678087bb84d4dfc7b19a9c3324de2373652b3b24b474fcac84d6e42040",
+        "ios/project.yml": "6d41bc64c98d521e9f07d02d77b32eddf92a19d2ed168bee95d0f939a92ec210",
+        "tests/native-config.test.mjs": "27b19930559b6ac9094a9189cccb34c442854d7aac7434c2b5f80abeebb398c5"
+      }
+    },
+    "kith-safe-integrated-158": {
+      "head": "344895435aa6f6360cc0fc11f46f23a76682ec78",
+      "includesPreexistingNativeMigration": false,
+      "changedFilesSHA256": {
+        "ios/Kith.xcodeproj/project.pbxproj": "971ff51f38d58304852025d7c38d20403b290568d20f8f070a99c9016e007816",
+        "ios/Kith.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved": null,
+        "ios/Sources/Kith/AppModel.swift": "bb37cf91685289adafa203a3446e5fa3779ef3d9a403f8724af4b008b108a665",
+        "ios/Sources/Kith/KithPlatformRecord.swift": "32fc9f020c5620f3bfd06ce0e32212471699db6f84da4ee71b19b75a9fe0220c",
+        "ios/Tests/KithAppTests/KithCallerSyncTests.swift": "9161c1b56bfbad1dc74beb5ac8338214085e2ce06c10f907a48d56b1c1131d13",
+        "ios/Tests/KithAppTests/KithSyncCommitTests.swift": "130dc4ce244d77e2c02781be920523bafbb99bd02eaaf40813fcbfff950dbd6c",
+        "ios/project.yml": "eb207f872ab44e577a72781673dd9fb412b1da67170f64e8fb6c8c3a94abad22",
+        "ios/scripts/check.sh": "ca95d05eb7c877e56040c37fd7efb12427b92b445bb5934fa0f0c19adc8201ff"
+      }
+    }
+  },
+  "evidence": {
+    "anchor-final-full-158.log": "820dc25a3d507412735a4fa9bd678b74ff68109180986eb1062af5c7f3e04076",
+    "anchor-final-macos-build-158.json": "5d2f47409ee857122d7fd64240fcc30944aff3a3687edec06dcdf7860539752e",
+    "anchor-final-ios-build-158.json": "ac43602fdee0a94a4256f55cec88d78d7eebd1f0e06ad12e055c7f66ef05dfcb",
+    "anchor-final-watch-build-158.log": "4321f502d75544699cee3dc1ad39d5e1dac360c117be8c59bcef5879119383c3",
+    "calorie-native-gate-158.log": "35db0e0252d8d7a0ab18fde1182d6932a523deb616d7a9c4a1a5ca9976f9221c",
+    "calorie-final-focused-158.json": "c496e015e395759e78856c0af1b33bd2f5d52592cf9c4bc33f820917c0b2e28e",
+    "setline-native-gate-final-158.log": "ae68ca2b3a3e49a42af8a9d1ebea79d76d23328aeee9bee689519951a4f449a4",
+    "setline-final-check-158.log": "6dabc4224d836d2c36a23273f27bdf90469bf3d59fed212334b6dfdff5673f23",
+    "kith-native-gate-158.log": "a0e644c0f35f228dfd4ad185b5416061ecd1bb187c144c8b53bbc4d498b08d50",
+    "kith-final-focused-158.json": "c781a8c52a91e8d753f283f2f41b00210798e8fc2cefdf449e9eaed7fcc04ea7"
+  }
+}

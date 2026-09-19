@@ -29,6 +29,13 @@ public struct HubMirrorTransport: MirrorTransport {
     private let appendOnly: @Sendable (String) -> Bool
     /// Hub server versions per record, for optimistic concurrency only.
     private let versions: SyncVersionStore
+    /// The account this copy is pinned to. Set only on the session copy
+    /// returned by `beginSynchronization`: every request in that pass then
+    /// authenticates with this exact user, revision, and bearer token, and
+    /// the live account is only ever consulted to prove it is still the same
+    /// one — a mid-pass sign-in is detected, never adopted as the session for
+    /// work already begun under another account.
+    private var pinned: PersonalSyncAccount?
 
     public init(
         domain: PersonalDomain,
@@ -48,18 +55,52 @@ public struct HubMirrorTransport: MirrorTransport {
         self.appendOnly = appendOnly
     }
 
-    private func resolvedAccount() async throws -> PersonalSyncAccount? {
+    /// The account currently signed in and permitted — used to detect that the
+    /// session a pass began with is gone, never as a replacement for it.
+    private func liveAccount() async throws -> PersonalSyncAccount? {
         guard let verified = try await account() else { return nil }
         if let accountGate, await !accountGate(verified) { return nil }
         return verified
     }
 
+    /// The identity requests authenticate as: the pinned account when this is
+    /// a session copy, otherwise a fresh resolution.
+    private func resolvedAccount() async throws -> PersonalSyncAccount? {
+        if let pinned { return pinned }
+        return try await liveAccount()
+    }
+
     private func requireCurrent(_ expected: PersonalSyncAccount) async throws {
-        guard let current = try await resolvedAccount(),
+        guard let current = try await liveAccount(),
               current.userID == expected.userID,
               current.revision == expected.revision,
               current.bearerToken == expected.bearerToken else {
             throw PersonalIdentityError.sessionChanged
+        }
+    }
+
+    /// Pins one synchronization pass to the account verified now. The returned
+    /// copy authenticates every request — every pull page and every push batch
+    /// — with that exact account and re-checks the live account around each
+    /// suspension, so a sign-in that lands mid-pass fails the pass instead of
+    /// silently continuing as the new account.
+    public func beginSynchronization() async throws -> any MirrorTransport {
+        guard let verified = try await liveAccount() else {
+            throw MirrorSyncError.unavailable("not signed in")
+        }
+        var copy = self
+        copy.pinned = verified
+        return copy
+    }
+
+    /// Asserts the live account is still the one this pass was pinned to. On
+    /// an unpinned transport this only asserts some account remains signed in;
+    /// `beginSynchronization` is what turns an account switch into a failure.
+    public func validateSynchronization() async throws {
+        if let pinned {
+            try await requireCurrent(pinned)
+        } else if try await resolvedAccount() == nil {
+            throw MirrorSyncError.unavailable("not signed in")
         }
     }
 
@@ -85,6 +126,10 @@ public struct HubMirrorTransport: MirrorTransport {
         guard let verified = try await resolvedAccount() else {
             throw MirrorSyncError.unavailable("not signed in")
         }
+        // Never send a batch under a session that already ended: on a pinned
+        // pass this is where a mid-pass account switch stops the push before
+        // the next network call.
+        try await requireCurrent(verified)
         var mutations: [SyncMutation] = []
         for record in records {
             let recordPayload: JSONValue?
@@ -103,6 +148,7 @@ public struct HubMirrorTransport: MirrorTransport {
                 )
             )
         }
+        try await requireCurrent(verified)
         let response = try await client.push(
             domain: domain,
             deviceId: deviceId,
@@ -151,6 +197,7 @@ public struct HubMirrorTransport: MirrorTransport {
             try Task.checkCancellation()
             pages += 1
             guard pages <= 100 else { throw MirrorSyncError.invalidResponse }
+            try await requireCurrent(verified)
             let page = try await client.pull(domain: domain, cursor: cursor, bearerToken: verified.bearerToken)
             try await requireCurrent(verified)
             for change in page.changes {
@@ -168,6 +215,7 @@ public struct HubMirrorTransport: MirrorTransport {
                 )
                 try await versions.setVersion(change.version, for: change.id, in: domain)
             }
+            try await requireCurrent(verified)
             guard page.cursor >= cursor, !page.hasMore || page.cursor > cursor else {
                 throw MirrorSyncError.invalidResponse
             }

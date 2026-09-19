@@ -417,6 +417,101 @@ describe("Hub Backend Worker", () => {
     expect(JSON.stringify(body)).toContain('\"personName\":\"Rahul\"');
   });
 
+  it("round-trips Kith person details and list items verbatim", async () => {
+    const record = {
+      recordType: "person",
+      personId: "person-mira",
+      personName: "Mira",
+      circle: "family",
+      closeness: 5,
+      hue: "sage",
+      birthday: "1994-03-12",
+      howWeMet: "Climbing gym",
+      standingNotes: "Prefers morning calls.",
+      details: [
+        { key: "Pronouns", value: "she/her" },
+        { key: "Coffee order", value: "" },
+      ],
+      listItems: ["Gift idea: field notebook", ""],
+      createdAt: "2026-08-21T06:00:00.000Z",
+    };
+    const push = await api("/v1/sync/push", {
+      method: "POST",
+      body: JSON.stringify({
+        domain: "kith",
+        deviceId: "iphone",
+        mutations: [{
+          id: "person-mira",
+          idempotencyKey: "kith-person-mira-v1",
+          operation: "upsert",
+          baseVersion: 0,
+          occurredAt: "2026-08-21T06:00:00.000Z",
+          record,
+        }],
+      }),
+    });
+    expect(push.status).toBe(200);
+
+    const pull = await api("/v1/sync/pull?domain=kith&cursor=0", {
+      headers: { "X-Personal-Device-ID": "kith-second-client" },
+    });
+    expect(pull.status).toBe(200);
+    const body = await pull.json<{
+      changes: Array<{ id: string; record: Record<string, unknown> }>;
+    }>();
+    expect(body.changes).toContainEqual(
+      expect.objectContaining({ id: "person-mira", record }),
+    );
+  });
+
+  it("rejects malformed Kith person fields and out-of-range closeness", async () => {
+    const base = {
+      recordType: "person",
+      personId: "person-dev",
+      personName: "Dev",
+      circle: "friends",
+      closeness: 3,
+      hue: "clay",
+      createdAt: "2026-08-21T06:00:00.000Z",
+    };
+    const push = (record: Record<string, unknown>) => api("/v1/sync/push", {
+      method: "POST",
+      body: JSON.stringify({
+        domain: "kith",
+        deviceId: "iphone",
+        mutations: [{
+          id: crypto.randomUUID(),
+          idempotencyKey: crypto.randomUUID(),
+          operation: "upsert",
+          baseVersion: 0,
+          occurredAt: "2026-08-21T06:00:00.000Z",
+          record,
+        }],
+      }),
+    });
+
+    // Records from before details/listItems shipped still validate.
+    expect((await push(base)).status).toBe(200);
+
+    const malformed = [
+      { details: "not-an-array" },
+      { details: [{ key: 7, value: "x" }] },
+      { details: [{ key: "a" }] },
+      { details: ["a"] },
+      { listItems: "nope" },
+      { listItems: [42] },
+      { listItems: [null] },
+      { closeness: 0 },
+      { closeness: 6 },
+      { closeness: 2.5 },
+      { closeness: "4" },
+    ];
+    for (const overrides of malformed) {
+      const response = await push({ ...base, ...overrides });
+      expect(response.status, JSON.stringify(overrides)).toBe(400);
+    }
+  });
+
   it("preserves Journal source identity and structured writing", async () => {
     const response = await api("/v1/sync/push", {
       method: "POST",

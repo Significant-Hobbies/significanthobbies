@@ -17,12 +17,16 @@ public struct MirrorRecord: Equatable, Sendable {
     public var modifiedAt: Date
     public var payload: Data?
     public var appendOnly: Bool
+    /// Affiliation evidence carried by private-cloud copies, including deletion
+    /// records. Hub callers derive authority from authentication, not this field.
+    public var hubOwnerID: String?
 
-    public init(name: String, modifiedAt: Date, payload: Data?, appendOnly: Bool = false) {
+    public init(name: String, modifiedAt: Date, payload: Data?, appendOnly: Bool = false, hubOwnerID: String? = nil) {
         self.name = name
         self.modifiedAt = modifiedAt
         self.payload = payload
         self.appendOnly = appendOnly
+        self.hubOwnerID = hubOwnerID
     }
 
     public var isDeleted: Bool { payload == nil }
@@ -111,7 +115,12 @@ public enum MirrorMerge {
         if leftBytes.count != rightBytes.count {
             return leftBytes.count > rightBytes.count ? left : right
         }
-        return leftBytes.lexicographicallyPrecedes(rightBytes) ? right : left
+        if leftBytes != rightBytes {
+            return leftBytes.lexicographicallyPrecedes(rightBytes) ? right : left
+        }
+        // Retained affiliation wins an otherwise identical old-client copy.
+        // Conflicting owners remain distinguishable for caller validation.
+        return (left.hubOwnerID ?? "") < (right.hubOwnerID ?? "") ? right : left
     }
 }
 
@@ -145,7 +154,7 @@ public struct MirrorLedger: Codable, Equatable, Sendable {
     /// re-reading a document does not make every record look freshly edited and
     /// win every merge.
     public mutating func stamp(_ record: MirrorRecord, now: Date) -> Date {
-        let fingerprint = Self.fingerprint(of: record.payload)
+        let fingerprint = Self.fingerprint(of: record)
         if let existing = stamps[record.name], existing.fingerprint == fingerprint {
             return existing.modifiedAt
         }
@@ -159,6 +168,12 @@ public struct MirrorLedger: Codable, Equatable, Sendable {
 
     public func appendOnly(for recordName: String) -> Bool {
         stamps[recordName]?.appendOnly ?? false
+    }
+
+    public static func fingerprint(of record: MirrorRecord) -> String {
+        let payload = fingerprint(of: record.payload)
+        guard let owner = record.hubOwnerID else { return payload }
+        return payload + ":owner:" + fingerprint(of: Data(owner.utf8))
     }
 
     public static func fingerprint(of payload: Data?) -> String {
