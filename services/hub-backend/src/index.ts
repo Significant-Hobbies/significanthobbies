@@ -56,7 +56,11 @@ async function route(request: Request, env: Env): Promise<Response> {
   }
 
   const user = await authenticate(request, env);
-  await ensureUser(env, user);
+  // ensureUser is a D1 write (upsert bumping updated_at) — running it on every
+  // request doubled per-request cost for pure reads. Nothing reads
+  // users.updated_at, so only mutations pay for it; reads of an unseen user
+  // correctly return empty sets, and the row is created on the first write.
+  if (request.method !== "GET") await ensureUser(env, user);
 
   if (request.method === "POST" && url.pathname === "/v1/sync/push") {
     const push = parsePushRequest(await readJson(request));
