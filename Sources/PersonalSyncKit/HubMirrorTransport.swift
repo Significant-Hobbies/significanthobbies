@@ -152,7 +152,11 @@ public struct HubMirrorTransport: MirrorTransport {
             pages += 1
             guard pages <= 100 else { throw MirrorSyncError.invalidResponse }
             let page = try await client.pull(domain: domain, cursor: cursor, bearerToken: verified.bearerToken)
-            try await requireCurrent(verified)
+            // A pull authorized when it began commits legitimately even if the
+            // signed-in account changed mid-flight: the fetched data belongs to
+            // the account that authorized it, and the app's store is bound to
+            // that same account by the gate. Writes are different — pushBatch
+            // re-verifies before claiming success for them.
             for change in page.changes {
                 guard change.domain == domain, let modifiedAt = Self.date(change.occurredAt),
                       change.operation == .delete || change.record != .null else {

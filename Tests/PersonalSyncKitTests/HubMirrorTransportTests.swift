@@ -72,8 +72,7 @@ private actor SwitchingMirrorAccount {
     }
 }
 
-@Test(arguments: [true, false])
-private func hubMirrorRejectsResponseAfterAccountSwitch(push: Bool) async throws {
+@Test private func hubMirrorRejectsPushAfterAccountSwitch() async throws {
     let account = SwitchingMirrorAccount()
     let file = FileManager.default.temporaryDirectory.appending(path: UUID().uuidString)
         .appending(path: "versions.json")
@@ -81,11 +80,24 @@ private func hubMirrorRejectsResponseAfterAccountSwitch(push: Bool) async throws
     let transport = HubMirrorTransport(domain: .kith, deviceId: "fixture", client: MirrorHubFixture(),
                                        versions: versions, account: { await account.resolve() })
     await #expect(throws: PersonalIdentityError.sessionChanged) {
-        if push {
-            try await transport.push([MirrorRecord(name: "person-1", modifiedAt: .now, payload: Data("{}".utf8))])
-        } else {
-            _ = try await transport.pull(since: nil)
-        }
+        try await transport.push([MirrorRecord(name: "person-1", modifiedAt: .now, payload: Data("{}".utf8))])
     }
     #expect(await versions.version(for: "person-1", in: .kith) == 0)
+}
+
+/// A pull that was authorized under one account still succeeds when the
+/// signed-in account changes mid-flight: the bearer token captured at
+/// authorization determines whose data arrives, and the app's account gate
+/// already pinned the destination store to that owner before the pull began.
+/// Discarding a legitimately fetched page would only force a refetch.
+@Test private func hubMirrorPullToleratesAccountSwitch() async throws {
+    let account = SwitchingMirrorAccount()
+    let file = FileManager.default.temporaryDirectory.appending(path: UUID().uuidString)
+        .appending(path: "versions.json")
+    let versions = try SyncVersionStore(fileURL: file)
+    let transport = HubMirrorTransport(domain: .kith, deviceId: "fixture", client: MirrorHubFixture(),
+                                       versions: versions, account: { await account.resolve() })
+    let page = try await transport.pull(since: nil)
+    #expect(page.records.isEmpty)
+    #expect(page.nextToken == Data("0".utf8))
 }
