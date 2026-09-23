@@ -86,6 +86,9 @@ describe("Hub Backend Worker", () => {
     expect(source).not.toContain('href="https://habits.significanthobbies.com"');
     expect(source).toContain('rel="canonical" href="https://significanthobbies.com/"');
     expect(source).toContain('type="application/ld+json"');
+    expect(source).toContain('src="https://health.sassmaker.com/tracker.js"');
+    expect(source).toContain('data-project="app-2b8f1fb8-2c1e-4456-a0aa-77033a978cfc"');
+    expect(source).toContain('data-key="ahk_pub_b3a9b36eb3c54352f662f03601aebe77767b86c09f57a1f5d3a3268c48b285f9"');
     expect(source).toContain('data-project="significanthobbies"');
     expect(source).toContain('data-name="Significant Hobbies"');
   });

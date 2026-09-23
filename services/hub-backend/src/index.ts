@@ -18,16 +18,23 @@ import { handleHub } from "./hub";
 import { handleAgentSkills } from "./agent-skills";
 import { handleAgentSurfaces } from "./agent-surfaces";
 import { pullChanges, pushMutations } from "./sync";
+import { observeRequest } from "./telemetry";
 
 export default {
-  async fetch(request: Request, env: Env): Promise<Response> {
-    if (request.method === "OPTIONS") return preflight(request, env);
-    try {
-      const response = await route(request, env);
-      return withCors(request, response, env);
-    } catch (error) {
-      return withCors(request, errorResponse(error), env);
+  async fetch(request: Request, env: Env, ctx?: ExecutionContext): Promise<Response> {
+    const startedAt = Date.now();
+    let response: Response;
+    if (request.method === "OPTIONS") {
+      response = preflight(request, env);
+    } else {
+      try {
+        response = withCors(request, await route(request, env), env);
+      } catch (error) {
+        response = withCors(request, errorResponse(error), env);
+      }
     }
+    observeRequest(request, response, startedAt, env, ctx);
+    return response;
   },
 } satisfies ExportedHandler<Env>;
 
