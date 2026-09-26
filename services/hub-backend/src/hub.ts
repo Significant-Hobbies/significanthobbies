@@ -154,6 +154,7 @@ function page(summaries: Map<string, Record<string, unknown>> | null, origin: st
     <meta name="twitter:image" content="${origin}/hub-opengraph-image">
     <script type="application/ld+json">${structuredData(origin)}</script>
     <script defer src="https://health.sassmaker.com/tracker.js" data-key="ahk_pub_b3a9b36eb3c54352f662f03601aebe77767b86c09f57a1f5d3a3268c48b285f9" data-project="app-2b8f1fb8-2c1e-4456-a0aa-77033a978cfc" data-identity="persistent" data-endpoint="https://ingest.sassmaker.com/v1/browser"></script>
+    <script>(function(c,l,a,r,i,t,y){c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/y6btx9iks3";y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);})(window,document,"clarity","script","y6btx9iks3");window.clarity("set","project_id","significanthobbies");</script>
     <style>${CSS}</style>
   </head>
   <body>
