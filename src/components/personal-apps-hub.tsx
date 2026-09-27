@@ -63,6 +63,19 @@ const products: Product[] = [
   },
 ];
 
+const moreProjects: { name: string; href: string; description: string }[] = [
+  { name: 'Meme Lab', href: 'https://memes.significanthobbies.com', description: 'Paste a comment, get the meme that fits — 3,000-item catalogue.' },
+  { name: 'Every Song Is a Website', href: 'https://music.significanthobbies.com', description: 'Each song gets its own interactive visual world.' },
+  { name: 'SWE Interview Prep', href: 'https://learn.significanthobbies.com', description: 'Evergreen curriculum for software interviews.' },
+  { name: 'What It Takes to Win', href: 'https://paths.significanthobbies.com', description: 'Career paths and the people who took them.' },
+  { name: 'Nomad Atlas', href: 'https://nomad.significanthobbies.com', description: 'Explore 1,374 places by cost, connectivity, and everyday life.' },
+  { name: 'Formula Calculator', href: 'https://formula.significanthobbies.com', description: 'Batch formulas to calculated ingredients and nutrients.' },
+  { name: 'Anime List', href: 'https://anime.significanthobbies.com', description: 'A personal anime catalogue.' },
+  { name: 'Chess', href: 'https://chess.significanthobbies.com', description: 'Casual chess in the browser.' },
+  { name: 'LoopTV', href: 'https://tv.significanthobbies.com', description: 'Ambient video loops.' },
+  { name: 'Reader', href: 'https://read.significanthobbies.com', description: 'A quiet reading surface.' },
+];
+
 export function PersonalAppsHub({ inventory }: { inventory: PersonalDataInventoryModel | null }) {
   return (
     <div className="min-h-[calc(100vh-4.5rem)] bg-[#fffdf4] px-4 py-12 sm:py-20">
@@ -135,6 +148,28 @@ export function PersonalAppsHub({ inventory }: { inventory: PersonalDataInventor
               );
             })}
           </div>
+        </section>
+
+        <section aria-labelledby="more-heading" className="mt-14">
+          <h2 id="more-heading" className="text-2xl sm:text-3xl">More experiments</h2>
+          <ul className="mt-6 grid gap-x-8 gap-y-3 sm:grid-cols-2 lg:grid-cols-3">
+            {moreProjects.map((project) => (
+              <li key={project.name}>
+                <Link
+                  href={project.href}
+                  prefetch={false}
+                  className="group block rounded-xl px-2 py-2 transition-colors hover:bg-[#f5efdd] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#211e18]"
+                >
+                  <span className="font-semibold text-[#211e18] group-hover:underline">
+                    {project.name}
+                  </span>
+                  <span className="mt-0.5 block text-sm text-[#5f584c]">
+                    {project.description}
+                  </span>
+                </Link>
+              </li>
+            ))}
+          </ul>
         </section>
 
         {inventory ? (
