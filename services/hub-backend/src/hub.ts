@@ -117,7 +117,7 @@ function page(summaries: Map<string, Record<string, unknown>> | null, origin: st
       typeof summary?.lastUpdatedAt === "string"
         ? ` · updated ${escapeHtml(summary.lastUpdatedAt.slice(0, 10))}`
         : "";
-    return `<a class="product-card" href="${product.href}" style="--tone:${product.color}" aria-label="View ${product.name}">
+    return `<a class="product-card" href="${product.href}" style="--tone:${product.color}" aria-label="View ${product.name}" data-app-health-event="personal_app_selected">
       <span class="product-number" aria-hidden="true">0${index + 1}</span>
       <span class="product-mark" aria-hidden="true">${product.name[0]}</span>
       <div class="product-copy">
@@ -130,7 +130,7 @@ function page(summaries: Map<string, Record<string, unknown>> | null, origin: st
   }).join("");
   const hubAction = summaries
     ? '<span class="status-chip">Private read-only Hub</span>'
-    : '<a class="button button-primary" href="/hub">Open private Hub <span aria-hidden="true">→</span></a>';
+    : '<a class="button button-primary" href="/hub" data-app-health-event="hub_opened">Open private Hub <span aria-hidden="true">→</span></a>';
 
   return `<!doctype html>
 <html lang="en">
@@ -172,7 +172,7 @@ function page(summaries: Map<string, Record<string, unknown>> | null, origin: st
           <p class="lede">Live, Calorie, Setline, Kith, and Anchor each do one job and keep ownership of their own experience. The Hub brings their privacy-safe summaries together without turning them into one oversized app.</p>
           <div class="hero-actions">
             ${hubAction}
-            <a class="button button-secondary" href="#apps">Meet the five apps <span aria-hidden="true">↓</span></a>
+            <a class="button button-secondary" href="#apps" data-app-health-event="apps_explored">Meet the five apps <span aria-hidden="true">↓</span></a>
           </div>
           <p class="access-note"><strong>Owner-only system.</strong> The Hub has no public signup or checkout. Real-owner sync verification across all five apps is still in progress.</p>
         </div>
@@ -223,6 +223,7 @@ function page(summaries: Map<string, Record<string, unknown>> | null, origin: st
     </footer>
     <script src="https://sassmaker.com/project-strip.js" data-project="significanthobbies" defer></script>
     <script src="https://sassmaker.com/ai-chat-footer.js" data-name="Significant Hobbies" defer></script>
+    <script>document.addEventListener("click",function(event){const action=event.target.closest&&event.target.closest("[data-app-health-event]");const name=action&&action.getAttribute("data-app-health-event");if(name&&window.appHealth&&typeof window.appHealth.track==="function")window.appHealth.track(name)},true);</script>
   </body>
 </html>`;
 }
