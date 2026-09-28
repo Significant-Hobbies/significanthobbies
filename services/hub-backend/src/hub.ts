@@ -117,7 +117,7 @@ function page(summaries: Map<string, Record<string, unknown>> | null, origin: st
       typeof summary?.lastUpdatedAt === "string"
         ? ` · updated ${escapeHtml(summary.lastUpdatedAt.slice(0, 10))}`
         : "";
-    return `<a class="product-card" href="${product.href}" style="--tone:${product.color}" aria-label="View ${product.name}" data-app-health-event="personal_app_selected">
+    return `<a class="product-card" href="${product.href}" style="--tone:${product.color}" aria-label="View ${product.name}" data-app-health-event="${product.id}_opened">
       <span class="product-number" aria-hidden="true">0${index + 1}</span>
       <span class="product-mark" aria-hidden="true">${product.name[0]}</span>
       <div class="product-copy">
@@ -222,7 +222,7 @@ function page(summaries: Map<string, Record<string, unknown>> | null, origin: st
       <p class="footer-fineprint">Each app owns its interface and immediate data. The Hub shows privacy-safe summaries through documented contracts.</p>
     </footer>
     <script src="https://sassmaker.com/project-strip.js" data-project="significanthobbies" defer></script>
-    <script src="https://sassmaker.com/ai-chat-footer.js" data-name="Significant Hobbies" defer></script>
+    <script src="https://sassmaker.com/ai-chat-footer.js" data-name="Significant Hobbies" data-capture="false" defer></script>
     <script>document.addEventListener("click",function(event){const action=event.target.closest&&event.target.closest("[data-app-health-event]");const name=action&&action.getAttribute("data-app-health-event");if(name&&window.appHealth&&typeof window.appHealth.track==="function")window.appHealth.track(name)},true);</script>
   </body>
 </html>`;

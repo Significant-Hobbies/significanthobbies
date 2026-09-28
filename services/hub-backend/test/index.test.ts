@@ -91,6 +91,12 @@ describe("Hub Backend Worker", () => {
     expect(source).toContain('data-key="ahk_pub_b3a9b36eb3c54352f662f03601aebe77767b86c09f57a1f5d3a3268c48b285f9"');
     expect(source).toContain('data-project="significanthobbies"');
     expect(source).toContain('data-name="Significant Hobbies"');
+    expect(source).toContain('data-capture="false"');
+    for (const app of ["live", "calorie", "setline", "kith", "anchor"]) {
+      expect(source).toContain(`data-app-health-event="${app}_opened"`);
+    }
+    expect(source).toContain('data-app-health-event="hub_opened"');
+    expect(source).toContain('data-app-health-event="apps_explored"');
   });
 
   it("serves a cache-safe Markdown view for agents", async () => {
