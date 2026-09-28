@@ -97,6 +97,8 @@ describe("Hub Backend Worker", () => {
     }
     expect(source).toContain('data-app-health-event="hub_opened"');
     expect(source).toContain('data-app-health-event="apps_explored"');
+    expect(source).toContain("window.appHealth.flush().finally");
+    expect(source).toContain("event.preventDefault()");
   });
 
   it("serves a cache-safe Markdown view for agents", async () => {
