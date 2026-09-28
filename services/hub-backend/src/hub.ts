@@ -222,7 +222,7 @@ function page(summaries: Map<string, Record<string, unknown>> | null, origin: st
       <p class="footer-fineprint">Each app owns its interface and immediate data. The Hub shows privacy-safe summaries through documented contracts.</p>
     </footer>
     <script src="https://sassmaker.com/project-strip.js" data-project="significanthobbies" defer></script>
-    <script src="https://sassmaker.com/ai-chat-footer.js" data-name="Significant Hobbies" data-capture="false" defer></script>
+    <script src="https://sassmaker.com/ai-chat-footer.js" data-name="Significant Hobbies" defer></script>
     <script>document.addEventListener("click",function(event){const action=event.target.closest&&event.target.closest("[data-app-health-event]");const name=action&&action.getAttribute("data-app-health-event");if(!name||!window.appHealth||typeof window.appHealth.track!=="function")return;const modified=event.button!==0||event.metaKey||event.ctrlKey||event.shiftKey||event.altKey||action.target==="_blank";const destination=new URL(action.href,location.href);const sameDocument=destination.origin===location.origin&&destination.pathname===location.pathname&&destination.search===location.search;window.appHealth.track(name);if(modified||sameDocument)return;event.preventDefault();window.appHealth.flush().finally(function(){location.assign(action.href)})},true);</script>
   </body>
 </html>`;
