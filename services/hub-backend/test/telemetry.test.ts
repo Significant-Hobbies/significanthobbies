@@ -2,7 +2,10 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { observeRequest } from "../src/telemetry";
 
 describe("App Health endpoint telemetry", () => {
-  afterEach(() => vi.restoreAllMocks());
+  afterEach(() => {
+    vi.restoreAllMocks();
+    vi.unstubAllGlobals();
+  });
 
   it("sends the event timestamp as integer milliseconds", async () => {
     const timestamp = 1_790_740_800_123;
