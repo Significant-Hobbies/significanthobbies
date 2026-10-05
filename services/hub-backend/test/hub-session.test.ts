@@ -38,6 +38,11 @@ describe("private Hub session entry", () => {
     }));
     expect(response.status).toBe(200);
     expect(response.headers.get("cache-control")).toBe("private, no-store");
-    expect(await response.text()).toContain("Private read-only Hub");
+    const source = await response.text();
+    expect(source).toContain("Private read-only Hub");
+    expect(source).toContain('<footer class="site-footer">');
+    expect(source).not.toContain("fleet-footer-extension");
+    expect(source).not.toContain("project-strip.js");
+    expect(source).not.toContain("ai-chat-footer.js");
   });
 });

@@ -107,6 +107,7 @@ function privateRedirect(location: string): Response {
 }
 
 function page(summaries: Map<string, Record<string, unknown>> | null, origin: string): string {
+  const publicLanding = summaries === null;
   const cards = PRODUCTS.map((product, index) => {
     const summary = summaries?.get(product.id);
     const count = typeof summary?.activeCount === "number" ? `${summary.activeCount} records` : null;
@@ -211,7 +212,9 @@ function page(summaries: Map<string, Record<string, unknown>> | null, origin: st
       </section>
     </main>
 
-    <footer class="site-footer">
+    ${publicLanding ? '<footer aria-label="Significant Hobbies footer">' : ""}
+    ${publicLanding ? `<fleet-footer-extension data-fleet-footer-project="significanthobbies" product-name="Significant Hobbies" art-src="https://sassmaker.com/footer-art/significanthobbies.webp" art-alt="A shared courtyard connects five independent personal rooms, each with its own doorway." art-width="2159" art-height="728" art-position="50% 50%" art-credit="Original illustration for Significant Hobbies" font-base="https://sassmaker.com/fonts/fleet-footer-precise-v1/" signature-font="inherit" style="font-family:Georgia,'Times New Roman',serif" theme="light">` : ""}
+    ${publicLanding ? '<div slot="navigation" data-fleet-footer-navigation class="site-footer site-footer--precise-navigation">' : '<footer class="site-footer">'}
       <div class="footer-lead"><span class="wordmark-dot" aria-hidden="true"></span><p>Five independently useful apps, connected only where the connection earns its place.</p></div>
       <div class="footer-columns">
         <div><p class="footer-label">Product</p><a href="#apps">The five apps</a><a href="/hub">Private Hub</a></div>
@@ -220,9 +223,11 @@ function page(summaries: Map<string, Record<string, unknown>> | null, origin: st
         <div><p class="footer-label">Current state</p><span>Owner-only</span><span>No public checkout</span><span>Sync verification in progress</span></div>
       </div>
       <p class="footer-fineprint">Each app owns its interface and immediate data. The Hub shows privacy-safe summaries through documented contracts.</p>
+    ${publicLanding ? "</div>" : "</footer>"}
+    ${publicLanding ? `</fleet-footer-extension>
     </footer>
-    <script src="https://sassmaker.com/project-strip.js" data-project="significanthobbies" defer></script>
-    <script src="https://sassmaker.com/ai-chat-footer.js" data-name="Significant Hobbies" defer></script>
+    <script src="https://sassmaker.com/project-strip.js?v=precise-b0adaa67" data-project="significanthobbies" data-theme="light" data-host-only="true" defer></script>
+    <script src="https://sassmaker.com/ai-chat-footer.js?v=precise-b0adaa67" data-project="significanthobbies" data-name="Significant Hobbies" data-url="https://significanthobbies.com/" data-theme="light" data-host-only="true" defer></script>` : ""}
     <script>document.addEventListener("click",function(event){const action=event.target.closest&&event.target.closest("[data-app-health-event]");const name=action&&action.getAttribute("data-app-health-event");if(!name||!window.appHealth||typeof window.appHealth.track!=="function")return;const modified=event.button!==0||event.metaKey||event.ctrlKey||event.shiftKey||event.altKey||action.target==="_blank";const destination=new URL(action.href,location.href);const sameDocument=destination.origin===location.origin&&destination.pathname===location.pathname&&destination.search===location.search;window.appHealth.track(name);if(modified||sameDocument)return;event.preventDefault();window.appHealth.flush().finally(function(){location.assign(action.href)})},true);</script>
   </body>
 </html>`;
@@ -389,6 +394,8 @@ h1{max-width:970px;margin-bottom:34px;font-size:clamp(3.5rem,7vw,7rem);line-heig
 .footer-columns a{text-underline-offset:4px}
 .footer-columns span{color:var(--muted)}
 .footer-fineprint{margin:0;padding-top:22px;border-top:1px solid var(--line);color:var(--muted);font-size:.75rem;line-height:1.55}
+.site-footer.site-footer--precise-navigation{max-width:none;margin:0;padding:0;border:0}
+.site-footer--precise-navigation .footer-columns{grid-template-columns:repeat(2,minmax(0,1fr));gap:24px;margin:32px 0 26px;padding-top:0;border-top:0}
 a:focus-visible{outline:3px solid var(--accent);outline-offset:4px}
 @media(max-width:900px){
   .hero{grid-template-columns:96px 1fr}.hero-index{padding-inline:20px}.product-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.connection{grid-template-columns:1fr}.connection-intro{border-right:0;border-bottom:1px solid var(--line)}.proof-heading{grid-template-columns:1fr}.proof-grid{grid-template-columns:repeat(2,1fr)}
