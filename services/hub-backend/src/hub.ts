@@ -211,7 +211,9 @@ function page(summaries: Map<string, Record<string, unknown>> | null, origin: st
       </section>
     </main>
 
-    <footer class="site-footer">
+    <fleet-footer-extension data-fleet-footer-project="significanthobbies" product-name="Significant Hobbies" art-src="https://sassmaker.com/footer-art/significanthobbies.webp" theme="light">
+
+<footer slot="navigation" data-fleet-footer-navigation class="site-footer">
       <div class="footer-lead"><span class="wordmark-dot" aria-hidden="true"></span><p>Five independently useful apps, connected only where the connection earns its place.</p></div>
       <div class="footer-columns">
         <div><p class="footer-label">Product</p><a href="#apps">The five apps</a><a href="/hub">Private Hub</a></div>
@@ -221,6 +223,7 @@ function page(summaries: Map<string, Record<string, unknown>> | null, origin: st
       </div>
       <p class="footer-fineprint">Each app owns its interface and immediate data. The Hub shows privacy-safe summaries through documented contracts.</p>
     </footer>
+</fleet-footer-extension>
     <script src="https://sassmaker.com/project-strip.js" data-project="significanthobbies" defer></script>
     <script src="https://sassmaker.com/ai-chat-footer.js" data-name="Significant Hobbies" defer></script>
     <script>document.addEventListener("click",function(event){const action=event.target.closest&&event.target.closest("[data-app-health-event]");const name=action&&action.getAttribute("data-app-health-event");if(!name||!window.appHealth||typeof window.appHealth.track!=="function")return;const modified=event.button!==0||event.metaKey||event.ctrlKey||event.shiftKey||event.altKey||action.target==="_blank";const destination=new URL(action.href,location.href);const sameDocument=destination.origin===location.origin&&destination.pathname===location.pathname&&destination.search===location.search;window.appHealth.track(name);if(modified||sameDocument)return;event.preventDefault();window.appHealth.flush().finally(function(){location.assign(action.href)})},true);</script>
