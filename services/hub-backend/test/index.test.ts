@@ -87,6 +87,8 @@ describe("Hub Backend Worker", () => {
     expect(source).toContain('rel="canonical" href="https://significanthobbies.com/"');
     expect(source).toContain('type="application/ld+json"');
     expect(source).toContain('src="https://health.sassmaker.com/tracker.js"');
+    expect(source.match(/<script\b[^>]*src="https:\/\/health\.sassmaker\.com\/tracker\.js"[^>]*>/)?.[0])
+      .toMatch(/\bdata-vitals(?:\s|=|>)/);
     expect(source).toContain('data-project="app-2b8f1fb8-2c1e-4456-a0aa-77033a978cfc"');
     expect(source).toContain('data-key="ahk_pub_b3a9b36eb3c54352f662f03601aebe77767b86c09f57a1f5d3a3268c48b285f9"');
     expect(source).toContain('<footer data-fleet-footer="studio" data-catalog-id="significanthobbies"');
@@ -102,6 +104,23 @@ describe("Hub Backend Worker", () => {
     expect(source).toContain('link.setAttribute("data-app-health-event", name)');
     expect(source).toContain("window.appHealth.flush().finally");
     expect(source).toContain("event.preventDefault()");
+  });
+
+  it("opts the private Hub tracker into web vitals", async () => {
+    const response = await worker.fetch(new Request("https://live.significanthobbies.com/hub"), {
+      ...connectedEnvironment(),
+      AUTH_SERVICE: {
+        fetch: async (input: RequestInfo | URL) => Response.json(
+          String(input).endsWith("/session")
+            ? { userId: "test-user" }
+            : { domain: "live", status: "connected", activeCount: 0 },
+        ),
+      },
+    } as unknown as Env);
+    expect(response.status).toBe(200);
+    const source = await response.text();
+    expect(source.match(/<script\b[^>]*src="https:\/\/health\.sassmaker\.com\/tracker\.js"[^>]*>/)?.[0])
+      .toMatch(/\bdata-vitals(?:\s|=|>)/);
   });
 
   it("serves generated home assets publicly with immutable caching", async () => {

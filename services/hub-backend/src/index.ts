@@ -18,27 +18,29 @@ import { handleHub } from "./hub";
 import { handleAgentSkills } from "./agent-skills";
 import { handleAgentSurfaces } from "./agent-surfaces";
 import { pullChanges, pushMutations } from "./sync";
-import { observeRequest } from "./telemetry";
+import { observeRequest, observeStageTiming, startStageTiming, timeStage, type StageTiming } from "./telemetry";
 
 export default {
   async fetch(request: Request, env: Env, ctx?: ExecutionContext): Promise<Response> {
     const startedAt = Date.now();
+    const timing = startStageTiming(request, env, startedAt);
     let response: Response;
     if (request.method === "OPTIONS") {
       response = preflight(request, env);
     } else {
       try {
-        response = withCors(request, await route(request, env), env);
+        response = withCors(request, await route(request, env, timing), env);
       } catch (error) {
         response = withCors(request, errorResponse(error), env);
       }
     }
     observeRequest(request, response, startedAt, env, ctx);
+    observeStageTiming(request, response, timing, env, ctx);
     return response;
   },
 } satisfies ExportedHandler<Env>;
 
-async function route(request: Request, env: Env): Promise<Response> {
+async function route(request: Request, env: Env, timing?: StageTiming): Promise<Response> {
   const url = new URL(request.url);
   if (
     request.method === "GET" &&
@@ -65,8 +67,11 @@ async function route(request: Request, env: Env): Promise<Response> {
     return handleMcp(request, env, user);
   }
 
-  const user = await authenticate(request, env);
-  await ensureUser(env, user);
+  const user = await timeStage(timing, "auth_ms", async () => {
+    const user = await authenticate(request, env);
+    await ensureUser(env, user);
+    return user;
+  });
 
   if (request.method === "POST" && url.pathname === "/v1/sync/push") {
     const push = parsePushRequest(await readJson(request));
@@ -82,9 +87,9 @@ async function route(request: Request, env: Env): Promise<Response> {
 
   if (request.method === "GET" && url.pathname === "/v1/life/today") {
     const [today, live, calorie] = await Promise.all([
-      getToday(env, user.id),
-      getLiveSummary(request, env, user),
-      getCalorieToday(request, env, user),
+      timeStage(timing, "d1_ms", () => getToday(env, user.id)),
+      timeStage(timing, "ext_live_ms", () => getLiveSummary(request, env, user)),
+      timeStage(timing, "ext_calorie_ms", () => getCalorieToday(request, env, user)),
     ]);
     return json({
       ...today,
