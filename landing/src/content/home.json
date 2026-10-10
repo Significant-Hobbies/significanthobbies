@@ -1,0 +1,271 @@
+{
+  "template": "gallery",
+  "page": {
+    "title": "Significant Hobbies — Five Personal Apps",
+    "description": "Five independently owned personal apps for planning, reflection, health, relationships, and progress, connected by a private read-only Hub.",
+    "theme": "paper",
+    "mode": "light",
+    "motion": false,
+    "tokens": {
+      "--brand": "#dc5b3f",
+      "--brand-foreground": "#1b1b16",
+      "--brand-soft": "#f4ddd3",
+      "--brand-ink": "#a33b25",
+      "--background": "#f2efe6",
+      "--foreground": "#1b1b16"
+    },
+    "canonical": "https://significanthobbies.com/",
+    "og": {
+      "description": "Five independently owned personal apps, connected by a private read-only Hub.",
+      "siteName": "Significant Hobbies",
+      "image": "https://significanthobbies.com/hub-opengraph-image",
+      "imageAlt": "Significant Hobbies personal apps",
+      "twitterCard": "summary_large_image"
+    },
+    "jsonLd": {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebSite",
+          "@id": "https://significanthobbies.com/#website",
+          "name": "Significant Hobbies",
+          "url": "https://significanthobbies.com/",
+          "description": "The private Hub for five independently owned personal apps: Live, Calorie, Setline, Kith, and Anchor.",
+          "isAccessibleForFree": true
+        },
+        {
+          "@type": "Organization",
+          "@id": "https://significanthobbies.com/#organization",
+          "name": "Significant Hobbies",
+          "url": "https://significanthobbies.com/",
+          "description": "The project organization for a private Hub and five independently owned personal apps.",
+          "sameAs": [
+            "https://github.com/Significant-Hobbies/significanthobbies"
+          ]
+        },
+        {
+          "@type": "ItemList",
+          "@id": "https://significanthobbies.com/#products",
+          "name": "Significant Hobbies personal apps",
+          "numberOfItems": 5,
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "Live",
+              "url": "https://live.significanthobbies.com",
+              "description": "Plan places, hobbies, side quests, and experiences across a lifetime."
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": "Calorie",
+              "url": "https://calorie.significanthobbies.com",
+              "description": "Keep a private record of food, water, medicine, weight, and daily totals."
+            },
+            {
+              "@type": "ListItem",
+              "position": 3,
+              "name": "Setline",
+              "url": "https://setline.significanthobbies.com",
+              "description": "Log training and the progress that is easy to miss from one day to the next."
+            },
+            {
+              "@type": "ListItem",
+              "position": 4,
+              "name": "Kith",
+              "url": "https://kith.significanthobbies.com",
+              "description": "Remember the people you care about and when you last made time for them."
+            },
+            {
+              "@type": "ListItem",
+              "position": 5,
+              "name": "Anchor",
+              "url": "https://anchor.significanthobbies.com",
+              "description": "Plan the day, work in focused sessions, and review what interrupted the plan."
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "product": "Significant Hobbies",
+  "url": "https://significanthobbies.com/",
+  "mark": "/landing/mark.webp",
+  "frame": "none",
+  "nav": [
+    {
+      "label": "private hub",
+      "href": "/hub"
+    },
+    {
+      "label": "the apps",
+      "href": "#apps"
+    }
+  ],
+  "hero": {
+    "eyebrow": "a connected personal system",
+    "title": "five personal apps. one quiet place to see how they fit.",
+    "lede": "Live, Calorie, Setline, Kith, and Anchor each do one job and keep ownership of their own experience. The Hub brings their privacy-safe summaries together without turning them into one oversized app.",
+    "primary": {
+      "label": "open private hub",
+      "href": "/hub"
+    },
+    "secondary": {
+      "label": "meet the five apps",
+      "href": "#apps"
+    },
+    "status": {
+      "label": "Owner-only system."
+    },
+    "note": "The Hub has no public signup or checkout. Real-owner sync verification across all five apps is still in progress.",
+    "backdrop": "/landing/courtyard.webp",
+    "screen": {
+      "src": "/landing/courtyard.webp",
+      "alt": "A shared courtyard connects five independent personal rooms, each with its own doorway.",
+      "width": 1600,
+      "height": 540
+    }
+  },
+  "sections": [
+    {
+      "kind": "grid",
+      "id": "apps",
+      "eyebrow": "the collection",
+      "title": "a separate place for each part of life.",
+      "lede": "Every app remains useful on its own. Choose the one that matches what you need to do now.",
+      "items": [
+        {
+          "image": "https://live.significanthobbies.com/hero/hobby-horizon-poster.jpg",
+          "alt": "Illustration of a person on a mountain ridge beneath an expansive sunrise sky.",
+          "label": "Live · Life list",
+          "title": "Plan places, hobbies, side quests, and experiences across a lifetime.",
+          "href": "https://live.significanthobbies.com"
+        },
+        {
+          "image": "/landing/calorie-scene.webp",
+          "alt": "A bowl of vegetables and grains beside a glass of water and an open notebook.",
+          "label": "Calorie · Health record",
+          "title": "Keep a private record of food, water, medicine, weight, and daily totals.",
+          "href": "https://calorie.significanthobbies.com"
+        },
+        {
+          "image": "https://setline.significanthobbies.com/images/story/training-bench-v1.webp",
+          "alt": "A weight plate, measuring tape, green notebook, and blank training cards on a pale surface.",
+          "label": "Setline · Practice",
+          "title": "Log training and the progress that is easy to miss from one day to the next.",
+          "href": "https://setline.significanthobbies.com"
+        },
+        {
+          "image": "https://kith.significanthobbies.com/images/story/coastal-walk-v2.webp",
+          "alt": "Two people walking together along a stone path overlooking the sea.",
+          "label": "Kith · Relationships",
+          "title": "Remember the people you care about and when you last made time for them.",
+          "href": "https://kith.significanthobbies.com"
+        },
+        {
+          "image": "https://anchor.significanthobbies.com/images/story/anchor-scene-v2.webp",
+          "alt": "An open day folio with a graphite bookmark and amber and coral strips on a dark surface.",
+          "label": "Anchor · Daily focus",
+          "title": "Plan the day, work in focused sessions, and review what interrupted the plan.",
+          "href": "https://anchor.significanthobbies.com"
+        }
+      ]
+    },
+    {
+      "kind": "statement",
+      "id": "connection",
+      "eyebrow": "how the hub works",
+      "title": "connection without a takeover.",
+      "lede": "Each product keeps its immediate data and interface. Shared contracts carry only the summaries and documented actions the Hub needs.",
+      "rows": [
+        {
+          "title": "keep the original record",
+          "body": "A workout stays with Setline. A focus session stays with Anchor. The Hub does not replace the app that created it."
+        },
+        {
+          "title": "exchange a typed summary",
+          "body": "PersonalSyncKit and the shared backend use explicit domain contracts instead of passing around an unbounded copy of personal data."
+        },
+        {
+          "title": "see the day together",
+          "body": "The current Hub is a private, read-only view of safe summaries. Cross-app actions will expand only after real-owner sync is verified."
+        }
+      ]
+    }
+  ],
+  "closing": {
+    "title": "built as a system, kept honest as five products.",
+    "primary": {
+      "label": "open private hub",
+      "href": "/hub"
+    },
+    "note": "Habits was absorbed into Anchor. Its historical records and compatibility contracts remain intact, but it is not another maintained product.",
+    "image": "/landing/calorie-scene.webp"
+  },
+  "footer": {
+    "catalogId": "significanthobbies",
+    "capture": "newsletter",
+    "summary": "Five independently useful apps, connected only where the connection earns its place.",
+    "legal": "Each app owns its interface and immediate data. The Hub shows privacy-safe summaries through documented contracts.",
+    "links": [
+      {
+        "label": "the five apps",
+        "href": "#apps"
+      },
+      {
+        "label": "private hub",
+        "href": "/hub"
+      },
+      {
+        "label": "source code",
+        "href": "https://github.com/Significant-Hobbies/significanthobbies"
+      },
+      {
+        "label": "roadmap",
+        "href": "https://github.com/Significant-Hobbies/significanthobbies/issues"
+      },
+      {
+        "label": "meme lab",
+        "href": "https://memes.significanthobbies.com"
+      },
+      {
+        "label": "every song is a website",
+        "href": "https://music.significanthobbies.com"
+      },
+      {
+        "label": "swe interview prep",
+        "href": "https://learn.significanthobbies.com"
+      },
+      {
+        "label": "what it takes to win",
+        "href": "https://paths.significanthobbies.com"
+      },
+      {
+        "label": "nomad atlas",
+        "href": "https://nomad.significanthobbies.com"
+      },
+      {
+        "label": "formula calculator",
+        "href": "https://formula.significanthobbies.com"
+      },
+      {
+        "label": "anime list",
+        "href": "https://anime.significanthobbies.com"
+      },
+      {
+        "label": "chess",
+        "href": "https://github.com/Significant-Hobbies/chess"
+      },
+      {
+        "label": "looptv",
+        "href": "https://tv.significanthobbies.com"
+      },
+      {
+        "label": "reader",
+        "href": "https://read.significanthobbies.com"
+      }
+    ],
+    "wordmark": "stack"
+  }
+}

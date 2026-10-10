@@ -2,6 +2,7 @@ import { authenticateSession, ensureUser } from "./auth";
 import { getCalorieToday } from "./calorie";
 import { getToday } from "./domains";
 import { getLiveSummary } from "./live";
+import { LANDING_ASSETS, LANDING_HTML } from "./landing.generated";
 
 export const PRODUCTS = [
   {
@@ -74,11 +75,24 @@ export async function handleHub(request: Request, env: Env): Promise<Response> {
   const url = new URL(request.url);
   const pathname = url.pathname;
   const origin = publicOrigin(request, url);
+  if (pathname.startsWith("/landing/")) {
+    const asset = LANDING_ASSETS[pathname];
+    if (!asset) return new Response("Not found", { status: 404 });
+    const body = asset.base64
+      ? Uint8Array.from(atob(asset.body), (character) => character.charCodeAt(0))
+      : asset.body;
+    return new Response(body, {
+      headers: {
+        "Content-Type": asset.type,
+        "Cache-Control": "public, max-age=31536000, immutable",
+      },
+    });
+  }
   if (pathname === "/") {
     if (wantsMarkdown(request) || url.searchParams.get("mode") === "agent") {
       return markdown(HOME_MARKDOWN.replace("https://significanthobbies.com/", `${origin}/`));
     }
-    return html(page(null, origin));
+    return html(LANDING_HTML.replaceAll("__HUB_PUBLIC_ORIGIN__", escapeHtml(origin)));
   }
   // Live owns the host-only browser session. Never send it across subdomains.
   if (url.hostname !== "live.significanthobbies.com") {

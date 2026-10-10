@@ -81,7 +81,7 @@ describe("Hub Backend Worker", () => {
     expect(response.headers.get("content-type")).toContain("text/html");
     expect(response.headers.get("link")).toContain("/index.md");
     const source = await response.text();
-    expect(source).toContain("Five personal apps");
+    expect(source).toContain("five personal apps");
     expect(source).toContain("Live, Calorie, Setline, Kith, and Anchor");
     expect(source).not.toContain('href="https://habits.significanthobbies.com"');
     expect(source).toContain('rel="canonical" href="https://significanthobbies.com/"');
@@ -89,23 +89,45 @@ describe("Hub Backend Worker", () => {
     expect(source).toContain('src="https://health.sassmaker.com/tracker.js"');
     expect(source).toContain('data-project="app-2b8f1fb8-2c1e-4456-a0aa-77033a978cfc"');
     expect(source).toContain('data-key="ahk_pub_b3a9b36eb3c54352f662f03601aebe77767b86c09f57a1f5d3a3268c48b285f9"');
-    expect(source).toContain('data-project="significanthobbies"');
-    expect(source).toContain('data-name="Significant Hobbies"');
-    expect(source).toContain('<fleet-footer-extension data-fleet-footer-project="significanthobbies"');
-    expect(source).toContain('<footer aria-label="Significant Hobbies footer">');
-    expect(source).toContain('<div slot="navigation" data-fleet-footer-navigation');
-    expect(source).toContain('signature-font="inherit" style="font-family:Georgia,\'Times New Roman\',serif"');
-    expect(source).toContain('project-strip.js?v=precise-b0adaa67');
-    expect(source).toContain('ai-chat-footer.js?v=precise-b0adaa67');
-    expect(source).toContain('data-host-only="true"');
-    expect(source).not.toContain('data-capture="false"');
+    expect(source).toContain('<footer data-fleet-footer="studio" data-catalog-id="significanthobbies"');
+    expect(source).toContain('data-kind="newsletter"');
+    expect(source).not.toContain('fleet-footer-extension');
+    expect(source).not.toContain('project-strip.js');
+    expect(source).not.toContain('ai-chat-footer.js');
     for (const app of ["live", "calorie", "setline", "kith", "anchor"]) {
-      expect(source).toContain(`data-app-health-event="${app}_opened"`);
+      expect(source).toContain(`"https://${app}.significanthobbies.com":"${app}_opened"`);
     }
-    expect(source).toContain('data-app-health-event="hub_opened"');
-    expect(source).toContain('data-app-health-event="apps_explored"');
+    expect(source).toContain('"/hub":"hub_opened"');
+    expect(source).toContain('"#apps":"apps_explored"');
+    expect(source).toContain('link.setAttribute("data-app-health-event", name)');
     expect(source).toContain("window.appHealth.flush().finally");
     expect(source).toContain("event.preventDefault()");
+  });
+
+  it("serves generated home assets publicly with immutable caching", async () => {
+    const home = await exports.default.fetch("https://significanthobbies.com/");
+    expect(home.status).toBe(200);
+    expect(home.headers.get("content-type")).toContain("text/html");
+    const source = await home.text();
+    expect(source).toContain('<footer data-fleet-footer="studio" data-catalog-id="significanthobbies"');
+    expect(source).toContain('rel="canonical" href="https://significanthobbies.com/"');
+    expect(source).toContain('type="application/ld+json"');
+    const cssPath = source.match(/href="(\/landing\/[^" ]+\.css)"/)?.[1];
+    expect(cssPath).toBeDefined();
+    const css = await exports.default.fetch(`https://significanthobbies.com${cssPath}`);
+    expect(css.status).toBe(200);
+    expect(css.headers.get("content-type")).toBe("text/css; charset=utf-8");
+    expect(css.headers.get("cache-control")).toBe("public, max-age=31536000, immutable");
+    const styles = await css.text();
+    expect(styles).toContain("--brand");
+    const fontPath = styles.match(/\/landing\/[\w.-]+\.woff2/)?.[0];
+    expect(fontPath).toBeDefined();
+    const font = await exports.default.fetch(`https://significanthobbies.com${fontPath}`);
+    expect(font.status).toBe(200);
+    expect(font.headers.get("content-type")).toBe("font/woff2");
+    expect(new TextDecoder().decode((await font.arrayBuffer()).slice(0, 4))).toBe("wOF2");
+    const missing = await exports.default.fetch("https://significanthobbies.com/landing/missing.css");
+    expect(missing.status).toBe(404);
   });
 
   it("serves a cache-safe Markdown view for agents", async () => {
@@ -132,9 +154,13 @@ describe("Hub Backend Worker", () => {
       headers: { ...headers, Accept: "text/markdown" },
     });
 
-    expect(await html.text()).toContain(
+    const source = await html.text();
+    expect(source).toContain(
       'rel="canonical" href="https://bounded-preview.trycloudflare.com/"',
     );
+    expect(source).toContain('content="https://bounded-preview.trycloudflare.com/hub-opengraph-image"');
+    expect(source).toContain('"@id":"https://bounded-preview.trycloudflare.com/#website"');
+    expect(source).not.toContain("__HUB_PUBLIC_ORIGIN__");
     expect(await markdown.text()).toContain(
       "canonical: https://bounded-preview.trycloudflare.com/",
     );
