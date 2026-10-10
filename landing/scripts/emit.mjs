@@ -8,14 +8,13 @@ const files = new Set(await readdir(new URL("landing/", dist)));
 let html = (await readFile(new URL("index.html", dist), "utf8"))
   .replaceAll("https://significanthobbies.com", "__HUB_PUBLIC_ORIGIN__");
 const content = JSON.parse(await readFile(new URL("../src/content/home.json", import.meta.url), "utf8"));
-// The library theme entry includes every preset's fonts. Paper uses these three
-// families; retain Geist and Geist Mono (normal) and Newsreader Display (both styles).
+// Ship only the masthead's three normal faces: Newsreader, Figtree and mono labels.
 if (content.page.theme === "paper") {
   for (const match of html.matchAll(/href="(\/landing\/[^" ]+\.css)"/g)) {
     const path = match[1];
     const css = (await readFile(new URL(path.slice(1), dist), "utf8"))
       .replace(/@font-face\{[^}]*\}/g, (face) =>
-        /font-family:(?:Geist Variable|Geist Mono Variable);font-style:normal|font-family:Newsreader Display;/.test(face) ? face : "");
+        /font-family:(?:Figtree Variable|Geist Mono Variable|Newsreader Display);font-style:normal;/.test(face) ? face : "");
     const file = `home.${createHash("sha256").update(css).digest("hex").slice(0, 12)}.css`;
     await writeFile(new URL(`landing/${file}`, dist), css);
     files.add(file);

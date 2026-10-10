@@ -12,7 +12,10 @@
       "--brand-soft": "#f4ddd3",
       "--brand-ink": "#a33b25",
       "--background": "#f2efe6",
-      "--foreground": "#1b1b16"
+      "--foreground": "#1b1b16",
+      "--display-weight": "500",
+      "--border": "#c9c4b7",
+      "--surface-backdrop-grid": "linear-gradient(90deg, transparent calc(100% - 1px), rgba(27,27,22,.045) 1px)"
     },
     "canonical": "https://significanthobbies.com/",
     "og": {
@@ -87,6 +90,15 @@
           ]
         }
       ]
+    },
+    "fonts": {
+      "display": "newsreader",
+      "text": "figtree",
+      "accent": "newsreader",
+      "accentStyle": "normal"
+    },
+    "surface": {
+      "backdrop": "grid"
     }
   },
   "product": "Significant Hobbies",
@@ -119,13 +131,9 @@
       "label": "Owner-only system."
     },
     "note": "The Hub has no public signup or checkout. Real-owner sync verification across all five apps is still in progress.",
-    "backdrop": "/landing/courtyard.webp",
-    "screen": {
-      "src": "/landing/courtyard.webp",
-      "alt": "A shared courtyard connects five independent personal rooms, each with its own doorway.",
-      "width": 1600,
-      "height": 540
-    }
+    "layout": "masthead",
+    "issue": "SH 05",
+    "issueNote": "five apps, one hub"
   },
   "sections": [
     {
@@ -201,7 +209,8 @@
       "href": "/hub"
     },
     "note": "Habits was absorbed into Anchor. Its historical records and compatibility contracts remain intact, but it is not another maintained product.",
-    "image": "/landing/calorie-scene.webp"
+    "image": "/landing/calorie-scene.webp",
+    "id": "product-truth"
   },
   "footer": {
     "catalogId": "significanthobbies",
