@@ -20,9 +20,9 @@
     "react-dom": "19.3.0",
     "tailwindcss": "4.3.3",
     "typescript": "5.9.3",
-    "@saas-maker/motion": "github:sass-maker/ui-library#v0.1.12&path:/packages/motion",
-    "@saas-maker/templates": "github:sass-maker/ui-library#v0.1.12&path:/packages/templates",
-    "@saas-maker/ui": "github:sass-maker/ui-library#v0.1.12&path:/packages/ui"
+    "@saas-maker/motion": "github:sass-maker/ui-library#v0.1.13&path:/packages/motion",
+    "@saas-maker/templates": "github:sass-maker/ui-library#v0.1.13&path:/packages/templates",
+    "@saas-maker/ui": "github:sass-maker/ui-library#v0.1.13&path:/packages/ui"
   },
   "pnpm": {
     "onlyBuiltDependencies": [
