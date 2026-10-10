@@ -1,0 +1,33 @@
+---
+import Base from "@saas-maker/templates/Base.astro";
+import { GalleryPage } from "@saas-maker/templates/gallery-page";
+import { baseProps } from "@saas-maker/templates/page";
+import { galleryContent } from "@saas-maker/templates/schema";
+import { studioFromProjects, studioProjectsFeed } from "@saas-maker/ui/blocks/footer";
+import json from "../content/home.json";
+
+const content = galleryContent.parse(json);
+const projects = await fetch(studioProjectsFeed, { signal: AbortSignal.timeout(3000) })
+  .then((r) => r.ok ? r.json() : [])
+  .catch(() => []);
+if (content.footer) content.footer.studio = studioFromProjects(projects, { current: "significanthobbies" });
+---
+
+<Base {...baseProps(content)}>
+  <Fragment slot="head">
+    <meta name="theme-color" content="#f2efe6" />
+    <script is:inline defer src="https://health.sassmaker.com/tracker.js" data-key="ahk_pub_b3a9b36eb3c54352f662f03601aebe77767b86c09f57a1f5d3a3268c48b285f9" data-project="app-2b8f1fb8-2c1e-4456-a0aa-77033a978cfc" data-identity="persistent" data-endpoint="https://ingest.sassmaker.com/v1/browser"></script>
+    <script is:inline>(function(c,l,a,r,i,t,y){c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/y6btx9iks3";y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);})(window,document,"clarity","script","y6btx9iks3");window.clarity("set","project_id","significanthobbies");</script>
+    <script is:inline>
+      document.addEventListener("DOMContentLoaded", function () {
+        const events = {"/hub":"hub_opened","#apps":"apps_explored","https://live.significanthobbies.com":"live_opened","https://calorie.significanthobbies.com":"calorie_opened","https://setline.significanthobbies.com":"setline_opened","https://kith.significanthobbies.com":"kith_opened","https://anchor.significanthobbies.com":"anchor_opened"};
+        document.querySelectorAll("a[href]").forEach(function (link) {
+          const name = events[link.getAttribute("href")];
+          if (name) link.setAttribute("data-app-health-event", name);
+        });
+      });
+    </script>
+    <script is:inline>document.addEventListener("click",function(event){const action=event.target.closest&&event.target.closest("[data-app-health-event]");const name=action&&action.getAttribute("data-app-health-event");if(!name||!window.appHealth||typeof window.appHealth.track!=="function")return;const modified=event.button!==0||event.metaKey||event.ctrlKey||event.shiftKey||event.altKey||action.target==="_blank";const destination=new URL(action.href,location.href);const sameDocument=destination.origin===location.origin&&destination.pathname===location.pathname&&destination.search===location.search;window.appHealth.track(name);if(modified||sameDocument)return;event.preventDefault();window.appHealth.flush().finally(function(){location.assign(action.href)})},true);</script>
+  </Fragment>
+  <GalleryPage content={content} />
+</Base>

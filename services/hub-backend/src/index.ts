@@ -40,7 +40,10 @@ export default {
 
 async function route(request: Request, env: Env): Promise<Response> {
   const url = new URL(request.url);
-  if (request.method === "GET" && (url.pathname === "/" || url.pathname === "/hub")) {
+  if (
+    request.method === "GET" &&
+    (url.pathname === "/" || url.pathname === "/hub" || url.pathname.startsWith("/landing/"))
+  ) {
     return handleHub(request, env);
   }
   if (request.method === "GET" && url.pathname === "/health") {
