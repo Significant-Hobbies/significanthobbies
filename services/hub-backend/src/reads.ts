@@ -260,6 +260,24 @@ export function projectRecord(
         "endOn",
         "nutrients",
       ]);
+    case "anchor":
+      // Mirror records retain full documents for restore. Default reads and
+      // Today expose only summary metadata, never arbitrary document fields.
+      return select(record, [
+        "recordType",
+        "id",
+        "title",
+        "name",
+        "startedAt",
+        "endedAt",
+        "durationSeconds",
+        "interruptionCount",
+        "capturedAt",
+        "day",
+        "plannedStart",
+        "plannedEnd",
+        "occurredAt",
+      ]);
     default:
       return record;
   }

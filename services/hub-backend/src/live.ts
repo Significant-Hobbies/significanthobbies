@@ -8,10 +8,14 @@ export async function getLiveSummary(
   env: Env,
   user: AuthenticatedUser,
 ) {
-  const response = await fetchLive(request, env, user, "/api/personal-platform/live/summary");
-  if (!response) return unavailableSummary("connector_not_configured");
-  if (!response.ok) return unavailableSummary(`upstream_${response.status}`);
-  return response.json();
+  try {
+    const response = await fetchLive(request, env, user, "/api/personal-platform/live/summary");
+    if (!response) return unavailableSummary("connector_not_configured");
+    if (!response.ok) return unavailableSummary(`upstream_${response.status}`);
+    return await response.json();
+  } catch {
+    return unavailableSummary("upstream_unreachable");
+  }
 }
 
 export async function getLiveRecords(
