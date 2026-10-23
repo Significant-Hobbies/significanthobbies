@@ -27,6 +27,9 @@
   "pnpm": {
     "onlyBuiltDependencies": [
       "esbuild"
-    ]
+    ],
+    "patchedDependencies": {
+      "@saas-maker/templates@0.1.13": "patches/saas-maker-templates-footer-retry-0.1.13.patch"
+    }
   }
 }
