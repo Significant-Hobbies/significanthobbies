@@ -39,4 +39,29 @@ describe("Live connector", () => {
       (item) => item.headers.get("X-Personal-User-Id") === "owner-1",
     )).toBe(true);
   });
+
+  it.each(["network", "invalid-json"])("reports %s summary failures as unavailable", async (failure) => {
+    const env = {
+      AUTH_SERVICE: {
+        async fetch() {
+          if (failure === "network") throw new Error("connector unavailable");
+          return new Response("invalid json", { status: 200 });
+        },
+      },
+    } as unknown as Env;
+    const summary = await getLiveSummary(
+      new Request("https://personal-platform.test/v1/life/today"),
+      env,
+      { id: "synthetic-owner" },
+    );
+    expect(summary).toEqual({
+      domain: "live",
+      source: "significant-hobbies-service",
+      status: "unavailable",
+      reason: "upstream_unreachable",
+      activeCount: null,
+      lastUpdatedAt: null,
+    });
+  });
+
 });

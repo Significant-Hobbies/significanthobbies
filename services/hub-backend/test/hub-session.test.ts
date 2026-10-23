@@ -44,5 +44,24 @@ describe("private Hub session entry", () => {
     expect(source).not.toContain("fleet-footer-extension");
     expect(source).not.toContain("project-strip.js");
     expect(source).not.toContain("ai-chat-footer.js");
+    for (const domain of ["live", "calorie", "setline", "kith", "anchor"]) {
+      expect(source).toContain(`aria-describedby="product-${domain}-state"`);
+      expect(source).toContain(`class="product-state" id="product-${domain}-state"`);
+    }
+    expect(source).toContain('id="product-live-state">0 records');
+    expect(source).toContain('id="product-calorie-state">Unavailable');
   });
+  it("keeps the other app cards available when the Live summary connection fails", async () => {
+    const response = await worker.fetch(new Request(hub), withAuth(async (input) => {
+      if (String(input).endsWith("/session")) return Response.json({ userId: "hub-summary-failure" });
+      throw new Error("synthetic Live connection failure");
+    }));
+    expect(response.status).toBe(200);
+    expect(response.headers.get("cache-control")).toBe("private, no-store");
+    const source = await response.text();
+    expect(source.match(/class="product-card"/g)).toHaveLength(5);
+    expect(source).toContain("Unavailable");
+    expect(source).toContain('aria-label="View Anchor"');
+  });
+
 });

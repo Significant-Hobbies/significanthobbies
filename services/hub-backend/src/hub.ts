@@ -132,7 +132,7 @@ function page(summaries: Map<string, Record<string, unknown>> | null, origin: st
       typeof summary?.lastUpdatedAt === "string"
         ? ` · updated ${escapeHtml(summary.lastUpdatedAt.slice(0, 10))}`
         : "";
-    return `<a class="product-card" href="${product.href}" style="--tone:${product.color}" aria-label="View ${product.name}" data-app-health-event="${product.id}_opened">
+    return `<a class="product-card" href="${product.href}" style="--tone:${product.color}" aria-label="View ${product.name}" aria-describedby="product-${product.id}-state" data-app-health-event="${product.id}_opened">
       <span class="product-number" aria-hidden="true">0${index + 1}</span>
       <span class="product-mark" aria-hidden="true">${product.name[0]}</span>
       <div class="product-copy">
@@ -140,7 +140,7 @@ function page(summaries: Map<string, Record<string, unknown>> | null, origin: st
         <h3>${product.name}</h3>
         <p>${product.description}</p>
       </div>
-      <span class="product-state">${state}${updated}<span aria-hidden="true"> ↗</span></span>
+      <span class="product-state" id="product-${product.id}-state">${state}${updated}<span aria-hidden="true"> ↗</span></span>
     </a>`;
   }).join("");
   const hubAction = summaries
