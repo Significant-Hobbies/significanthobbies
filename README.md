@@ -1,9 +1,15 @@
 # Significant Hobbies Hub
 
-The Hub is the front door and privacy-safe control plane for five personal apps:
-Live, Calorie, Setline, Kith, and Anchor. Anchor has absorbed the
-maintained Indulge/Habits product; the backend keeps `habits` records and typed
-contracts only for compatibility.
+**Hub product retired on 26 October 2026.** The owner is not using the apps
+together and does not want to continue the cross-app Hub. Its roadmap and
+qualification study are cancelled; historical tests do not establish real-account
+sync acceptance.
+
+The independent apps remain maintained. This repository stays available because
+Anchor, Calorie, Setline and Kith import `PersonalSyncKit`, and Live delegates
+compatibility routes to the shared backend. Source, stored records and existing
+auth/sync services are retained. This retirement does not shut down those
+dependencies or change an app's local store.
 
 This repository owns:
 
@@ -45,9 +51,11 @@ durable store. Consumer migration and physical signed-in qualification are
 tracked in [#155](https://github.com/Significant-Hobbies/significanthobbies/issues/155).
 
 <!-- portfolio-retained-work:2026-09-07 -->
-## Retained work from the portfolio review
+## Historical work from the portfolio review
 
-These are unresolved requirements retained at the owner’s request. They are not completed features. Work should follow a concrete need and fresh evidence.
+These historical requirements are not an active Hub roadmap after the owner's
+2026-10-26 retirement decision. Resume the product only on a new explicit owner
+instruction. Shared dependency/security maintenance remains applicable.
 
 ### Add a shared Significant Hobbies design foundation
 
