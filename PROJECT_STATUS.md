@@ -1,15 +1,27 @@
 # Significant Hobbies Hub — PROJECT STATUS
 
-Last updated: 2026-09-19
+Last updated: 2026-10-26
 
 ## Why / What
 
-The Hub joins five independently useful personal applications in one UI. It
-shows privacy-safe status and provenance and offers only documented semantic
-actions, while every product retains its own interface and immediate data
-authority.
+The owner retired the cross-app Hub product on 2026-10-26: the applications
+have not been used together and there is no current need for the Hub.
 
 ## Current status
+
+- Hub product development, growth work and the cross-app qualification study
+  are cancelled. Issue #190 is closed as not planned, not as qualified sync.
+- The standalone apps remain independent. Anchor, Kith, Calorie and Setline
+  import this repository's `PersonalSyncKit`; Live delegates compatibility
+  routes to the shared backend. Keep those dependencies available.
+- Source history, existing Worker/D1/bindings, authentication identities and
+  stored records are retained. No provider deletion, migration, client sync
+  change or production shutdown accompanies this product retirement. Existing
+  hosted routes remain compatibility surfaces, not a renewed Hub roadmap.
+- Resume the Hub product only after an explicit new owner decision grounded
+  in demonstrated use. Do not turn the retained backend into a replacement Hub.
+
+## Historical source qualification
 
 - Issue #158's shared mirror source now provides CloudKit and Hub transports,
   local commit before cursor advancement, bounded Hub batches, verified per-record
@@ -34,7 +46,7 @@ authority.
   The `/habits` surface, `habits` records, callbacks, and typed contracts remain
   compatibility data; no schema, user-data, or provider migration occurred.
 
-## Next
+## Historical recovery and account work
 
 An opt-in native replay API now supports recovery of previously acknowledged
 records without resetting owner state. It retains verified-account serialization,
@@ -64,6 +76,7 @@ sync calls remain deprecated compatibility paths and do not gain the app-commit
 guarantee until their consumers migrate. Kith is the first consumer to update;
 physical signed-in round trips remain unqualified.
 
-Finish real-owner sync testing across the five maintained products, then improve Hub
-summaries and actions from observed use. Product work belongs in this
-repository's GitHub Issues.
+These historical checks do not establish real-account/native sync acceptance.
+The owner cancelled the Hub qualification scope on 2026-10-26. Any future
+standalone-app safety work belongs in its owning repository; it does not
+automatically reopen the retired cross-app product.
