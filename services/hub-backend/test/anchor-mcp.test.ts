@@ -177,6 +177,53 @@ describe("Anchor product connection", () => {
     expect(invalid.isError).toBe(true);
   });
 
+  it("queues all planner actions through the same durable bridge with typed calendar arguments", async () => {
+    const deviceId = crypto.randomUUID();
+    const activeSessionID = crypto.randomUUID();
+    await syncRecord("planner-user", { recordType: "agentDevice", id: deviceId, deviceId, platform: "macOS", updatedAt: now, activeSessionID, state: "running", capturePresented: false, capabilities: ["copy_day", "materialize_day", "reconcile_template"] }, `agentdevice-${deviceId}`);
+    const template = { recordType: "scheduleTemplate", id: crypto.randomUUID(), title: "Usual focus", details: "", createdAt: now, updatedAt: now, startMinutesFromMidnight: 540, plannedSeconds: 1800, weekdayMask: 31, kindRaw: "focus", flexibilityRaw: "flexible", isBehaviorHabit: false, habitUsesSuggestedTime: true, habitVersion: 1 };
+    await call("anchor_create_record", { recordType: "scheduleTemplate", record: template, requestId: "planner-template" }, "planner-user");
+    const cases = [
+      { action: "copy_day", args: { sourceDay: now, targetDay: "2026-11-09T10:00:00Z", timeZone: "Asia/Kolkata" } },
+      { action: "materialize_day", args: { day: now, timeZone: "America/New_York" } },
+      { action: "reconcile_template", args: { templateID: template.id, from: now, timeZone: "UTC" } },
+    ];
+    for (const task of cases) {
+      const input = { ...task, requestId: `planner-${task.action}`, targetDeviceId: deviceId, expectedSessionID: null };
+      const queued = await call("anchor_queue_planner_command", input, "planner-user");
+      expect(queued.isError).toBe(false);
+      expect(queued.structuredContent.status).toBe("queued");
+      const retry = await call("anchor_queue_planner_command", input, "planner-user");
+      expect(retry.structuredContent).toMatchObject({ duplicate: true, commandId: queued.structuredContent.commandId });
+      const read = await call("anchor_get_record", { recordType: "agentCommand", id: queued.structuredContent.commandId }, "planner-user");
+      expect(read.structuredContent.record).toMatchObject({ ...task, status: "pending", expectedSessionID: null });
+      // Active-session conflicts are decided by the native target at execution.
+      const command = read.structuredContent.record as Record<string, unknown>;
+      await syncRecord("planner-user", { ...command, status: "applied", result: { sessionID: null, state: "idle", capturePresented: false, affectedRecordIDs: [], affectedRecordCount: 0 } }, `agentcommand-${queued.structuredContent.commandId}`, 1);
+    }
+    const rejected = await call("anchor_queue_planner_command", { requestId: "invalid-zone", action: "materialize_day", args: { day: now, timeZone: "not-a-zone" }, targetDeviceId: deviceId, expectedSessionID: null }, "planner-user");
+    expect(rejected.isError).toBe(true);
+    const wrongTool = await call("anchor_queue_focus_command", { requestId: "wrong-tool", ...cases[0], targetDeviceId: deviceId, expectedSessionID: null }, "planner-user");
+    expect(wrongTool.isError).toBe(true);
+  });
+
+  it("keeps habit progression native-owned without inventing an active-habit cap", async () => {
+    const template = { recordType: "scheduleTemplate", id: crypto.randomUUID(), title: "Small habit", details: "", createdAt: now, updatedAt: now, startMinutesFromMidnight: 540, plannedSeconds: 60, weekdayMask: 127, kindRaw: "routine", flexibilityRaw: "flexible", isBehaviorHabit: true, habitUsesSuggestedTime: false, habitVersion: 1 };
+    const create = (record: Record<string, unknown>) => call("anchor_create_record", { recordType: "scheduleTemplate", record, requestId: crypto.randomUUID() }, "habit-policy-user");
+    expect((await create(template)).isError).toBe(false);
+    expect((await create({ ...template, id: crypto.randomUUID() })).isError).toBe(false);
+    for (const changes of [{ habitVersion: 2 }, { graduatedAt: now }, { habitLevelStartedAt: now }, { lastProgressPromptedAt: now }, { isBehaviorHabit: false }]) {
+      const rejected = await call("anchor_update_record", { recordType: "scheduleTemplate", id: template.id, requestId: crypto.randomUUID(), baseVersion: 1, changes }, "habit-policy-user");
+      expect(rejected.isError).toBe(true);
+    }
+    expect((await create({ ...template, id: crypto.randomUUID(), habitVersion: 7 })).isError).toBe(true);
+    expect((await create({ ...template, id: crypto.randomUUID(), graduatedAt: now })).isError).toBe(true);
+    const archived = await call("anchor_update_record", { recordType: "scheduleTemplate", id: template.id, requestId: "archive-habit", baseVersion: 1, changes: { archivedAt: now } }, "habit-policy-user");
+    expect(archived.isError).toBe(false);
+    const restored = await call("anchor_update_record", { recordType: "scheduleTemplate", id: template.id, requestId: "bypass-restore", baseVersion: 2, changes: { archivedAt: null } }, "habit-policy-user");
+    expect(restored.isError).toBe(true);
+  });
+
   it("hides private legacy distraction fields and rejects nested command note payloads", async () => {
     const id = crypto.randomUUID();
     await call("anchor_get_account", {}, "privacy-user");

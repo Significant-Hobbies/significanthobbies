@@ -1,5 +1,5 @@
 import { HttpError, requireInteger, requireObject, requireString } from "./contracts";
-import { ANCHOR_FIELDS, ANCHOR_PREFIXES, COMMAND_ACTIONS, invalid, objectSchema, onlyKeys, projectAnchorRecord, recordName, recordSchema, validateAnchorDocument, validateCommand, validateUUID } from "./anchor-contracts";
+import { ANCHOR_FIELDS, ANCHOR_PREFIXES, COMMAND_ACTIONS, FOCUS_ACTIONS, PLANNER_ACTIONS, invalid, objectSchema, onlyKeys, projectAnchorRecord, recordName, recordSchema, validateAnchorDocument, validateCommand, validateUUID } from "./anchor-contracts";
 import { ProductConnection, ProductTool } from "./product-mcp";
 import { applyMutation, getRecord } from "./sync";
 
@@ -62,7 +62,8 @@ async function replay(env: Env, userId: string, name: string, args: Args): Promi
     WHERE a.user_id = ?1 AND a.idempotency_key = ?2 AND a.domain = 'anchor' AND c.domain = 'anchor'`).bind(userId, key).first<{ id: string; tool_name: string; input_json: string; record_id: string; version: number; cursor: number }>();
   if (!row) return undefined;
   if (row.tool_name !== name || canonical(JSON.parse(row.input_json)) !== canonical(args)) throw new HttpError(409, "request_id_reused", "requestId was already used with a different operation or input");
-  return { status: name === "queue_focus_command" ? "queued" : "accepted", duplicate: true, actionId: row.id, change: { id: row.record_id, version: row.version, cursor: row.cursor }, ...(name === "queue_focus_command" ? { commandId: row.record_id.slice("agentcommand-".length), deviceExecution: "read the command receipt; queued is not applied" } : {}) };
+  const queued = name === "queue_focus_command" || name === "queue_planner_command";
+  return { status: queued ? "queued" : "accepted", duplicate: true, actionId: row.id, change: { id: row.record_id, version: row.version, cursor: row.cursor }, ...(queued ? { commandId: row.record_id.slice("agentcommand-".length), deviceExecution: "read the command receipt; queued is not applied" } : {}) };
 }
 function actionKey(args: Args) { return `anchor-action:${requireString(args.requestId, "requestId", 200)}`; }
 async function mutate(env: Env, userId: string, name: string, args: Args, wireName: string, record: Args | undefined, baseVersion: number) {
@@ -79,6 +80,7 @@ async function create(args: Args, env: Env, user: { id: string }) {
   const repeated = await replay(env, user.id, "create_record", args);
   if (repeated) return repeated;
   const document = validateAnchorDocument(args.record, String(args.recordType));
+  enforceHabitProgression(document);
   await relationships(env, user.id, document);
   await enforcePlannerState(env, user.id, document);
   return mutate(env, user.id, "create_record", args, recordName(document.recordType, document.id), document, 0);
@@ -95,10 +97,25 @@ async function update(args: Args, env: Env, user: { id: string }) {
   const original = JSON.parse(current.payload_json) as Args;
   // Device integration fields remain untouched, but never become action inputs.
   const document = validateAnchorDocument({ ...projectAnchorRecord(original), ...changes }, type);
+  enforceHabitProgression(document, original);
   await relationships(env, user.id, document);
   await enforcePlannerState(env, user.id, document, original);
   const payload = { ...original, ...document };
   return mutate(env, user.id, "update_record", args, current.id, payload, requireInteger(args.baseVersion, "baseVersion"));
+}
+
+/** HabitPolicy.canAdd currently permits every nonnegative count (no numerical
+ * cap). Version/level/graduation transitions remain native-owned so remote CRUD
+ * cannot assert seven-occurrence readiness or rewrite progression history. */
+function enforceHabitProgression(document: Args, original?: Args) {
+  if (document.recordType !== "scheduleTemplate") return;
+  const fields = ["habitVersion", "graduatedAt", "habitLevelStartedAt", "lastProgressPromptedAt"];
+  if (!original) {
+    if (document.habitVersion !== 1 || fields.slice(1).some(key => document[key] != null)) invalid("new templates start at habit version one; progression is native-owned");
+    return;
+  }
+  if (document.isBehaviorHabit !== original.isBehaviorHabit || fields.some(key => canonical(document[key] ?? null) !== canonical(original[key] ?? null))) invalid("habit identity and progression can only change through the native workflow");
+  if (original.isBehaviorHabit && original.archivedAt != null && document.archivedAt == null) invalid("restore a behavior habit in the native app to reset its level start correctly");
 }
 async function remove(args: Args, env: Env, user: { id: string }) {
   onlyKeys(args, ["recordType", "id", "requestId", "baseVersion"]);
@@ -132,9 +149,12 @@ async function enforcePlannerState(env: Env, userId: string, document: Args, ori
   void env; void userId;
 }
 
-async function queue(args: Args, env: Env, user: { id: string }) {
+async function queueCommand(args: Args, env: Env, user: { id: string }, planner = false) {
   onlyKeys(args, ["requestId", "action", "targetDeviceId", "expectedSessionID", "args", "expiresInSeconds"]);
-  const repeated = await replay(env, user.id, "queue_focus_command", args);
+  const name = planner ? "queue_planner_command" : "queue_focus_command";
+  const actions: readonly string[] = planner ? PLANNER_ACTIONS : FOCUS_ACTIONS;
+  if (typeof args.action !== "string" || !actions.includes(args.action)) invalid("action is not supported by this command tool");
+  const repeated = await replay(env, user.id, name, args);
   if (repeated) return repeated;
   const commandId = crypto.randomUUID();
   const now = new Date();
@@ -142,8 +162,8 @@ async function queue(args: Args, env: Env, user: { id: string }) {
   await relationships(env, user.id, requireObject(document.args));
   const device = JSON.parse((await existing(env, user.id, "agentDevice", document.targetDeviceId)).payload_json) as Args;
   if (!(device.capabilities as unknown[]).includes(document.action)) invalid("the selected device does not support this action");
-  if (String(device.activeSessionID).toLowerCase() !== String(document.expectedSessionID).toLowerCase()) throw new HttpError(409, "session_changed", "read the device's current session before queuing this action");
-  const response = requireObject(await mutate(env, user.id, "queue_focus_command", args, recordName("agentCommand", commandId), document, 0));
+  if (!planner && String(device.activeSessionID).toLowerCase() !== String(document.expectedSessionID).toLowerCase()) throw new HttpError(409, "session_changed", "read the device's current session before queuing this action");
+  const response = requireObject(await mutate(env, user.id, name, args, recordName("agentCommand", commandId), document, 0));
   if (response.duplicate) return response;
   return { ...response, status: "queued", commandId, deviceExecution: "pending; a connected target device must apply this command before it is complete" };
 }
@@ -156,7 +176,7 @@ export const ANCHOR_CONNECTION: ProductConnection = {
     tool("get_capabilities", "Get registered target devices, their last published state, writable record schemas and remote/device limits.", {}, [], async (args, env, user) => {
       onlyKeys(args, []);
       const devices = await env.DB.prepare("SELECT id,version,updated_at,payload_json FROM anchor_records WHERE user_id = ?1 AND deleted_at IS NULL AND json_extract(payload_json,'$.recordType') = 'agentDevice' ORDER BY updated_at DESC LIMIT 50").bind(user.id).all<Stored>();
-      return { product: "anchor", generatedAt: new Date().toISOString(), devices: devices.results.map(rowResult), writableRecordTypes: Object.keys(ANCHOR_FIELDS), recordSchemas: Object.fromEntries(Object.keys(ANCHOR_FIELDS).map(type => [type, recordSchema(type)])), commandActions: COMMAND_ACTIONS, commandReceipt: "read agentCommand by commandId; queued is not applied", sharedData: "only inventory approved in the native app; newly shared data arrives on its next sync", localOnly: ["distraction notes and keywords", "device calendar/reminder identifiers", "notification and capture-sheet execution"], limits: { page: 50, commandLifetimeSeconds: 900, atomicMutationRecords: 1 }, workflows: "Multi-record copy-day and routine reconciliation require the native app; individual records can be edited remotely." };
+      return { product: "anchor", generatedAt: new Date().toISOString(), devices: devices.results.map(rowResult), writableRecordTypes: Object.keys(ANCHOR_FIELDS), recordSchemas: Object.fromEntries(Object.keys(ANCHOR_FIELDS).map(type => [type, recordSchema(type)])), commandActions: COMMAND_ACTIONS, commandReceipt: "read agentCommand by commandId; queued is not applied", sharedData: "only inventory approved in the native app; newly shared data arrives on its next sync", localOnly: ["distraction notes and keywords", "device calendar/reminder identifiers", "notification and capture-sheet execution"], limits: { page: 50, commandLifetimeSeconds: 900, atomicMutationRecords: 1 }, workflows: "Copy-day, day materialization and template reconciliation are remotely queued for native execution over approved account data. Habit progression remains native-owned; current HabitPolicy has no numeric active-habit cap." };
     }),
     tool("list_records", "List bounded shared Anchor records, optionally by type. Includes command receipts; no distraction notes.", { recordType, limit: { type: "integer", minimum: 1, maximum: 50, default: 20 }, offset: { type: "integer", minimum: 0, maximum: 1_000_000, default: 0 } }, [], async (args, env, user) => {
       onlyKeys(args, ["recordType", "limit", "offset"]);
@@ -171,6 +191,7 @@ export const ANCHOR_CONNECTION: ProductConnection = {
     tool("create_record", "Create one complete native planner metadata record. Read capabilities for exact schemas. No live session fabrication.", { recordType: writableType, requestId, record: { oneOf: Object.keys(ANCHOR_FIELDS).map(recordSchema) } }, ["recordType", "requestId", "record"], create, true),
     tool("update_record", "Edit known planner fields with optimistic concurrency. Archive by setting archivedAt. Timed execution stays device-owned.", { recordType: writableType, id, baseVersion: version, requestId, changes: { type: "object" } }, ["recordType", "id", "baseVersion", "requestId", "changes"], update, true),
     tool("delete_record", "Delete one unused planner metadata record by current version. History and active execution cannot be deleted.", { recordType: writableType, id, baseVersion: version, requestId }, ["recordType", "id", "baseVersion", "requestId"], remove, true, true),
-    tool("queue_focus_command", "Queue a focus action for an explicitly targeted native device. Start requires expectedSessionID null; all other commands require its exact active UUID. Capture opens the local sheet, never stores note content remotely.", { requestId, action: { type: "string", enum: COMMAND_ACTIONS }, targetDeviceId: { ...string, maxLength: 128 }, expectedSessionID: { anyOf: [id, { type: "null" }] }, args: { type: "object", description: "start_focus: intent,minutes, optional goalID,projectID,planBlockID,notes,tagIDStrings. Other actions: empty object." }, expiresInSeconds: { type: "integer", minimum: 1, maximum: 900, default: 300 } }, ["requestId", "action", "targetDeviceId", "expectedSessionID"], queue, true),
+    tool("queue_focus_command", "Queue a focus action for an explicitly targeted native device. Start requires expectedSessionID null; all other focus commands require its exact active UUID. Capture opens the local sheet, never stores note content remotely.", { requestId, action: { type: "string", enum: FOCUS_ACTIONS }, targetDeviceId: { ...string, maxLength: 128 }, expectedSessionID: { anyOf: [id, { type: "null" }] }, args: { type: "object", description: "start_focus: intent,minutes, optional goalID,projectID,planBlockID,notes,tagIDStrings. end_focus: optional reason completed|endedEarly|abandoned. Other actions: empty object." }, expiresInSeconds: { type: "integer", minimum: 1, maximum: 900, default: 300 } }, ["requestId", "action", "targetDeviceId", "expectedSessionID"], (args, env, user) => queueCommand(args, env, user), true),
+    tool("queue_planner_command", "Queue native copy-day, materialize-day or template reconciliation over explicitly shared data. A target device executes the existing planner service and publishes affected IDs; queued is not applied.", { requestId, action: { type: "string", enum: PLANNER_ACTIONS }, targetDeviceId: { ...id }, expectedSessionID: { type: "null" }, args: { oneOf: [objectSchema({ sourceDay: { type: "string", format: "date-time" }, targetDay: { type: "string", format: "date-time" }, timeZone: string }), objectSchema({ day: { type: "string", format: "date-time" }, timeZone: string }), objectSchema({ templateID: id, from: { type: "string", format: "date-time" }, timeZone: string })] }, expiresInSeconds: { type: "integer", minimum: 1, maximum: 900, default: 300 } }, ["requestId", "action", "targetDeviceId", "expectedSessionID", "args"], (args, env, user) => queueCommand(args, env, user, true), true),
   ],
 };

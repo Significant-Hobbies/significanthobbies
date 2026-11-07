@@ -34,7 +34,9 @@ export const ANCHOR_FIELDS: Record<string, Record<string, Field>> = {
 export const ANCHOR_PREFIXES: Record<string, string> = {
   goal: "goal-", project: "project-", savedTag: "savedtag-", preferences: "prefs-", behaviorProfile: "behavior-", scheduleTemplate: "schedule-", habitCompletion: "habit-", dayPlanConfirmation: "dayplan-", planBlock: "planblock-", divergenceEvent: "divergence-", focusSession: "session-", distraction: "distraction-", machineActivityDay: "machineday-", agentCommand: "agentcommand-", agentDevice: "agentdevice-",
 };
-export const COMMAND_ACTIONS = ["start_focus", "pause_focus", "resume_focus", "end_focus", "capture_distraction"] as const;
+export const FOCUS_ACTIONS = ["start_focus", "pause_focus", "resume_focus", "end_focus", "capture_distraction"] as const;
+export const PLANNER_ACTIONS = ["copy_day", "materialize_day", "reconcile_template"] as const;
+export const COMMAND_ACTIONS = [...FOCUS_ACTIONS, ...PLANNER_ACTIONS] as const;
 
 export function objectSchema(properties: Record<string, unknown>, required = Object.keys(properties)) {
   return { type: "object", properties, required, additionalProperties: false };
@@ -81,7 +83,8 @@ export function validateCommand(value: unknown): Record<string, unknown> {
       || !["pending", "applied", "failed"].includes(String(input.status)) || !optional(uuid).check(input.expectedSessionID)) invalid("invalid agent command envelope");
   const duration = Date.parse(String(input.expiresAt)) - Date.parse(String(input.issuedAt));
   if (duration <= 0 || duration > 900_000) invalid("command lifetime must be at most fifteen minutes");
-  if ((input.action === "start_focus") !== (input.expectedSessionID === null)) invalid("expectedSessionID must be null for start and an exact UUID for other actions");
+  const planner = PLANNER_ACTIONS.includes(input.action as typeof PLANNER_ACTIONS[number]);
+  if ((input.action === "start_focus" || planner) !== (input.expectedSessionID === null)) invalid("expectedSessionID must be null for start/planner actions and an exact UUID for other focus actions");
   const args = requireObject(input.args, "command.args");
   if (input.action === "start_focus") {
     onlyKeys(args, ["intent", "minutes", "goalID", "projectID", "planBlockID", "notes", "tagIDStrings"]);
@@ -89,14 +92,24 @@ export function validateCommand(value: unknown): Record<string, unknown> {
     for (const key of ["goalID", "projectID", "planBlockID"]) if (args[key] !== undefined && !optional(uuid).check(args[key])) invalid(`invalid ${key}`);
     if (args.notes !== undefined && !text().check(args.notes)) invalid("invalid session notes");
     if (args.tagIDStrings !== undefined && !array(uuid).check(args.tagIDStrings)) invalid("invalid session tags");
+  } else if (planner) {
+    const keys = input.action === "copy_day" ? ["sourceDay", "targetDay", "timeZone"] : input.action === "materialize_day" ? ["day", "timeZone"] : ["templateID", "from", "timeZone"];
+    onlyKeys(args, keys);
+    for (const key of keys.filter(key => !["timeZone", "templateID"].includes(key))) if (!date.check(args[key])) invalid(`invalid planner ${key}`);
+    if (input.action === "reconcile_template" && !uuid.check(args.templateID)) invalid("invalid templateID");
+    if (!text(100, 1).check(args.timeZone)) invalid("planner timeZone is required");
+    try { new Intl.DateTimeFormat("en-US", { timeZone: String(args.timeZone) }); }
+    catch { invalid("timeZone must name an IANA time zone"); }
   } else if (input.action === "end_focus") {
     onlyKeys(args, ["reason"]);
     if (args.reason !== undefined && !enumeration("completed", "endedEarly", "abandoned").check(args.reason)) invalid("invalid end reason");
   } else onlyKeys(args, []);
   if (input.result !== null) {
     const result = requireObject(input.result, "command.result");
-    onlyKeys(result, ["sessionID", "state", "capturePresented"]);
+    onlyKeys(result, ["sessionID", "state", "capturePresented", "affectedRecordIDs", "affectedRecordCount"]);
     if (!optional(uuid).check(result.sessionID) || !enumeration("idle", "running", "paused", "finished").check(result.state) || !bool.check(result.capturePresented)) invalid("invalid command receipt");
+    if (result.affectedRecordIDs !== undefined && !array(uuid, 500).check(result.affectedRecordIDs)) invalid("invalid affected record IDs");
+    if (result.affectedRecordCount !== undefined && !num(0, 100_000, true).check(result.affectedRecordCount)) invalid("invalid affected record count");
   }
   if (input.error !== null && !text(500, 1).check(input.error)) invalid("invalid command error");
   if (input.status === "pending" && (input.result !== null || input.error !== null)) invalid("pending commands cannot claim a result");

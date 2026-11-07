@@ -29,7 +29,12 @@ have not been used together and there is no current need for the Hub.
   tables; the legacy seven-domain `/mcp` remains read-only. Planner metadata
   actions require explicit account sharing, current versions and retry IDs.
   Focus actions enqueue expiring device commands and remain pending until a
-  native receipt; capture notes never enter those commands. Device discovery
+  native receipt; copy-day, day materialization and template reconciliation
+  use that same device bridge to run the existing native planner service.
+  Capture notes never enter those commands. Habit progression fields and
+  restoring a behavior habit remain native-owned; direct metadata CRUD cannot
+  claim progression readiness. Current HabitPolicy has no numeric active-habit
+  cap. Device discovery
   reports timestamped native snapshots, not guaranteed current device state.
   This source work does not reopen the retired Hub product or establish a
   production release, real-account connection, or native runtime acceptance.
