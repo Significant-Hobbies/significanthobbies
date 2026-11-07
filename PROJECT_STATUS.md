@@ -1,6 +1,6 @@
 # Significant Hobbies Hub — PROJECT STATUS
 
-Last updated: 2026-10-26
+Last updated: 2026-11-08
 
 ## Why / What
 
@@ -22,6 +22,30 @@ have not been used together and there is no current need for the Hub.
   in demonstrated use. Do not turn the retained backend into a replacement Hub.
 
 ## Historical source qualification
+
+- Anchor issue [#89](https://github.com/Significant-Hobbies/anchor/issues/89)
+  adds an independently scoped `/anchor/mcp` connection to this retained
+  service. It reuses Live's verified account authority and existing sync
+  tables; the legacy seven-domain `/mcp` remains read-only. Planner metadata
+  actions require explicit account sharing, current versions and retry IDs.
+  Focus actions enqueue expiring device commands and remain pending until a
+  native receipt; copy-day, day materialization and template reconciliation
+  use that same device bridge to run the existing native planner service.
+  Commands bind to the target's random sharing-consent generation; older
+  devices without it cannot receive new commands, and retries keep the original
+  generation rather than gaining authority after a later sharing enable.
+  Finished-session edits cover intent, ordinary notes, project and explicit
+  tags; distraction metadata edits cover tags and explicit category locks.
+  Those actions preserve native timing/state, and never accept distraction text.
+  Product authorization requires Live's versioned verified product/scope/audience
+  response; an old identity deployment cannot silently grant write access.
+  Capture notes never enter those commands. Habit progression fields and
+  restoring a behavior habit remain native-owned; direct metadata CRUD cannot
+  claim progression readiness. Current HabitPolicy has no numeric active-habit
+  cap. Device discovery
+  reports timestamped native snapshots, not guaranteed current device state.
+  This source work does not reopen the retired Hub product or establish a
+  production release, real-account connection, or native runtime acceptance.
 
 - Issue #158's shared mirror source now provides CloudKit and Hub transports,
   local commit before cursor advancement, bounded Hub batches, verified per-record
