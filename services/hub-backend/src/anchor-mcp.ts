@@ -37,7 +37,15 @@ async function existing(env: Env, userId: string, type: unknown, identifier: unk
   const name = recordName(type, identifier);
   const row = await getRecord(env, userId, "anchor", name);
   // Pre-mirror completed sessions used bare UUID wire names.
-  const legacy = !row && type === "focusSession" ? await getRecord(env, userId, "anchor", String(identifier).toLowerCase()) : null;
+  let legacy: typeof row = null;
+  if (!row && type === "focusSession") {
+    const lower = String(identifier).toLowerCase();
+    // Native retains both historical bare-UUID spellings. Canonical names
+    // take priority, followed by lowercase then uppercase legacy aliases;
+    // finding one never merges or deletes another retained record.
+    legacy = await getRecord(env, userId, "anchor", lower)
+      ?? await getRecord(env, userId, "anchor", lower.toUpperCase());
+  }
   const result = row ?? legacy;
   if (!result || result.deleted_at) throw new HttpError(404, "not_found", "the account record was not found");
   return result;

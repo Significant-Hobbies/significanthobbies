@@ -268,6 +268,27 @@ describe("Anchor product connection", () => {
     expect((await call("anchor_update_record", { recordType: "focusSession", id, requestId: "no-foreign-project", baseVersion: 2, changes: { projectID: foreignProject.id } }, userId)).isError).toBe(true);
   });
 
+  it("reads and edits uppercase legacy session aliases while preserving deterministic alias priority", async () => {
+    const userId = "legacy-alias-user";
+    const id = "a1234567-89ab-4cde-8fab-a123456789ab";
+    const upper = id.toUpperCase();
+    const native = { recordType: "focusSession", id: upper, startedAt: now, endedAt: "2026-11-08T10:25:00Z", plannedSeconds: 1500, bankedSeconds: 1500, runningSince: null, stateRaw: "finished", endReasonRaw: "completed", pausedAt: null, intent: "Uppercase alias", notes: "", tagIDStrings: [], hourlyRate: 0, currencyCode: "USD", computerActiveSeconds: 0, computerAwaySeconds: 0 };
+    await syncRecord(userId, native, upper);
+    const listed = await call("anchor_list_records", { recordType: "focusSession" }, userId);
+    expect(listed.structuredContent.items).toMatchObject([{ id: upper }]);
+    const read = await call("anchor_get_record", { recordType: "focusSession", id }, userId);
+    expect(read.structuredContent).toMatchObject({ id: upper, record: { intent: "Uppercase alias" } });
+    expect((await call("anchor_update_record", { recordType: "focusSession", id, baseVersion: 1, requestId: "edit-upper-alias", changes: { intent: "Retained alias edited" } }, userId)).isError).toBe(false);
+    expect((await call("anchor_get_record", { recordType: "focusSession", id: upper }, userId)).structuredContent).toMatchObject({ id: upper, version: 2, record: { intent: "Retained alias edited" } });
+    expect((await call("anchor_get_record", { recordType: "focusSession", id }, "another-alias-user")).isError).toBe(true);
+    await syncRecord(userId, { ...native, intent: "Lowercase alias" }, id);
+    expect((await call("anchor_get_record", { recordType: "focusSession", id: upper }, userId)).structuredContent).toMatchObject({ id, record: { intent: "Lowercase alias" } });
+    await syncRecord(userId, { ...native, intent: "Canonical" }, `session-${id}`);
+    expect((await call("anchor_get_record", { recordType: "focusSession", id }, userId)).structuredContent).toMatchObject({ id: `session-${id}`, record: { intent: "Canonical" } });
+    const retained = await env.DB.prepare("SELECT COUNT(*) AS count FROM anchor_records WHERE user_id=?1").bind(userId).first<{ count: number }>();
+    expect(retained?.count).toBe(3);
+  });
+
   it("edits distraction tags and explicit category without accepting private text or changing timing", async () => {
     const userId = "distraction-edit-user";
     const sessionID = crypto.randomUUID();
