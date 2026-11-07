@@ -256,7 +256,7 @@ describe("Anchor product connection", () => {
     const edited = await call("anchor_update_record", { recordType: "focusSession", id, requestId: "edit-finished", baseVersion: 1, changes }, userId);
     expect(edited.isError).toBe(false);
     const saved = await env.DB.prepare("SELECT payload_json FROM anchor_records WHERE user_id=?1 AND id=?2").bind(userId, `session-${id}`).first<{ payload_json: string }>();
-    expect(JSON.parse(saved!.payload_json)).toEqual({ ...native, ...changes, intent: "Final draft", notes: "Ordinary session context" });
+    expect(JSON.parse(saved!.payload_json)).toEqual({ ...native, ...changes, intent: "Final draft", notes: "Ordinary session context", tagIDStrings: [tag.id.toUpperCase()] });
     for (const changes of [{ bankedSeconds: 2000 }, { hourlyRate: 99 }, { stateRaw: "running" }, { goalID: crypto.randomUUID() }]) {
       expect((await call("anchor_update_record", { recordType: "focusSession", id, requestId: crypto.randomUUID(), baseVersion: 2, changes }, userId)).isError).toBe(true);
     }
@@ -301,10 +301,42 @@ describe("Anchor product connection", () => {
     const edited = await call("anchor_update_record", { recordType: "distraction", id, requestId: "edit-category", baseVersion: 1, changes: { kindRaw: "message", tagIDStrings: [tag.id] } }, userId);
     expect(edited.isError).toBe(false);
     const saved = await env.DB.prepare("SELECT payload_json FROM anchor_records WHERE user_id=?1 AND id=?2").bind(userId, `distraction-${id}`).first<{ payload_json: string }>();
-    expect(JSON.parse(saved!.payload_json)).toEqual({ ...native, kindRaw: "message", kindConfidence: 1, kindIsUserSet: true, tagIDStrings: [tag.id] });
+    expect(JSON.parse(saved!.payload_json)).toEqual({ ...native, kindRaw: "message", kindConfidence: 1, kindIsUserSet: true, tagIDStrings: [tag.id.toUpperCase()] });
     for (const changes of [{ note: "must remain local" }, { keywords: ["private"] }, { kindIsUserSet: false }, { offsetSeconds: 0 }]) {
       expect((await call("anchor_update_record", { recordType: "distraction", id, requestId: crypto.randomUUID(), baseVersion: 2, changes }, userId)).isError).toBe(true);
     }
+  });
+
+  it("canonicalizes lowercase tags for native display, preserves replay input and emits an explicit project clear", async () => {
+    const userId = "native-tag-edit-user";
+    const project = { recordType: "project", id: "c3000000-0000-4000-8000-000000000003", name: "Before project", notes: "", createdAt: now, symbolName: "folder", tintIndex: 1, hourlyRate: 0, currencyCode: "USD" };
+    const tag = { recordType: "savedTag", id: "d4000000-0000-4000-8000-000000000004", name: "Visible native tag", createdAt: now, tintIndex: 1 };
+    const initial = [];
+    for (const record of [project, tag]) {
+      await call("anchor_create_record", { recordType: record.recordType, record, requestId: crypto.randomUUID() }, userId);
+      const read = await call("anchor_get_record", { recordType: record.recordType, id: record.id }, userId);
+      initial.push({ name: read.structuredContent.id, payload: read.structuredContent.record });
+    }
+    const id = "e5000000-0000-4000-8000-000000000005";
+    const native = { recordType: "focusSession", id: id.toUpperCase(), startedAt: now, endedAt: "2026-11-08T10:25:00Z", plannedSeconds: 1500, bankedSeconds: 1500, runningSince: null, stateRaw: "finished", endReasonRaw: "completed", pausedAt: null, intent: "Tagged history", notes: "", tagIDStrings: [], hourlyRate: 0, currencyCode: "USD", computerActiveSeconds: 0, computerAwaySeconds: 0, projectID: project.id.toUpperCase() };
+    await syncRecord(userId, native, `session-${id}`);
+    initial.push({ name: `session-${id}`, payload: native });
+    const edit = { recordType: "focusSession", id, requestId: "lowercase-history-tags", baseVersion: 1, changes: { tagIDStrings: [tag.id], projectID: null } };
+    expect((await call("anchor_update_record", edit, userId)).isError).toBe(false);
+    expect((await call("anchor_update_record", edit, userId)).structuredContent).toMatchObject({ duplicate: true });
+    const read = await call("anchor_get_record", { recordType: "focusSession", id }, userId);
+    expect(read.structuredContent.record).toMatchObject({ tagIDStrings: [tag.id.toUpperCase()], projectID: null });
+    await expect(JSON.stringify({ generatedBy: "Actual Worker metadata edit/get; native UUID.uuidString tag matching and explicit null project clear", initial, updated: [{ name: `session-${id}`, payload: read.structuredContent.record }] }, null, 2) + "\n").toMatchFileSnapshot("./fixtures/worker-history-edit.json");
+    const deviceId = "f6000000-0000-4000-8000-000000000006";
+    await syncRecord(userId, { recordType: "agentDevice", id: deviceId, deviceId, platform: "macOS", updatedAt: now, activeSessionID: null, state: "idle", capturePresented: false, capabilities: ["start_focus"] }, `agentdevice-${deviceId}`);
+    const input = { requestId: "lowercase-start-tags", action: "start_focus", targetDeviceId: deviceId, expectedSessionID: null, args: { intent: "Visible tags", minutes: 25, tagIDStrings: [tag.id] } };
+    const queued = await call("anchor_queue_focus_command", input, userId);
+    expect(queued.isError).toBe(false);
+    expect((await call("anchor_queue_focus_command", input, userId)).structuredContent).toMatchObject({ duplicate: true, commandId: queued.structuredContent.commandId });
+    const command = await call("anchor_get_record", { recordType: "agentCommand", id: queued.structuredContent.commandId }, userId);
+    expect(command.structuredContent.record).toMatchObject({ args: { tagIDStrings: [tag.id.toUpperCase()] } });
+    const audit = await env.DB.prepare("SELECT input_json FROM pace_actions WHERE user_id=?1 AND idempotency_key=?2").bind(userId, "anchor-action:lowercase-start-tags").first<{ input_json: string }>();
+    expect(JSON.parse(audit!.input_json)).toEqual(input);
   });
 
   it("queues all planner actions through the same durable bridge with typed calendar arguments", async () => {

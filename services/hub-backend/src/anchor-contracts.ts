@@ -40,7 +40,7 @@ export function validateHistoryChanges(type: string, value: unknown): Record<str
   if (!fields) invalid("unsupported history metadata recordType");
   onlyKeys(changes, Object.keys(fields));
   for (const [name, v] of Object.entries(changes)) if (!fields[name]?.check(v)) invalid(`changes.${name} is invalid`);
-  return Object.fromEntries(Object.entries(changes).map(([key, v]) => [key, ["intent", "notes"].includes(key) ? String(v).trim() : v]));
+  return Object.fromEntries(Object.entries(changes).map(([key, v]) => [key, key === "tagIDStrings" ? (v as string[]).map(id => id.toUpperCase()) : ["intent", "notes"].includes(key) ? String(v).trim() : v]));
 }
 
 export const ANCHOR_PREFIXES: Record<string, string> = {
@@ -127,7 +127,12 @@ export function validateCommand(value: unknown): Record<string, unknown> {
   if (input.status === "pending" && (input.result !== null || input.error !== null)) invalid("pending commands cannot claim a result");
   if (input.status === "applied" && (input.result === null || input.error !== null)) invalid("applied commands require a successful receipt");
   if (input.status === "failed" && (input.error === null || input.result !== null)) invalid("failed commands require an error without a success receipt");
-  return input;
+  // SavedTag.storageID is UUID.uuidString in Swift, whose string spelling is
+  // uppercase. Return a copy so requestId replay still compares the original
+  // caller arguments, while the device receives native-matchable tag IDs.
+  return input.action === "start_focus" && Array.isArray(args.tagIDStrings)
+    ? { ...input, args: { ...args, tagIDStrings: args.tagIDStrings.map(id => String(id).toUpperCase()) } }
+    : input;
 }
 
 export function validateDevice(value: unknown): Record<string, unknown> {
