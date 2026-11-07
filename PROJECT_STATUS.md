@@ -31,6 +31,9 @@ have not been used together and there is no current need for the Hub.
   Focus actions enqueue expiring device commands and remain pending until a
   native receipt; copy-day, day materialization and template reconciliation
   use that same device bridge to run the existing native planner service.
+  Commands bind to the target's random sharing-consent generation; older
+  devices without it cannot receive new commands, and retries keep the original
+  generation rather than gaining authority after a later sharing enable.
   Finished-session edits cover intent, ordinary notes, project and explicit
   tags; distraction metadata edits cover tags and explicit category locks.
   Those actions preserve native timing/state, and never accept distraction text.

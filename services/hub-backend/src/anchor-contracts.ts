@@ -89,7 +89,8 @@ export function validateAnchorDocument(value: unknown, expectedType?: string): R
 
 export function validateCommand(value: unknown): Record<string, unknown> {
   const input = requireObject(value, "command");
-  onlyKeys(input, ["recordType", "id", "requestId", "action", "targetDeviceId", "issuedAt", "expiresAt", "expectedSessionID", "status", "args", "result", "error"]);
+  onlyKeys(input, ["recordType", "id", "requestId", "action", "targetDeviceId", "consentGeneration", "issuedAt", "expiresAt", "expectedSessionID", "status", "args", "result", "error"]);
+  if (input.consentGeneration !== undefined && !optional(uuid).check(input.consentGeneration)) invalid("invalid command consent generation");
   if (input.recordType !== "agentCommand" || !uuid.check(input.id) || !text(200, 1).check(input.requestId) || !text(128, 1).check(input.targetDeviceId)
       || !COMMAND_ACTIONS.includes(input.action as typeof COMMAND_ACTIONS[number]) || !date.check(input.issuedAt) || !date.check(input.expiresAt)
       || !["pending", "applied", "failed"].includes(String(input.status)) || !optional(uuid).check(input.expectedSessionID)) invalid("invalid agent command envelope");
@@ -137,7 +138,8 @@ export function validateCommand(value: unknown): Record<string, unknown> {
 
 export function validateDevice(value: unknown): Record<string, unknown> {
   const input = requireObject(value, "device");
-  onlyKeys(input, ["recordType", "id", "deviceId", "platform", "updatedAt", "observedAt", "activeSessionID", "state", "session", "capturePresented", "capabilities"]);
+  onlyKeys(input, ["recordType", "id", "deviceId", "consentGeneration", "platform", "updatedAt", "observedAt", "activeSessionID", "state", "session", "capturePresented", "capabilities"]);
+  if (input.consentGeneration !== undefined && !optional(uuid).check(input.consentGeneration)) invalid("invalid device consent generation");
   if (input.recordType !== "agentDevice" || !uuid.check(input.id) || !uuid.check(input.deviceId) || !enumeration("macOS", "iOS").check(input.platform)
       || !date.check(input.updatedAt) || !optional(uuid).check(input.activeSessionID) || !enumeration("idle", "running", "paused").check(input.state)
       || !bool.check(input.capturePresented) || !array(enumeration(...COMMAND_ACTIONS)).check(input.capabilities)) invalid("invalid device capability record");
@@ -163,8 +165,8 @@ export function projectAnchorRecord(value: Record<string, unknown>): Record<stri
     distraction: ["id", "capturedAt", "kindRaw", "kindConfidence", "kindIsUserSet", "offsetSeconds", "didReturnToFocus", "handledAt", "sessionID", "tagIDStrings"],
     machineActivityDay: ["id", "day", "activeSeconds", "trackedSeconds", "createdAt"],
     divergenceEvent: ["id", "blockID", "sessionID", "distractionID", "occurredAt", "kindRaw", "evidenceRaw", "userConfirmed"],
-    agentCommand: ["id", "requestId", "action", "targetDeviceId", "issuedAt", "expiresAt", "expectedSessionID", "status", "args", "result", "error"],
-    agentDevice: ["id", "deviceId", "platform", "updatedAt", "observedAt", "activeSessionID", "state", "session", "capturePresented", "capabilities"],
+    agentCommand: ["id", "requestId", "action", "targetDeviceId", "consentGeneration", "issuedAt", "expiresAt", "expectedSessionID", "status", "args", "result", "error"],
+    agentDevice: ["id", "deviceId", "consentGeneration", "platform", "updatedAt", "observedAt", "activeSessionID", "state", "session", "capturePresented", "capabilities"],
   };
   // Full command validation prevents hidden text from leaking inside args or receipts.
   if (type === "agentCommand") validateCommand(value);

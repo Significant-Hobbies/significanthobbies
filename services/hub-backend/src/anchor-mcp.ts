@@ -178,9 +178,15 @@ async function queueCommand(args: Args, env: Env, user: { id: string }, planner 
   if (repeated) return repeated;
   const commandId = crypto.randomUUID();
   const now = new Date();
-  const document = validateCommand({ recordType: "agentCommand", id: commandId, requestId: requireString(args.requestId, "requestId", 200), action: args.action, targetDeviceId: validateUUID(args.targetDeviceId, "targetDeviceId"), expectedSessionID: args.expectedSessionID, args: args.args ?? {}, issuedAt: now.toISOString(), expiresAt: new Date(now.getTime() + bound(args.expiresInSeconds, 300, 900, 1) * 1000).toISOString(), status: "pending", result: null, error: null });
+  const targetDeviceId = validateUUID(args.targetDeviceId, "targetDeviceId");
+  const device = JSON.parse((await existing(env, user.id, "agentDevice", targetDeviceId)).payload_json) as Args;
+  if (device.consentGeneration == null) throw new HttpError(409, "unsupported_device", "update and enable account sharing on the target app before queuing commands");
+  validateUUID(device.consentGeneration, "device consentGeneration");
+  // Consent is a random device generation, never a clock comparison or a
+  // caller-selected field. Old requests replay their original command rather
+  // than acquiring authority under a later enable/disable cycle.
+  const document = validateCommand({ recordType: "agentCommand", id: commandId, requestId: requireString(args.requestId, "requestId", 200), action: args.action, targetDeviceId, consentGeneration: device.consentGeneration, expectedSessionID: args.expectedSessionID, args: args.args ?? {}, issuedAt: now.toISOString(), expiresAt: new Date(now.getTime() + bound(args.expiresInSeconds, 300, 900, 1) * 1000).toISOString(), status: "pending", result: null, error: null });
   await relationships(env, user.id, requireObject(document.args));
-  const device = JSON.parse((await existing(env, user.id, "agentDevice", document.targetDeviceId)).payload_json) as Args;
   if (!(device.capabilities as unknown[]).includes(document.action)) invalid("the selected device does not support this action");
   if (!planner && String(device.activeSessionID).toLowerCase() !== String(document.expectedSessionID).toLowerCase()) throw new HttpError(409, "session_changed", "read the device's current session before queuing this action");
   const response = requireObject(await mutate(env, user.id, name, args, recordName("agentCommand", commandId), document, 0));

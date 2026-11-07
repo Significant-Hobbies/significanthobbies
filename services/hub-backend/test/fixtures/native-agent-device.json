@@ -13,9 +13,10 @@
       "reconcile_template"
     ],
     "capturePresented" : false,
+    "consentGeneration" : "f6000000-0000-4000-8000-000000000006",
     "deviceId" : "a1000000-0000-4000-8000-000000000001",
     "id" : "A1000000-0000-4000-8000-000000000001",
-    "observedAt" : "2026-11-08T10:05:00Z",
+    "observedAt" : "2026-11-08T10:05:00.000Z",
     "platform" : "macOS",
     "recordType" : "agentDevice",
     "session" : {
@@ -25,11 +26,11 @@
       "intent" : "Synthetic native focus",
       "plannedSeconds" : 1500,
       "projectID" : null,
-      "runningSince" : "2026-11-08T10:00:00Z",
-      "startedAt" : "2026-11-08T10:00:00Z",
+      "runningSince" : "2026-11-08T10:00:00.000Z",
+      "startedAt" : "2026-11-08T10:00:00.000Z",
       "state" : "running"
     },
     "state" : "running",
-    "updatedAt" : "2026-11-08T10:05:00Z"
+    "updatedAt" : "2026-11-08T10:05:00.000Z"
   }
 }

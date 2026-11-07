@@ -6,6 +6,7 @@ import nativeDeviceFixture from "./fixtures/native-agent-device.json";
 import workerCommandFixture from "./fixtures/worker-agent-command.json";
 
 const now = "2026-11-08T10:00:00Z";
+const consentGeneration = "a7000000-0000-4000-8000-000000000007";
 const goal = (id = crypto.randomUUID()) => ({ recordType: "goal", id, title: "Build", notes: "A deliberate day", createdAt: now, symbolName: "flag", tintIndex: 1, keywords: [] });
 const plan = (id = crypto.randomUUID()) => ({ recordType: "planBlock", id, isTemplateOverride: true, title: "Build", details: "", plannedStart: now, plannedSeconds: 1800, stateRaw: "planned", kindRaw: "focus", flexibilityRaw: "flexible", createdAt: now, updatedAt: now });
 
@@ -132,7 +133,7 @@ describe("Anchor product connection", () => {
   it("protects all references in pending commands but releases expired references", async () => {
     const userId = "pending-ref-user";
     const deviceId = crypto.randomUUID();
-    await syncRecord(userId, { recordType: "agentDevice", id: deviceId, deviceId, platform: "macOS", updatedAt: now, activeSessionID: null, state: "idle", capturePresented: false, capabilities: ["start_focus", "reconcile_template"] }, `agentdevice-${deviceId}`);
+    await syncRecord(userId, { recordType: "agentDevice", id: deviceId, deviceId, consentGeneration, platform: "macOS", updatedAt: now, activeSessionID: null, state: "idle", capturePresented: false, capabilities: ["start_focus", "reconcile_template"] }, `agentdevice-${deviceId}`);
     const records = [goal(), plan(),
       { recordType: "project", id: crypto.randomUUID(), name: "Client", notes: "", createdAt: now, symbolName: "folder", tintIndex: 1, hourlyRate: 0, currencyCode: "USD" },
       { recordType: "savedTag", id: crypto.randomUUID(), name: "Work", createdAt: now, tintIndex: 1 },
@@ -202,7 +203,7 @@ describe("Anchor product connection", () => {
 
   it("queues exactly one targeted command and waits for a native receipt", async () => {
     const deviceId = crypto.randomUUID();
-    await syncRecord("command-user", { recordType: "agentDevice", id: deviceId, deviceId, platform: "macOS", updatedAt: now, activeSessionID: null, state: "idle", capturePresented: false, capabilities: ["start_focus", "pause_focus", "resume_focus", "end_focus", "capture_distraction"] }, `agentdevice-${deviceId}`);
+    await syncRecord("command-user", { recordType: "agentDevice", id: deviceId, deviceId, consentGeneration, platform: "macOS", updatedAt: now, activeSessionID: null, state: "idle", capturePresented: false, capabilities: ["start_focus", "pause_focus", "resume_focus", "end_focus", "capture_distraction"] }, `agentdevice-${deviceId}`);
     const args = { requestId: "remote-start", action: "start_focus", targetDeviceId: deviceId, expectedSessionID: null, args: { intent: "Write", minutes: 25 } };
     const [queued, retry] = await Promise.all([call("anchor_queue_focus_command", args, "command-user"), call("anchor_queue_focus_command", args, "command-user")]);
     expect(queued.structuredContent.status).toBe("queued");
@@ -236,12 +237,14 @@ describe("Anchor product connection", () => {
     const command = read.structuredContent.record as Record<string, unknown>;
     expect(command.issuedAt).toMatch(/\.\d{3}Z$/u);
     expect(command.expiresAt).toMatch(/\.\d{3}Z$/u);
+    expect(command.consentGeneration).toBe(payload.consentGeneration);
     // This fixture was captured from the real Worker queue/get boundary. Keep
     // dynamic UUID/time values as emitted for the native decoder consumer.
     expect(workerCommandFixture.payload.action).toBe(command.action);
     expect(workerCommandFixture.payload.targetDeviceId).toBe(command.targetDeviceId);
     expect(workerCommandFixture.payload.issuedAt).toMatch(/\.\d{3}Z$/u);
     expect(workerCommandFixture.payload.expiresAt).toMatch(/\.\d{3}Z$/u);
+    expect(workerCommandFixture.payload.consentGeneration).toBe(payload.consentGeneration);
   });
 
   it("edits only finished session metadata while preserving the native timing snapshot", async () => {
@@ -328,7 +331,7 @@ describe("Anchor product connection", () => {
     expect(read.structuredContent.record).toMatchObject({ tagIDStrings: [tag.id.toUpperCase()], projectID: null });
     await expect(JSON.stringify({ generatedBy: "Actual Worker metadata edit/get; native UUID.uuidString tag matching and explicit null project clear", initial, updated: [{ name: `session-${id}`, payload: read.structuredContent.record }] }, null, 2) + "\n").toMatchFileSnapshot("./fixtures/worker-history-edit.json");
     const deviceId = "f6000000-0000-4000-8000-000000000006";
-    await syncRecord(userId, { recordType: "agentDevice", id: deviceId, deviceId, platform: "macOS", updatedAt: now, activeSessionID: null, state: "idle", capturePresented: false, capabilities: ["start_focus"] }, `agentdevice-${deviceId}`);
+    await syncRecord(userId, { recordType: "agentDevice", id: deviceId, deviceId, consentGeneration, platform: "macOS", updatedAt: now, activeSessionID: null, state: "idle", capturePresented: false, capabilities: ["start_focus"] }, `agentdevice-${deviceId}`);
     const input = { requestId: "lowercase-start-tags", action: "start_focus", targetDeviceId: deviceId, expectedSessionID: null, args: { intent: "Visible tags", minutes: 25, tagIDStrings: [tag.id] } };
     const queued = await call("anchor_queue_focus_command", input, userId);
     expect(queued.isError).toBe(false);
@@ -339,10 +342,39 @@ describe("Anchor product connection", () => {
     expect(JSON.parse(audit!.input_json)).toEqual(input);
   });
 
+  it("binds commands to registered consent generations without granting old retries a new consent", async () => {
+    const userId = "consent-generation-user";
+    const deviceId = crypto.randomUUID();
+    const device = { recordType: "agentDevice", id: deviceId, deviceId, platform: "macOS", updatedAt: now, activeSessionID: null, state: "idle", capturePresented: false, capabilities: ["start_focus"] };
+    expect(validateDomainRecord("anchor", { ...device, consentGeneration: null })).toMatchObject({ consentGeneration: null });
+    await syncRecord(userId, device, `agentdevice-${deviceId}`);
+    const input = { requestId: "old-consent-request", action: "start_focus", targetDeviceId: deviceId, expectedSessionID: null, args: { intent: "Consent scoped", minutes: 25 } };
+    const unsupported = await call("anchor_queue_focus_command", input, userId);
+    expect(unsupported.structuredContent).toMatchObject({ error: { code: "unsupported_device" } });
+    await syncRecord(userId, { ...device, consentGeneration }, `agentdevice-${deviceId}`, 1);
+    const queued = await call("anchor_queue_focus_command", input, userId);
+    expect(queued.isError).toBe(false);
+    const before = await call("anchor_get_record", { recordType: "agentCommand", id: queued.structuredContent.commandId }, userId);
+    expect(before.structuredContent.record).toMatchObject({ consentGeneration });
+    const newGeneration = crypto.randomUUID();
+    // A disable/re-enable publishes a new generation even when device clocks
+    // still report the same observedAt/updatedAt snapshot.
+    await syncRecord(userId, { ...device, consentGeneration: newGeneration }, `agentdevice-${deviceId}`, 2);
+    const replay = await call("anchor_queue_focus_command", input, userId);
+    expect(replay.structuredContent).toMatchObject({ duplicate: true, commandId: queued.structuredContent.commandId });
+    const retained = await call("anchor_get_record", { recordType: "agentCommand", id: queued.structuredContent.commandId }, userId);
+    expect(retained.structuredContent.record).toMatchObject({ consentGeneration });
+    const fresh = await call("anchor_queue_focus_command", { ...input, requestId: "new-consent-request" }, userId);
+    const current = await call("anchor_get_record", { recordType: "agentCommand", id: fresh.structuredContent.commandId }, userId);
+    expect(current.structuredContent.record).toMatchObject({ consentGeneration: newGeneration });
+    const forged = await call("anchor_queue_focus_command", { ...input, requestId: "caller-generation", consentGeneration: newGeneration }, userId);
+    expect(forged.structuredContent).toMatchObject({ error: { code: "invalid_input" } });
+  });
+
   it("queues all planner actions through the same durable bridge with typed calendar arguments", async () => {
     const deviceId = crypto.randomUUID();
     const activeSessionID = crypto.randomUUID();
-    await syncRecord("planner-user", { recordType: "agentDevice", id: deviceId, deviceId, platform: "macOS", updatedAt: now, activeSessionID, state: "running", capturePresented: false, capabilities: ["copy_day", "materialize_day", "reconcile_template"] }, `agentdevice-${deviceId}`);
+    await syncRecord("planner-user", { recordType: "agentDevice", id: deviceId, deviceId, consentGeneration, platform: "macOS", updatedAt: now, activeSessionID, state: "running", capturePresented: false, capabilities: ["copy_day", "materialize_day", "reconcile_template"] }, `agentdevice-${deviceId}`);
     const template = { recordType: "scheduleTemplate", id: crypto.randomUUID(), title: "Usual focus", details: "", createdAt: now, updatedAt: now, startMinutesFromMidnight: 540, plannedSeconds: 1800, weekdayMask: 31, kindRaw: "focus", flexibilityRaw: "flexible", isBehaviorHabit: false, habitUsesSuggestedTime: true, habitVersion: 1 };
     await call("anchor_create_record", { recordType: "scheduleTemplate", record: template, requestId: "planner-template" }, "planner-user");
     const cases = [
