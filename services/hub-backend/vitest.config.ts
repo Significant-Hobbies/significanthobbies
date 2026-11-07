@@ -5,9 +5,10 @@ import { defineConfig } from "vitest/config";
 export default defineConfig(async () => {
   const migrations = await readD1Migrations(path.join(import.meta.dirname, "migrations"));
   return {
+    root: import.meta.dirname,
     plugins: [
       cloudflareTest({
-        wrangler: { configPath: "./wrangler.test.jsonc" },
+        wrangler: { configPath: path.join(import.meta.dirname, "wrangler.test.jsonc") },
         miniflare: {
           bindings: {
             AUTH_MODE: "local-test",
@@ -20,7 +21,7 @@ export default defineConfig(async () => {
     ],
     test: {
       include: ["test/**/*.test.ts"],
-      setupFiles: ["./test/apply-migrations.ts"],
+      setupFiles: [path.join(import.meta.dirname, "test/apply-migrations.ts")],
     },
   };
 });

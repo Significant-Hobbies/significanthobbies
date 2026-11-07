@@ -2,18 +2,20 @@ import { env } from "cloudflare:test";
 import { describe, expect, it } from "vitest";
 import worker from "../src/index";
 import { validateDomainRecord } from "../src/contracts";
+import nativeDeviceFixture from "./fixtures/native-agent-device.json";
+import workerCommandFixture from "./fixtures/worker-agent-command.json";
 
 const now = "2026-11-08T10:00:00Z";
 const goal = (id = crypto.randomUUID()) => ({ recordType: "goal", id, title: "Build", notes: "A deliberate day", createdAt: now, symbolName: "flag", tintIndex: 1, keywords: [] });
 const plan = (id = crypto.randomUUID()) => ({ recordType: "planBlock", id, isTemplateOverride: true, title: "Build", details: "", plannedStart: now, plannedSeconds: 1800, stateRaw: "planned", kindRaw: "focus", flexibilityRaw: "flexible", createdAt: now, updatedAt: now });
 
-function testEnv(userId: string, writable = true, verify?: (url: URL, scope: string | null, auth: string | null) => void): Env {
+function testEnv(userId: string, writable = true, verify?: (url: URL, scope: string | null, auth: string | null) => void, markerOverrides: Record<string, unknown> = {}): Env {
   return { ...env, AUTH_SERVICE: { fetch: async (input: RequestInfo | URL, init?: RequestInit) => {
     const url = new URL(String(input)); const headers = new Headers(init?.headers);
     const scope = headers.get("X-Personal-MCP-Scope");
     verify?.(url, scope, headers.get("Authorization"));
     if (!writable && scope === "anchor.write") return new Response(null, { status: 403 });
-    return Response.json({ userId });
+    return Response.json({ userId, mcpProduct: "anchor", scope, audience: "https://mcp.significanthobbies.com/anchor/mcp", authorizationVersion: 1, ...markerOverrides });
   }, connect() { throw new Error("sockets are not used by the identity fixture"); } } };
 }
 async function rpc(name: string, args: Record<string, unknown>, userId: string, writable = true, customEnv?: Env) {
@@ -33,7 +35,7 @@ async function syncRecord(userId: string, record: Record<string, unknown>, name:
 
 describe("Anchor product connection", () => {
   it("emits backend-created complete native envelopes for cross-runtime qualification", async () => {
-    const records = [goal("10000000-0000-4000-8000-000000000001"), plan("10000000-0000-4000-8000-000000000002"),
+    const records = [goal("10000000-0000-4000-8000-000000000001"), { ...plan("10000000-0000-4000-8000-000000000002"), plannedStart: "2026-11-08T10:00:00.123Z" },
       { recordType: "preferences", id: "10000000-0000-4000-8000-000000000003", appearanceRaw: "dark", updatedAt: now },
       { recordType: "scheduleTemplate", id: "10000000-0000-4000-8000-000000000004", title: "Usual focus", details: "", createdAt: now, updatedAt: now, startMinutesFromMidnight: 540, plannedSeconds: 1800, weekdayMask: 31, kindRaw: "focus", flexibilityRaw: "flexible", isBehaviorHabit: false, habitUsesSuggestedTime: true, habitVersion: 1 },
     ];
@@ -68,6 +70,22 @@ describe("Anchor product connection", () => {
     expect(response.status).toBe(403);
     const absent = await call("anchor_get_record", { recordType: "goal", id: record.id }, "read-user");
     expect(absent.isError).toBe(true);
+  });
+
+  it("fails closed against legacy or mismatched identity authority responses", async () => {
+    const record = goal();
+    const input = { recordType: "goal", record, requestId: "stale-authority-create" };
+    const invalidMarkers = [
+      { mcpProduct: undefined, scope: undefined, audience: undefined, authorizationVersion: undefined },
+      { mcpProduct: "different-product" }, { scope: "anchor.write" },
+      { audience: "https://mcp.significanthobbies.com/personal-apps/mcp" }, { authorizationVersion: 0 },
+    ];
+    for (const marker of invalidMarkers) {
+      const response = await rpc("anchor_create_record", input, "rollout-user", true, testEnv("rollout-user", true, undefined, marker));
+      expect(response.status).toBe(503);
+      expect(await response.json()).toMatchObject({ error: { code: "identity_contract_unavailable" } });
+    }
+    expect((await call("anchor_get_record", { recordType: "goal", id: record.id }, "rollout-user")).isError).toBe(true);
   });
 
   it("rejects inherited record type names at every public lookup", async () => {
@@ -109,6 +127,33 @@ describe("Anchor product connection", () => {
     expect(JSON.stringify(read)).not.toContain("private-local");
     const rejected = await call("anchor_update_record", { recordType: "planBlock", id: record.id, requestId: "bad-native-link", baseVersion: 2, changes: { externalEventKey: "override" } }, "links-user");
     expect(rejected.isError).toBe(true);
+  });
+
+  it("protects all references in pending commands but releases expired references", async () => {
+    const userId = "pending-ref-user";
+    const deviceId = crypto.randomUUID();
+    await syncRecord(userId, { recordType: "agentDevice", id: deviceId, deviceId, platform: "macOS", updatedAt: now, activeSessionID: null, state: "idle", capturePresented: false, capabilities: ["start_focus", "reconcile_template"] }, `agentdevice-${deviceId}`);
+    const records = [goal(), plan(),
+      { recordType: "project", id: crypto.randomUUID(), name: "Client", notes: "", createdAt: now, symbolName: "folder", tintIndex: 1, hourlyRate: 0, currencyCode: "USD" },
+      { recordType: "savedTag", id: crypto.randomUUID(), name: "Work", createdAt: now, tintIndex: 1 },
+      { recordType: "scheduleTemplate", id: crypto.randomUUID(), title: "Usual focus", details: "", createdAt: now, updatedAt: now, startMinutesFromMidnight: 540, plannedSeconds: 1800, weekdayMask: 31, kindRaw: "focus", flexibilityRaw: "flexible", isBehaviorHabit: false, habitUsesSuggestedTime: true, habitVersion: 1 },
+    ];
+    for (const record of records) expect((await call("anchor_create_record", { recordType: record.recordType, record, requestId: crypto.randomUUID() }, userId)).isError).toBe(false);
+    const [goalRecord, block, project, tag, template] = records;
+    const queued = await call("anchor_queue_focus_command", { requestId: "pending-start-refs", action: "start_focus", targetDeviceId: deviceId, expectedSessionID: null, args: { intent: "Work", minutes: 25, goalID: goalRecord!.id.toUpperCase(), projectID: project!.id.toUpperCase(), planBlockID: block!.id.toUpperCase(), tagIDStrings: [tag!.id.toUpperCase()] } }, userId);
+    expect(queued.isError).toBe(false);
+    const planner = await call("anchor_queue_planner_command", { requestId: "pending-reconcile-ref", action: "reconcile_template", targetDeviceId: deviceId, expectedSessionID: null, args: { templateID: template!.id.toUpperCase(), from: now, timeZone: "UTC" } }, userId);
+    expect(planner.isError).toBe(false);
+    for (const record of records) {
+      const removed = await call("anchor_delete_record", { recordType: record.recordType, id: record.id, baseVersion: 1, requestId: crypto.randomUUID() }, userId);
+      expect(removed.structuredContent).toMatchObject({ error: { code: "record_in_use" } });
+    }
+    const unused = goal();
+    await call("anchor_create_record", { recordType: "goal", record: unused, requestId: "expired-ref-goal" }, userId);
+    const commandId = crypto.randomUUID();
+    const at = Date.now();
+    await syncRecord(userId, { recordType: "agentCommand", id: commandId, requestId: "expired-ref", action: "start_focus", targetDeviceId: deviceId, expectedSessionID: null, issuedAt: new Date(at - 120_000).toISOString(), expiresAt: new Date(at - 60_000).toISOString(), status: "pending", args: { intent: "Expired", minutes: 25, goalID: unused.id }, result: null, error: null }, `agentcommand-${commandId}`);
+    expect((await call("anchor_delete_record", { recordType: "goal", id: unused.id, baseVersion: 1, requestId: "delete-expired-ref" }, userId)).isError).toBe(false);
   });
 
   it("isolates accounts, validates fields, preserves full records and exposes no private keywords", async () => {
@@ -175,6 +220,70 @@ describe("Anchor product connection", () => {
     expect(foreign.isError).toBe(true);
     const invalid = await call("anchor_queue_focus_command", { ...args, requestId: "private-command", args: { ...args.args, note: "Never leave device" } }, "command-user");
     expect(invalid.isError).toBe(true);
+  });
+
+  it("accepts an actual Swift-emitted device with mixed-case UUID fields and queues its command", async () => {
+    // Actual JSONEncoder output exported by Anchor's interoperability test.
+    const { name, payload } = nativeDeviceFixture;
+    expect(payload.id).not.toBe(payload.deviceId);
+    expect(payload.id.toLowerCase()).toBe(payload.deviceId);
+    await syncRecord("native-device-user", payload, name);
+    const queued = await call("anchor_queue_focus_command", { requestId: "swift-fixture-pause", action: "pause_focus", targetDeviceId: payload.id, expectedSessionID: payload.activeSessionID, args: {} }, "native-device-user");
+    expect(queued.isError).toBe(false);
+    expect(queued.structuredContent.status).toBe("queued");
+    const read = await call("anchor_get_record", { recordType: "agentCommand", id: queued.structuredContent.commandId }, "native-device-user");
+    expect(read.structuredContent.record).toMatchObject({ action: "pause_focus", status: "pending", targetDeviceId: payload.deviceId, expectedSessionID: payload.activeSessionID });
+    const command = read.structuredContent.record as Record<string, unknown>;
+    expect(command.issuedAt).toMatch(/\.\d{3}Z$/u);
+    expect(command.expiresAt).toMatch(/\.\d{3}Z$/u);
+    // This fixture was captured from the real Worker queue/get boundary. Keep
+    // dynamic UUID/time values as emitted for the native decoder consumer.
+    expect(workerCommandFixture.payload.action).toBe(command.action);
+    expect(workerCommandFixture.payload.targetDeviceId).toBe(command.targetDeviceId);
+    expect(workerCommandFixture.payload.issuedAt).toMatch(/\.\d{3}Z$/u);
+    expect(workerCommandFixture.payload.expiresAt).toMatch(/\.\d{3}Z$/u);
+  });
+
+  it("edits only finished session metadata while preserving the native timing snapshot", async () => {
+    const userId = "history-metadata-user";
+    const project = { recordType: "project", id: crypto.randomUUID(), name: "Client", notes: "", createdAt: now, symbolName: "folder", tintIndex: 1, hourlyRate: 25, currencyCode: "USD" };
+    const tag = { recordType: "savedTag", id: crypto.randomUUID(), name: "Writing", createdAt: now, tintIndex: 1 };
+    for (const record of [project, tag]) await call("anchor_create_record", { recordType: record.recordType, record, requestId: crypto.randomUUID() }, userId);
+    const id = crypto.randomUUID();
+    const native = { recordType: "focusSession", id, startedAt: now, endedAt: "2026-11-08T10:25:00Z", plannedSeconds: 1500, bankedSeconds: 1470.25, runningSince: null, stateRaw: "finished", endReasonRaw: "endedEarly", pausedAt: null, intent: "Draft", notes: "Old context", tagIDStrings: [], hourlyRate: 10, currencyCode: "USD", computerActiveSeconds: 1400.5, computerAwaySeconds: 69.75, goalID: null, projectID: null };
+    await syncRecord(userId, native, `session-${id}`);
+    const changes = { intent: "  Final draft  ", notes: "  Ordinary session context  ", projectID: project.id, tagIDStrings: [tag.id] };
+    const edited = await call("anchor_update_record", { recordType: "focusSession", id, requestId: "edit-finished", baseVersion: 1, changes }, userId);
+    expect(edited.isError).toBe(false);
+    const saved = await env.DB.prepare("SELECT payload_json FROM anchor_records WHERE user_id=?1 AND id=?2").bind(userId, `session-${id}`).first<{ payload_json: string }>();
+    expect(JSON.parse(saved!.payload_json)).toEqual({ ...native, ...changes, intent: "Final draft", notes: "Ordinary session context" });
+    for (const changes of [{ bankedSeconds: 2000 }, { hourlyRate: 99 }, { stateRaw: "running" }, { goalID: crypto.randomUUID() }]) {
+      expect((await call("anchor_update_record", { recordType: "focusSession", id, requestId: crypto.randomUUID(), baseVersion: 2, changes }, userId)).isError).toBe(true);
+    }
+    const activeID = crypto.randomUUID();
+    await syncRecord(userId, { ...native, id: activeID, stateRaw: "running", endedAt: null, runningSince: now }, `session-${activeID}`);
+    expect((await call("anchor_update_record", { recordType: "focusSession", id: activeID, requestId: "no-active-edit", baseVersion: 1, changes: { notes: "change" } }, userId)).isError).toBe(true);
+    const foreignProject = { ...project, id: crypto.randomUUID() };
+    await call("anchor_create_record", { recordType: "project", record: foreignProject, requestId: "foreign-project-edit" }, "other-history-user");
+    expect((await call("anchor_update_record", { recordType: "focusSession", id, requestId: "no-foreign-project", baseVersion: 2, changes: { projectID: foreignProject.id } }, userId)).isError).toBe(true);
+  });
+
+  it("edits distraction tags and explicit category without accepting private text or changing timing", async () => {
+    const userId = "distraction-edit-user";
+    const sessionID = crypto.randomUUID();
+    await syncRecord(userId, { recordType: "focusSession", id: sessionID, startedAt: now, endedAt: "2026-11-08T10:25:00Z", stateRaw: "finished" }, `session-${sessionID}`);
+    const tag = { recordType: "savedTag", id: crypto.randomUUID(), name: "Messages", createdAt: now, tintIndex: 1 };
+    await call("anchor_create_record", { recordType: "savedTag", record: tag, requestId: "distraction-tag" }, userId);
+    const id = crypto.randomUUID();
+    const native = { recordType: "distraction", id, sessionID, capturedAt: now, kindRaw: "other", kindConfidence: 0.3, kindIsUserSet: false, offsetSeconds: 120.5, didReturnToFocus: true, handledAt: null, tagIDStrings: [] };
+    await syncRecord(userId, native, `distraction-${id}`);
+    const edited = await call("anchor_update_record", { recordType: "distraction", id, requestId: "edit-category", baseVersion: 1, changes: { kindRaw: "message", tagIDStrings: [tag.id] } }, userId);
+    expect(edited.isError).toBe(false);
+    const saved = await env.DB.prepare("SELECT payload_json FROM anchor_records WHERE user_id=?1 AND id=?2").bind(userId, `distraction-${id}`).first<{ payload_json: string }>();
+    expect(JSON.parse(saved!.payload_json)).toEqual({ ...native, kindRaw: "message", kindConfidence: 1, kindIsUserSet: true, tagIDStrings: [tag.id] });
+    for (const changes of [{ note: "must remain local" }, { keywords: ["private"] }, { kindIsUserSet: false }, { offsetSeconds: 0 }]) {
+      expect((await call("anchor_update_record", { recordType: "distraction", id, requestId: crypto.randomUUID(), baseVersion: 2, changes }, userId)).isError).toBe(true);
+    }
   });
 
   it("queues all planner actions through the same durable bridge with typed calendar arguments", async () => {

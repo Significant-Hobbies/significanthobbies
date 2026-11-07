@@ -13,6 +13,7 @@ export interface ProductTool {
 
 export interface ProductConnection {
   id: string;
+  audience: string;
   instructions: string;
   tools: readonly ProductTool[];
 }
@@ -21,7 +22,7 @@ export interface ProductConnection {
  * scope and provider account. Neither gateway headers nor a supplied user ID
  * can select the tenant. The product registry owns the scope being requested. */
 export async function authenticateProductMcp(
-  request: Request, env: Env, product: string, write = false,
+  request: Request, env: Env, product: string, audience: string, write = false,
 ): Promise<AuthenticatedUser> {
   const authorization = request.headers.get("Authorization");
   if (!authorization?.startsWith("Bearer ") || authorization.length > 16_384) {
@@ -31,8 +32,9 @@ export async function authenticateProductMcp(
   if (!authority) throw new HttpError(503, "auth_not_configured", "account verification is unavailable");
   const url = new URL("https://personal-auth.internal/api/personal-platform/session");
   url.searchParams.set("mcpProduct", product);
+  const scope = `${product}.${write ? "write" : "read"}`;
   const response = await authority.fetch(url, {
-    headers: { Authorization: authorization, "X-Personal-MCP-Scope": `${product}.${write ? "write" : "read"}` },
+    headers: { Authorization: authorization, "X-Personal-MCP-Scope": scope },
     signal: AbortSignal.timeout(10_000),
   });
   if (response.status === 401 || response.status === 403) {
@@ -40,6 +42,12 @@ export async function authenticateProductMcp(
   }
   if (!response.ok) throw new HttpError(503, "identity_unavailable", "account verification is unavailable");
   const body = requireObject(await response.json(), "identity response");
+  // Old authority deployments return userId for native bearers while ignoring
+  // the product/scope request. Require the versioned verified authorization
+  // contract, so mixed deployment order fails closed rather than downgrading.
+  if (body.mcpProduct !== product || body.scope !== scope || body.audience !== audience || body.authorizationVersion !== 1) {
+    throw new HttpError(503, "identity_contract_unavailable", "the identity authority has not verified this product authorization contract");
+  }
   return { id: requireString(body.userId, "verified userId", 256) };
 }
 
@@ -52,7 +60,7 @@ export async function handleProductMcp(request: Request, env: Env, product: Prod
   if (body.jsonrpc !== "2.0" || typeof body.method !== "string") {
     throw new HttpError(400, "invalid_request", "invalid JSON-RPC request");
   }
-  let user = await authenticateProductMcp(request, env, product.id);
+  let user = await authenticateProductMcp(request, env, product.id, product.audience);
   await ensureUser(env, user);
   const result = (value: unknown) => json({ jsonrpc: "2.0", id: body.id ?? null, result: value });
   if (body.method === "notifications/initialized") return new Response(null, { status: 202 });
@@ -73,7 +81,7 @@ export async function handleProductMcp(request: Request, env: Env, product: Prod
   // Never execute a write as the identity from the read check if account
   // resolution changes between requests to the identity authority.
   if (tool.write) {
-    const granted = await authenticateProductMcp(request, env, product.id, true);
+    const granted = await authenticateProductMcp(request, env, product.id, product.audience, true);
     if (granted.id !== user.id) throw new HttpError(401, "account_changed", "the connected account changed");
     user = granted;
   }

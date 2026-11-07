@@ -1,0 +1,35 @@
+{
+  "name" : "agentdevice-a1000000-0000-4000-8000-000000000001",
+  "payload" : {
+    "activeSessionID" : "B2000000-0000-4000-8000-000000000002",
+    "capabilities" : [
+      "start_focus",
+      "pause_focus",
+      "resume_focus",
+      "end_focus",
+      "capture_distraction",
+      "copy_day",
+      "materialize_day",
+      "reconcile_template"
+    ],
+    "capturePresented" : false,
+    "deviceId" : "a1000000-0000-4000-8000-000000000001",
+    "id" : "A1000000-0000-4000-8000-000000000001",
+    "observedAt" : "2026-11-08T10:05:00Z",
+    "platform" : "macOS",
+    "recordType" : "agentDevice",
+    "session" : {
+      "bankedSeconds" : 0,
+      "goalID" : null,
+      "id" : "B2000000-0000-4000-8000-000000000002",
+      "intent" : "Synthetic native focus",
+      "plannedSeconds" : 1500,
+      "projectID" : null,
+      "runningSince" : "2026-11-08T10:00:00Z",
+      "startedAt" : "2026-11-08T10:00:00Z",
+      "state" : "running"
+    },
+    "state" : "running",
+    "updatedAt" : "2026-11-08T10:05:00Z"
+  }
+}

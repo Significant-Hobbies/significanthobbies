@@ -30,6 +30,18 @@ export const ANCHOR_FIELDS: Record<string, Record<string, Field>> = {
   dayPlanConfirmation: { ...common, day: date, decisionRaw: enumeration("usual", "adjusted", "later"), baselineRevision: text(100_000), confirmedAt: optional(date), deferredAt: optional(date), updatedAt: date },
   planBlock: { ...common, templateID: optional(uuid), templateOccurrenceDay: optional(date), isTemplateOverride: bool, sessionID: optional(uuid), projectID: optional(uuid), title: text(240, 1), details: text(), plannedStart: date, plannedSeconds: num(60, 86_400, true), actualStartedAt: optional(date), actualEndedAt: optional(date), stateRaw: enumeration("planned", "inProgress", "completed", "skipped", "moved"), kindRaw: kind, flexibilityRaw: flexibility, behaviorPatternRaw: optional(pattern), lifeDirectionRaw: optional(direction), createdAt: date, updatedAt: date },
 };
+export const HISTORY_EDIT_FIELDS: Record<string, Record<string, Field>> = {
+  focusSession: { intent: text(), notes: text(), projectID: optional(uuid), tagIDStrings: array(uuid) },
+  distraction: { kindRaw: enumeration("message", "notification", "person", "meeting", "email", "wanderingThought", "rabbitHole", "socialFeed", "entertainment", "otherWork", "chore", "bodily", "environment", "other"), tagIDStrings: array(uuid) },
+};
+export function validateHistoryChanges(type: string, value: unknown): Record<string, unknown> {
+  const changes = requireObject(value, "changes");
+  const fields = Object.hasOwn(HISTORY_EDIT_FIELDS, type) ? HISTORY_EDIT_FIELDS[type] : undefined;
+  if (!fields) invalid("unsupported history metadata recordType");
+  onlyKeys(changes, Object.keys(fields));
+  for (const [name, v] of Object.entries(changes)) if (!fields[name]?.check(v)) invalid(`changes.${name} is invalid`);
+  return Object.fromEntries(Object.entries(changes).map(([key, v]) => [key, ["intent", "notes"].includes(key) ? String(v).trim() : v]));
+}
 
 export const ANCHOR_PREFIXES: Record<string, string> = {
   goal: "goal-", project: "project-", savedTag: "savedtag-", preferences: "prefs-", behaviorProfile: "behavior-", scheduleTemplate: "schedule-", habitCompletion: "habit-", dayPlanConfirmation: "dayplan-", planBlock: "planblock-", divergenceEvent: "divergence-", focusSession: "session-", distraction: "distraction-", machineActivityDay: "machineday-", agentCommand: "agentcommand-", agentDevice: "agentdevice-",
@@ -121,14 +133,15 @@ export function validateCommand(value: unknown): Record<string, unknown> {
 export function validateDevice(value: unknown): Record<string, unknown> {
   const input = requireObject(value, "device");
   onlyKeys(input, ["recordType", "id", "deviceId", "platform", "updatedAt", "observedAt", "activeSessionID", "state", "session", "capturePresented", "capabilities"]);
-  if (input.recordType !== "agentDevice" || !uuid.check(input.id) || input.deviceId !== input.id || !enumeration("macOS", "iOS").check(input.platform)
+  if (input.recordType !== "agentDevice" || !uuid.check(input.id) || !uuid.check(input.deviceId) || !enumeration("macOS", "iOS").check(input.platform)
       || !date.check(input.updatedAt) || !optional(uuid).check(input.activeSessionID) || !enumeration("idle", "running", "paused").check(input.state)
       || !bool.check(input.capturePresented) || !array(enumeration(...COMMAND_ACTIONS)).check(input.capabilities)) invalid("invalid device capability record");
+  if (validateUUID(input.deviceId, "deviceId") !== validateUUID(input.id, "device id")) invalid("device identity does not match its stable identifier");
   if (input.observedAt !== undefined && !date.check(input.observedAt)) invalid("invalid device observation time");
   if (input.session !== undefined && input.session !== null) {
     const session = requireObject(input.session, "device.session");
     onlyKeys(session, ["id", "intent", "goalID", "projectID", "plannedSeconds", "startedAt", "bankedSeconds", "runningSince", "state"]);
-    if (!uuid.check(session.id) || session.id !== input.activeSessionID || !text(240).check(session.intent) || !optional(uuid).check(session.goalID)
+    if (!uuid.check(session.id) || !uuid.check(input.activeSessionID) || String(session.id).toLowerCase() !== String(input.activeSessionID).toLowerCase() || !text(240).check(session.intent) || !optional(uuid).check(session.goalID)
         || !optional(uuid).check(session.projectID) || !num(0, 86_400, true).check(session.plannedSeconds) || !date.check(session.startedAt)
         || !num().check(session.bankedSeconds) || !optional(date).check(session.runningSince) || !enumeration("running", "paused").check(session.state)
         || session.state !== input.state) invalid("invalid device session snapshot");

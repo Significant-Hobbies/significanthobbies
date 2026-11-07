@@ -31,6 +31,11 @@ have not been used together and there is no current need for the Hub.
   Focus actions enqueue expiring device commands and remain pending until a
   native receipt; copy-day, day materialization and template reconciliation
   use that same device bridge to run the existing native planner service.
+  Finished-session edits cover intent, ordinary notes, project and explicit
+  tags; distraction metadata edits cover tags and explicit category locks.
+  Those actions preserve native timing/state, and never accept distraction text.
+  Product authorization requires Live's versioned verified product/scope/audience
+  response; an old identity deployment cannot silently grant write access.
   Capture notes never enter those commands. Habit progression fields and
   restoring a behavior habit remain native-owned; direct metadata CRUD cannot
   claim progression readiness. Current HabitPolicy has no numeric active-habit
