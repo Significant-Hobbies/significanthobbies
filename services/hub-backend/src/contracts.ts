@@ -1,3 +1,5 @@
+import { validateCommand, validateDevice } from "./anchor-contracts";
+
 export const DOMAINS = [
   "live",
   "journal",
@@ -356,6 +358,8 @@ function validateCalorieRecord(input: Record<string, unknown>): Record<string, u
 // shape (no recordType) stays valid for already-deployed clients; both kinds
 // validate identity fields and return the payload intact.
 function validateAnchorRecord(input: Record<string, unknown>): Record<string, unknown> {
+  if (input.recordType === "agentCommand") return validateCommand(input);
+  if (input.recordType === "agentDevice") return validateDevice(input);
   if (input.recordType === undefined) {
     compact({
       title: requireString(input.title, "record.title", 240),
@@ -522,6 +526,14 @@ export function parsePushRequest(value: unknown): PushRequest {
       "upsert",
       "delete",
     ] as const);
+    const record = operation === "upsert" ? validateDomainRecord(domain, mutation.record) : mutation.record;
+    if (domain === "anchor" && operation === "upsert" && record && typeof record === "object") {
+      const typed = record as Record<string, unknown>;
+      if (["agentCommand", "agentDevice"].includes(String(typed.recordType))) {
+        const prefix = typed.recordType === "agentCommand" ? "agentcommand-" : "agentdevice-";
+        if (mutation.id !== prefix + String(typed.id).toLowerCase()) throw new HttpError(400, "invalid_request", "agent record name and payload UUID disagree");
+      }
+    }
     return {
       id: requireString(mutation.id, `mutations[${index}].id`, 128),
       idempotencyKey: requireString(
@@ -532,10 +544,7 @@ export function parsePushRequest(value: unknown): PushRequest {
       operation,
       baseVersion: requireInteger(mutation.baseVersion, `mutations[${index}].baseVersion`),
       occurredAt: requireIsoDate(mutation.occurredAt, `mutations[${index}].occurredAt`),
-      record:
-        operation === "upsert"
-          ? validateDomainRecord(domain, mutation.record)
-          : mutation.record,
+      record,
     };
   });
   return { domain, deviceId, mutations };

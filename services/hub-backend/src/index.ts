@@ -12,6 +12,8 @@ import {
 import { getLiveRecords, getLiveSummary } from "./live";
 import { authenticateMcp } from "./mcp-auth";
 import { handleMcp } from "./mcp";
+import { handleProductMcp } from "./product-mcp";
+import { ANCHOR_CONNECTION } from "./anchor-mcp";
 import { getDomainRecords, getLifeEvents, parseReadQuery } from "./reads";
 import { errorResponse, json, preflight, readJson, withCors } from "./http";
 import { handleHub } from "./hub";
@@ -60,6 +62,8 @@ async function route(request: Request, env: Env, timing?: StageTiming): Promise<
   // authenticate() turns an unrecognised path into a 401.
   const surfaceResponse = handleAgentSurfaces(request, url);
   if (surfaceResponse) return surfaceResponse;
+
+  if (url.pathname === "/anchor/mcp") return handleProductMcp(request, env, ANCHOR_CONNECTION);
 
   if (url.pathname === "/mcp") {
     const user = await authenticateMcp(request, env);
