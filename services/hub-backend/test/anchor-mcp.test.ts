@@ -34,6 +34,12 @@ async function syncRecord(userId: string, record: Record<string, unknown>, name:
   return response.json();
 }
 
+async function nativeChanges(userId: string) {
+  const response = await worker.fetch(new Request("https://personal-platform.test/v1/sync/pull?domain=anchor&cursor=0", { headers: { Authorization: "Bearer native-token" } }), testEnv(userId));
+  expect(response.status).toBe(200);
+  return (await response.json() as { changes: { id: string; version: number; record: Record<string, unknown> }[] }).changes;
+}
+
 describe("Anchor product connection", () => {
   it("emits backend-created complete native envelopes for cross-runtime qualification", async () => {
     const records = [goal("10000000-0000-4000-8000-000000000001"), { ...plan("10000000-0000-4000-8000-000000000002"), plannedStart: "2026-11-08T10:00:00.123Z" },
@@ -51,6 +57,69 @@ describe("Anchor product connection", () => {
     // Actual Worker output, retained as a consumer fixture for native decoding.
     await expect(JSON.stringify({ generatedBy: "Anchor Worker create/get tools", records: emitted }, null, 2) + "\n").toMatchFileSnapshot("./fixtures/anchor-native.json");
   });
+  it("advertises projects as organizational metadata without monetary fields", async () => {
+    const capabilities = await call("anchor_get_capabilities", {}, "project-schema-user");
+    const schemas = capabilities.structuredContent.recordSchemas as Record<string, { properties: Record<string, unknown>; required: string[] }>;
+    expect(Object.keys(schemas.project!.properties)).toEqual(["recordType", "id", "name", "notes", "createdAt", "archivedAt", "symbolName", "tintIndex"]);
+    expect(schemas.project!.required).toEqual(["recordType", "id", "name", "notes", "createdAt", "symbolName", "tintIndex"]);
+    const response = await worker.fetch(new Request("https://personal-platform.test/anchor/mcp", { method: "POST", headers: { Authorization: "Bearer original-product-token", "Content-Type": "application/json" }, body: JSON.stringify({ jsonrpc: "2.0", id: 1, method: "tools/list" }) }), testEnv("project-schema-user"));
+    expect(response.status).toBe(200);
+    const body = await response.json() as { result: { tools: { name: string; inputSchema: { properties: { record?: { oneOf: unknown[] } } } }[] } };
+    const create = body.result.tools.find(tool => tool.name === "anchor_create_record");
+    expect(create!.inputSchema.properties.record!.oneOf).toContainEqual(schemas.project);
+    expect(JSON.stringify(create!.inputSchema)).not.toMatch(/hourlyRate|currencyCode/u);
+  });
+
+  it("creates project labels with inert legacy native fields and stable replay", async () => {
+    const userId = "project-create-user";
+    const project = { recordType: "project", id: crypto.randomUUID(), name: "Writing", notes: "Personal work", createdAt: now, symbolName: "folder", tintIndex: 2 };
+    const input = { recordType: "project", record: project, requestId: "project-create" };
+    const created = await call("anchor_create_record", input, userId);
+    expect(created.structuredContent).toMatchObject({ status: "accepted", duplicate: false, change: { version: 1 } });
+    expect(JSON.stringify(created.structuredContent)).not.toMatch(/hourlyRate|currencyCode/u);
+    expect((await call("anchor_create_record", input, userId)).structuredContent).toMatchObject({ duplicate: true, change: { version: 1 } });
+    const changes = await nativeChanges(userId);
+    expect(changes).toHaveLength(1);
+    expect(changes[0]).toMatchObject({ id: `project-${project.id}`, version: 1, record: { ...project, hourlyRate: 0, currencyCode: "USD" } });
+    const read = await call("anchor_get_record", { recordType: "project", id: project.id }, userId);
+    expect(read.structuredContent.record).toEqual(project);
+    expect((await call("anchor_list_records", { recordType: "project" }, userId)).structuredContent.items).toMatchObject([{ record: project }]);
+    expect((await call("anchor_get_record", { recordType: "project", id: project.id }, "other-project-user")).isError).toBe(true);
+    for (const fields of [{ hourlyRate: 0 }, { currencyCode: "USD" }]) {
+      const rejected = await call("anchor_create_record", { ...input, requestId: crypto.randomUUID(), record: { ...project, id: crypto.randomUUID(), ...fields } }, userId);
+      expect(rejected.structuredContent).toMatchObject({ error: { code: "invalid_input" } });
+    }
+  });
+
+  it("hides legacy project and session money while preserving stored history through label edits", async () => {
+    const userId = "legacy-money-user";
+    const project = { recordType: "project", id: crypto.randomUUID(), name: "Old client", notes: "Context", createdAt: now, symbolName: "folder", tintIndex: 1, hourlyRate: 125.5, currencyCode: "EUR" };
+    const session = { recordType: "focusSession", id: crypto.randomUUID(), startedAt: now, endedAt: "2026-11-08T10:25:00Z", plannedSeconds: 1500, bankedSeconds: 1470.25, stateRaw: "finished", intent: "Draft", notes: "Context", tagIDStrings: [], hourlyRate: 50, currencyCode: "GBP", projectID: project.id };
+    for (const record of [project, session]) await syncRecord(userId, record, `${record.recordType === "project" ? "project" : "session"}-${record.id}`);
+    for (const record of [project, session]) {
+      const read = await call("anchor_get_record", { recordType: record.recordType, id: record.id }, userId);
+      const { hourlyRate, currencyCode, ...visible } = record;
+      expect(read.structuredContent.record).toEqual(visible);
+      const listed = await call("anchor_list_records", { recordType: record.recordType }, userId);
+      expect(listed.structuredContent.items).toMatchObject([{ record: visible }]);
+      expect(JSON.stringify(listed.structuredContent)).not.toMatch(/hourlyRate|currencyCode/u);
+    }
+    const edit = { recordType: "project", id: project.id, baseVersion: 1, requestId: "legacy-project-label", changes: { name: "Writing" } };
+    const edited = await call("anchor_update_record", edit, userId);
+    expect(edited.structuredContent).toMatchObject({ status: "accepted", change: { version: 2 } });
+    expect(JSON.stringify(edited.structuredContent)).not.toMatch(/hourlyRate|currencyCode/u);
+    expect((await call("anchor_update_record", edit, userId)).structuredContent).toMatchObject({ duplicate: true, change: { version: 2 } });
+    const read = await call("anchor_get_record", { recordType: "project", id: project.id }, userId);
+    expect(read.structuredContent.record).toMatchObject({ name: "Writing", notes: "Context" });
+    expect(JSON.stringify(read.structuredContent)).not.toMatch(/hourlyRate|currencyCode/u);
+    expect((await nativeChanges(userId)).at(-1)!.record).toEqual({ ...project, name: "Writing" });
+    for (const fields of [{ hourlyRate: 0 }, { currencyCode: "USD" }]) {
+      expect((await call("anchor_update_record", { ...edit, baseVersion: 2, requestId: crypto.randomUUID(), changes: fields }, userId)).structuredContent).toMatchObject({ error: { code: "invalid_input" } });
+    }
+    expect((await call("anchor_update_record", { ...edit, requestId: "stale-project-label" }, userId)).structuredContent).toMatchObject({ error: { code: "conflict" } });
+    expect((await nativeChanges(userId)).at(-1)!.record).toEqual({ ...project, name: "Writing" });
+  });
+
   it("resolves the original bearer at the identity authority and requests independent write scope", async () => {
     const seen: string[] = [];
     const customEnv = testEnv("scope-user", true, (url, scope, auth) => {
@@ -135,7 +204,7 @@ describe("Anchor product connection", () => {
     const deviceId = crypto.randomUUID();
     await syncRecord(userId, { recordType: "agentDevice", id: deviceId, deviceId, consentGeneration, platform: "macOS", updatedAt: now, activeSessionID: null, state: "idle", capturePresented: false, capabilities: ["start_focus", "reconcile_template"] }, `agentdevice-${deviceId}`);
     const records = [goal(), plan(),
-      { recordType: "project", id: crypto.randomUUID(), name: "Client", notes: "", createdAt: now, symbolName: "folder", tintIndex: 1, hourlyRate: 0, currencyCode: "USD" },
+      { recordType: "project", id: crypto.randomUUID(), name: "Client", notes: "", createdAt: now, symbolName: "folder", tintIndex: 1 },
       { recordType: "savedTag", id: crypto.randomUUID(), name: "Work", createdAt: now, tintIndex: 1 },
       { recordType: "scheduleTemplate", id: crypto.randomUUID(), title: "Usual focus", details: "", createdAt: now, updatedAt: now, startMinutesFromMidnight: 540, plannedSeconds: 1800, weekdayMask: 31, kindRaw: "focus", flexibilityRaw: "flexible", isBehaviorHabit: false, habitUsesSuggestedTime: true, habitVersion: 1 },
     ];
@@ -189,7 +258,7 @@ describe("Anchor product connection", () => {
   });
 
   it("resolves relationships only in the same account and refuses remote timing fabrication", async () => {
-    const project = { recordType: "project", id: crypto.randomUUID(), name: "Client", notes: "", createdAt: now, symbolName: "folder", tintIndex: 1, hourlyRate: 0, currencyCode: "USD" };
+    const project = { recordType: "project", id: crypto.randomUUID(), name: "Client", notes: "", createdAt: now, symbolName: "folder", tintIndex: 1 };
     await call("anchor_create_record", { recordType: "project", record: project, requestId: "foreign-project" }, "relation-a");
     const foreign = await call("anchor_create_record", { recordType: "planBlock", record: { ...plan(), projectID: project.id }, requestId: "foreign-plan" }, "relation-b");
     expect(foreign.isError).toBe(true);
@@ -249,7 +318,7 @@ describe("Anchor product connection", () => {
 
   it("edits only finished session metadata while preserving the native timing snapshot", async () => {
     const userId = "history-metadata-user";
-    const project = { recordType: "project", id: crypto.randomUUID(), name: "Client", notes: "", createdAt: now, symbolName: "folder", tintIndex: 1, hourlyRate: 25, currencyCode: "USD" };
+    const project = { recordType: "project", id: crypto.randomUUID(), name: "Client", notes: "", createdAt: now, symbolName: "folder", tintIndex: 1 };
     const tag = { recordType: "savedTag", id: crypto.randomUUID(), name: "Writing", createdAt: now, tintIndex: 1 };
     for (const record of [project, tag]) await call("anchor_create_record", { recordType: record.recordType, record, requestId: crypto.randomUUID() }, userId);
     const id = crypto.randomUUID();
@@ -312,13 +381,13 @@ describe("Anchor product connection", () => {
 
   it("canonicalizes lowercase tags for native display, preserves replay input and emits an explicit project clear", async () => {
     const userId = "native-tag-edit-user";
-    const project = { recordType: "project", id: "c3000000-0000-4000-8000-000000000003", name: "Before project", notes: "", createdAt: now, symbolName: "folder", tintIndex: 1, hourlyRate: 0, currencyCode: "USD" };
+    const project = { recordType: "project", id: "c3000000-0000-4000-8000-000000000003", name: "Before project", notes: "", createdAt: now, symbolName: "folder", tintIndex: 1 };
     const tag = { recordType: "savedTag", id: "d4000000-0000-4000-8000-000000000004", name: "Visible native tag", createdAt: now, tintIndex: 1 };
     const initial = [];
     for (const record of [project, tag]) {
       await call("anchor_create_record", { recordType: record.recordType, record, requestId: crypto.randomUUID() }, userId);
       const read = await call("anchor_get_record", { recordType: record.recordType, id: record.id }, userId);
-      initial.push({ name: read.structuredContent.id, payload: read.structuredContent.record });
+      initial.push({ name: read.structuredContent.id, payload: (await nativeChanges(userId)).at(-1)!.record });
     }
     const id = "e5000000-0000-4000-8000-000000000005";
     const native = { recordType: "focusSession", id: id.toUpperCase(), startedAt: now, endedAt: "2026-11-08T10:25:00Z", plannedSeconds: 1500, bankedSeconds: 1500, runningSince: null, stateRaw: "finished", endReasonRaw: "completed", pausedAt: null, intent: "Tagged history", notes: "", tagIDStrings: [], hourlyRate: 0, currencyCode: "USD", computerActiveSeconds: 0, computerAwaySeconds: 0, projectID: project.id.toUpperCase() };
@@ -329,7 +398,8 @@ describe("Anchor product connection", () => {
     expect((await call("anchor_update_record", edit, userId)).structuredContent).toMatchObject({ duplicate: true });
     const read = await call("anchor_get_record", { recordType: "focusSession", id }, userId);
     expect(read.structuredContent.record).toMatchObject({ tagIDStrings: [tag.id.toUpperCase()], projectID: null });
-    await expect(JSON.stringify({ generatedBy: "Actual Worker metadata edit/get; native UUID.uuidString tag matching and explicit null project clear", initial, updated: [{ name: `session-${id}`, payload: read.structuredContent.record }] }, null, 2) + "\n").toMatchFileSnapshot("./fixtures/worker-history-edit.json");
+    expect(JSON.stringify(read.structuredContent.record)).not.toMatch(/hourlyRate|currencyCode/u);
+    await expect(JSON.stringify({ generatedBy: "Actual Worker metadata edit/native sync; native UUID.uuidString tag matching and explicit null project clear", initial, updated: [{ name: `session-${id}`, payload: (await nativeChanges(userId)).at(-1)!.record }] }, null, 2) + "\n").toMatchFileSnapshot("./fixtures/worker-history-edit.json");
     const deviceId = "f6000000-0000-4000-8000-000000000006";
     await syncRecord(userId, { recordType: "agentDevice", id: deviceId, deviceId, consentGeneration, platform: "macOS", updatedAt: now, activeSessionID: null, state: "idle", capturePresented: false, capabilities: ["start_focus"] }, `agentdevice-${deviceId}`);
     const input = { requestId: "lowercase-start-tags", action: "start_focus", targetDeviceId: deviceId, expectedSessionID: null, args: { intent: "Visible tags", minutes: 25, tagIDStrings: [tag.id] } };
