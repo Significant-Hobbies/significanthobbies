@@ -15,6 +15,11 @@ import FoundationNetworking
 public struct HubMirrorTransport: MirrorTransport {
     public let id = "hub"
 
+    public enum RecordAffiliation: Sendable {
+        case none
+        case matching(@Sendable (String) -> Bool)
+    }
+
     private let domain: PersonalDomain
     private let deviceId: String
     private let client: any PersonalSyncTransport
@@ -23,6 +28,9 @@ public struct HubMirrorTransport: MirrorTransport {
     /// to keep the Hub leg quiet until the local store is bound to that account
     /// (e.g. document owner approval), while other transports still sync.
     private let accountGate: (@Sendable (PersonalSyncAccount) async -> Bool)?
+    /// Selects pulled records whose affiliation is the verified Hub account.
+    /// Unselected records retain the legacy unaffiliated representation.
+    private let affiliatePulledRecord: @Sendable (String) -> Bool
     /// Resolves a record name to its append-only flag for pulled records, whose
     /// payload no longer carries that bit. Apps typically answer by record-name
     /// prefix or from the ledger.
@@ -44,6 +52,7 @@ public struct HubMirrorTransport: MirrorTransport {
         versions: SyncVersionStore,
         account: @escaping @Sendable () async throws -> PersonalSyncAccount?,
         accountGate: (@Sendable (PersonalSyncAccount) async -> Bool)? = nil,
+        recordAffiliation: RecordAffiliation = .none,
         appendOnly: @escaping @Sendable (String) -> Bool = { _ in false }
     ) {
         self.domain = domain
@@ -52,6 +61,10 @@ public struct HubMirrorTransport: MirrorTransport {
         self.versions = versions
         self.account = account
         self.accountGate = accountGate
+        switch recordAffiliation {
+        case .none: self.affiliatePulledRecord = { _ in false }
+        case let .matching(predicate): self.affiliatePulledRecord = predicate
+        }
         self.appendOnly = appendOnly
     }
 
@@ -213,7 +226,8 @@ public struct HubMirrorTransport: MirrorTransport {
                         name: change.id,
                         modifiedAt: modifiedAt,
                         payload: change.operation == .delete ? nil : Self.payloadData(change.record),
-                        appendOnly: appendOnly(change.id)
+                        appendOnly: appendOnly(change.id),
+                        hubOwnerID: affiliatePulledRecord(change.id) ? verified.userID : nil
                     )
                 )
                 try await versions.setVersion(change.version, for: change.id, in: domain)
