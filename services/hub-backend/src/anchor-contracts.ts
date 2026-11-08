@@ -17,11 +17,11 @@ const flexibility = enumeration("fixed", "flexible", "optional");
 const theme = enumeration("building", "writing", "learning", "planning", "communication", "admin", "creative", "other");
 const common = { id: uuid };
 
-/** Complete native Codable envelopes. These stricter action schemas do not
+/** Remote metadata action schemas. These stricter schemas do not
  * rewrite the compatibility validator for old deployed sync clients. */
 export const ANCHOR_FIELDS: Record<string, Record<string, Field>> = {
   goal: { ...common, title: text(240, 1), notes: text(), createdAt: date, archivedAt: optional(date), symbolName: text(100), tintIndex: num(0, 100, true), themeRaw: optional(theme), keywords: array(text(100)) },
-  project: { ...common, name: text(240, 1), notes: text(), createdAt: date, archivedAt: optional(date), symbolName: text(100), tintIndex: num(0, 100, true), hourlyRate: num(), currencyCode: text(3, 3) },
+  project: { ...common, name: text(240, 1), notes: text(), createdAt: date, archivedAt: optional(date), symbolName: text(100), tintIndex: num(0, 100, true) },
   savedTag: { ...common, name: text(240, 1), createdAt: date, archivedAt: optional(date), tintIndex: num(0, 100, true) },
   preferences: { ...common, appearanceRaw: enumeration("system", "light", "dark"), updatedAt: date },
   behaviorProfile: { ...common, selectedPatternRawValues: array(pattern), desiredDirectionRawValues: array(direction), updatedAt: date },
@@ -161,7 +161,7 @@ export function projectAnchorRecord(value: Record<string, unknown>): Record<stri
   const type = String(value.recordType);
   const fields = Object.hasOwn(ANCHOR_FIELDS, type) ? ANCHOR_FIELDS[type] : undefined;
   const readFields: Record<string, string[]> = {
-    focusSession: ["id", "startedAt", "endedAt", "plannedSeconds", "bankedSeconds", "runningSince", "stateRaw", "endReasonRaw", "pausedAt", "intent", "notes", "tagIDStrings", "hourlyRate", "currencyCode", "computerActiveSeconds", "computerAwaySeconds", "goalID", "projectID"],
+    focusSession: ["id", "startedAt", "endedAt", "plannedSeconds", "bankedSeconds", "runningSince", "stateRaw", "endReasonRaw", "pausedAt", "intent", "notes", "tagIDStrings", "computerActiveSeconds", "computerAwaySeconds", "goalID", "projectID"],
     distraction: ["id", "capturedAt", "kindRaw", "kindConfidence", "kindIsUserSet", "offsetSeconds", "didReturnToFocus", "handledAt", "sessionID", "tagIDStrings"],
     machineActivityDay: ["id", "day", "activeSeconds", "trackedSeconds", "createdAt"],
     divergenceEvent: ["id", "blockID", "sessionID", "distractionID", "occurredAt", "kindRaw", "evidenceRaw", "userConfirmed"],
