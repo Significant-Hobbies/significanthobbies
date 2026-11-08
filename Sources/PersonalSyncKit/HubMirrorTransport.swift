@@ -226,7 +226,8 @@ public struct HubMirrorTransport: MirrorTransport {
                         name: change.id,
                         modifiedAt: modifiedAt,
                         payload: change.operation == .delete ? nil : Self.payloadData(change.record),
-                        appendOnly: appendOnly(change.id)
+                        appendOnly: appendOnly(change.id),
+                        hubOwnerID: affiliatePulledRecord(change.id) ? verified.userID : nil
                     )
                 )
                 try await versions.setVersion(change.version, for: change.id, in: domain)
